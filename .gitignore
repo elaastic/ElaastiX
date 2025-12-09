@@ -1,0 +1,13 @@
+# IntelliJ IDEA
+.idea/*
+!.idea/dictionaries
+!.idea/runConfigurations
+!.idea/dataSources.xml
+!.idea/jsonSchemas.xml
+!.idea/misc.xml
+!.idea/modules.xml
+!.idea/remote-targets.xml
+!.idea/sqldialects.xml
+!.idea/vcs.xml
+
+out/
