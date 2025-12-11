@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+title: ElaastiX
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Franck
+    family-names: Silvestre
+    email: franck.silvestre@irit.fr
+    affiliation: 'IRIT, Université de Toulouse'
+    orcid: 'https://orcid.org/0000-0002-1134-8200'
+  - given-names: John
+    family-names: Tranier
+    email: john.tranier@ticetime.com
+    affiliation: 'ISAE-SUPAERO, Université de Nantes'
+  - given-names: Cynthia
+    family-names: Rey
+    email: cynthia.rey@irit.fr
+    affiliation: 'IRIT, Université Toulouse Capitole'
+    orcid: 'https://orcid.org/0009-0002-8575-2879'
+repository-code: 'https://github.com/elaastic/elaastix'
+abstract:
+keywords:
+  - education
+license: AGPL-3.0-or-later
