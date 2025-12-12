@@ -1,0 +1,27 @@
+* text=auto eol=lf
+
+# By default, Git heavily favours C in diff output.
+# However it is possible to enhance the output by setting the hunk-header.
+# See https://man.archlinux.org/man/gitattributes.5#Generating_diff_text
+*.java    text diff=java
+*.md      text diff=markdown
+*.mdx     text diff=markdown
+*.css     text diff=css
+*.html    text diff=html
+*.vue     text diff=html
+
+# Windows-specific files must have CRLF line endings
+*.bat     text eol=crlf
+*.cmd     text eol=crlf
+
+# Linguist-specific attributes
+# GitLab doesn't use GitHub's Linguist package (anymore), but honors its attributes for interoperability
+# https://github.com/github-linguist/linguist/blob/266912b913855446ec51c002985010dbe51c524a/docs/overrides.md
+*.md                 linguist-documentation linguist-language=Markdown
+*.mdx                linguist-documentation
+LICENSE              linguist-documentation
+
+# Fix highlighting
+tsconfig.json        linguist-language=JSON-with-Comments
+tsconfig.*.json      linguist-language=JSON-with-Comments
+*.code-workspace     linguist-language=JSON-with-Comments
