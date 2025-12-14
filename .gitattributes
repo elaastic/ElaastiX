@@ -4,6 +4,7 @@
 # However it is possible to enhance the output by setting the hunk-header.
 # See https://man.archlinux.org/man/gitattributes.5#Generating_diff_text
 *.java    text diff=java
+*.kt      text diff=kotlin
 *.md      text diff=markdown
 *.mdx     text diff=markdown
 *.css     text diff=css
@@ -15,8 +16,6 @@
 *.cmd     text eol=crlf
 
 # Linguist-specific attributes
-# GitLab doesn't use GitHub's Linguist package (anymore), but honors its attributes for interoperability
-# https://github.com/github-linguist/linguist/blob/266912b913855446ec51c002985010dbe51c524a/docs/overrides.md
 *.md                 linguist-documentation linguist-language=Markdown
 *.mdx                linguist-documentation
 LICENSE              linguist-documentation
