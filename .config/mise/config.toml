@@ -1,0 +1,17 @@
+[tools]
+node = "24"
+java = "temurin-24"  # Kotlin doesn't support JDK 25 yet >:)
+typos = "latest"
+docker-cli = "latest"
+docker-compose = "latest"
+
+[hooks]
+postinstall = [
+    "printf '#!/usr/bin/env bash\\nmise task run precommit' > .git/hooks/pre-commit",
+    "chmod +x .git/hooks/pre-commit",
+]
+
+[tasks.precommit]
+run = [
+    "typos -c .config/typos/config.toml -w"
+]
