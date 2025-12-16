@@ -20,6 +20,9 @@
 package conventions
 val libs = the<VersionCatalogsExtension>().named("libs")
 
+group = rootProject.group
+version = rootProject.version
+
 plugins {
     id("java")
 }
