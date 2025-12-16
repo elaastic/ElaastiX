@@ -1,0 +1,19 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:best-practices",
+        "schedule:weekly",
+        ":timezone(Europe/Paris)",
+        ":approveMajorUpdates",
+        ":automergeTypes",
+        ":automergeTesters",
+        ":automergeLinters",
+        ":automergeStableNonMajor",
+        ":automergeRequireAllStatusChecks",
+        ":enableVulnerabilityAlerts",
+        ":widenPeerDependencies"
+    ],
+    "platformAutomerge": true,
+    "automergeStrategy": "squash",
+    "rangeStrategy": "bump"
+}

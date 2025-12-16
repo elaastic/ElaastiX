@@ -21,6 +21,7 @@
 LICENSE              linguist-documentation
 
 # Fix highlighting
+renovate.json        linguist-language=JSON-with-Comments
 tsconfig.json        linguist-language=JSON-with-Comments
 tsconfig.*.json      linguist-language=JSON-with-Comments
 *.code-workspace     linguist-language=JSON-with-Comments
