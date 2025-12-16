@@ -1,0 +1,26 @@
+comments:
+    DeprecatedBlockTag:
+        active: true
+    EndOfSentenceFormat:
+        active: true
+    KDocReferencesNonPublicProperty:
+        active: true
+    OutdatedDocumentation:
+        active: true
+    UndocumentedPublicClass:
+        active: false
+    UndocumentedPublicFunction:
+        active: false
+    UndocumentedPublicProperty:
+        active: false
+
+complexity:
+    ReplaceSafeCallChainWithRun:
+        active: true
+
+ktlint:
+    code_style: ktlint_official
+
+performance:
+    CouldBeSequence:
+        active: true

@@ -2,14 +2,17 @@
 .idea/*
 !.idea/codeStyles/
 !.idea/copyright/
-!.idea/dictionaries
-!.idea/runConfigurations
 !.idea/dataSources.xml
+!.idea/detekt.xml
+!.idea/dictionaries
 !.idea/externalDependencies.xml
 !.idea/jsonSchemas.xml
 !.idea/modules.xml
 !.idea/remote-targets.xml
+!.idea/runConfigurations
 !.idea/sqldialects.xml
 !.idea/vcs.xml
 
-out/
+.gradle
+.kotlin
+build
