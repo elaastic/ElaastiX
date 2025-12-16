@@ -7,6 +7,7 @@
 !.idea/dictionaries
 !.idea/externalDependencies.xml
 !.idea/jsonSchemas.xml
+!.idea/modules/
 !.idea/modules.xml
 !.idea/remote-targets.xml
 !.idea/runConfigurations

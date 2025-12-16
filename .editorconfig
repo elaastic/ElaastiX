@@ -1,20 +1,17 @@
 root = true
 
-# WARNING: the patterns MUST NOT contain spaces, or they might be IGNORED by ktlint!
-# See: https://pinterest.github.io/ktlint/latest/rules/configuration-ktlint/
-# See: https://github.com/editorconfig/editorconfig/issues/148
-
 [*]
 tab_width = 4
 indent_size = 4
 indent_style = space
 insert_final_newline = true
+trim_trailing_whitespace = true
 end_of_line = lf
 
 [*.{bat,cmd}]
 end_of_line = crlf
 
-[*.{kt,kts}] # WARNING!! THERE MUST NOT BE ANY SPACE INSIDE THE BRACKETS!
+[*.{kt,kts}]
 ij_kotlin_code_style_defaults = KOTLIN_OFFICIAL
 max_line_length = 120
 

@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ElaastiX.iml" filepath="$PROJECT_DIR$/.idea/ElaastiX.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ElaastiX.iml" filepath="$PROJECT_DIR$/.idea/modules/ElaastiX.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/build-logic/build-logic.iml" filepath="$PROJECT_DIR$/.idea/modules/build-logic/build-logic.iml" />
     </modules>
   </component>
 </project>
