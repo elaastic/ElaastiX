@@ -6,13 +6,38 @@
 !.idea/detekt.xml
 !.idea/dictionaries
 !.idea/externalDependencies.xml
+!.idea/gradle.xml
 !.idea/jsonSchemas.xml
+!.idea/modules/
 !.idea/modules.xml
 !.idea/remote-targets.xml
 !.idea/runConfigurations
 !.idea/sqldialects.xml
 !.idea/vcs.xml
 
+# Mise
+mise/config.local.toml
+mise/config.*.local.toml
+
+# Gradle dev/build outputs
 .gradle
 .kotlin
 build
+
+# Nuxt dev/build outputs
+.output
+.data
+.nuxt
+.nitro
+.cache
+dist
+
+# Node dependencies
+node_modules
+
+# Logs
+logs
+*.log
+
+# Misc
+.DS_Store
