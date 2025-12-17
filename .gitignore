@@ -19,11 +19,11 @@
 mise/config.local.toml
 mise/config.*.local.toml
 
+# Gradle dev/build outputs
 .gradle
 .kotlin
 build
 
-# Gradle dev/build outputs
 # Nuxt dev/build outputs
 .output
 .data
