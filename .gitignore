@@ -6,6 +6,7 @@
 !.idea/detekt.xml
 !.idea/dictionaries
 !.idea/externalDependencies.xml
+!.idea/gradle.xml
 !.idea/jsonSchemas.xml
 !.idea/modules/
 !.idea/modules.xml

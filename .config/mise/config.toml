@@ -1,17 +1,19 @@
+[settings]
+experimental = true
+
 [tools]
-node = "24"
+node = { version = "24", postinstall = "corepack enable" }
 java = "temurin-24"  # Kotlin doesn't support JDK 25 yet >:)
 typos = "latest"
-docker-cli = "latest"
-docker-compose = "latest"
 
 [hooks]
 postinstall = [
-    "printf '#!/usr/bin/env bash\\nmise task run precommit' > .git/hooks/pre-commit",
+    'printf "#!/usr/bin/env bash\n$(which mise) task run _precommit" > .git/hooks/pre-commit',
     "chmod +x .git/hooks/pre-commit",
 ]
 
-[tasks.precommit]
+[tasks._precommit]
+hide = true
 run = [
-    "typos -c .config/typos/config.toml -w"
+    "typos -c .config/typos/config.toml"
 ]
