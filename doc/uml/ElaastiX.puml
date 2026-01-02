@@ -1,6 +1,59 @@
 @startuml
 'https://plantuml.com/class-diagram
 
+package activity.metamodel {
+    abstract class Scenario
+
+    class Sequence {
+        state: State
+        scenario: Scenario
+        start()
+        pause()
+        resume()
+        stop()
+    }
+
+    enum State {
+            OPEN
+            PENDING
+            RUNNING
+            CLOSED
+        }
+
+    Sequence --> State
+    Sequence --> activity.metamodel.Scenario
+
+    Scenario *-- ActivitySession
+
+    abstract class ActivitySession {
+        context: Sequence
+        activityConfig: ActivityConfig
+        state: State
+        activityCompleted: boolean
+        abstract getLearners(): Collection<Person>
+        abstract getInputMaterial(): Collection<Material>
+        abstract getLearnerOutput(): Collection<LearnerOutput>
+    }
+
+    class ActivitySessionLog
+
+    ActivitySession --> State
+    ActivitySession --> ActivitySessionLog
+    ActivitySession --> ActivityConfig
+    ActivitySession *-- LearnerOutput
+    ActivitySession *-- Material
+
+
+    interface ActivityConfig
+
+    interface Material
+
+    abstract class LearnerOutput extends Material {
+        author: Person
+
+    }
+}
+
 class Person
 
 class Assignment {
@@ -10,157 +63,112 @@ class Assignment {
 }
 
 Assignment *-- Person
-Assignment *-- Sequence
+Assignment *-- activity.metamodel.Sequence
 
-class Sequence {
-    state: State
-    scenario: Scenario
-    start()
-    pause()
-    resume()
-    stop()
-}
-
-Sequence --> State
-Sequence --> Scenario
-
-abstract class Scenario
-
-Scenario *-- ActivitySession
-
-class ManualScenario extends Scenario {
+class ManualScenario extends activity.metamodel.Scenario {
     createActivitySession()
     startActivitySession(sessionId)
     closeActivitySession(sessionId)
 }
 
-abstract class NPhaseScenario extends Scenario
+abstract class NPhaseScenario extends activity.metamodel.Scenario
 
 class AsynchronousNPhaseScenario extends NPhaseScenario
 class SynchronousNPhaseScenario extends NPhaseScenario
 
-class ControlGroup1Scenario extends Scenario {
+class ControlGroup1Scenario extends activity.metamodel.Scenario {
     question: Question
-    responseToJudge1: Response
-    responseToJudge2: Response
+    responseToJudge1: activity.response.Response
+    responseToJudge2: activity.response.Response
 
     run()
 }
 
-ControlGroup1Scenario --> Question
-ControlGroup1Scenario --> Response
+ControlGroup1Scenario --> activity.response.Question
+ControlGroup1Scenario --> activity.response.Response
 
+package activity.response {
+    class ResponseActivitySession extends activity.metamodel.ActivitySession {
+        learner: Person
+        activityConfig: ResponseActivityConfig
+        material: Question
+        output: Response
 
-abstract class ActivitySession {
-    context: Sequence
-    activityConfig: ActivityConfig
-    state: State
-    activityCompleted: boolean
-    abstract getLearners(): Collection<Person>
-    abstract getInputMaterial(): Collection<Material>
-    abstract getLearnerOutput(): Collection<LearnerOutput>
+        submitResponse()
+    }
+
+    ResponseActivitySession --> Person
+    ResponseActivitySession --> Response
+    ResponseActivitySession --> ResponseActivityConfig
+
+    class ResponseActivityConfig implements activity.metamodel.ActivityConfig {
+        provideConfidenceDegree: boolean
+        provideExplanation: boolean
+    }
+
+    class Question implements activity.metamodel.Material {
+        statement: String
+        choices: List<Choice>
+        correctionChoice: Choice
+        explanatoryFeedback: String
+    }
+
+    class Response implements activity.metamodel.LearnerOutput {
+        question: Question
+        choice
+        confidenceDegree
+        explanation
+    }
+
+    Response --> Question
+    Response --> Person
 }
 
-enum State {
-    OPEN
-    PENDING
-    RUNNING
-    CLOSED
-}
+package activity.judge {
+    class JudgeResponseActivitySession extends activity.metamodel.ActivitySession {
+        learner: Person
+        activityConfig: ActivityConfig
+        material: Collection<Response>
+    }
 
-class ActivitySessionLog
+    class JudgeResponseActivityConfig extends activity.metamodel.ActivityConfig {
 
-ActivitySession --> State
-ActivitySession --> ActivitySessionLog
-ActivitySession --> ActivityConfig
-ActivitySession *-- LearnerOutput
-ActivitySession *-- Material
+    }
 
+    JudgeResponseActivitySession --> Person
+    JudgeResponseActivitySession --> JudgeResponseActivityConfig
+    JudgeResponseActivitySession *-- Judgement
+    JudgeResponseActivitySession *-- activity.response.Response
 
+    class Judgement implements activity.metamodel.LearnerOutput {
+        response: Response
+        judgement
 
-interface ActivityConfig
-
-interface Material
-
-abstract class LearnerOutput extends Material {
-    author: Person
-
-}
-
-class ResponseActivitySession extends ActivitySession {
-    learner: Person
-    activityConfig: ResponseActivityConfig
-    material: Question
-    output: Response
-
-    submitResponse()
-}
-
-ResponseActivitySession --> Person
-ResponseActivitySession --> Response
-ResponseActivitySession --> ResponseActivityConfig
-
-class ResponseActivityConfig implements ActivityConfig {
-    provideConfidenceDegree: boolean
-    provideExplanation: boolean
-}
-
-class JudgeResponseActivitySession extends ActivitySession {
-    learner: Person
-    activityConfig: ActivityConfig
-    material: Collection<Response>
-}
-
-class JudgeResponseActivityConfig extends ActivityConfig {
+    }
+    Judgement --> activity.response.Response
 
 }
 
-JudgeResponseActivitySession --> Person
-JudgeResponseActivitySession --> JudgeResponseActivityConfig
-JudgeResponseActivitySession *-- Judgement
-JudgeResponseActivitySession *-- Response
+package activity.chat {
+    class ChatActivitySession extends activity.metamodel.ActivitySession {
+        learners: Collection<Person>
+        question: Question
+        responses: Collection<Response>
+        output: Collection<Response>
+    }
 
-class ChatActivitySession extends ActivitySession {
-    learners: Collection<Person>
-    question: Question
-    responses: Collection<Response>
-    output: Collection<Response>
+    ChatActivitySession *-- Person
+    ChatActivitySession --> Question
+    ChatActivitySession *-- activity.response.Response
 }
 
-ChatActivitySession *-- Person
-ChatActivitySession --> Question
-ChatActivitySession *-- Response
+package activity.feedback {
+    class GetFeedbackActivitySession extends activity.metamodel.ActivitySession {
+        learner: Person
+    }
 
-
-class GetFeedbackActivitySession extends ActivitySession {
-    learner: Person
+    GetFeedbackActivitySession --> Person
 }
-
-GetFeedbackActivitySession --> Person
-
-class Question implements Material {
-    statement: String
-    choices: List<Choice>
-    correctionChoice: Choice
-    explanatoryFeedback: String
-}
-
-class Response implements LearnerOutput {
-    question: Question
-    choice
-    confidenceDegree
-    explanation
-}
-
-Response --> Question
-Response --> Person
-
-class Judgement implements LearnerOutput {
-    response: Response
-    judgement
-
-}
-Judgement --> Response
 
 
 @enduml
