@@ -1,0 +1,166 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Person
+
+class Assignment {
+    teacher: Person
+    learners: Collection<Person>
+    sequences: List<Sequence>
+}
+
+Assignment *-- Person
+Assignment *-- Sequence
+
+class Sequence {
+    state: State
+    scenario: Scenario
+    start()
+    pause()
+    resume()
+    stop()
+}
+
+Sequence --> State
+Sequence --> Scenario
+
+abstract class Scenario
+
+Scenario *-- ActivitySession
+
+class ManualScenario extends Scenario {
+    createActivitySession()
+    startActivitySession(sessionId)
+    closeActivitySession(sessionId)
+}
+
+abstract class NPhaseScenario extends Scenario
+
+class AsynchronousNPhaseScenario extends NPhaseScenario
+class SynchronousNPhaseScenario extends NPhaseScenario
+
+class ControlGroup1Scenario extends Scenario {
+    question: Question
+    responseToJudge1: Response
+    responseToJudge2: Response
+
+    run()
+}
+
+ControlGroup1Scenario --> Question
+ControlGroup1Scenario --> Response
+
+
+abstract class ActivitySession {
+    context: Sequence
+    activityConfig: ActivityConfig
+    state: State
+    activityCompleted: boolean
+    abstract getLearners(): Collection<Person>
+    abstract getInputMaterial(): Collection<Material>
+    abstract getLearnerOutput(): Collection<LearnerOutput>
+}
+
+enum State {
+    OPEN
+    PENDING
+    RUNNING
+    CLOSED
+}
+
+class ActivitySessionLog
+
+ActivitySession --> State
+ActivitySession --> ActivitySessionLog
+ActivitySession --> ActivityConfig
+ActivitySession *-- LearnerOutput
+ActivitySession *-- Material
+
+
+
+interface ActivityConfig
+
+interface Material
+
+abstract class LearnerOutput extends Material {
+    author: Person
+
+}
+
+class ResponseActivitySession extends ActivitySession {
+    learner: Person
+    activityConfig: ResponseActivityConfig
+    material: Question
+    output: Response
+
+    submitResponse()
+}
+
+ResponseActivitySession --> Person
+ResponseActivitySession --> Response
+ResponseActivitySession --> ResponseActivityConfig
+
+class ResponseActivityConfig implements ActivityConfig {
+    provideConfidenceDegree: boolean
+    provideExplanation: boolean
+}
+
+class JudgeResponseActivitySession extends ActivitySession {
+    learner: Person
+    activityConfig: ActivityConfig
+    material: Collection<Response>
+}
+
+class JudgeResponseActivityConfig extends ActivityConfig {
+
+}
+
+JudgeResponseActivitySession --> Person
+JudgeResponseActivitySession --> JudgeResponseActivityConfig
+JudgeResponseActivitySession *-- Judgement
+JudgeResponseActivitySession *-- Response
+
+class ChatActivitySession extends ActivitySession {
+    learners: Collection<Person>
+    question: Question
+    responses: Collection<Response>
+    output: Collection<Response>
+}
+
+ChatActivitySession *-- Person
+ChatActivitySession --> Question
+ChatActivitySession *-- Response
+
+
+class GetFeedbackActivitySession extends ActivitySession {
+    learner: Person
+}
+
+GetFeedbackActivitySession --> Person
+
+class Question implements Material {
+    statement: String
+    choices: List<Choice>
+    correctionChoice: Choice
+    explanatoryFeedback: String
+}
+
+class Response implements LearnerOutput {
+    question: Question
+    choice
+    confidenceDegree
+    explanation
+}
+
+Response --> Question
+Response --> Person
+
+class Judgement implements LearnerOutput {
+    response: Response
+    judgement
+
+}
+Judgement --> Response
+
+
+@enduml
