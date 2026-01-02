@@ -1,8 +1,28 @@
 @startuml
 'https://plantuml.com/class-diagram
 
+class Person
+
+class Assignment {
+    teacher: Person
+    learners: Collection<Person>
+    sequences: List<Sequence>
+}
+note top
+Learners register on assignment.
+A assignment contains a list of learning sequence.
+The teacher owning the assignment monitor the sequences.
+end note
+
+Assignment *- Person : registered <
+Assignment *- activity.metamodel.Sequence : contains >
+
 package activity.metamodel {
     abstract class Scenario
+    note top
+    The scenario is responsible for creating and updating ActivitySession.
+    It will react to sequence updates and activity sessions events.
+    end note
 
     class Sequence {
         state: State
@@ -23,7 +43,7 @@ package activity.metamodel {
     Sequence --> State
     Sequence --> activity.metamodel.Scenario
 
-    Scenario *-- ActivitySession
+    Scenario *- ActivitySession : Managed by <
 
     abstract class ActivitySession {
         context: Sequence
@@ -50,20 +70,10 @@ package activity.metamodel {
 
     abstract class LearnerOutput extends Material {
         author: Person
-
     }
+
+    LearnerOutput -- Person : Produced by >
 }
-
-class Person
-
-class Assignment {
-    teacher: Person
-    learners: Collection<Person>
-    sequences: List<Sequence>
-}
-
-Assignment *-- Person
-Assignment *-- activity.metamodel.Sequence
 
 class ManualScenario extends activity.metamodel.Scenario {
     createActivitySession()
@@ -169,6 +179,4 @@ package activity.feedback {
 
     GetFeedbackActivitySession --> Person
 }
-
-
 @enduml
