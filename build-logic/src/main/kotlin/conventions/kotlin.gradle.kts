@@ -58,7 +58,8 @@ kotlin {
 detekt {
     parallel = true
     buildUponDefaultConfig = true
-    config.setFrom(".config/detekt/detekt.yaml")
+
+    config.setFrom(File(rootProject.projectDir, ".config/detekt/detekt.yaml"))
 }
 
 tasks.withType<Detekt>().configureEach {
