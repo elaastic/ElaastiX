@@ -1,6 +1,14 @@
-ignoredBuiltDependencies:
+onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@tailwindcss/oxide'
   - esbuild
+
+ignoredBuiltDependencies:
+  - sharp
   - unrs-resolver
   - vue-demi
+
+# https://pnpm.io/settings#trustpolicy
+# https://pnpm.io/settings#blockexoticsubdeps
+trustPolicy: no-downgrade
+blockExoticSubdeps: true
