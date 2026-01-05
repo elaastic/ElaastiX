@@ -13,8 +13,8 @@ and there is no support for JavaScript, TypeScript, and Vue (but support for the
 
 > [!TIP]
 > Latest versions of IntelliJ IDEA are strongly recommended (2025.3+). On Windows systems, WSL via the **native mode**
-> is recommended. Make sure to add the appropriate exclusions to Microsoft Defender, or you'll likely experience major
-> slowdown issues. [Open Windows Security](windowsdefender://exclusions)
+> is recommended. Make sure to add the appropriate [exclusions](windowsdefender://exclusions) to Microsoft Defender,
+> or you'll likely experience major slowdown issues.
 >
 > <details>
 > <summary>List of entries to exclude in Microsoft Defender</summary>
@@ -51,6 +51,7 @@ ElaastiX
 ├── /.config                    Repository and project config files. Loosely follows the XDG convention.
 ├── /.github                    GitHub-specific configuration files
 ├── /build-logic                Convention plugins (Gradle)
+├── /frontend                   Nuxt web application
 ├── /gradle                     Gradle-related files
 │   └── libs.versions.toml      └── Version catalog
 └── /server                     Spring Boot application monolith
