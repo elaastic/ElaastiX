@@ -23,7 +23,7 @@ rootProject.name = "ElaastiX"
 
 includeBuild("build-logic")
 include("server")
-// include("frontend")
+include("frontend")
 
 pluginManagement {
     repositories {

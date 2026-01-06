@@ -24,3 +24,8 @@ ktlint:
 performance:
     CouldBeSequence:
         active: true
+
+style:
+    # Allow to-do and fix-me comments (flagged by default)
+    ForbiddenComment:
+        comments: [ 'STOPSHIP:' ]

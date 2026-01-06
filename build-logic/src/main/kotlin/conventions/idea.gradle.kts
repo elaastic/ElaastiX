@@ -18,32 +18,8 @@
  */
 
 package conventions
-val libs = the<VersionCatalogsExtension>().named("libs")
-
-group = rootProject.group
-version = rootProject.version
 
 plugins {
-    id("java")
-}
-
-java {
-    toolchain {
-        languageVersion.set(
-            JavaLanguageVersion.of(
-                libs.findVersion("jdk").get().requiredVersion,
-            ),
-        )
-    }
-}
-
-tasks.jar {
-    manifest {
-        attributes(
-            mapOf(
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version,
-            ),
-        )
-    }
+    id("idea")
+    id("org.jetbrains.gradle.plugin.idea-ext")
 }

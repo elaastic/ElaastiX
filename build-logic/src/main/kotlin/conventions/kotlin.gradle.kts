@@ -38,17 +38,17 @@ kotlin {
 
     jvmToolchain {
         languageVersion.set(
-            JavaLanguageVersion.of(jdkVersion)
+            JavaLanguageVersion.of(jdkVersion),
         )
     }
 
     compilerOptions {
         val kotlinVersion = KotlinVersion.valueOf(
-            "KOTLIN_${kotlinVersion.substringBeforeLast(".").replace(".", "_")}"
+            "KOTLIN_${kotlinVersion.substringBeforeLast(".").replace(".", "_")}",
         )
 
         freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
-        jvmTarget.set(JvmTarget.valueOf("JVM_${jdkVersion}"))
+        jvmTarget.set(JvmTarget.valueOf("JVM_$jdkVersion"))
         languageVersion.set(kotlinVersion)
         apiVersion.set(kotlinVersion)
         // allWarningsAsErrors = true -- hmmm... ;)

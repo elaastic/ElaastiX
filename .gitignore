@@ -1,16 +1,11 @@
 # IntelliJ IDEA
 .idea/*
-!.idea/codeStyles/
-!.idea/copyright/
 !.idea/dataSources.xml
 !.idea/detekt.xml
-!.idea/dictionaries
+!.idea/dictionaries/project.xml
 !.idea/externalDependencies.xml
 !.idea/jsLinters
 !.idea/jsonSchemas.xml
-!.idea/misc.xml
-!.idea/modules/
-!.idea/modules.xml
 !.idea/remote-targets.xml
 !.idea/runConfigurations
 !.idea/sqldialects.xml
