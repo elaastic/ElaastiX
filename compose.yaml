@@ -3,7 +3,7 @@ services:
         image: postgres:18-alpine
         environment:
             POSTGRES_USER: elaastix
-            POSTGRES_PASSWORD: password
+            POSTGRES_PASSWORD: elaastix
             POSTGRES_DATABASE: elaastix
         ports:
             - "5432:5432"
