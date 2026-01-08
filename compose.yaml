@@ -1,0 +1,15 @@
+services:
+    postgres:
+        image: postgres:18-alpine
+        environment:
+            POSTGRES_USER: elaastix
+            POSTGRES_PASSWORD: password
+            POSTGRES_DATABASE: elaastix
+        ports:
+            - "5432:5432"
+        volumes:
+            - pg-data:/var/lib/postgresql/data
+
+volumes:
+    pg-data:
+        driver: local
