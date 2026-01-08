@@ -30,6 +30,8 @@ idea {
     }
 
     project {
+        jdkName = "temurin-24 (mise)"
+
         settings {
             copyright {
                 useDefault = "ElaasticAGPL"

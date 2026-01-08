@@ -13,7 +13,7 @@ and there is no support for JavaScript, TypeScript, and Vue (but support for the
 
 > [!TIP]
 > Latest versions of IntelliJ IDEA are strongly recommended (2025.3+). On Windows systems, WSL via the **native mode**
-> is recommended. Make sure to add the appropriate [exclusions](windowsdefender://exclusions) to Microsoft Defender,
+> is recommended. **Make sure to add the appropriate [exclusions](windowsdefender://exclusions) to Microsoft Defender**,
 > or you'll likely experience major slowdown issues.
 >
 > <details>
@@ -22,6 +22,7 @@ and there is no support for JavaScript, TypeScript, and Vue (but support for the
 > - IntelliJ IDEA itself: `%localappdata%/JetBrains`
 > - Gradle (WSL): `\\wsl.localhost\<Distro>\home\<wsl-username>\.gradle`
 > - pnpm (WSL): `\\wsl.localhost\<Distro>\home\<wsl-username>\.local\share\pnpm\store`
+> - Docker: `\\wsl.localhost\<Distro>\var\lib\docker`
 > - Project: `\\wsl.localhost\<Distro>\<project path in WSL...>`
 >
 > </details>
@@ -37,11 +38,8 @@ the [Mise Settings](jetbrains://idea/settings?name=Tools--Mise+Settings) when wo
 Instructions are available within the settings screen directly.
 
 ### Docker
-Docker with the Compose plugin is also required to run the project. It is not managed by Mise by default, due to the
-overwhelming majority of developers having Docker already installed.
-
-If you don't already have Docker, it can be installed with Mise. Simply run `mise use docker-cli docker-compose` and
-let it cook ;). Use the `-g` flag if you want Mise to install Docker globally.
+Docker with the Compose plugin is also required to run the project.
+Please see the [Docker Documentation](https://docs.docker.com/engine/install/) for how to install it.
 
 ## Project structure
 Files and folders that aren't worth of interest are not mentioned below. If it's not there, then it's most likely not

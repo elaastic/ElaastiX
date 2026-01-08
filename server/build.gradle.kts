@@ -1,3 +1,5 @@
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 /*
  * Elaastic / ElaastiX - formative assessment system
  * Copyright (C) 2019  Université de Toulouse and Université Toulouse Capitole.
@@ -50,4 +52,8 @@ dependencies {
     testImplementation(libs.spring.boot.thymeleaf.test)
     testImplementation(libs.spring.boot.validation.test)
     testImplementation(libs.spring.boot.webmvc.test)
+}
+
+tasks.named<BootJar>("bootJar") {
+    archiveClassifier = "boot"
 }
