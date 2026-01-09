@@ -21,8 +21,16 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
+    id("idea")
     `kotlin-dsl`
     `java-gradle-plugin`
+    alias(libs.plugins.detekt)
+}
+
+idea {
+    module {
+        excludeDirs.add(file(".kotlin"))
+    }
 }
 
 kotlin {
@@ -44,6 +52,13 @@ kotlin {
     }
 }
 
+detekt {
+    parallel = true
+    buildUponDefaultConfig = true
+
+    config.setFrom("../.config/detekt/detekt.yaml")
+}
+
 repositories {
     mavenCentral()
     gradlePluginPortal()
@@ -57,6 +72,9 @@ dependencies {
     implementation(plugin(libs.plugins.spring.boot))
     implementation(plugin(libs.plugins.hibernate))
     implementation(plugin(libs.plugins.detekt))
+    implementation(plugin(libs.plugins.ideax))
+
+    detektPlugins(libs.detekt.ktlint)
 }
 
 fun plugin(plugin: Provider<PluginDependency>) =

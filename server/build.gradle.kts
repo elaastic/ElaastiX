@@ -18,6 +18,7 @@
  */
 
 plugins {
+    id("conventions.idea")
     id("conventions.kotlin")
     id("conventions.spring")
     id("conventions.test")

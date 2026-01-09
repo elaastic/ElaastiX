@@ -3,7 +3,7 @@ experimental = true
 
 [tools]
 node = { version = "24", postinstall = "corepack enable" }
-java = "temurin-24"  # Kotlin doesn't support JDK 25 yet >:)
+java = "temurin-24"  # Gradle doesn't support Kotlin + JDK 25 yet >:)
 typos = "latest"
 
 [hooks]
