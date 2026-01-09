@@ -38,7 +38,7 @@ configurations.configureEach {
         when {
             // Override Hibernate's version
             // There's no easy way to sync the Gradle plugin's version with the version Spring uses
-            // To make sure there's no issue, re-align everything based on the version in our own catalog
+            // To make sure there's no issue, re-align everything based on the version in our own catalogue
             requested.group == "org.hibernate.orm" ->
                 useVersion(libs.findVersion("hibernate").get().requiredVersion)
         }

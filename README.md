@@ -51,6 +51,37 @@ ElaastiX
 ├── /build-logic                Convention plugins (Gradle)
 ├── /frontend                   Nuxt web application
 ├── /gradle                     Gradle-related files
-│   └── libs.versions.toml      └── Version catalog
+│   └── libs.versions.toml      └── Version catalogue
 └── /server                     Spring Boot application monolith
+```
+
+### Compose services
+| Service name     | Description               | Required?                                                                  |
+|------------------|---------------------------|----------------------------------------------------------------------------|
+| `postgres`       | PostgreSQL 18 server      | **Y**                                                                      |
+| `otel-collector` | OpenTelemetry collector.  | N, but **enabled by default**. See [disable telemetry](#disable-telemetry) |
+
+#### Default credentials
+| Service    | Username   | Password   | Additional information |
+|------------|------------|------------|------------------------|
+| PostgreSQL | `elaastix` | `elaastix` | Database: `elaastix`   |
+
+### Spring monolith
+
+#### Profiles
+| Profile name    | Description                                                                                                                                                                   |
+|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `dev`           | Main development profile. Enables development tools and helpers, seeds the database with dummy data, and uses [default credentials](#default-credentials) for services.       |
+| `containerised` | Configures the app for running inside a containerised environment. Expect service names to match the ones define in the [project Compose's specification](#compose-services). |
+
+#### Miscellaneous
+
+##### Disable telemetry
+Use the following configuration properties to disable telemetry reporting.
+
+```yaml
+management:
+    otlp.metrics.export.enabled: false
+    logging.export.otlp.enabled: false
+    tracing.export.otlp.enabled: false
 ```
