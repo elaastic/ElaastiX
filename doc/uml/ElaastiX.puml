@@ -108,6 +108,11 @@ package activity.response {
         submitResponse()
     }
 
+    class ChangeResponseActivitySession extends ResponseActivitySession {
+        previousResponse: Response
+        modifyResponse()
+    }
+
     ResponseActivitySession --> User
     ResponseActivitySession --> Response
     ResponseActivitySession --> ResponseActivityConfig
@@ -136,41 +141,38 @@ package activity.response {
 }
 
 package activity.judge {
-    class JudgeResponseActivitySession extends activity.metamodel.ActivitySession {
+    class JudgeActivitySession extends activity.metamodel.ActivitySession {
         learner: User
         activityConfig: ActivityConfig
-        material: Collection<Response>
+        material: Collection<Material>
     }
 
-    class JudgeResponseActivityConfig extends activity.metamodel.ActivityConfig {
+    class JudgeActivityConfig extends activity.metamodel.ActivityConfig {
 
     }
 
-    JudgeResponseActivitySession --> User
-    JudgeResponseActivitySession --> JudgeResponseActivityConfig
-    JudgeResponseActivitySession *-- Judgement
-    JudgeResponseActivitySession *-- activity.response.Response
+    JudgeActivitySession --> User
+    JudgeActivitySession --> JudgeActivityConfig
+    JudgeActivitySession *-- Judgement
+    JudgeActivitySession *-- activity.metamodel.Material
 
     class Judgement implements activity.metamodel.LearnerOutput {
-        response: Response
+        material: activity.metamodel.Material
         judgement
 
     }
-    Judgement --> activity.response.Response
+    Judgement --> activity.metamodel.Material
 
 }
 
 package activity.chat {
     class ChatActivitySession extends activity.metamodel.ActivitySession {
         learners: Collection<User>
-        question: Question
-        responses: Collection<Response>
-        output: Collection<Response>
+        topic: Material
     }
 
     ChatActivitySession *-- User
-    ChatActivitySession --> Question
-    ChatActivitySession *-- activity.response.Response
+    ChatActivitySession --> activity.metamodel.Material
 }
 
 package activity.feedback {
