@@ -43,11 +43,11 @@ package activity.metamodel {
     }
 
     enum State {
-            OPEN
-            PENDING
-            RUNNING
-            CLOSED
-        }
+        OPEN
+        PENDING
+        RUNNING
+        CLOSED
+    }
 
     Sequence --> State
     Sequence --> activity.metamodel.Scenario
