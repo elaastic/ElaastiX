@@ -2,19 +2,21 @@
 'https://plantuml.com/class-diagram
 
 class Person
+class User extends Person
 
 class Assignment {
-    teacher: Person
-    learners: Collection<Person>
+    teachers: Collection<User>
+    learners: Collection<User>
     sequences: List<Sequence>
 }
 note top
-Learners register on assignment.
-A assignment contains a list of learning sequence.
-The teacher owning the assignment monitor the sequences.
+An assignment contains a list of learning sequence.
+An assignment is managed by users registered as teachers.
+An assignment is played by users registered as learners.
 end note
 
-Assignment *- Person : registered <
+Assignment "*" *- "*" User : registered as learner <
+Assignment "*" *- "1..*" User : registered as teacher <
 Assignment *- activity.metamodel.Sequence : contains >
 
 package activity.metamodel {
