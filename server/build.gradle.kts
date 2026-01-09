@@ -1,5 +1,3 @@
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-
 /*
  * Elaastic / ElaastiX - formative assessment system
  * Copyright (C) 2019  Université de Toulouse and Université Toulouse Capitole.
@@ -18,6 +16,8 @@ import org.springframework.boot.gradle.tasks.bundling.BootJar
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("conventions.idea")
