@@ -1,8 +1,6 @@
 # Have to build using JDK 24 because Gradle doesn't support JDK 25 yet...
 FROM eclipse-temurin:24-jdk-alpine AS base
 
-ENV GRADLE_USER_HOME=/gradle
-
 WORKDIR /build
 
 # Copy core project files
@@ -12,29 +10,25 @@ COPY frontend/*.gradle.kts ./frontend/
 COPY server/*.gradle.kts ./server/
 COPY *.gradle.kts *.gradle gradle.properties gradlew ./
 
-# Make Gradle download dependencies prior to copying sources. Error is expected (no source files)
-# Allows the dependencies to be cached and not re-downloaded if only the sources change
-# The cache mount is used to reuse already downloaded dependencies even when the cache layer is invalidated.
-RUN --mount=type=cache,target=/gradle \
-    --mount=type=cache,target=/build/.gradle \
-    --mount=type=cache,target=/build/build-logic/.gradle \
-    --mount=type=cache,target=/build/build-logic/build \
-    ./gradlew --no-daemon :server:build > /dev/null 2>&1 || true
+# Make Gradle download dependencies and build `build-logic` prior to copying sources.
+# This makes better use of Docker's cache system. We can't use cache mounts as dev image needs libs at runtime.
+# Error is expected; there are no sources yet.
+RUN ./gradlew --no-daemon :server:classes
 
 FROM base AS build
 
 COPY server/ ./server/
-RUN --mount=type=cache,target=/gradle \
-    --mount=type=cache,target=/build/.gradle \
-    --mount=type=cache,target=/build/build-logic/.gradle \
-    --mount=type=cache,target=/build/build-logic/build \
-    ./gradlew --no-daemon :server:bootJar
+RUN ./gradlew --no-daemon :server:bootJar -x test
 
 # Having a jar file in a container is unfortunate: both are effectively archive formats... Russian dolls!
 # Spring has a feature to extract the fat jar into a layered unpacked structure that's ideal for containers
 RUN java -Djarmode=tools -jar server/build/libs/*-boot.jar extract --launcher --layers --destination server/build/extracted
 
 FROM eclipse-temurin:25-jre-alpine
+
+ENV SPRING_PROFILES_DEFAULT=container
+
+WORKDIR /app
 
 # The order is important and allows better reuse of layers. Order recommended by Spring.
 COPY --from=build /build/server/build/extracted/dependencies/ ./

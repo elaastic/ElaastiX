@@ -69,15 +69,33 @@ ElaastiX
 ### Spring monolith
 
 #### Profiles
-| Profile name    | Description                                                                                                                                                                   |
-|-----------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `dev`           | Main development profile. Enables development tools and helpers, seeds the database with dummy data, and uses [default credentials](#default-credentials) for services.       |
-| `containerised` | Configures the app for running inside a containerised environment. Expect service names to match the ones define in the [project Compose's specification](#compose-services). |
+
+> [!IMPORTANT]
+> When enabling both `develop` and `container`, make sure `container` comes **after** `develop` so the correct
+> configuration values are used.
+>
+> <details>
+> <summary>Why does the order matter?</summary>
+>
+> The order defines the config load order, and therefore which configuration has the last word when both try to
+> configure the same property. `develop` specifies the database hostname as `127.0.0.1`, while `container` sets it
+> to `postgres`. In order for the config to have the correct host configuration, `container` must come after `develop`.
+>
+> </details>
+
+| Profile name | Description                                                                                                                                                                   |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `develop`    | Main development profile. Enables development tools and helpers, seeds the database with dummy data, and uses [default credentials](#default-credentials) for services.       |
+| `container`  | Configures the app for running inside a containerised environment. Expect service names to match the ones define in the [project Compose's specification](#compose-services). |
 
 #### Miscellaneous
 
 ##### Disable telemetry
-Use the following configuration properties to disable telemetry reporting.
+> [!TIP]
+> Telemetry is disabled by default in development. To enable it, explicitly revert the changes described below by
+> assigning `true` instead of `false`.
+
+Use the following configuration properties to disable telemetry reporting:
 
 ```yaml
 management:
