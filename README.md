@@ -72,7 +72,7 @@ ElaastiX
 
 #### Hot Reload
 When running via IntelliJ, classes can be hot-reloaded easily thanks to HotSwap. Simply do `Ctrl+F10` (or click the
-update button in the console), and the IDE will build the project and update the class on-the-fly. If the change cannot
+update button in the console), and the IDE will build the project and update the class on-the-fly. If the changes cannot
 be injected this way, Spring will automatically fall back to a [warm start](https://docs.spring.io/spring-boot/reference/using/devtools.html#using.devtools.restart.restart-vs-reload) instead.
 
 See [IntelliJ's documentation](https://www.jetbrains.com/help/idea/altering-the-program-s-execution-flow.html#reload_classes) for more information
@@ -98,10 +98,10 @@ See [IntelliJ's documentation](https://www.jetbrains.com/help/idea/altering-the-
 >
 > </details>
 
-| Profile name | Description                                                                                                                                                                   |
-|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `develop`    | Main development profile. Enables development tools and helpers, seeds the database with dummy data, and uses [default credentials](#default-credentials) for services.       |
-| `container`  | Configures the app for running inside a containerised environment. Expect service names to match the ones define in the [project Compose's specification](#compose-services). |
+| Profile name | Description                                                                                                                                                                    |
+|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `develop`    | Main development profile. Enables development tools and helpers, seeds the database with dummy data, and uses [default credentials](#default-credentials) for services.        |
+| `container`  | Configures the app for running inside a containerised environment. Expects service names to match the ones define in the [project Compose's specification](#compose-services). |
 
 #### Miscellaneous
 
