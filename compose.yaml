@@ -11,7 +11,7 @@ services:
             timeout: 5s
             retries: 3
         ports:
-            - "5432:5432"
+            - "127.0.0.1:5432:5432"
         volumes:
             - pg-data:/var/lib/postgresql/data
 
@@ -24,12 +24,12 @@ services:
             target: base
         environment:
             SPRING_PROFILES_ACTIVE: develop,container
-        entrypoint: [ "sh" ]
-        command: ./gradlew bootRun
+        command: bootRunDebug
         ports:
-            - "8080:3000"
+            - "127.0.0.1:8080:8080"
+            - "127.0.0.1:55678:55678"
         volumes:
-            - ./server:/build/server
+            - ./server/src:/build/server/src
         depends_on:
             postgres:
                 condition: service_healthy

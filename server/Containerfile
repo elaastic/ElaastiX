@@ -12,8 +12,11 @@ COPY *.gradle.kts *.gradle gradle.properties gradlew ./
 
 # Make Gradle download dependencies and build `build-logic` prior to copying sources.
 # This makes better use of Docker's cache system. We can't use cache mounts as dev image needs libs at runtime.
-# Error is expected; there are no sources yet.
 RUN ./gradlew --no-daemon :server:classes
+
+# Will be used by the development containers. Forcefully make Gradle offline to not download new dependencies.
+# While convenient the, image as a whole should be rebuilt instead. Let's enforce good practices :)
+ENTRYPOINT [ "gradlew", "--offline" ]
 
 FROM base AS build
 

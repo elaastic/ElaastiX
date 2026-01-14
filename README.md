@@ -46,20 +46,22 @@ Files and folders that aren't worth of interest are not mentioned below. If it's
 something you should have to worry about.
 ```
 ElaastiX
-├── /.config                    Repository and project config files. Loosely follows the XDG convention.
-├── /.github                    GitHub-specific configuration files
-├── /build-logic                Convention plugins (Gradle)
-├── /frontend                   Nuxt web application
-├── /gradle                     Gradle-related files
+├── .config/                   Repository and project config files. Loosely follows the XDG convention.
+├── .github/                   GitHub-specific configuration files
+├── build-logic/               Convention plugins (Gradle)
+├── frontend/                  Nuxt web application
+├── gradle/                    Gradle-related files
 │   └── libs.versions.toml      └── Version catalogue
-└── /server                     Spring Boot application monolith
+└── server/                     Spring Boot application monolith
 ```
 
 ### Compose services
-| Service name     | Description               | Required?                                                                  |
-|------------------|---------------------------|----------------------------------------------------------------------------|
-| `postgres`       | PostgreSQL 18 server      | **Y**                                                                      |
-| `otel-collector` | OpenTelemetry collector.  | N, but **enabled by default**. See [disable telemetry](#disable-telemetry) |
+| Service name     | Description              | Required?                                                                   |
+|------------------|--------------------------|-----------------------------------------------------------------------------|
+| `server`         | Spring monolith          | **Elaastix itself**                                                         |
+| `frontend`       | Nuxt.js webapp           | **Elaastix itself**                                                         |
+| `postgres`       | PostgreSQL 18 server     | **Y**                                                                       |
+| `otel-collector` | OpenTelemetry collector. | N, but **expected by default**. See [disable telemetry](#disable-telemetry) |
 
 #### Default credentials
 | Service    | Username   | Password   | Additional information |
@@ -68,8 +70,21 @@ ElaastiX
 
 ### Spring monolith
 
-#### Profiles
+#### Hot Reload
+When running via IntelliJ, classes can be hot-reloaded easily thanks to HotSwap. Simply do `Ctrl+F10` (or click the
+update button in the console), and the IDE will build the project and update the class on-the-fly. If the change cannot
+be injected this way, Spring will automatically fall back to a [warm start](https://docs.spring.io/spring-boot/reference/using/devtools.html#using.devtools.restart.restart-vs-reload) instead.
 
+See [IntelliJ's documentation](https://www.jetbrains.com/help/idea/altering-the-program-s-execution-flow.html#reload_classes) for more information
+
+> [!NOTE]
+> There might be a widget that shows up in the editor proposing to hot swap in the editor. For some reason that haven't
+> been investigated further, it appears to malfunction and to not reload anything. Prefer sticking to the update button
+> or the keyboard shortcut which appear to be more reliable.
+>
+> This behaviour was observed on IntelliJ Ultimate 2025.3.1.1.
+
+#### Profiles
 > [!IMPORTANT]
 > When enabling both `develop` and `container`, make sure `container` comes **after** `develop` so the correct
 > configuration values are used.
@@ -89,6 +104,15 @@ ElaastiX
 | `container`  | Configures the app for running inside a containerised environment. Expect service names to match the ones define in the [project Compose's specification](#compose-services). |
 
 #### Miscellaneous
+
+##### Local configuration
+To run Spring with a different configuration, the easiest way is to make a run configuration with the appropriate
+environment variables set. There is no local-only configuration file; it is not advisable to directly alter the
+versioned configuration files which are first and foremost meant to set the **default** configuration.
+
+> [!IMPORTANT]
+> Please do not modify the existing run configurations! These are shared in the project and modifications will impact
+> all other developers. Make a duplicate of the config and edit this local, private copy instead.
 
 ##### Disable telemetry
 > [!TIP]
