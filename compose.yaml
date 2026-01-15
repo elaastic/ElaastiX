@@ -46,7 +46,7 @@ services:
             - "127.0.0.1:3000:3000"
         volumes:
             - ./frontend:/app/frontend
-            - /app/frontend/node_modules
+            - /app/frontend/node_modules  # Creates an anonymous volume that'll hold the node_modules folder
         depends_on:
             server:
                 condition: service_started

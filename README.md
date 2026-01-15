@@ -132,3 +132,26 @@ management:
     logging.export.otlp.enabled: false
     tracing.export.otlp.enabled: false
 ```
+
+### Nuxt.js webapp
+The Nuxt development server can be started via Compose. Within IntelliJ, the following run configurations exist:
+- `Frontend dev server`: starts the frontend service (**without the backend**) in Compose
+- `Nuxt.js app`: Runs `Frontend dev server`, and opens the webapp in Chrome
+  - Can be run in Debug, which will let you inspect the console, variables, and set breakpoints within the IDE directly
+
+Chrome is used, as the IDE uses the Chrome DevTools Protocol to power its debugging features. While IntelliJ mentions
+'Chrome' specifically, you can configure any Chromium-based browser (which is almost all browsers...) instead.
+Go to Settings > Tools > Web Browsers and Preview.
+
+> [!IMPORTANT]
+> Please do not modify the existing run configurations! These are shared in the project and modifications will impact
+> all other developers. Make a duplicate of the config and edit this local, private copy instead.
+
+#### Debug from the IDE
+When debugging the `Nuxt.js app` run configuration, breakpoints set in the IDE
+Breakpoints set within the IDE will automatically work and let you observe the context from the debug window. You can
+also see the console directly.
+
+> [!NOTE]
+> Simply running the application will not enable the in-IDE debugging capabilities; make sure to run via the debug
+> button within the IDE.
