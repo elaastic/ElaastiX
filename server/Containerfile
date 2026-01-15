@@ -16,7 +16,7 @@ RUN ./gradlew --no-daemon :server:classes
 
 # Will be used by the development containers. Forcefully make Gradle offline to not download new dependencies.
 # While convenient the, image as a whole should be rebuilt instead. Let's enforce good practices :)
-ENTRYPOINT [ "gradlew", "--offline" ]
+ENTRYPOINT [ "sh", "gradlew", "--offline" ]
 
 FROM base AS build
 
