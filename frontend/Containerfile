@@ -1,0 +1,25 @@
+FROM node:24-alpine AS base
+
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+RUN npm i -g corepack && corepack enable
+WORKDIR /app/frontend
+
+# Only copy package files to leverage Docker's cache system when only source code changes
+COPY frontend/package.json frontend/pnpm-workspace.yaml frontend/pnpm-lock.yaml /app/frontend/
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+FROM base AS build
+
+COPY frontend /app/frontend
+RUN pnpm run build
+
+FROM node:24-alpine
+
+# Node does not handle signals according to the Linux kernel expectations for PID 1
+# tini is a lightweight shim used to respect kernel expectations without introducing significant overhead
+RUN apk add --no-cache tini
+
+COPY --from=build /app/frontend/.output /app
+ENTRYPOINT ["tini", "--", "node", "/app/server/index.mjs"]
