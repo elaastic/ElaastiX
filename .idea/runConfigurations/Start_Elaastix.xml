@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Start Elaastix" type="CompoundRunConfigurationType">
-    <toRun name="Debug Nuxt.js app" type="JavascriptDebugType" />
+    <toRun name="Nuxt.js app" type="JavascriptDebugType" />
     <toRun name="ElaastixServerApplication" type="SpringBootApplicationConfigurationType" />
     <method v="2" />
   </configuration>

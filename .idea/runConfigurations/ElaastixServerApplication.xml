@@ -10,6 +10,7 @@
     <method v="2">
       <option name="Make" enabled="true" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="PostgreSQL Service" run_configuration_type="docker-deploy" />
+      <option name="RunConfigurationTask" enabled="true" run_configuration_name="Traefik Service" run_configuration_type="docker-deploy" />
       <option name="RunConfigurationTask" enabled="true" run_configuration_name="Kill running instances" run_configuration_type="ShConfigurationType" />
     </method>
   </configuration>
