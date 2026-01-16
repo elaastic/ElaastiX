@@ -26,13 +26,61 @@ Assignment "*" *- "*" UserGroup : registered as teacher <
 
 Assignment *- activity.metamodel.Sequence : contains >
 
-package activity.metamodel {
+package scenario {
     abstract class Scenario
     note top
     The scenario is responsible for creating and updating ActivitySession.
     It will react to sequence updates and activity sessions events.
     end note
 
+    class ManualScenario extends Scenario {
+        createActivitySession()
+        startActivitySession(sessionId)
+        closeActivitySession(sessionId)
+    }
+
+    class AutomaticScenario extends Scenario
+
+    abstract class ScenarioNode
+
+    AutomaticScenario *-- AutomaticScenario : contains >
+    AutomaticScenario "1" *-- "*" ScenarioNode : contains >
+    ScenarioNode "0..1" *-- "1..*" ScenarioNode : descendants >
+
+    abstract class TriggerNode extends ScenarioNode {
+        watchers
+    }
+    note top
+        Activated by external events
+        (e.g. the 2nd phase of the sequence starts)
+    end note
+
+    abstract class BranchingNode extends ScenarioNode {
+        branches: Map<Condition, ScenarioNode>
+    }
+
+    abstract class ProcessingNode extends ScenarioNode
+    note top
+        Run a process
+        without involving the learner
+        (e.g., compute a pairing)
+    end note
+
+    abstract class ActivityNode extends ScenarioNode
+    note top: Create and/or join activity session
+
+    abstract class ConfigProvider
+    abstract class MaterialProvider
+    ActivityNode --> ConfigProvider
+    ActivityNode --> MaterialProvider
+
+    class StaticConfigProvider extends ConfigProvider
+    class StaticMaterialProvider extends MaterialProvider
+    abstract class SequenceMaterialProvider extends MaterialProvider
+
+}
+
+package activity.metamodel {
     class Sequence {
         state: State
         scenario: Scenario
@@ -50,7 +98,7 @@ package activity.metamodel {
     }
 
     Sequence --> State
-    Sequence --> activity.metamodel.Scenario
+    Sequence --> scenario.Scenario
 
     Scenario *- ActivitySession : Managed by <
 
@@ -83,28 +131,6 @@ package activity.metamodel {
 
     LearnerOutput -- User : Produced by >
 }
-
-class ManualScenario extends activity.metamodel.Scenario {
-    createActivitySession()
-    startActivitySession(sessionId)
-    closeActivitySession(sessionId)
-}
-
-abstract class NPhaseScenario extends activity.metamodel.Scenario
-
-class AsynchronousNPhaseScenario extends NPhaseScenario
-class SynchronousNPhaseScenario extends NPhaseScenario
-
-class ControlGroup1Scenario extends activity.metamodel.Scenario {
-    question: Question
-    responseToJudge1: activity.response.Response
-    responseToJudge2: activity.response.Response
-
-    run()
-}
-
-ControlGroup1Scenario --> activity.response.Question
-ControlGroup1Scenario --> activity.response.Response
 
 package activity.response {
     class ResponseActivitySession extends activity.metamodel.ActivitySession {
