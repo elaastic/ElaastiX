@@ -10,18 +10,18 @@ COPY frontend/*.gradle.kts ./frontend/
 COPY server/*.gradle.kts ./server/
 COPY *.gradle.kts *.gradle gradle.properties gradlew ./
 
-# Make Gradle download dependencies and build `build-logic` prior to copying sources.
+# Make Gradle download dependencies (and build `build-logic`) prior to copying sources.
 # This makes better use of Docker's cache system. We can't use cache mounts as dev image needs libs at runtime.
-RUN ./gradlew --no-daemon :server:classes
+RUN ./gradlew --no-daemon :server:classes :server:resolveDependencies
 
-# Will be used by the development containers. Forcefully make Gradle offline to not download new dependencies.
-# While convenient the, image as a whole should be rebuilt instead. Let's enforce good practices :)
-ENTRYPOINT [ "sh", "gradlew", "--offline" ]
+# Will be used by the development containers
+COPY server/docker-entrypoint.sh ./server/
+ENTRYPOINT [ "/build/server/docker-entrypoint.sh" ]
 
 FROM base AS build
 
 COPY server/ ./server/
-RUN ./gradlew --no-daemon :server:bootJar -x test
+RUN ./gradlew --offline --no-daemon :server:bootJar -x test
 
 # Having a jar file in a container is unfortunate: both are effectively archive formats... Russian dolls!
 # Spring has a feature to extract the fat jar into a layered unpacked structure that's ideal for containers
@@ -43,7 +43,7 @@ HEALTHCHECK --interval=1m --timeout=3s CMD wget --spider http://localhost:3000 |
 
 ENTRYPOINT [ \
     "java", \
-    "-Xms512M",  "-Xmx2048M", \
+    "-Xms512M", "-Xmx2048M", \
     "-server", "-XX:+UseParallelGC", \
     "-Djava.security.egd=file:/dev/./urandom", \
     "-Djava.io.tmpdir=/tmp/", \

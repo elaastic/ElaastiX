@@ -60,9 +60,11 @@ tasks.named<BootJar>("bootJar") {
 }
 
 tasks.register<BootRun>("bootRunDebug") {
-    jvmArgs = listOf(
-        // Optimise startup time by disabling advanced JIT and class verification (not needed in dev)
-        "-XX:TieredStopAtLevel=1", "-noverify",
+    val task = tasks.getByName<BootRun>("bootRun")
+
+    mainClass = task.mainClass
+    classpath = task.classpath
+    jvmArgs = task.jvmArgs + listOf(
         // Enable JMX and RMI. They are very nitpicky about port, map it to the SAME port on the host in Docker!
         "-Dcom.sun.management.jmxremote",
         "-Dcom.sun.management.jmxremote.host=0.0.0.0",

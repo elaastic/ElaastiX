@@ -75,7 +75,7 @@ When running via IntelliJ, classes can be hot-reloaded easily thanks to HotSwap.
 update button in the console), and the IDE will build the project and update the class on-the-fly. If the changes cannot
 be injected this way, Spring will automatically fall back to a [warm start](https://docs.spring.io/spring-boot/reference/using/devtools.html#using.devtools.restart.restart-vs-reload) instead.
 
-See [IntelliJ's documentation](https://www.jetbrains.com/help/idea/altering-the-program-s-execution-flow.html#reload_classes) for more information
+See [IntelliJ's documentation](https://www.jetbrains.com/help/idea/altering-the-program-s-execution-flow.html#reload_classes) for more information.
 
 > [!NOTE]
 > There might be a widget that shows up in the editor proposing to hot swap in the editor. For some reason that haven't
@@ -83,6 +83,11 @@ See [IntelliJ's documentation](https://www.jetbrains.com/help/idea/altering-the-
 > or the keyboard shortcut which appear to be more reliable.
 >
 > This behaviour was observed on IntelliJ Ultimate 2025.3.1.1.
+
+##### Via Compose
+When running via Compose only (instead of through the IntelliJ run configuration), the code will be automatically be
+rebuilt every time it changes. Upon successful builds, Spring DevTools will automatically detect the changes and
+perform a warm start. Beware, build errors are not surfaced nor logged.
 
 #### Profiles
 > [!IMPORTANT]
