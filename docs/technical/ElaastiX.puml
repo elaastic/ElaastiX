@@ -59,6 +59,9 @@ package scenario {
         branches: Map<Condition, ScenarioNode>
     }
 
+    class IfNode extends BranchingNode
+    class RangeNode extends BranchingNode
+
     abstract class ProcessingNode extends ScenarioNode
     note top
         Run a process
@@ -130,6 +133,12 @@ package activity.metamodel {
     }
 
     LearnerOutput -- User : Produced by >
+
+    interface MaterialTransformer {
+        supports(material: Material): boolean
+        transform(material: Material): any
+    }
+
 }
 
 package activity.response {
@@ -172,6 +181,14 @@ package activity.response {
 
     Response --> Question
     Response --> User
+
+    class ResponseScoreTransformer implements activity.metamodel.MaterialTransformer {
+        transform(response: Response): Score
+    }
+
+    class ResponseCorrectnessTransformer implements activity.metamodel.MaterialTransformer {
+        transform(response: Response): boolean
+    }
 }
 
 package activity.judge {
