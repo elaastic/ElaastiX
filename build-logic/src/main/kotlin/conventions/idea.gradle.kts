@@ -23,3 +23,9 @@ plugins {
     id("idea")
     id("org.jetbrains.gradle.plugin.idea-ext")
 }
+
+idea {
+    module {
+        jdkName = null
+    }
+}

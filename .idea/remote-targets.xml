@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="RemoteTargetsManager">
+    <targets>
+      <target name="server" type="docker-compose" uuid="5042516c-f410-43cd-9bbb-926872d0fab8">
+        <config>
+          <option name="targetPlatform">
+            <TargetPlatform />
+          </option>
+          <option name="configurationFiles">
+            <list>
+              <option value="$PROJECT_DIR$/compose.yaml" />
+            </list>
+          </option>
+          <option name="serviceName" value="server" />
+        </config>
+        <ContributedStateBase type="JavaLanguageRuntime">
+          <config>
+            <option name="homePath" value="/opt/java/openjdk" />
+            <option name="javaVersionString" value="24.0.2" />
+          </config>
+        </ContributedStateBase>
+        <ContributedStateBase type="GradleRuntime">
+          <config>
+            <option name="homePath" value="/root/.gradle" />
+          </config>
+        </ContributedStateBase>
+      </target>
+    </targets>
+  </component>
+</project>

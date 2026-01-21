@@ -1,0 +1,3 @@
+[default]
+# A bit too harsh and complains a lot (but on unactionable items e.g. CSS's "color" property ;-;)
+# locale = "en-gb"

@@ -47,3 +47,17 @@ tasks.jar {
         )
     }
 }
+
+tasks.register("resolveDependencies") {
+    group = "build"
+
+    configurations.compileClasspath.configure { resolve() }
+    configurations.runtimeClasspath.configure { resolve() }
+}
+
+tasks.register("resolveTestDependencies") {
+    group = "build"
+
+    configurations.testCompileClasspath.configure { resolve() }
+    configurations.testRuntimeClasspath.configure { resolve() }
+}
