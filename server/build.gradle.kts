@@ -68,8 +68,8 @@ tasks.register<BootRun>("bootRunDebug") {
         // Enable JMX and RMI. They are very nitpicky about port, map it to the SAME port on the host in Docker!
         "-Dcom.sun.management.jmxremote",
         "-Dcom.sun.management.jmxremote.host=0.0.0.0",
-        "-Dcom.sun.management.jmxremote.port=55432",
-        "-Dcom.sun.management.jmxremote.rmi.port=55432",
+        "-Dcom.sun.management.jmxremote.port=20177",
+        "-Dcom.sun.management.jmxremote.rmi.port=20177",
         "-Dcom.sun.management.jmxremote.authenticate=false",
         "-Dcom.sun.management.jmxremote.ssl=false",
         "-Djava.rmi.server.hostname=localhost",

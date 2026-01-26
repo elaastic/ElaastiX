@@ -17,29 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import org.gradle.plugins.ide.idea.model.Module.INHERITED
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
     id("idea")
     `kotlin-dsl`
-    `java-gradle-plugin`
+    alias(libs.plugins.ideax)
     alias(libs.plugins.detekt)
 }
 
 idea {
     module {
+        jdkName = INHERITED
         excludeDirs.add(file(".kotlin"))
     }
 }
 
 kotlin {
-    jvmToolchain {
-        languageVersion.set(
-            JavaLanguageVersion.of(libs.versions.jdk.get())
-        )
-    }
-
     compilerOptions {
         val kotlinVersion = KotlinVersion.valueOf(
             "KOTLIN_${libs.versions.kotlin.get().substringBeforeLast(".").replace(".", "_")}"
@@ -65,6 +61,7 @@ repositories {
 }
 
 dependencies {
+    implementation(libs.kotlin.gradle.plugin)
     implementation(plugin(libs.plugins.kotlin.jvm))
     implementation(plugin(libs.plugins.kotlin.jpa))
     implementation(plugin(libs.plugins.kotlin.spring))

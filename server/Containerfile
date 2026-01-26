@@ -1,5 +1,4 @@
-# Have to build using JDK 24 because Gradle doesn't support JDK 25 yet...
-FROM eclipse-temurin:24-jdk-alpine AS base
+FROM eclipse-temurin:25-jdk-alpine AS base
 
 WORKDIR /build
 

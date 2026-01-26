@@ -12,8 +12,12 @@ services:
             retries: 3
         ports:
             - "127.0.0.1:5432:5432"
+        read_only: true
         volumes:
-            - pg-data:/var/lib/postgresql/data
+            - pg-data:/var/lib/postgresql
+        tmpfs:
+            - /run/postgresql
+            - /tmp
 
     server:
         pull_policy: never
@@ -28,9 +32,12 @@ services:
             SPRING_PROFILES_ACTIVE: develop,container
         command: bootRunDebug
         ports:
-            - "127.0.0.1:55678:55678"
+            - "127.0.0.1:20177:20177"
+        read_only: true
         volumes:
-            - ./server/src:/build/server/src
+            - ./server/src:/build/server/src:ro
+        tmpfs:
+            - /tmp
         labels:
             traefik.enable: "true"
             traefik.http.routers.server.rule: "Host(`elaastix.localhost`) && PathPrefix(`/api/`)"
@@ -51,10 +58,13 @@ services:
             dockerfile: frontend/Containerfile
             target: base
         command: pnpm run dev --host
+        read_only: true
         volumes:
-            - ./frontend:/app/frontend
+            - ./frontend:/app/frontend:ro
             - /app/frontend/node_modules  # Creates an anonymous volume that'll hold the node_modules folder
-            - ./frontend/.nuxt/devtools:/root/.nuxt/  # QoL: store Nuxt devtools config on the host
+            - nuxt-trunk:/app/frontend/.nuxt  # Keep .nuxt folder private to the container
+        tmpfs:
+            - /tmp
         labels:
             traefik.enable: "true"
             traefik.http.routers.frontend.rule: "Host(`elaastix.localhost`)"
@@ -67,14 +77,17 @@ services:
 
     storage:
         image: dxflrs/garage:v2.1.0
-        labels:
-            traefik.enable: "true"
-            traefik.http.routers.s3.rule: "Host(`storage.elaastix.localhost`)"
-            traefik.http.services.s3.loadbalancer.server.port: "3900"
+        read_only: true
         volumes:
             - .config/garage/config.toml:/etc/garage.toml
             - garage-meta:/var/lib/garage/meta
             - garage-data:/var/lib/garage/data
+        tmpfs:
+            - /tmp
+        labels:
+            traefik.enable: "true"
+            traefik.http.routers.s3.rule: "Host(`storage.elaastix.localhost`)"
+            traefik.http.services.s3.loadbalancer.server.port: "3900"
 
     traefik:
         image: traefik:v3.6
@@ -88,6 +101,8 @@ services:
             - "127.0.0.1:${TRAEFIK_BIND_PORT:-80}:8080"
         volumes:
             - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:ro
+        tmpfs:
+            - /tmp
         labels:
             traefik.enable: "true"
             traefik.http.routers.dashboard.rule: "Host(`traefik.localhost`)"
@@ -98,3 +113,4 @@ volumes:
     pg-data:
     garage-meta:
     garage-data:
+    nuxt-trunk:

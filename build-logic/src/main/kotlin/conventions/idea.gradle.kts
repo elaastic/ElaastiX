@@ -19,6 +19,8 @@
 
 package conventions
 
+import org.gradle.plugins.ide.idea.model.Module.INHERITED
+
 plugins {
     id("idea")
     id("org.jetbrains.gradle.plugin.idea-ext")
@@ -26,6 +28,6 @@ plugins {
 
 idea {
     module {
-        jdkName = null
+        jdkName = INHERITED
     }
 }

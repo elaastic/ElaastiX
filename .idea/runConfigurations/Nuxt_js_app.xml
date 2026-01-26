@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Nuxt.js app" type="JavascriptDebugType" engineId="98ca6316-2f89-46d9-a9e5-fa9e2b0625b3" uri="http://elaastix.localhost:3000">
+  <configuration default="false" name="Nuxt.js app" type="JavascriptDebugType" engineId="98ca6316-2f89-46d9-a9e5-fa9e2b0625b3" uri="http://elaastix.localhost:8080">
     <mapping url="http://elaastix.localhost:8080/_nuxt" local-file="$PROJECT_DIR$/frontend/app" />
     <mapping url="http://elaastix.localhost:8080/_nuxt/@fs/app" local-file="$PROJECT_DIR$" />
     <method v="2">
