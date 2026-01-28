@@ -24,5 +24,5 @@ while inotifywait -r -e modify /app/src/main/; do
 done > /dev/null 2>&1 &
 
 # Forcefully make Gradle offline to not download new dependencies.
-# While convenient the, image as a whole should be rebuilt instead. Let's enforce good practices :)
+# While convenient, the image as a whole should be rebuilt instead. Let's enforce good practices :)
 exec ./gradlew --offline --no-daemon "$@"

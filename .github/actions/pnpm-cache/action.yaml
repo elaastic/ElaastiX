@@ -1,0 +1,17 @@
+name: Setup pnpm cache
+description: Configures the GitHub Actions cache for the pnpm store to speed up CI runs
+
+runs:
+  using: composite
+  steps:
+    # Cache configuration is probably not ideal, `pnpm/action-setup` uses a more elaborate setup.
+    # But it should be good enough as-is :)
+    - name: Get pnpm store directory
+      run: echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+      shell: bash
+    - uses: actions/cache@v5
+      with:
+        path: ${{ env.STORE_PATH }}
+        key: ${{ runner.arch }}-${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.arch }}-${{ runner.os }}-pnpm-store-

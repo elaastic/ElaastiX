@@ -20,6 +20,8 @@
 package conventions
 
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+import org.springframework.boot.gradle.tasks.run.BootRun
 
 val libs = the<VersionCatalogsExtension>().named("libs")
 
@@ -51,7 +53,6 @@ dependencies {
     implementation(libs.findLibrary("kotlin.reflect").get())
     implementation(libs.findLibrary("kotlinx.serialization.json").get())
 
-    testImplementation(libs.findLibrary("mockk.spring").get())
     testImplementation(libs.findLibrary("spring.boot.test").get()) {
         exclude(group = "org.mockito", module = "mockito-core")
         exclude(group = "org.mockito", module = "mockito-junit-jupiter")
@@ -72,4 +73,32 @@ hibernate {
         enableDirtyTracking = true
         enableLazyInitialization = true
     }
+}
+
+tasks.named<Test>("test") {
+    jvmArgs = listOf("-Dspring.profiles.active=develop,testing")
+}
+
+tasks.named<BootJar>("bootJar") {
+    archiveClassifier = "boot"
+}
+
+tasks.register<BootRun>("bootRunDebug") {
+    val task = tasks.getByName<BootRun>("bootRun")
+
+    mainClass = task.mainClass
+    classpath = task.classpath
+    jvmArgs = task.jvmArgs + listOf(
+        // Enable JMX and RMI. They are very nitpicky about port, map it to the SAME port on the host in Docker!
+        "-Dcom.sun.management.jmxremote",
+        "-Dcom.sun.management.jmxremote.host=0.0.0.0",
+        "-Dcom.sun.management.jmxremote.port=20177",
+        "-Dcom.sun.management.jmxremote.rmi.port=20177",
+        "-Dcom.sun.management.jmxremote.authenticate=false",
+        "-Dcom.sun.management.jmxremote.ssl=false",
+        "-Djava.rmi.server.hostname=localhost",
+        "-Dspring.jmx.enabled=true",
+        "-Dspring.application.admin.enabled=true",
+        "-Dspring.liveBeansView.mbeanDomain",
+    )
 }
