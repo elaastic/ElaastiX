@@ -1,0 +1,66 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package scenario {
+    abstract class Scenario
+    note top
+    The scenario is responsible for creating and updating ActivitySession.
+    It will react to sequence updates and activity sessions events.
+    end note
+
+    class ScenarioLane
+
+    Scenario "1" *-- "0..*" ScenarioLane
+
+    class ManualScenario extends Scenario {
+        createActivitySession()
+        startActivitySession(sessionId)
+        closeActivitySession(sessionId)
+    }
+
+    class DirectedSequenceScenario extends Scenario {
+        sequenceScenarioLane
+        learnersScenarioLane
+    }
+
+    abstract class ScenarioNode
+
+    ScenarioLane "1" *-- "*" ScenarioNode : contains >
+    ScenarioNode "0..1" *-- "1..*" ScenarioNode : descendants >
+
+    abstract class EventNode extends ScenarioNode {
+        watchers
+    }
+    note top
+        Activated by external events
+        (e.g. the 2nd phase of the sequence starts)
+    end note
+
+    abstract class BranchingNode extends ScenarioNode {
+        branches: Map<Condition, ScenarioNode>
+    }
+
+    class IfNode extends BranchingNode
+    class RangeNode extends BranchingNode
+
+    abstract class ProcessingNode extends ScenarioNode
+    note top
+        Run a process
+        without involving the learner
+        (e.g., compute a pairing)
+    end note
+
+    abstract class LearningActivityNode extends ScenarioNode
+    note top: Create and/or join activity session
+
+    abstract class ConfigProvider
+    abstract class MaterialProvider
+    LearningActivityNode --> ConfigProvider
+    LearningActivityNode --> MaterialProvider
+
+    class StaticConfigProvider extends ConfigProvider
+    class StaticMaterialProvider extends MaterialProvider
+    abstract class SequenceMaterialProvider extends MaterialProvider
+
+}
+@enduml
