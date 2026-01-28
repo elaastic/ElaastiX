@@ -109,7 +109,6 @@ package activity.metamodel {
         context: Sequence
         activityConfig: ActivityConfig
         state: State
-        activityCompleted: boolean
         abstract getLearners(): Collection<User>
         abstract getInputMaterial(): Collection<Material>
         abstract getLearnerOutput(): Collection<LearnerOutput>
@@ -117,12 +116,19 @@ package activity.metamodel {
 
     class ActivitySessionLog
 
+    ActivitySession --> Sequence
+    ActivitySession -- ActivitySessionReport : Produced by >
     ActivitySession --> State
     ActivitySession --> ActivitySessionLog
     ActivitySession --> ActivityConfig
     ActivitySession *-- LearnerOutput
     ActivitySession *-- Material
 
+    interface ActivitySessionReport
+    interface UserActivitySessionReport
+
+    UserActivitySessionReport -- User
+    UserActivitySessionReport -- ActivitySessionReport
 
     interface ActivityConfig
 
