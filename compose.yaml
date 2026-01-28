@@ -34,5 +34,22 @@ services:
             postgres:
                 condition: service_healthy
 
+    frontend:
+        pull_policy: never
+        image: elaastic/elaastix-frontend:local-develop
+        build:
+            context: .
+            dockerfile: frontend/Containerfile
+            target: base
+        command: pnpm run dev --host
+        ports:
+            - "127.0.0.1:3000:3000"
+        volumes:
+            - ./frontend:/app/frontend
+            - /app/frontend/node_modules  # Creates an anonymous volume that'll hold the node_modules folder
+        depends_on:
+            server:
+                condition: service_started
+
 volumes:
     pg-data:
