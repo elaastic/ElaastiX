@@ -4,8 +4,13 @@
 TL;DR:
 - Install Docker
 - Install [Mise](https://mise.jdx.dev)
-- Run `mise install`
+- Clone the repository and `cd` into it
+- Run `mise trust && mise install`
 - Open in IntelliJ IDEA Ultimate
+
+> [!CAUTION]
+> On Windows, it is strongly recommended to work within WSL. Working on Windows directly is not guaranteed to work.
+> Given the limited bandwidth of the project maintainers, support for native Windows is best-effort only.
 
 ### Docker
 Docker with the Compose plugin is also required to run the project.
@@ -39,6 +44,14 @@ The following commands automatically become available:
 The project is configured for IntelliJ IDEA Ultimate. In other editions of IntelliJ IDEA, Spring support is limited
 and there is no support for JavaScript, TypeScript, and Vue (but support for these is available in WebStorm).
 
+> [!IMPORTANT]
+> The first time opening the project might be a bit weird. IJ tries to load the Gradle project before important
+> project settings have settled causing errors.
+>
+> You might encounter an error saying there is no JDK configured for Gradle. If that happens, you should be able to
+> trigger a Gradle sync again, and it should go through just fine this time. If it doesn't work, restart IntelliJ.
+> If it still doesn't work, go manually configure the JDK to the one installed by Mise in `Project Structure`.
+
 > [!TIP]
 > Latest versions of IntelliJ IDEA are strongly recommended (2025.3+). On Windows systems, WSL via the **native mode**
 > is recommended. **Make sure to add the appropriate [exclusions](windowsdefender://exclusions) to Microsoft Defender**,
@@ -57,6 +70,15 @@ and there is no support for JavaScript, TypeScript, and Vue (but support for the
 
 If you're not using a JetBrains IDE, additional configuration might be required.
 
+### Running the project
+You can run the project using `docker compose up -d`, or via the run configurations available in IntelliJ (recommended).
+
+The various parts of the app are reachable on the following endpoints:
+- Nuxt webapp: http://elaastix.localhost
+- Spring REST API: http://elaastix.localhost/api
+- Garage S3 server: http://storage.elaastic.localhost
+- Traefik console: http://traefik.localhost
+
 ## Project structure
 Files and folders that aren't worth of interest are not mentioned below. If it's not there, then it's most likely not
 something you should have to worry about.
@@ -72,6 +94,10 @@ ElaastiX
 ```
 
 ### Compose services
+> [!NOTE]
+> This table documents which services are required **in production**. In development, please refer to the
+> [`compose.yaml` file](./compose.yaml) directly.
+
 | Service name     | Description                   | Required?                                                                   |
 |------------------|-------------------------------|-----------------------------------------------------------------------------|
 | `server`         | Spring monolith               | **Elaastix itself**                                                         |
@@ -81,7 +107,7 @@ ElaastiX
 | `traefik`        | Traefik reverse-proxy         | N                                                                           |
 | `otel-collector` | OpenTelemetry collector.      | N, but **expected by default**. See [disable telemetry](#disable-telemetry) |
 
-#### Default credentials
+#### Default development credentials
 | Service    | Username         | Password         | Additional information                                                     |
 |------------|------------------|------------------|----------------------------------------------------------------------------|
 | PostgreSQL | `elaastix`       | `elaastix`       | Database: `elaastix`                                                       |
@@ -122,10 +148,10 @@ perform a warm start. Beware, build errors are not surfaced nor logged.
 >
 > </details>
 
-| Profile name | Description                                                                                                                                                                    |
-|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `develop`    | Main development profile. Enables development tools and helpers, seeds the database with dummy data, and uses [default credentials](#default-credentials) for services.        |
-| `container`  | Configures the app for running inside a containerised environment. Expects service names to match the ones define in the [project Compose's specification](#compose-services). |
+| Profile name | Description                                                                                                                                                                         |
+|--------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `develop`    | Main development profile. Enables development tools and helpers, seeds the database with dummy data, and uses [default credentials](#default-development-credentials) for services. |
+| `container`  | Configures the app for running inside a containerised environment. Expects service names to match the ones define in the [project Compose's specification](#compose-services).      |
 
 #### Miscellaneous
 

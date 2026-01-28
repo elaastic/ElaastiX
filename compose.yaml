@@ -6,6 +6,7 @@ services:
             POSTGRES_PASSWORD: elaastix
             POSTGRES_DATABASE: elaastix
         healthcheck:
+            # noinspection SpellCheckingInspection
             test: [ "CMD", "pg_isready",  "-U", "elaastix" ]
             interval: 5s
             timeout: 5s
@@ -33,14 +34,16 @@ services:
         command: bootRunDebug
         ports:
             - "127.0.0.1:20177:20177"
-        read_only: true
+        read_only: false  # Gradle is too write-heavy to restrict the filesystem, unfortunately.
         volumes:
             - ./server/src:/build/server/src:ro
+            - gradle-trunk:/root/.gradle  # To avoid useless re-downloads every single time.
         tmpfs:
             - /tmp
+            - /build/build
         labels:
             traefik.enable: "true"
-            traefik.http.routers.server.rule: "Host(`elaastix.localhost`) && PathPrefix(`/api/`)"
+            traefik.http.routers.server.rule: "Host(`elaastix.localhost`) && (Path(`/api`) || PathPrefix(`/api/`))"
             traefik.http.routers.server.middlewares: "server-strip-prefix"
             traefik.http.services.server.loadbalancer.server.port: "8080"
             traefik.http.middlewares.server-strip-prefix.stripprefix.prefixes: "/api"
@@ -61,8 +64,9 @@ services:
         read_only: true
         volumes:
             - ./frontend:/app/frontend:ro
-            - /app/frontend/node_modules  # Creates an anonymous volume that'll hold the node_modules folder
-            - nuxt-trunk:/app/frontend/.nuxt  # Keep .nuxt folder private to the container
+            # Hold generated files and trunk-folders in container-private volumes.
+            - nuxt-node-modules:/app/frontend/node_modules
+            - nuxt-trunk:/app/frontend/.nuxt
         tmpfs:
             - /tmp
         labels:
@@ -113,4 +117,6 @@ volumes:
     pg-data:
     garage-meta:
     garage-data:
+    gradle-trunk:
+    nuxt-node-modules:
     nuxt-trunk:
