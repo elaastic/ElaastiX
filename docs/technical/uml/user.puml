@@ -1,0 +1,19 @@
+@startuml(id=User)
+'https://plantuml.com/class-diagram
+
+class User
+class Learner extends User
+class Teacher extends User
+
+interface UserGroup {
+    users: Collection<User>
+}
+
+class LearnerUserGroup implements UserGroup
+class TeacherUserGroup implements UserGroup
+
+UserGroup "*" *-- "*" User : belongs to <
+
+User "1" -- "0..1" UserAccount
+
+@enduml

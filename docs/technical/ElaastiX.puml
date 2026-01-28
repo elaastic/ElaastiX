@@ -1,16 +1,11 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-class User
-class UserGroup {
-    users: Collection<User>
-}
-
-UserGroup *-- User : belongs to <
+!include ./uml/user.puml!User
 
 class Assignment {
-    teachers: Collection<User | UserGroup>
-    learners: Collection<User | UserGroup>
+    teachers: Collection<Teacher | TeacherUserGroup>
+    learners: Collection<LearnerUser | LearnerUserGroup>
     sequences: List<Sequence>
 }
 note top
@@ -19,10 +14,10 @@ An assignment is managed by users registered as teachers.
 An assignment is played by users registered as learners.
 end note
 
-Assignment "*" *- "*" User : registered as learner <
-Assignment "*" *- "*" User : registered as teacher <
-Assignment "*" *- "*" UserGroup : registered as learner <
-Assignment "*" *- "*" UserGroup : registered as teacher <
+Assignment "*" *- "*" Learner : registered as learner <
+Assignment "*" *- "*" Teacher : registered as teacher <
+Assignment "*" *- "*" LearnerUserGroup : registered as learner <
+Assignment "*" *- "*" TeacherUserGroup : registered as teacher <
 
 Assignment *- activity.metamodel.Sequence : contains >
 
@@ -109,7 +104,7 @@ package activity.metamodel {
         context: Sequence
         activityConfig: ActivityConfig
         state: State
-        abstract getLearners(): Collection<User>
+        abstract getLearners(): Collection<Learner>
         abstract getInputMaterial(): Collection<Material>
         abstract getLearnerOutput(): Collection<LearnerOutput>
     }
@@ -125,20 +120,20 @@ package activity.metamodel {
     ActivitySession *-- Material
 
     interface ActivitySessionReport
-    interface UserActivitySessionReport
+    interface LearnerActivitySessionReport
 
-    UserActivitySessionReport -- User
-    UserActivitySessionReport -- ActivitySessionReport
+    LearnerActivitySessionReport -- Learner
+    LearnerActivitySessionReport -- ActivitySessionReport
 
     interface ActivityConfig
 
     interface Material
 
     abstract class LearnerOutput extends Material {
-        author: User
+        author: Learner
     }
 
-    LearnerOutput -- User : Produced by >
+    LearnerOutput -- Learner : Produced by >
 
     interface MaterialTransformer {
         supports(material: Material): boolean
@@ -149,7 +144,7 @@ package activity.metamodel {
 
 package activity.response {
     class ResponseActivitySession extends activity.metamodel.ActivitySession {
-        learner: User
+        learner: Learner
         activityConfig: ResponseActivityConfig
         material: Question
         output: Response
@@ -162,7 +157,7 @@ package activity.response {
         modifyResponse()
     }
 
-    ResponseActivitySession --> User
+    ResponseActivitySession --> Learner
     ResponseActivitySession --> Response
     ResponseActivitySession --> ResponseActivityConfig
 
@@ -186,7 +181,7 @@ package activity.response {
     }
 
     Response --> Question
-    Response --> User
+    Response --> Learner
 
     class ResponseScoreTransformer implements activity.metamodel.MaterialTransformer {
         transform(response: Response): Score
@@ -199,7 +194,7 @@ package activity.response {
 
 package activity.judge {
     class JudgeActivitySession extends activity.metamodel.ActivitySession {
-        learner: User
+        learner: Learner
         activityConfig: ActivityConfig
         material: Collection<Material>
     }
@@ -208,7 +203,7 @@ package activity.judge {
 
     }
 
-    JudgeActivitySession --> User
+    JudgeActivitySession --> Learner
     JudgeActivitySession --> JudgeActivityConfig
     JudgeActivitySession *-- Judgement
     JudgeActivitySession *-- activity.metamodel.Material
@@ -224,20 +219,20 @@ package activity.judge {
 
 package activity.chat {
     class ChatActivitySession extends activity.metamodel.ActivitySession {
-        learners: Collection<User>
+        learners: Collection<Learner>
         topic: Material
     }
 
-    ChatActivitySession *-- User
+    ChatActivitySession *-- Learner
     ChatActivitySession --> activity.metamodel.Material
 }
 
 package activity.feedback {
     class GetFeedbackActivitySession extends activity.metamodel.ActivitySession {
-        learner: User
+        learner: Learner
     }
 
-    GetFeedbackActivitySession --> User
+    GetFeedbackActivitySession --> Learner
 }
 
 package activity.generic {
