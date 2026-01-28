@@ -1,0 +1,31 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+!include ../user.puml
+!include ../activity-metamodel.puml
+
+package activity.judge {
+    class JudgeActivitySession extends activity.metamodel.ActivitySession {
+        learner: Learner
+        activityConfig: ActivityConfig
+        material: Collection<Material>
+    }
+
+    class JudgeActivityConfig extends activity.metamodel.ActivityConfig {
+
+    }
+
+    JudgeActivitySession --> Learner
+    JudgeActivitySession --> JudgeActivityConfig
+    JudgeActivitySession *-- Judgement
+    JudgeActivitySession *-- activity.metamodel.Material
+
+    class Judgement implements activity.metamodel.LearnerOutput {
+        material: activity.metamodel.Material
+        judgement
+
+    }
+    Judgement --> activity.metamodel.Material
+
+}
+@enduml

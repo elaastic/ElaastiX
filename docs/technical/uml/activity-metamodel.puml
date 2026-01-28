@@ -1,0 +1,67 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package activity.metamodel {
+    class Sequence {
+        state: State
+        scenario: Scenario
+        start()
+        pause()
+        resume()
+        stop()
+    }
+
+    enum State {
+        OPEN
+        PENDING
+        RUNNING
+        CLOSED
+    }
+
+    Sequence --> State
+    Sequence --> scenario.Scenario
+
+    Scenario *- ActivitySession : Managed by <
+
+    abstract class ActivitySession {
+        context: Sequence
+        activityConfig: ActivityConfig
+        state: State
+        abstract getLearners(): Collection<Learner>
+        abstract getInputMaterial(): Collection<Material>
+        abstract getLearnerOutput(): Collection<LearnerOutput>
+    }
+
+    class ActivitySessionLog
+
+    ActivitySession --> Sequence
+    ActivitySession -- ActivitySessionReport : Produced by >
+    ActivitySession --> State
+    ActivitySession --> ActivitySessionLog
+    ActivitySession --> ActivityConfig
+    ActivitySession *-- LearnerOutput
+    ActivitySession *-- Material
+
+    interface ActivitySessionReport
+    interface LearnerActivitySessionReport
+
+    LearnerActivitySessionReport -- Learner
+    LearnerActivitySessionReport -- ActivitySessionReport
+
+    interface ActivityConfig
+
+    interface Material
+
+    abstract class LearnerOutput extends Material {
+        author: Learner
+    }
+
+    LearnerOutput -- Learner : Produced by >
+
+    interface MaterialTransformer {
+        supports(material: Material): boolean
+        transform(material: Material): any
+    }
+
+}
+@enduml

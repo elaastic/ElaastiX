@@ -1,0 +1,18 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+!include ../user.puml
+!include ../activity-metamodel.puml
+
+
+package activity.chat {
+    class ChatActivitySession extends activity.metamodel.ActivitySession {
+        learners: Collection<Learner>
+        topic: Material
+    }
+
+    ChatActivitySession *-- Learner
+    ChatActivitySession --> activity.metamodel.Material
+}
+
+@enduml

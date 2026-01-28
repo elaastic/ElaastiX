@@ -1,0 +1,56 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+!include ../user.puml
+!include ../activity-metamodel.puml
+
+package activity.response {
+    class ResponseActivitySession extends activity.metamodel.ActivitySession {
+        learner: Learner
+        activityConfig: ResponseActivityConfig
+        material: Question
+        output: Response
+
+        submitResponse()
+    }
+
+    class ChangeResponseActivitySession extends ResponseActivitySession {
+        previousResponse: Response
+        modifyResponse()
+    }
+
+    ResponseActivitySession --> Learner
+    ResponseActivitySession --> Response
+    ResponseActivitySession --> ResponseActivityConfig
+
+    class ResponseActivityConfig implements activity.metamodel.ActivityConfig {
+        provideConfidenceDegree: boolean
+        provideExplanation: boolean
+    }
+
+    class Question implements activity.metamodel.Material {
+        statement: String
+        choices: List<Choice>
+        correctionChoice: Choice
+        explanatoryFeedback: String
+    }
+
+    class Response implements activity.metamodel.LearnerOutput {
+        question: Question
+        choice
+        confidenceDegree
+        explanation
+    }
+
+    Response --> Question
+    Response --> Learner
+
+    class ResponseScoreTransformer implements activity.metamodel.MaterialTransformer {
+        transform(response: Response): Score
+    }
+
+    class ResponseCorrectnessTransformer implements activity.metamodel.MaterialTransformer {
+        transform(response: Response): boolean
+    }
+}
+@enduml
