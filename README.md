@@ -41,6 +41,10 @@ Instructions are available within the settings screen directly.
 Docker with the Compose plugin is also required to run the project.
 Please see the [Docker Documentation](https://docs.docker.com/engine/install/) for how to install it.
 
+> [!IMPORTANT]
+> If you're using a rootless installation, make sure to set the `DOCKER_SOCKET` environment variable to the path to
+> the Docker socket. It is necessary for Traefik to function properly.
+
 ## Project structure
 Files and folders that aren't worth of interest are not mentioned below. If it's not there, then it's most likely not
 something you should have to worry about.

@@ -1,5 +1,8 @@
 **/.gradle
 **/.kotlin
-**/node_modules
 **/build
 **/out
+
+**/.nuxt
+**/.output
+**/node_modules
