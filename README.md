@@ -76,7 +76,7 @@ You can run the project using `docker compose up -d`, or via the run configurati
 The various parts of the app are reachable on the following endpoints:
 - Nuxt webapp: http://elaastix.localhost
 - Spring REST API: http://elaastix.localhost/api
-- Garage S3 server: http://storage.elaastic.localhost
+- Garage S3 server: http://storage.elaastix.localhost
 - Traefik console: http://traefik.localhost
 
 ## Project structure
