@@ -11,6 +11,9 @@
 !.idea/sqldialects.xml
 !.idea/vcs.xml
 
+# Sensitive files
+.config/garage/credentials.env
+
 # Mise
 mise/config.local.toml
 mise/config.*.local.toml

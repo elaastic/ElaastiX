@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Start sidecar services" type="CompoundRunConfigurationType">
+    <toRun name="Garage (S3) Service" type="docker-deploy" />
+    <toRun name="PostgreSQL Service" type="docker-deploy" />
+    <toRun name="Traefik Service" type="docker-deploy" />
+    <method v="2" />
+  </configuration>
+</component>
