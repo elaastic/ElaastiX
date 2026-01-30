@@ -65,7 +65,7 @@ services:
         volumes:
             - ./frontend:/app/frontend:ro
             # Hold generated files and trunk-folders in container-private volumes.
-            - nuxt-node-modules:/app/frontend/node_modules
+            - /app/frontend/node_modules
             - nuxt-trunk:/app/frontend/.nuxt
         tmpfs:
             - /tmp
@@ -118,5 +118,4 @@ volumes:
     garage-meta:
     garage-data:
     gradle-trunk:
-    nuxt-node-modules:
     nuxt-trunk:
