@@ -22,7 +22,8 @@ package conventions
 val libs = the<VersionCatalogsExtension>().named("libs")
 
 group = rootProject.group
-version = rootProject.version
+version = project.findProperty("VERSION") ?: "0.0.0-SNAPSHOT"
+val revision = project.findProperty("REVISION") ?: ""
 
 plugins {
     id("java")
@@ -41,12 +42,21 @@ java {
     targetCompatibility = JavaVersion.toVersion(jdkVersion)
 }
 
+tasks.withType<Jar> {
+    metaInf {
+        from("${rootProject.projectDir}/LICENSE")
+    }
+}
+
 tasks.jar {
     manifest {
         attributes(
             mapOf(
                 "Implementation-Title" to project.name,
                 "Implementation-Version" to project.version,
+                "Implementation-Vendor" to "IRIT TALENT team",
+                "Bundle-License" to "AGPL-3.0-or-later",
+                "Git-Revision" to revision,
             ),
         )
     }

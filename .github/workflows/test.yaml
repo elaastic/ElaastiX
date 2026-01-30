@@ -1,0 +1,22 @@
+name: Test
+
+on:
+  push:
+    branches: [main]
+    tags: [v*]
+  pull_request:
+
+jobs:
+  server:
+    name: Spring server monolith
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+      - uses: gradle/actions/setup-gradle@v5
+
+      # Not ideal but it works...
+      - run: docker compose up --wait postgres storage traefik
+      # TODO(Cynthia): Proper reports to GitHub etc...
+      - run: ./gradlew :server:test

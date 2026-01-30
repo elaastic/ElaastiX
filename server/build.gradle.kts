@@ -17,9 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-import org.springframework.boot.gradle.tasks.run.BootRun
-
 plugins {
     id("conventions.idea")
     id("conventions.kotlin")
@@ -53,28 +50,4 @@ dependencies {
     testImplementation(libs.spring.boot.thymeleaf.test)
     testImplementation(libs.spring.boot.validation.test)
     testImplementation(libs.spring.boot.webmvc.test)
-}
-
-tasks.named<BootJar>("bootJar") {
-    archiveClassifier = "boot"
-}
-
-tasks.register<BootRun>("bootRunDebug") {
-    val task = tasks.getByName<BootRun>("bootRun")
-
-    mainClass = task.mainClass
-    classpath = task.classpath
-    jvmArgs = task.jvmArgs + listOf(
-        // Enable JMX and RMI. They are very nitpicky about port, map it to the SAME port on the host in Docker!
-        "-Dcom.sun.management.jmxremote",
-        "-Dcom.sun.management.jmxremote.host=0.0.0.0",
-        "-Dcom.sun.management.jmxremote.port=20177",
-        "-Dcom.sun.management.jmxremote.rmi.port=20177",
-        "-Dcom.sun.management.jmxremote.authenticate=false",
-        "-Dcom.sun.management.jmxremote.ssl=false",
-        "-Djava.rmi.server.hostname=localhost",
-        "-Dspring.jmx.enabled=true",
-        "-Dspring.application.admin.enabled=true",
-        "-Dspring.liveBeansView.mbeanDomain",
-    )
 }

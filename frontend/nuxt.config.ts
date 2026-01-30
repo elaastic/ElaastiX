@@ -8,17 +8,17 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/fonts',
     '@nuxt/hints',
-    '@nuxtjs/i18n'
+    '@nuxtjs/i18n',
   ],
 
   devtools: {
-    enabled: true
+    enabled: true,
   },
 
   css: ['~/assets/css/main.css'],
 
   routeRules: {
-    '/': { prerender: true }
+    '/': { prerender: true },
   },
 
   compatibilityDate: '2025-01-15',
@@ -27,16 +27,16 @@ export default defineNuxtConfig({
     config: {
       stylistic: {
         commaDangle: 'always-multiline',
-        braceStyle: '1tbs'
-      }
-    }
+        braceStyle: '1tbs',
+      },
+    },
   },
 
   i18n: {
     locales: [
       { code: 'en', language: 'en-US' },
-      { code: 'fr', language: 'fr-FR' }
+      { code: 'fr', language: 'fr-FR' },
     ],
-    defaultLocale: 'en'
-  }
+    defaultLocale: 'en',
+  },
 })

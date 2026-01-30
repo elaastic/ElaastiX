@@ -14,37 +14,73 @@ COPY *.gradle.kts *.gradle gradle.properties gradlew ./
 RUN ./gradlew --no-daemon :server:classes :server:resolveDependencies
 
 # Will be used by the development containers
-COPY server/docker-entrypoint.sh ./server/
-ENTRYPOINT [ "/build/server/docker-entrypoint.sh" ]
+COPY server/docker-entrypoint-dev.sh ./server/
+ENTRYPOINT [ "/build/server/docker-entrypoint-dev.sh" ]
+
 
 FROM base AS build
 
+ARG VERSION
+ARG REVISION
+
 COPY server/ ./server/
-RUN ./gradlew --offline --no-daemon :server:bootJar -x test
+RUN ./gradlew -DVERSION=$VERSION -DREVISION=$REVISION --offline --no-daemon :server:bootJar -x test
+
+
+FROM scratch AS artifacts
+# Use with BuikdKit's --output flag to retrieve all build results
+# See also: https://docs.docker.com/build/building/export
+# Credits: https://stackoverflow.com/a/59357858/13154480
+
+COPY --from=build /build/server/build/libs/*-boot.jar /server.jar
+
+
+FROM build AS extract
 
 # Having a jar file in a container is unfortunate: both are effectively archive formats... Russian dolls!
 # Spring has a feature to extract the fat jar into a layered unpacked structure that's ideal for containers
 RUN java -Djarmode=tools -jar server/build/libs/*-boot.jar extract --launcher --layers --destination server/build/extracted
 
+
 FROM eclipse-temurin:25-jre-alpine
+
+ARG VERSION
+ARG REVISION
 
 ENV SPRING_PROFILES_DEFAULT=container
 
 WORKDIR /app
 
 # The order is important and allows better reuse of layers. Order recommended by Spring.
-COPY --from=build /build/server/build/extracted/dependencies/ ./
-COPY --from=build /build/server/build/extracted/spring-boot-loader/ ./
-COPY --from=build /build/server/build/extracted/snapshot-dependencies/ ./
-COPY --from=build /build/server/build/extracted/application/ ./
+COPY --from=extract /build/server/build/extracted/dependencies/ ./
+COPY --from=extract /build/server/build/extracted/spring-boot-loader/ ./
+COPY --from=extract /build/server/build/extracted/snapshot-dependencies/ ./
+COPY --from=extract /build/server/build/extracted/application/ ./
 
 HEALTHCHECK --interval=1m --timeout=3s CMD wget --spider http://localhost:3000 || exit 1
 
+# References:
+# https://stackoverflow.com/a/59097932
+# https://docs.redhat.com/en/documentation/openshift_container_platform/3.11/html/developer_guide/dev-guide-application-memory-sizing#encouraging-the-JVM-to-release-unused-memory
 ENTRYPOINT [ \
     "java", \
     "-Xms512M", "-Xmx2048M", \
-    "-server", "-XX:+UseParallelGC", \
+    "-XX:+UseParallelGC", \
+    "-XX:MinHeapFreeRatio=5", "-XX:MaxHeapFreeRatio=10", \
+    "-XX:GCTimeRatio=4", "-XX:AdaptiveSizePolicyWeight=90", \
     "-Djava.security.egd=file:/dev/./urandom", \
     "-Djava.io.tmpdir=/tmp/", \
-    "org.springframework.boot.loader.launch.JarLauncher" \
+    "org.springframework.boot.loader.launch.JarLauncher", \
+    "--spring.config.additional-location=optional:file:/configuration/" \
 ]
+
+# NOTE: Do NOT record timestamps. See https://reproducible-builds.org/docs/timestamps
+LABEL org.opencontainers.image.title = "ElaastiX Core Server" \
+      org.opencontainers.image.authors = "The ElaastiX authors and contributors" \
+      org.opencontainers.image.source = "https://github.com/elaastic/elaastix" \
+      org.opencontainers.image.url = "https://elaastic.irit.fr" \
+      org.opencontainers.image.documentation = "https://elaastic.irit.fr" \
+      org.opencontainers.image.vendor = "IRIT TALENT team <https://irit.fr/talent>" \
+      org.opencontainers.image.licenses = "AGPL-3.0-or-later" \
+      org.opencontainers.image.version = "$VERSION" \
+      org.opencontainers.image.revision = "$REVISION"
