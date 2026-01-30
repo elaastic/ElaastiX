@@ -17,6 +17,6 @@ jobs:
       - uses: gradle/actions/setup-gradle@v5
 
       # Not ideal but it works...
-      - run: docker compose up -d postgres storage traefik
+      - run: docker compose up --wait postgres storage traefik
       # TODO(Cynthia): Proper reports to GitHub etc...
       - run: ./gradlew :server:test
