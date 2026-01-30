@@ -36,12 +36,6 @@ kotlin {
     val jdkVersion = libs.findVersion("jdk").get().requiredVersion
     val kotlinVersion = libs.findVersion("kotlin").get().requiredVersion
 
-    jvmToolchain {
-        languageVersion.set(
-            JavaLanguageVersion.of(jdkVersion),
-        )
-    }
-
     compilerOptions {
         val kotlinVersion = KotlinVersion.valueOf(
             "KOTLIN_${kotlinVersion.substringBeforeLast(".").replace(".", "_")}",

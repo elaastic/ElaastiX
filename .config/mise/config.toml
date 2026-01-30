@@ -2,8 +2,10 @@
 experimental = true
 
 [tools]
+# Java and Node are also configured via .tool-versions, as IJ supports it natively.
+# This is not ideal as the config is duplicated, but it is better than being completely broken :)
 node = { version = "24", postinstall = "corepack enable" }
-java = "temurin-24"  # Gradle doesn't support Kotlin + JDK 25 yet >:)
+java = "temurin-25"
 typos = "latest"
 jq = "latest"
 

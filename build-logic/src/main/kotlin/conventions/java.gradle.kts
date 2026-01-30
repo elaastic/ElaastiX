@@ -18,6 +18,7 @@
  */
 
 package conventions
+
 val libs = the<VersionCatalogsExtension>().named("libs")
 
 group = rootProject.group
@@ -28,13 +29,16 @@ plugins {
 }
 
 java {
+    val jdkVersion = libs.findVersion("jdk").get().requiredVersion
+
     toolchain {
         languageVersion.set(
-            JavaLanguageVersion.of(
-                libs.findVersion("jdk").get().requiredVersion,
-            ),
+            JavaLanguageVersion.of(jdkVersion),
         )
     }
+
+    sourceCompatibility = JavaVersion.toVersion(jdkVersion)
+    targetCompatibility = JavaVersion.toVersion(jdkVersion)
 }
 
 tasks.jar {

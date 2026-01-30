@@ -4,6 +4,7 @@
 !.idea/detekt.xml
 !.idea/dictionaries/project.xml
 !.idea/externalDependencies.xml
+!.idea/gradle.xml
 !.idea/jsLinters
 !.idea/jsonSchemas.xml
 !.idea/remote-targets.xml
