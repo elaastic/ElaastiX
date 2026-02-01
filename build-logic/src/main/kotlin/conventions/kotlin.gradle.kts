@@ -30,6 +30,7 @@ plugins {
     id("dev.detekt")
 
     kotlin("jvm")
+    kotlin("plugin.serialization")
 }
 
 kotlin {

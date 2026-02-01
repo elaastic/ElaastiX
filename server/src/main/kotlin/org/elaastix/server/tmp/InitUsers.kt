@@ -17,23 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
+package org.elaastix.server.tmp
 
-rootProject.name = "ElaastiX"
+import jakarta.annotation.PostConstruct
+import org.elaastix.server.users.UserRepository
+import org.elaastix.server.users.entities.User
+import org.springframework.context.annotation.Profile
+import org.springframework.data.domain.Pageable
+import org.springframework.stereotype.Component
 
-includeBuild("build-logic")
-include("metamodel")
-include("server")
-include("frontend")
+@Component
+@Profile("develop")
+class InitUsers(
+    val userRepository: UserRepository
+) {
+    @PostConstruct
+    fun doInitUsers() {
+        if (userRepository.count() == 0L) {
+            userRepository.save(User())
+            userRepository.save(User())
+            userRepository.save(User())
+        }
 
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-    }
-}
-
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
+        @Suppress("MagicNumber")
+        userRepository.findAll(Pageable.ofSize(3)).forEach { println("Test user 1: ${it.id}") }
     }
 }

@@ -17,23 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
+package org.elaastix.server.tmp
 
-rootProject.name = "ElaastiX"
+import org.elaastix.server.users.entities.User
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.stereotype.Component
 
-includeBuild("build-logic")
-include("metamodel")
-include("server")
-include("frontend")
+@Component
+class AuthenticationHolder {
+    val isAuthenticated: Boolean
+        get() = SecurityContextHolder.getContext().authentication?.isAuthenticated == true
 
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-    }
-}
-
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
+    val authenticatedUser: User?
+        get() = SecurityContextHolder.getContext().authentication?.principal as? User
 }

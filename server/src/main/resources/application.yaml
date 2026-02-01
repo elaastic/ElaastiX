@@ -1,7 +1,12 @@
 spring:
-    jpa:
-        open-in-view: false
-        properties.hibernate:
-            jdbc.batch_size: 10
-            order_inserts: true
-            order_updates: true
+  jpa:
+    open-in-view: false
+    properties.hibernate:
+      jdbc.batch_size: 10
+      order_inserts: true
+      order_updates: true
+
+  kotlinx:
+    serialization:
+      json:
+        encode-defaults: true

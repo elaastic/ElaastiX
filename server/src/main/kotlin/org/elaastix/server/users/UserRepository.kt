@@ -17,23 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
+package org.elaastix.server.users
 
-rootProject.name = "ElaastiX"
+import org.elaastix.server.users.entities.User
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
+import java.util.UUID
 
-includeBuild("build-logic")
-include("metamodel")
-include("server")
-include("frontend")
-
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-    }
-}
-
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
-}
+@Repository
+interface UserRepository : JpaRepository<User, UUID>

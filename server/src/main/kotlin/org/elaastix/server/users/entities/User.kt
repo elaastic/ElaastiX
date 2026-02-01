@@ -17,23 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
+package org.elaastix.server.users.entities
 
-rootProject.name = "ElaastiX"
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
+import jakarta.persistence.Table
+import jakarta.persistence.Version
+import org.elaastix.server.UUID_Z
+import org.hibernate.annotations.UuidGenerator
+import org.hibernate.id.uuid.UuidVersion7Strategy
+import java.util.UUID
+import org.elaastix.mm.user.User as MMUser
 
-includeBuild("build-logic")
-include("metamodel")
-include("server")
-include("frontend")
+@Entity
+// Hibernate just casually broke `globally_quoted_identifiers` and doesn't want to fix it. https://hibernate.atlassian.net/browse/HHH-19973
+@Table(name = "\"user\"")
+class User : MMUser {
+    @Id
+    @UuidGenerator(algorithm = UuidVersion7Strategy::class)
+    var id: UUID = UUID_Z
 
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-    }
-}
-
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
+    @Version
+    var version = 0L
 }

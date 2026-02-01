@@ -37,6 +37,7 @@ services:
         read_only: false  # Gradle is too write-heavy to restrict the filesystem, unfortunately.
         volumes:
             - ./server/src:/build/server/src:ro
+            - ./metamodel/src:/build/metamodel/src:ro
             - gradle-trunk:/root/.gradle  # To avoid useless re-downloads every single time.
         tmpfs:
             - /tmp

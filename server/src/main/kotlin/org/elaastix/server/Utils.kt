@@ -17,23 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
+package org.elaastix.server
 
-rootProject.name = "ElaastiX"
+import java.util.UUID
 
-includeBuild("build-logic")
-include("metamodel")
-include("server")
-include("frontend")
-
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-    }
-}
-
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
-}
+val UUID_Z = UUID(0, 0)
