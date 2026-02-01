@@ -1,0 +1,8 @@
+@startuml(id=User)
+'https://plantuml.com/class-diagram
+
+class User {
+    id: UUID
+    displayName: String
+}
+@enduml
