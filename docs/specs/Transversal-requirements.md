@@ -12,5 +12,6 @@ associated expected HTTP code and message (40x, 50x).
 
 ## Collection of resources
 
-- Be paginated using Spring facilities
-- Be sorted by natural order unless otherwise specified
+Operations consisting in fetching collection of resources must:
+- [ ] be paginated using Spring facilities
+- [ ] be sorted by natural order unless otherwise specified
