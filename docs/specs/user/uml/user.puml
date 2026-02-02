@@ -4,5 +4,8 @@
 class User {
     id: UUID
     displayName: String
+    version: Long
+    dateCreated: Date
+    lastUpdated: Date
 }
 @enduml

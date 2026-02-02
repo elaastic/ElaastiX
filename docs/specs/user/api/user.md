@@ -1,10 +1,20 @@
 # user api spec
 
-## User.001 : Find user by Id
+## Business rule
+
+The user resource is built on top of the User entity described in the UML schema `docs/specs/user/uml/user.puml`.
+
+- [ ] the id serve as primary key
+- [ ] the display name cannot be blank
+- [ ] the creation date cannot be null
+- [ ] the last updated date cannot be null
+- [ ] the version attribute cannot be null and is managed by JPA
+
+## User.001 : Find the current user
 
 ### Description
 As a client of the user api \
-I want to **get** a representation of a user given its Id \
+I want to **get** a representation of the current authenticated user \
 So that the view can display user information
 
 ### Acceptance tests
@@ -16,8 +26,4 @@ So that the view can display user information
 The display of the display name on demand on all pages.\
 ![The display of the user name on demand on all pages.](user-uc01.png)
 
-### User Resource
-
-The User resource corresponds to the User entity described in the UML schema `specs/user/uml/user.puml`.\
-![The resource User is described in the UML schema `specs/user/uml/user.puml`.](user.png)
 
