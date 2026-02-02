@@ -21,7 +21,8 @@ postinstall = [
 [tasks._precommit]
 hide = true
 run = [
-    "typos -c .config/typos/config.toml"
+    "typos -c .config/typos/config.toml",
+    "./gradlew :build-logic:detektMain :build-logic:detektTest detektMain detektTest"
 ]
 
 [shell_alias]

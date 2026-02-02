@@ -17,17 +17,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.tmp
+package org.elaastix.server.bootstrap
 
+import jakarta.annotation.PostConstruct
+import org.elaastix.server.users.UserRepository
 import org.elaastix.server.users.entities.User
-import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.context.annotation.Profile
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 
 @Component
-class AuthenticationHolder {
-    val isAuthenticated: Boolean
-        get() = SecurityContextHolder.getContext().authentication?.isAuthenticated == true
+@Profile("develop")
+class DatabaseSeeder(val userRepository: UserRepository) {
+    @PostConstruct
+    fun doInitUsers() {
+        if (userRepository.count() == 0L) {
+            userRepository.save(User())
+            userRepository.save(User())
+            userRepository.save(User())
+        }
 
-    val authenticatedUser: User?
-        get() = SecurityContextHolder.getContext().authentication?.principal as? User
+        @Suppress("MagicNumber")
+        userRepository.findAll(Pageable.ofSize(3)).forEach { println("Test user 1: ${it.id}") }
+    }
 }

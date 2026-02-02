@@ -17,17 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.tmp
+package org.elaastix.server.authn.tmp
 
+import org.elaastix.server.authn.AuthenticationHolder
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class TmpController(
-    val authenticationHolder: AuthenticationHolder
-) {
-    @GetMapping("/tmp/who-am-i")
-    fun whoAmI(): String? {
-        return authenticationHolder.authenticatedUser?.id.toString()
-    }
+@RequestMapping("/authn/tmp")
+class AuthnTmpController(val authenticationHolder: AuthenticationHolder) {
+    @GetMapping("/who-am-i")
+    fun whoAmI(): String? = authenticationHolder.authenticatedUser?.id.toString()
 }

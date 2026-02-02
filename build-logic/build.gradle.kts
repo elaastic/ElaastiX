@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import dev.detekt.gradle.Detekt
 import org.gradle.plugins.ide.idea.model.Module.INHERITED
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
@@ -50,9 +51,18 @@ kotlin {
 
 detekt {
     parallel = true
+    autoCorrect = true
     buildUponDefaultConfig = true
 
     config.setFrom("../.config/detekt/detekt.yaml")
+}
+
+tasks.withType<Detekt>().configureEach {
+    exclude("**/resources/**", "**/build/**", "**/generated/**")
+
+    reports {
+        sarif.required = true
+    }
 }
 
 repositories {
