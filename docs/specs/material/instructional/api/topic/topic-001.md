@@ -10,8 +10,6 @@ So that the view can display topics information
 - [ ] All code relative to topic is in the package `org.elaastix.server.material.instructional`.
 - [ ] The fetched representation of the collection contains for each topic :
     - its id
-    - its owner id
-    - the display name of the owner id
     - its title
     - its description
     - the number of subjects attached to this topic

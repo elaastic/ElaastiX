@@ -8,7 +8,7 @@ So that the view allows the current user to update an existent topic.
 ## Acceptance tests
 
 - [ ] All code relative to topic is in the package `org.elaastix.server.material.instructional`.
-- [ ] The request specifies the fields to update with the new values  :
+- [ ] The request specifies a maximum of two fields that can be updated by the user with their new value:
     - its title, if it needs to be updated
     - its description, if it needs to be updated
 - [ ] The update of the last updated date is managed on the back-end.
