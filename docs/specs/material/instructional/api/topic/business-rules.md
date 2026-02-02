@@ -1,7 +1,7 @@
 # Business rule
 
 The topic/topics resources are built on top of the Topic entity described in the UML schema
-`docs/specs/material/instructional/uml/topic.puml`.
+`docs/specs/material/instructional/topic/topic.puml`.
 
 - [ ] The id serve as primary key.
 - [ ] The owner cannot be null.
