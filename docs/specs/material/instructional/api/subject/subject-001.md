@@ -15,7 +15,7 @@ So that the view can display subjects information relative to one topic
     - the number of questions attached to this subject
     - the last updated date
     - embedded information relative to the parent topic if any (id, title)
-- [ ] The collection id ordered by last updated date and title
+- [ ] The collection is ordered by last updated date and title
 
 
 ## Use case in current Elaastic

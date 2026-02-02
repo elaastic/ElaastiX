@@ -14,7 +14,7 @@ So that the view can display topics information
     - its description
     - the number of subjects attached to this topic
     - the last updated date
-- [ ] The collection id ordered by last updated date and title
+- [ ] The collection is ordered by last updated date and title
 
 ## Use case in current Elaastic
 The display of the collection of all topics in the home page of a teacher after authentication.\
