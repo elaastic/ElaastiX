@@ -10,8 +10,7 @@ class Topic {
     version: Long
     title: String
     description: String
-    dateCreated: Date
-    lastUpdated: Date
+    lastUpdated: ZoneDateTime
 }
 
 Topic "*" -> "1" User : owned by

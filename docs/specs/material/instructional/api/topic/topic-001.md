@@ -8,12 +8,11 @@ So that the view can display topics information
 ## Acceptance tests
 
 - [ ] All code relative to topic is in the package `org.elaastix.server.material.instructional`.
-- [ ] The fetched representation of the collection contains for each topic :
+- [ ] The fetched representation of the collection contains for each topic:
     - its id
     - its title
     - its description
     - the number of subjects attached to this topic
-    - the creation date
     - the last updated date
 - [ ] The collection id ordered by last updated date and title
 
