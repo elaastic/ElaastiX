@@ -1,4 +1,4 @@
-# topic-004 : Delete an existent topic owned by the current user
+# subject-004 : Delete an existent subject owned by the current user
 
 ## Description
 As a client of the user api \
