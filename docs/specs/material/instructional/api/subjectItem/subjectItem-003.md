@@ -11,7 +11,10 @@ So that the view allows the current user to update an existent subject item.
 - [ ] The request specifies the fields to update with their new value:
     - its title
     - its statement
-    - its attachment id
+    - the embedded attachment information if any:
+      - the attachment name
+      - other useful metadata on the attachment (see Spring boot API)
+      - the attachment content
     - its rank
     - its type (simple statement, Open ended question (Question), MCQ or UCQ)
     - the expected explanation if any (only for compliant types)

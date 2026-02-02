@@ -12,7 +12,10 @@ So that the view allows the current user to post a new subject item
     - its title
     - its statement
     - its subject id
-    - its attachment id if any
+    - the embedded attachment information if any:
+      - the attachment name
+      - other useful metadata on the attachment (see Spring boot API)
+      - the attachment content
     - its rank
     - its type (simple statement, Open ended question (Question), MCQ or UCQ)
     - the expected explanation if any (only for compliant types)

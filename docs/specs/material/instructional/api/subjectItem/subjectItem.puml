@@ -8,13 +8,21 @@ class SubjectItem {
     version: Long
     title: String
     statement: String
-    attachment: UUID
+    attachmentId: UUID
     lastUpdated: ZoneDateTime
     rank: Integer
 }
 
+
+class Attachment {
+    id: UUID
+    name: String
+    hash: ByteArray
+}
+
 SubjectItem "*" -> "1" User : owned by
-SubjectItem "*" <-> "0..1" Subject : relative to
+SubjectItem "*" <-> "1" Subject : relative to
+SubjectItem "*" *-> "0..1" Attachment : owns
 
 class Question extends SubjectItem {
     expectedAnswer: String

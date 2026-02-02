@@ -18,7 +18,7 @@ So that the view can display the subject and its items information
     - its id
     - its title
     - its statement
-    - the embedded information on its attachment if any (UUID and name)
+    - the embedded information on its attachment if any (id and name)
     - the last updated date
     - its type (simple statement, Open ended question (Question), MCQ or UCQ)
 - [ ] The collection of items is ordered by rank and title
