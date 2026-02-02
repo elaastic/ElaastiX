@@ -87,6 +87,8 @@ ElaastiX
 ├── .config/                   Repository and project config files. Loosely follows the XDG convention.
 ├── .github/                   GitHub-specific configuration files
 ├── build-logic/               Convention plugins (Gradle)
+├── docs/                      Documentation of the project
+│   └── specs                   └── Specifications
 ├── frontend/                  Nuxt web application
 ├── gradle/                    Gradle-related files
 │   └── libs.versions.toml      └── Version catalogue
