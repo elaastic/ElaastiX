@@ -20,7 +20,13 @@ So that the view can display the subject and its items information
     - its statement
     - the embedded information on its attachment if any (id and name)
     - the last updated date
-    - its type (simple statement, Open ended question (Question), MCQ or UCQ)
+    - its type (simple statement, Open question, MCQ or UCQ)
+    - In case of an Open question :
+      - the expected answer
+    - In case of a closed question (MCQ or UCQ):
+      - the list of choices
+      - expected choice(s)
+      - expected rational
 - [ ] The collection of items is ordered by rank and title
 
 

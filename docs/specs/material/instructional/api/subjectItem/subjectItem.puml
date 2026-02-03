@@ -24,12 +24,16 @@ SubjectItem "*" -> "1" User : owned by
 SubjectItem "*" <-> "1" Subject : relative to
 SubjectItem "*" *-> "0..1" Attachment : owns
 
-class Question extends SubjectItem {
+abstract class Question extends SubjectItem {
+}
+
+class OpenQuestion extends Question {
     expectedAnswer: String
 }
 
-class ClosedQuestion extends Question {
+abstract class ClosedQuestion extends Question {
     choices: List<String>
+    expectedRational: String
 }
 
 class MultipleChoiceQuestion extends ClosedQuestion {
