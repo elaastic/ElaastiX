@@ -26,7 +26,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v5
 
       # TODO(Cynthia): Proper reports to GitHub etc...
-      - run: ./gradlew :build-logic:detekt detekt
+      - run: ./gradlew :build-logic:detektMain :build-logic:detektTest detektMain detektTest
 
   js-lint:
     name: JavaScript lint

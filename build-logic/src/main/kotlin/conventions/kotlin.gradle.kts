@@ -30,6 +30,7 @@ plugins {
     id("dev.detekt")
 
     kotlin("jvm")
+    kotlin("plugin.serialization")
 }
 
 kotlin {
@@ -51,12 +52,15 @@ kotlin {
 
 detekt {
     parallel = true
+    autoCorrect = true
     buildUponDefaultConfig = true
 
     config.setFrom(File(rootProject.projectDir, ".config/detekt/detekt.yaml"))
 }
 
 tasks.withType<Detekt>().configureEach {
+    exclude("**/resources/**", "**/build/**", "**/generated/**")
+
     reports {
         sarif.required = true
     }

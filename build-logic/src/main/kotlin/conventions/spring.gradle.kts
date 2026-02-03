@@ -32,7 +32,6 @@ plugins {
 
     kotlin("plugin.jpa")
     kotlin("plugin.spring")
-    kotlin("plugin.serialization")
 }
 
 configurations.configureEach {

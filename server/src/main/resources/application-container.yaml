@@ -1,6 +1,6 @@
 spring.datasource.url: jdbc:postgresql://postgres:5432/elaastix
 
 management:
-    otlp.metrics.export.url: http://otel-collector:4318/v1/metrics
-    opentelemetry.tracing.export.otlp.endpoint: http://otel-collector:4318/v1/traces
-    opentelemetry.logging.export.otlp.endpoint: http://otel-collector:4318/v1/logs
+  otlp.metrics.export.url: http://otel-collector:4318/v1/metrics
+  opentelemetry.tracing.export.otlp.endpoint: http://otel-collector:4318/v1/traces
+  opentelemetry.logging.export.otlp.endpoint: http://otel-collector:4318/v1/logs

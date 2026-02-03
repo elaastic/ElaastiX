@@ -17,23 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
+package org.elaastix.mm.user
 
-rootProject.name = "ElaastiX"
-
-includeBuild("build-logic")
-include("metamodel")
-include("server")
-include("frontend")
-
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-    }
-}
-
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
-}
+interface User

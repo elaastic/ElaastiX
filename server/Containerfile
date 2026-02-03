@@ -6,6 +6,7 @@ WORKDIR /build
 COPY gradle/ ./gradle/
 COPY build-logic/ ./build-logic/
 COPY frontend/*.gradle.kts ./frontend/
+COPY metamodel/*.gradle.kts ./metamodel/
 COPY server/*.gradle.kts ./server/
 COPY *.gradle.kts *.gradle gradle.properties gradlew ./
 
@@ -23,6 +24,7 @@ FROM base AS build
 ARG VERSION
 ARG REVISION
 
+COPY metamodel/ ./metamodel/
 COPY server/ ./server/
 RUN ./gradlew -DVERSION=$VERSION -DREVISION=$REVISION --offline --no-daemon :server:bootJar -x test
 

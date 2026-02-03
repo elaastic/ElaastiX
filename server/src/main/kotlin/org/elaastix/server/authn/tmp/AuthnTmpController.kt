@@ -17,23 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
+package org.elaastix.server.authn.tmp
 
-rootProject.name = "ElaastiX"
+import org.elaastix.server.authn.AuthenticationHolder
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-includeBuild("build-logic")
-include("metamodel")
-include("server")
-include("frontend")
-
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-    }
-}
-
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
+@RestController
+@RequestMapping("/authn/tmp")
+class AuthnTmpController(val authenticationHolder: AuthenticationHolder) {
+    @GetMapping("/who-am-i")
+    fun whoAmI(): String? = authenticationHolder.authenticatedUser?.id.toString()
 }

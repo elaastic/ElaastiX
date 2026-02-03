@@ -25,10 +25,10 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":metamodel"))
     implementation(libs.spring.boot.actuator)
     implementation(libs.spring.boot.jpa)
     implementation(libs.spring.boot.flyway)
-    implementation(libs.spring.boot.jdbc)
     implementation(libs.spring.boot.mail)
     implementation(libs.spring.boot.opentelemetry)
     implementation(libs.spring.boot.security)
@@ -36,13 +36,13 @@ dependencies {
     implementation(libs.spring.boot.thymeleaf)
     implementation(libs.spring.boot.validation)
     implementation(libs.spring.boot.webmvc)
+    implementation(libs.spring.boot.kotlinx.serialization.json)
     implementation(libs.flyway.postgresql)
     runtimeOnly(libs.jdbc.postgresql)
 
     testImplementation(libs.spring.boot.actuator.test)
     testImplementation(libs.spring.boot.jpa.test)
     testImplementation(libs.spring.boot.flyway.test)
-    testImplementation(libs.spring.boot.jdbc.test)
     testImplementation(libs.spring.boot.mail.test)
     testImplementation(libs.spring.boot.opentelemetry.test)
     testImplementation(libs.spring.boot.security.test)
@@ -50,4 +50,5 @@ dependencies {
     testImplementation(libs.spring.boot.thymeleaf.test)
     testImplementation(libs.spring.boot.validation.test)
     testImplementation(libs.spring.boot.webmvc.test)
+    testImplementation(libs.spring.boot.kotlinx.serialization.json.test)
 }
