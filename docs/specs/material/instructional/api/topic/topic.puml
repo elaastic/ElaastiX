@@ -1,0 +1,17 @@
+@startuml(id=Topic)
+'https://plantuml.com/class-diagram
+
+
+!include ../../../../user/api/user.puml
+
+class Topic {
+    id: UUID
+    ownerId: UUID
+    version: Long
+    title: String
+    description: String
+    lastUpdated: ZoneDateTime
+}
+
+Topic "*" -> "1" User : owned by
+@enduml
