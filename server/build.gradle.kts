@@ -17,9 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-import org.springframework.boot.gradle.tasks.run.BootRun
-
 plugins {
     id("conventions.idea")
     id("conventions.kotlin")
@@ -28,10 +25,10 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":metamodel"))
     implementation(libs.spring.boot.actuator)
     implementation(libs.spring.boot.jpa)
     implementation(libs.spring.boot.flyway)
-    implementation(libs.spring.boot.jdbc)
     implementation(libs.spring.boot.mail)
     implementation(libs.spring.boot.opentelemetry)
     implementation(libs.spring.boot.security)
@@ -39,13 +36,13 @@ dependencies {
     implementation(libs.spring.boot.thymeleaf)
     implementation(libs.spring.boot.validation)
     implementation(libs.spring.boot.webmvc)
+    implementation(libs.spring.boot.kotlinx.serialization.json)
     implementation(libs.flyway.postgresql)
     runtimeOnly(libs.jdbc.postgresql)
 
     testImplementation(libs.spring.boot.actuator.test)
     testImplementation(libs.spring.boot.jpa.test)
     testImplementation(libs.spring.boot.flyway.test)
-    testImplementation(libs.spring.boot.jdbc.test)
     testImplementation(libs.spring.boot.mail.test)
     testImplementation(libs.spring.boot.opentelemetry.test)
     testImplementation(libs.spring.boot.security.test)
@@ -53,28 +50,5 @@ dependencies {
     testImplementation(libs.spring.boot.thymeleaf.test)
     testImplementation(libs.spring.boot.validation.test)
     testImplementation(libs.spring.boot.webmvc.test)
-}
-
-tasks.named<BootJar>("bootJar") {
-    archiveClassifier = "boot"
-}
-
-tasks.register<BootRun>("bootRunDebug") {
-    val task = tasks.getByName<BootRun>("bootRun")
-
-    mainClass = task.mainClass
-    classpath = task.classpath
-    jvmArgs = task.jvmArgs + listOf(
-        // Enable JMX and RMI. They are very nitpicky about port, map it to the SAME port on the host in Docker!
-        "-Dcom.sun.management.jmxremote",
-        "-Dcom.sun.management.jmxremote.host=0.0.0.0",
-        "-Dcom.sun.management.jmxremote.port=55432",
-        "-Dcom.sun.management.jmxremote.rmi.port=55432",
-        "-Dcom.sun.management.jmxremote.authenticate=false",
-        "-Dcom.sun.management.jmxremote.ssl=false",
-        "-Djava.rmi.server.hostname=localhost",
-        "-Dspring.jmx.enabled=true",
-        "-Dspring.application.admin.enabled=true",
-        "-Dspring.liveBeansView.mbeanDomain",
-    )
+    testImplementation(libs.spring.boot.kotlinx.serialization.json.test)
 }

@@ -30,17 +30,12 @@ plugins {
     id("dev.detekt")
 
     kotlin("jvm")
+    kotlin("plugin.serialization")
 }
 
 kotlin {
     val jdkVersion = libs.findVersion("jdk").get().requiredVersion
     val kotlinVersion = libs.findVersion("kotlin").get().requiredVersion
-
-    jvmToolchain {
-        languageVersion.set(
-            JavaLanguageVersion.of(jdkVersion),
-        )
-    }
 
     compilerOptions {
         val kotlinVersion = KotlinVersion.valueOf(
@@ -57,12 +52,15 @@ kotlin {
 
 detekt {
     parallel = true
+    autoCorrect = true
     buildUponDefaultConfig = true
 
     config.setFrom(File(rootProject.projectDir, ".config/detekt/detekt.yaml"))
 }
 
 tasks.withType<Detekt>().configureEach {
+    exclude("**/resources/**", "**/build/**", "**/generated/**")
+
     reports {
         sarif.required = true
     }

@@ -30,13 +30,12 @@ idea {
     }
 
     project {
-        jdkName = "temurin-24 (mise)"
-
         settings {
             copyright {
                 useDefault = "ElaasticAGPL"
                 profiles {
                     create("ElaasticAGPL") {
+                        @Suppress("HttpUrlsUsage")
                         notice = """
                             Elaastic / ElaastiX - formative assessment system
                             Copyright (C) 2019  Université de Toulouse and Université Toulouse Capitole.

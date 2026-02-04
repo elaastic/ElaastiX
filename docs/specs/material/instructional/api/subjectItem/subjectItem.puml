@@ -1,0 +1,67 @@
+@startuml(id=Subject)
+'https://plantuml.com/class-diagram
+
+class SubjectItem {
+    id: UUID
+    ownerId: UUID
+    subjectId: UUID
+    version: Long
+    title: String
+    statement: String
+    attachmentId: UUID
+    lastUpdated: ZoneDateTime
+    rank: Integer
+}
+
+
+class Attachment {
+    id: UUID
+    name: String
+    hash: ByteArray
+}
+
+SubjectItem "*" -> "1" User : owned by
+SubjectItem "*" <-> "1" Subject : relative to
+SubjectItem "*" *-> "0..1" Attachment : owns
+
+abstract class Question extends SubjectItem {
+}
+
+class OpenQuestion extends Question {
+    expectedAnswer: String
+}
+
+abstract class ClosedQuestion extends Question {
+    choices: List<String>
+    expectedRational: String
+}
+
+class MultipleChoiceQuestion extends ClosedQuestion {
+    expectedChoices: List<Short>
+}
+
+class UniqueChoiceQuestion extends ClosedQuestion {
+    expectedChoice: Short
+}
+
+class FakeExplanation {
+    id: UUID
+    questionId: UUID
+    statement: String
+}
+
+class FakeExplanationForMCQ extends FakeExplanation {
+    choices: List<Short>
+}
+
+class FakeExplanationForUCQ extends FakeExplanation {
+    choice: Short
+}
+
+FakeExplanation "*" <-> "1" Question : relative to
+FakeExplanationForMCQ "*" <-> "1" MultipleChoiceQuestion : relative to
+FakeExplanationForUCQ "*" <-> "1" UniqueChoiceQuestion : relative to
+
+
+
+@enduml

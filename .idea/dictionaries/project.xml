@@ -2,10 +2,15 @@
   <dictionary name="project">
     <words>
       <w>ElaastiX</w>
+      <w>Traefik</w>
       <w>affero</w>
+      <w>agpl</w>
+      <w>detekt</w>
       <w>elaastic</w>
       <w>elaastix</w>
       <w>ktlint</w>
+      <w>tmpfs</w>
+      <w>traefik</w>
     </words>
   </dictionary>
 </component>

@@ -1,0 +1,58 @@
+name: Lint
+
+on:
+  push:
+    branches: [main]
+    tags: [v*]
+  pull_request:
+
+jobs:
+  typos:
+    name: Typos
+    timeout-minutes: 10
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v5
+      - name: Spellcheck
+        uses: crate-ci/typos@v1.42.3
+
+  kotlin:  # TODO(Cynthia): generate SARIF reports and push them to GitHub
+    name: Kotlin lint
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+      - uses: gradle/actions/setup-gradle@v5
+
+      # TODO(Cynthia): Proper reports to GitHub etc...
+      - run: ./gradlew :build-logic:detektMain :build-logic:detektTest detektMain detektTest
+
+  js-lint:
+    name: JavaScript lint
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+      - uses: ./.github/actions/pnpm-cache
+      - run: pnpm i --frozen-lockfile
+        working-directory: frontend
+
+      # TODO(Cynthia): Proper reports to GitHub etc...
+      - run: pnpm run lint
+        working-directory: frontend
+
+  js-typecheck:
+    name: JavaScript typechecking
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+      - uses: ./.github/actions/pnpm-cache
+      - run: pnpm i --frozen-lockfile
+        working-directory: frontend
+
+      - run: pnpm run typecheck
+        working-directory: frontend

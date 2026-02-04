@@ -1,18 +1,19 @@
 [versions]
-jdk = "24"
+jdk = "25"
 kotlin = "2.3.0"
-kotlinx-serialization-json = "1.9.0"
-detekt = "2.0.0-alpha.1"
-junit = "6.0.1"
-mockk = "1.14.7"
-mockk-spring = "5.0.1"
-spring-boot = "4.0.1"
-hibernate = "7.1.8.Final"
-jdbc-postgresql = "42.7.8"
+# ----
+detekt = "2.0.0-alpha.2"
 flyway = "11.20.0"
+hibernate = "7.1.8.Final"
 ideax = "1.3"
+jdbc-postgresql = "42.7.8"
+junit = "6.0.1"
+kotlinx-serialization-json = "1.9.0"
+mockk = "1.14.7"
+spring-boot = "4.0.1"
 
 [libraries]
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 detekt-ktlint = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
 flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 jdbc-postgresql = { module = "org.postgresql:postgresql", version.ref = "jdbc-postgresql" }
@@ -24,14 +25,13 @@ kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-bdd = { module = "io.mockk:mockk-bdd", version.ref = "mockk" }
-mockk-spring = { module = "com.ninja-squad:springmockk", version.ref = "mockk-spring" }
 spring-boot-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
 spring-boot-actuator-test = { module = "org.springframework.boot:spring-boot-starter-actuator-test", version.ref = "spring-boot" }
 spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "spring-boot" }
 spring-boot-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway", version.ref = "spring-boot" }
 spring-boot-flyway-test = { module = "org.springframework.boot:spring-boot-starter-flyway-test", version.ref = "spring-boot" }
-spring-boot-jdbc = { module = "org.springframework.boot:spring-boot-starter-jdbc", version.ref = "spring-boot" }
-spring-boot-jdbc-test = { module = "org.springframework.boot:spring-boot-starter-jdbc-test", version.ref = "spring-boot" }
+spring-boot-kotlinx-serialization-json = { module = "org.springframework.boot:spring-boot-starter-kotlinx-serialization-json", version.ref = "spring-boot" }
+spring-boot-kotlinx-serialization-json-test = { module = "org.springframework.boot:spring-boot-starter-kotlinx-serialization-json-test", version.ref = "spring-boot" }
 spring-boot-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
 spring-boot-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test", version.ref = "spring-boot" }
 spring-boot-mail = { module = "org.springframework.boot:spring-boot-starter-mail", version.ref = "spring-boot" }
@@ -53,9 +53,9 @@ spring-boot-webmvc-test = { module = "org.springframework.boot:spring-boot-start
 [plugins]
 detekt = { id = "dev.detekt", version.ref = "detekt" }
 hibernate = { id = "org.hibernate.orm", version.ref = "hibernate" }
+ideax = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "ideax" }
 kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
-ideax = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "ideax" }

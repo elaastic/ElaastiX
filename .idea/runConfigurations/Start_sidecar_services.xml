@@ -1,8 +1,17 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Start sidecar services" type="CompoundRunConfigurationType">
-    <toRun name="Garage (S3) Service" type="docker-deploy" />
-    <toRun name="PostgreSQL Service" type="docker-deploy" />
-    <toRun name="Traefik Service" type="docker-deploy" />
+  <configuration default="false" name="Start sidecar services" type="docker-deploy" factoryName="docker-compose.yml" activateToolWindowBeforeRun="false" server-name="Docker">
+    <deployment type="docker-compose.yml">
+      <settings>
+        <option name="services">
+          <list>
+            <option value="postgres" />
+            <option value="storage" />
+            <option value="traefik" />
+          </list>
+        </option>
+        <option name="sourceFilePath" value="compose.yaml" />
+      </settings>
+    </deployment>
     <method v="2" />
   </configuration>
 </component>

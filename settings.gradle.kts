@@ -22,6 +22,7 @@
 rootProject.name = "ElaastiX"
 
 includeBuild("build-logic")
+include("metamodel")
 include("server")
 include("frontend")
 
