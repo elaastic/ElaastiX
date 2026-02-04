@@ -32,6 +32,6 @@ class AuthenticationHolder {
 
     val authenticatedUser: User?
         get() = SecurityContextHolder.getContext().authentication?.principal as? User
-
-    fun User?.required(): User = this ?: throw HttpClientErrorException(HttpStatus.UNAUTHORIZED)
 }
+
+fun User?.required(): User = this ?: throw HttpClientErrorException(HttpStatus.UNAUTHORIZED)

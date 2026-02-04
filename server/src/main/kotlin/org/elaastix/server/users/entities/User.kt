@@ -23,9 +23,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
 import jakarta.persistence.Version
-import org.elaastix.server.UUID_Z
-import org.hibernate.annotations.UuidGenerator
-import org.hibernate.id.uuid.UuidVersion7Strategy
+import org.elaastix.server.utils.generateUuid7
 import java.util.UUID
 import org.elaastix.mm.user.User as MMUser
 
@@ -34,9 +32,8 @@ import org.elaastix.mm.user.User as MMUser
 @Table(name = "\"user\"")
 class User : MMUser {
     @Id
-    @UuidGenerator(algorithm = UuidVersion7Strategy::class)
-    var id: UUID = UUID_Z
+    var id: UUID = generateUuid7()
 
     @Version
-    var version = 0L
+    var version: Long? = null
 }
