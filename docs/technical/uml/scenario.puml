@@ -25,10 +25,20 @@ package scenario {
 
     abstract class ScenarioNode
 
+    abstract class LearningActivityDecorator extends LearningActivity {
+        decoratedActivity: LearningActivity
+    }
+
+    LearningActivityDecorator --> LearningActivity
+
+    class TimedActivity extends LearningActivityDecorator
+    class RepeatedActivity extends LearningActivityDecorator
+
+
     ScenarioLane "1" *-- "*" ScenarioNode : contains >
     ScenarioNode "0..1" *-- "1..*" ScenarioNode : descendants >
 
-    abstract class EventNode extends ScenarioNode {
+    abstract class Event extends ScenarioNode {
         watchers
     }
     note top
@@ -36,27 +46,27 @@ package scenario {
         (e.g. the 2nd phase of the sequence starts)
     end note
 
-    abstract class BranchingNode extends ScenarioNode {
+    abstract class Gateway extends ScenarioNode {
         branches: Map<Condition, ScenarioNode>
     }
 
-    class IfNode extends BranchingNode
-    class RangeNode extends BranchingNode
+    class IfNode extends Gateway
+    class RangeNode extends Gateway
 
-    abstract class ProcessingNode extends ScenarioNode
+    abstract class ProcessingTask extends ScenarioNode
     note top
         Run a process
         without involving the learner
         (e.g., compute a pairing)
     end note
 
-    abstract class LearningActivityNode extends ScenarioNode
+    abstract class LearningActivity extends ScenarioNode
     note top: Create and/or join activity session
 
     abstract class ConfigProvider
     abstract class MaterialProvider
-    LearningActivityNode --> ConfigProvider
-    LearningActivityNode --> MaterialProvider
+    LearningActivity --> ConfigProvider
+    LearningActivity --> MaterialProvider
 
     class StaticConfigProvider extends ConfigProvider
     class StaticMaterialProvider extends MaterialProvider
