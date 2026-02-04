@@ -2,7 +2,7 @@
 'https://plantuml.com/class-diagram
 
 package activity.metamodel {
-    class Sequence {
+    class  Sequence {
         state: State
         scenario: Scenario
         start()
@@ -15,6 +15,9 @@ package activity.metamodel {
         OPEN
         PENDING
         RUNNING
+        PAUSED
+        RESUMED
+        CANCELLED
         CLOSED
     }
 
