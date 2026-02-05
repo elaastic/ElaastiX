@@ -22,9 +22,9 @@ package org.elaastix.server.authn.tmp
 import org.elaastix.server.users.UserRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.stereotype.Component
@@ -33,8 +33,8 @@ import java.util.UUID
 @Component
 class AuthnTmpProvider(val userRepository: UserRepository) : AuthenticationProvider {
     override fun authenticate(authentication: Authentication): Authentication? {
-        val customToken = authentication.principal as? UUID ?: throw object : AuthenticationException(null) {}
-        val user = userRepository.findByIdOrNull(customToken) ?: return null
+        val user = (authentication.principal as? UUID)?.let(userRepository::findByIdOrNull)
+            ?: throw BadCredentialsException("Bad credentials")
 
         return UsernamePasswordAuthenticationToken(
             user,
