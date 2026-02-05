@@ -38,6 +38,6 @@ class DatabaseSeeder(val userRepository: UserRepository) {
         }
 
         @Suppress("MagicNumber")
-        userRepository.findAll(Pageable.ofSize(3)).forEach { println("Test user 1: ${it.id}") }
+        userRepository.findAll(Pageable.ofSize(3)).forEachIndexed { idx, user -> println("Test user $idx: ${user.id}") }
     }
 }
