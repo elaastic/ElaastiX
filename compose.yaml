@@ -1,122 +1,120 @@
 services:
-    postgres:
-        image: postgres:18-alpine
-        environment:
-            POSTGRES_USER: elaastix
-            POSTGRES_PASSWORD: elaastix
-            POSTGRES_DATABASE: elaastix
-        healthcheck:
-            # noinspection SpellCheckingInspection
-            test: [ "CMD", "pg_isready",  "-U", "elaastix" ]
-            interval: 5s
-            timeout: 5s
-            retries: 3
-        ports:
-            - "127.0.0.1:5432:5432"
-        read_only: true
-        volumes:
-            - pg-data:/var/lib/postgresql
-        tmpfs:
-            - /run/postgresql
-            - /tmp
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_USER: elaastix
+      POSTGRES_PASSWORD: elaastix
+      POSTGRES_DATABASE: elaastix
+    healthcheck:
+      # noinspection SpellCheckingInspection
+      test: [ "CMD", "pg_isready",  "-U", "elaastix" ]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+    ports:
+      - "127.0.0.1:5432:5432"
+    read_only: true
+    volumes:
+      - pg-data:/var/lib/postgresql
+    tmpfs:
+      - /run/postgresql
+      - /tmp
 
-    server:
-        pull_policy: never
-        image: elaastic/elaastix-server:local-develop
-        build:
-            context: .
-            dockerfile: server/Containerfile
-            target: base
-        env_file:
-            - .config/garage/credentials.env
-        environment:
-            SPRING_PROFILES_ACTIVE: develop,container
-        command: bootRunDebug
-        ports:
-            - "127.0.0.1:20177:20177"
-        read_only: false  # Gradle is too write-heavy to restrict the filesystem, unfortunately.
-        volumes:
-            - ./server/src:/build/server/src:ro
-            - ./metamodel/src:/build/metamodel/src:ro
-            - gradle-trunk:/root/.gradle  # To avoid useless re-downloads every single time.
-        tmpfs:
-            - /tmp
-            - /build/build
-        labels:
-            traefik.enable: "true"
-            traefik.http.routers.server.rule: "Host(`elaastix.localhost`) && (Path(`/api`) || PathPrefix(`/api/`))"
-            traefik.http.routers.server.middlewares: "server-strip-prefix"
-            traefik.http.services.server.loadbalancer.server.port: "8080"
-            traefik.http.middlewares.server-strip-prefix.stripprefix.prefixes: "/api"
-        depends_on:
-            postgres:
-                condition: service_healthy
-            traefik:
-                condition: service_started
+  server:
+    pull_policy: never
+    image: elaastic/elaastix-server:local-develop
+    build:
+      context: .
+      dockerfile: server/Containerfile
+      target: develop
+    env_file:
+      - .config/garage/credentials.env
+    environment:
+      SPRING_PROFILES_ACTIVE: develop,container
+    command: bootRunDebug
+    ports:
+      - "127.0.0.1:20177:20177"
+    read_only: false  # Gradle is too write-heavy to restrict the filesystem, unfortunately.
+    volumes:
+      - ./server/src:/build/server/src:ro
+      - ./metamodel/src:/build/metamodel/src:ro
+    tmpfs:
+      - /tmp
+      - /build/build
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.server.rule: "Host(`elaastix.localhost`) && (Path(`/api`) || PathPrefix(`/api/`))"
+      traefik.http.routers.server.middlewares: "server-strip-prefix"
+      traefik.http.services.server.loadbalancer.server.port: "8080"
+      traefik.http.middlewares.server-strip-prefix.stripprefix.prefixes: "/api"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      traefik:
+        condition: service_started
 
-    frontend:
-        pull_policy: never
-        image: elaastic/elaastix-frontend:local-develop
-        build:
-            context: .
-            dockerfile: frontend/Containerfile
-            target: base
-        command: pnpm run dev --host
-        read_only: true
-        volumes:
-            - ./frontend:/app/frontend:ro
-            # Hold generated files and trunk-folders in container-private volumes.
-            - /app/frontend/node_modules
-            - nuxt-trunk:/app/frontend/.nuxt
-        tmpfs:
-            - /tmp
-        labels:
-            traefik.enable: "true"
-            traefik.http.routers.frontend.rule: "Host(`elaastix.localhost`)"
-            traefik.http.services.frontend.loadbalancer.server.port: "3000"
-        depends_on:
-            server:
-                condition: service_started
-            traefik:
-                condition: service_started
+  frontend:
+    pull_policy: never
+    image: elaastic/elaastix-frontend:local-develop
+    build:
+      context: .
+      dockerfile: frontend/Containerfile
+      target: base
+    command: pnpm run dev --host
+    read_only: true
+    volumes:
+      - ./frontend:/app/frontend:ro
+      # Hold generated files and trunk-folders in container-private volumes.
+      - /app/frontend/node_modules
+      - nuxt-trunk:/app/frontend/.nuxt
+    tmpfs:
+      - /tmp
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.frontend.rule: "Host(`elaastix.localhost`)"
+      traefik.http.services.frontend.loadbalancer.server.port: "3000"
+    depends_on:
+      server:
+        condition: service_started
+      traefik:
+        condition: service_started
 
-    storage:
-        image: dxflrs/garage:v2.1.0
-        read_only: true
-        volumes:
-            - .config/garage/config.toml:/etc/garage.toml
-            - garage-meta:/var/lib/garage/meta
-            - garage-data:/var/lib/garage/data
-        tmpfs:
-            - /tmp
-        labels:
-            traefik.enable: "true"
-            traefik.http.routers.s3.rule: "Host(`storage.elaastix.localhost`)"
-            traefik.http.services.s3.loadbalancer.server.port: "3900"
+  storage:
+    image: dxflrs/garage:v2.1.0
+    read_only: true
+    volumes:
+      - .config/garage/config.toml:/etc/garage.toml
+      - garage-meta:/var/lib/garage/meta
+      - garage-data:/var/lib/garage/data
+    tmpfs:
+      - /tmp
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.s3.rule: "Host(`storage.elaastix.localhost`)"
+      traefik.http.services.s3.loadbalancer.server.port: "3900"
 
-    traefik:
-        image: traefik:v3.6
-        command: |
-            --api.dashboard=true
-            --providers.docker=true
-            --providers.docker.exposedbydefault=false
-            --entrypoints.web.address=:8080
-            --log.level=DEBUG
-        ports:
-            - "127.0.0.1:${TRAEFIK_BIND_PORT:-80}:8080"
-        volumes:
-            - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:ro
-        tmpfs:
-            - /tmp
-        labels:
-            traefik.enable: "true"
-            traefik.http.routers.dashboard.rule: "Host(`traefik.localhost`)"
-            traefik.http.routers.dashboard.service: "api@internal"
-            traefik.http.services.dashboard.loadbalancer.server.port: "8080"
+  traefik:
+    image: traefik:v3.6
+    command: |
+      --api.dashboard=true
+      --providers.docker=true
+      --providers.docker.exposedbydefault=false
+      --entrypoints.web.address=:8080
+      --log.level=DEBUG
+    ports:
+      - "127.0.0.1:${TRAEFIK_BIND_PORT:-80}:8080"
+    volumes:
+      - ${DOCKER_SOCKET:-/var/run/docker.sock}:/var/run/docker.sock:ro
+    tmpfs:
+      - /tmp
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.dashboard.rule: "Host(`traefik.localhost`)"
+      traefik.http.routers.dashboard.service: "api@internal"
+      traefik.http.services.dashboard.loadbalancer.server.port: "8080"
 
 volumes:
-    pg-data:
-    garage-meta:
-    garage-data:
-    gradle-trunk:
-    nuxt-trunk:
+  pg-data:
+  garage-meta:
+  garage-data:
+  nuxt-trunk:

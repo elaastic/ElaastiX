@@ -63,15 +63,29 @@ tasks.jar {
 }
 
 tasks.register("resolveDependencies") {
+    notCompatibleWithConfigurationCache("Uses projects during execution")
+    doNotTrackState("Task must always be re-run to ensure all dependencies are downloaded locally")
     group = "build"
 
-    configurations.compileClasspath.configure { resolve() }
-    configurations.runtimeClasspath.configure { resolve() }
+    val compileCp = configurations.compileClasspath
+    val runtimeCp = configurations.runtimeClasspath
+
+    doLast {
+        compileCp.get().files
+        runtimeCp.get().files
+    }
 }
 
 tasks.register("resolveTestDependencies") {
+    notCompatibleWithConfigurationCache("Uses projects during execution")
+    doNotTrackState("Task must always be re-run to ensure all dependencies are downloaded locally")
     group = "build"
 
-    configurations.testCompileClasspath.configure { resolve() }
-    configurations.testRuntimeClasspath.configure { resolve() }
+    val compileCp = configurations.testCompileClasspath
+    val runtimeCp = configurations.testRuntimeClasspath
+
+    doLast {
+        compileCp.get().files
+        runtimeCp.get().files
+    }
 }

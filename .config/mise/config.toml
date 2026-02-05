@@ -22,7 +22,7 @@ postinstall = [
 hide = true
 run = [
     "typos -c .config/typos/config.toml",
-    "./gradlew :build-logic:detektMain :build-logic:detektTest detektMain detektTest"
+    "./gradlew :build-logic:detekt detekt"
 ]
 
 [shell_alias]
