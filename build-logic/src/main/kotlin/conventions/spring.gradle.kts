@@ -52,13 +52,14 @@ dependencies {
     implementation(libs.findLibrary("kotlin.reflect").get())
     implementation(libs.findLibrary("kotlinx.serialization.json").get())
 
-    testImplementation(libs.findLibrary("spring.boot.test").get()) {
-        exclude(group = "org.mockito", module = "mockito-core")
-        exclude(group = "org.mockito", module = "mockito-junit-jupiter")
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-    }
-
+    testImplementation(libs.findLibrary("spring.boot.test").get())
     developmentOnly(libs.findLibrary("spring.boot.devtools").get())
+}
+
+configurations.all {
+    exclude(group = "org.mockito", module = "mockito-core")
+    exclude(group = "org.mockito", module = "mockito-junit-jupiter")
+    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 }
 
 springBoot {
