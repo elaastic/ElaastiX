@@ -12,7 +12,16 @@ COPY *.gradle.kts *.gradle gradle.properties gradlew ./
 
 # Make Gradle download dependencies (and build `build-logic`) prior to copying sources.
 # This makes better use of Docker's cache system. We can't use cache mounts as dev image needs libs at runtime.
-RUN ./gradlew --no-daemon :server:classes :server:resolveDependencies
+RUN --mount=type=cache,target=/root/.gradle \
+    ./gradlew --no-daemon :metamodel:resolveDependencies :server:resolveDependencies :server:classes
+
+
+FROM base AS develop
+
+# Can't use the cached data while actually running the container, so we have to copy it out.
+ENV GRADLE_USER_HOME=/root/.gradle2
+RUN --mount=type=cache,target=/root/.gradle \
+    cp -r /root/.gradle /root/.gradle2
 
 # Will be used by the development containers
 COPY server/docker-entrypoint-dev.sh ./server/

@@ -26,6 +26,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import org.springframework.http.MediaType
 import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
@@ -40,14 +41,17 @@ class AuthnTmpProcessingFilter(requestMatcher: RequestMatcher, authenticationMan
         setAuthenticationManager(authenticationManager)
     }
 
-    override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication? =
-        runCatching {
-            request.getHeader("Authorization")?.let(UUID::fromString)
-        }.getOrNull()?.let {
-            authenticationManager.authenticate(
-                PreAuthenticatedAuthenticationToken(it, null),
-            )
-        }
+    override fun attemptAuthentication(request: HttpServletRequest, response: HttpServletResponse): Authentication? {
+        val token = request.getHeader("Authorization")
+            ?: throw BadCredentialsException("You must authenticate to access this endpoint")
+
+        val uuid = token.runCatching(UUID::fromString).getOrNull()
+            ?: throw BadCredentialsException("Bad credentials")
+
+        return authenticationManager.authenticate(
+            PreAuthenticatedAuthenticationToken(uuid, null),
+        )
+    }
 
     protected override fun successfulAuthentication(
         request: HttpServletRequest,

@@ -63,6 +63,7 @@ tasks.jar {
 }
 
 tasks.register("resolveDependencies") {
+    doNotTrackState("Task must always be re-run to ensure all dependencies are downloaded locally")
     group = "build"
 
     configurations.compileClasspath.configure { resolve() }
@@ -70,6 +71,7 @@ tasks.register("resolveDependencies") {
 }
 
 tasks.register("resolveTestDependencies") {
+    doNotTrackState("Task must always be re-run to ensure all dependencies are downloaded locally")
     group = "build"
 
     configurations.testCompileClasspath.configure { resolve() }
