@@ -9,8 +9,8 @@ interface Cohort {
     users: Set<User>
 }
 
-class LearnerUserGroup implements Cohort
-class TeacherUserGroup implements Cohort
+class LearnerCohort implements Cohort
+class TeacherCohort implements Cohort
 
 Cohort "*" *-- "*" User : belongs to <
 

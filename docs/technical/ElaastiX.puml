@@ -6,8 +6,8 @@
 !include ./uml/activity-metamodel.puml
 
 class Assignment {
-    teachers: Set<Teacher | TeacherUserGroup>
-    learners: Set<LearnerUser | LearnerUserGroup>
+    teachers: Set<Teacher | TeacherCohort>
+    learners: Set<LearnerUser | LearnerCohort>
     sequences: List<Sequence>
 }
 note top
@@ -18,8 +18,8 @@ end note
 
 Assignment "*" o- "*" Learner : registered as learner <
 Assignment "*" o- "*" Teacher : registered as teacher <
-Assignment "*" o- "*" LearnerUserGroup : registered as learner <
-Assignment "*" o- "*" TeacherUserGroup : registered as teacher <
+Assignment "*" o- "*" LearnerCohort : registered as learner <
+Assignment "*" o- "*" TeacherCohort : registered as teacher <
 
 Assignment *- activity.metamodel.Sequence : contains >
 
