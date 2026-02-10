@@ -21,7 +21,7 @@ interface Cohort {
 class LearnerCohort implements Cohort
 class TeacherCohort implements Cohort
 
-Cohort "*" *-- "*" User : belongs to <
+Cohort "*" o-- "*" User : belongs to <
 
 User "1" -- "0..1" UserAccount
 
