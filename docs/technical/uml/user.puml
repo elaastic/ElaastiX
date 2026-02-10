@@ -5,14 +5,14 @@ class User
 class Learner extends User
 class Teacher extends User
 
-interface UserGroup {
+interface Cohort {
     users: Set<User>
 }
 
-class LearnerUserGroup implements UserGroup
-class TeacherUserGroup implements UserGroup
+class LearnerUserGroup implements Cohort
+class TeacherUserGroup implements Cohort
 
-UserGroup "*" *-- "*" User : belongs to <
+Cohort "*" *-- "*" User : belongs to <
 
 User "1" -- "0..1" UserAccount
 
