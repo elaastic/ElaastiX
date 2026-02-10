@@ -43,7 +43,7 @@ package activity.metamodel {
     ActivitySession --> ActivitySessionLog
     ActivitySession --> ActivityConfig
     ActivitySession *-- LearnerOutput
-    ActivitySession *-- Material
+    ActivitySession o-- Material
 
     interface ActivitySessionReport
     interface LearnerActivitySessionReport
