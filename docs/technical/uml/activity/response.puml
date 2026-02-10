@@ -42,8 +42,8 @@ package activity.response {
         explanation
     }
 
-    Response "*" -- "1" Question
-    Response "*" -- "1" Learner
+    Response "*" --* "1" Question
+    Response "*" --* "1" Learner
 
     class ResponseGradeTransformer implements activity.metamodel.MaterialTransformer {
         transform(response: Response): scenario.Grade
