@@ -16,10 +16,10 @@ An assignment is managed by users registered as teachers.
 An assignment is played by users registered as learners.
 end note
 
-Assignment "*" *- "*" Learner : registered as learner <
-Assignment "*" *- "*" Teacher : registered as teacher <
-Assignment "*" *- "*" LearnerUserGroup : registered as learner <
-Assignment "*" *- "*" TeacherUserGroup : registered as teacher <
+Assignment "*" o- "*" Learner : registered as learner <
+Assignment "*" o- "*" Teacher : registered as teacher <
+Assignment "*" o- "*" LearnerUserGroup : registered as learner <
+Assignment "*" o- "*" TeacherUserGroup : registered as teacher <
 
 Assignment *- activity.metamodel.Sequence : contains >
 
