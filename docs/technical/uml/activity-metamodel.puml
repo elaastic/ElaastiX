@@ -16,8 +16,6 @@ package activity.metamodel {
         PENDING
         RUNNING
         PAUSED
-        RESUMED
-        CANCELLED
         CLOSED
     }
 
