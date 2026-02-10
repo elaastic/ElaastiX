@@ -69,7 +69,14 @@ package activity.response {
     }
 
     class ResponseCorrectnessTransformer implements activity.metamodel.MaterialTransformer {
-        transform(response: Response): boolean
+        transform(response: Response): Correctness
+    }
+
+    enum Correctness {
+      INCORRECT,
+      CORRECT,
+      PARTIAL,
+      NEUTRAL,
     }
 }
 @enduml
