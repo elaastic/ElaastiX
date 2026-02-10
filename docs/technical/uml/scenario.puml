@@ -3,42 +3,52 @@
 
 package scenario {
     abstract class Scenario
-    note top
-    The scenario is responsible for creating and updating ActivitySession.
-    It will react to sequence updates and activity sessions events.
-    end note
 
-    class ScenarioLane
+    class Lane
 
-    Scenario "1" *-- "0..*" ScenarioLane
+    Process "1" *-- "0..*" Lane
 
-    class ManualScenario extends Scenario {
+    class ManualScenario extends Process {
         createActivitySession()
         startActivitySession(sessionId)
         closeActivitySession(sessionId)
     }
 
-    class DirectedSequenceScenario extends Scenario {
+    class DirectedSequenceScenario extends Process {
         sequenceScenarioLane
         learnersScenarioLane
     }
 
-    abstract class ScenarioNode
 
-    abstract class LearningActivityDecorator extends LearningActivity {
-        decoratedActivity: LearningActivity
+    class SequenceFlow
+
+    Process *-- SequenceFlow
+    Process *-- FlowNode
+
+    SequenceFlow --> FlowNode :> source
+    SequenceFlow --> FlowNode :> target
+
+    abstract class FlowNode
+
+    abstract class Activity extends FlowNode
+
+    class SubProcess extends Activity
+
+    SubProcess o-- SequenceFlow
+
+    abstract class ActivityDecorator extends Activity {
+        decoratedActivity: Activity
     }
 
-    LearningActivityDecorator --> LearningActivity
+    ActivityDecorator --> LearningActivity
 
-    class TimedActivity extends LearningActivityDecorator
-    class RepeatedActivity extends LearningActivityDecorator
+    class TimedActivity extends ActivityDecorator
+    class RepeatedActivity extends ActivityDecorator
 
 
-    ScenarioLane "1" *-- "*" ScenarioNode : contains >
-    ScenarioNode "0..1" *-- "1..*" ScenarioNode : descendants >
+    Lane "1" o-- "*" FlowNode : contains >
 
-    abstract class Event extends ScenarioNode {
+    abstract class Event extends FlowNode {
         watchers
     }
     note top
@@ -46,21 +56,21 @@ package scenario {
         (e.g. the 2nd phase of the sequence starts)
     end note
 
-    abstract class Gateway extends ScenarioNode {
-        branches: Map<Condition, ScenarioNode>
+    abstract class Gateway extends FlowNode {
+        branches: Map<Condition, FlowNode>
     }
 
     class IfNode extends Gateway
     class RangeNode extends Gateway
 
-    abstract class ProcessingTask extends ScenarioNode
+    abstract class ProcessingTask extends Activity
     note top
         Run a process
         without involving the learner
         (e.g., compute a pairing)
     end note
 
-    abstract class LearningActivity extends ScenarioNode
+    abstract class LearningActivity extends Activity
     note top: Create and/or join activity session
 
     abstract class ConfigProvider
