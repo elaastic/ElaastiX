@@ -45,8 +45,8 @@ package activity.response {
     Response --> Question
     Response --> Learner
 
-    class ResponseScoreTransformer implements activity.metamodel.MaterialTransformer {
-        transform(response: Response): Score
+    class ResponseGradeTransformer implements activity.metamodel.MaterialTransformer {
+        transform(response: Response): scenario.Grade
     }
 
     class ResponseCorrectnessTransformer implements activity.metamodel.MaterialTransformer {

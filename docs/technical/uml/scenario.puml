@@ -72,5 +72,9 @@ package scenario {
     class StaticMaterialProvider extends MaterialProvider
     abstract class SequenceMaterialProvider extends MaterialProvider
 
+    class Grade {
+        value: BigDecimal
+        max: BigDecimal
+    }
 }
 @enduml
