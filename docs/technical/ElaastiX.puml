@@ -6,8 +6,8 @@
 !include ./uml/activity-metamodel.puml
 
 class Assignment {
-    teachers: Collection<Teacher | TeacherUserGroup>
-    learners: Collection<LearnerUser | LearnerUserGroup>
+    teachers: Set<Teacher | TeacherUserGroup>
+    learners: Set<LearnerUser | LearnerUserGroup>
     sequences: List<Sequence>
 }
 note top

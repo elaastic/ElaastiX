@@ -30,9 +30,9 @@ package activity.metamodel {
         context: Sequence
         activityConfig: ActivityConfig
         state: State
-        abstract getLearners(): Collection<Learner>
-        abstract getInputMaterial(): Collection<Material>
-        abstract getLearnerOutput(): Collection<LearnerOutput>
+        abstract getLearners(): Set<Learner>
+        abstract getInputMaterial(): Set<Material>
+        abstract getLearnerOutput(): Set<LearnerOutput>
     }
 
     class ActivitySessionLog

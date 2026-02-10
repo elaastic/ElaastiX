@@ -7,7 +7,7 @@
 
 package activity.chat {
     class ChatActivitySession extends activity.metamodel.ActivitySession {
-        learners: Collection<Learner>
+        learners: Set<Learner>
         topic: Material
     }
 

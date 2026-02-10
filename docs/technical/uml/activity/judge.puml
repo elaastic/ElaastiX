@@ -8,7 +8,7 @@ package activity.judge {
     class JudgeActivitySession extends activity.metamodel.ActivitySession {
         learner: Learner
         activityConfig: ActivityConfig
-        material: Collection<Material>
+        material: Set<Material>
     }
 
     class JudgeActivityConfig extends activity.metamodel.ActivityConfig {
