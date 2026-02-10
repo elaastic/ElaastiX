@@ -60,9 +60,6 @@ package scenario {
         branches: List<Pair<Condition, ScenarioNode>>
     }
 
-    class IfNode extends Gateway
-    class RangeNode extends Gateway
-
     abstract class ProcessingTask extends Activity
     note top
         Run a process
