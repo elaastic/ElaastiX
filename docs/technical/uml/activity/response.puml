@@ -28,18 +28,37 @@ package activity.response {
         provideExplanation: boolean
     }
 
-    class Question implements activity.metamodel.Material {
+    abstract class Question implements activity.metamodel.Material {
         statement: String
-        choices: List<Choice>
-        correctionChoice: Choice
         explanatoryFeedback: String
     }
 
-    class Response implements activity.metamodel.LearnerOutput {
+    class OpenQuestion extends Question
+
+    class ClosedQuestion extends Question {
+        choices: List<Choice>
+    }
+
+
+    abstract class Response implements activity.metamodel.LearnerOutput {
         question: Question
-        choice
         confidenceDegree
-        explanation
+    }
+
+    class OpenResponse extends Response {
+        answer: String
+    }
+
+    abstract class CloseResponse extends Response {
+        explanation: String
+    }
+
+    class SingleChoiceResponse extends Response {
+        selectedChoice: Choice
+    }
+
+    class MultipleChoiceResponse extends Response {
+        selectedChoices: List<Choice>
     }
 
     Response "*" --* "1" Question
