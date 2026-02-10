@@ -5,6 +5,15 @@ class User
 class Learner extends User
 class Teacher extends User
 
+class UserAccount
+note top
+    UserAccount provide access to the system for a User
+    and holds its personal data.
+    The UserAccount may be removed for GPDR compliance
+    while keeping the User entity so that the
+    relational model is preserved.
+end note
+
 interface Cohort {
     users: Set<User>
 }
