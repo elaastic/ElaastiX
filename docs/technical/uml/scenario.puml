@@ -57,7 +57,7 @@ package scenario {
     end note
 
     abstract class Gateway extends FlowNode {
-        branches: Map<Condition, FlowNode>
+        branches: List<Pair<Condition, ScenarioNode>>
     }
 
     class IfNode extends Gateway
