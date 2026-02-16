@@ -17,19 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package conventions
+package org.elaastix.commons.platform
 
-import org.gradle.plugins.ide.idea.model.Module.INHERITED
-
-plugins {
-    id("idea")
-    id("org.jetbrains.gradle.plugin.idea-ext")
-}
-
-idea {
-    module {
-        isDownloadJavadoc = true
-        isDownloadSources = true
-        jdkName = INHERITED
-    }
-}
+@RequiresOptIn(message = "This setter is reserved for JPA and should not be used directly.")
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.PROPERTY_SETTER)
+annotation class JpaImmutable

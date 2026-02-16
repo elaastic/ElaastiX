@@ -84,14 +84,15 @@ Files and folders that aren't worth of interest are not mentioned below. If it's
 something you should have to worry about.
 ```
 ElaastiX
-├── .config/                   Repository and project config files. Loosely follows the XDG convention.
-├── .github/                   GitHub-specific configuration files
-├── build-logic/               Convention plugins (Gradle)
-├── docs/                      Documentation of the project
+├── .config/                    Repository and project config files. Loosely follows the XDG convention.
+├── .github/                    GitHub-specific configuration files
+├── build-logic/                Convention plugins (Gradle)
+├── docs/                       Documentation of the project
 │   └── specs                   └── Specifications
-├── frontend/                  Nuxt web application
-├── gradle/                    Gradle-related files
+├── frontend/                   Nuxt web application
+├── gradle/                     Gradle-related files
 │   └── libs.versions.toml      └── Version catalogue
+└── metamodel/                  Metamodel library package
 └── server/                     Spring Boot application monolith
 ```
 
@@ -100,14 +101,17 @@ ElaastiX
 > This table documents which services are required **in production**. In development, please refer to the
 > [`compose.yaml` file](./compose.yaml) directly.
 
-| Service name     | Description                   | Required?                                                                   |
-|------------------|-------------------------------|-----------------------------------------------------------------------------|
-| `server`         | Spring monolith               | **Elaastix itself**                                                         |
-| `frontend`       | Nuxt.js webapp                | **Elaastix itself**                                                         |
-| `postgres`       | PostgreSQL 18 server          | **Y**                                                                       |
-| `storage`        | Garage (S3-compatible) server | **Y**                                                                       |
-| `traefik`        | Traefik reverse-proxy         | N                                                                           |
-| `otel-collector` | OpenTelemetry collector.      | N, but **expected by default**. See [disable telemetry](#disable-telemetry) |
+| Service name     | Description                               | Required?                                                                   |
+|------------------|-------------------------------------------|-----------------------------------------------------------------------------|
+| `server`         | Spring monolith                           | **Elaastix itself**                                                         |
+| `frontend`       | Nuxt.js webapp                            | **Elaastix itself**                                                         |
+| `postgres`       | PostgreSQL 18 server                      | **Y**                                                                       |
+| `storage`        | Garage (S3-compatible)[^s3-compat] server | **Y**                                                                       |
+| `traefik`        | Traefik reverse-proxy                     | N                                                                           |
+| `otel-collector` | OpenTelemetry collector.                  | N, but **expected by default**. See [disable telemetry](#disable-telemetry) |
+
+[^s3-compat]: Elaastix is tested with Garage specifically, and the first-party staging and production deployments use
+it as well. It should, however, work perfectly fine with any S3-compatible solution from any vendor.
 
 #### Default development credentials
 | Service    | Username         | Password         | Additional information                                                     |

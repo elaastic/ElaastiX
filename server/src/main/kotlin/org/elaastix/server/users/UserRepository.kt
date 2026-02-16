@@ -22,7 +22,7 @@ package org.elaastix.server.users
 import org.elaastix.server.users.entities.User
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Repository
-interface UserRepository : JpaRepository<User, UUID>
+interface UserRepository : JpaRepository<User, Uuid>

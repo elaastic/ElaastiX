@@ -17,19 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package conventions
+package org.elaastix.commons.platform
 
-import org.gradle.plugins.ide.idea.model.Module.INHERITED
-
-plugins {
-    id("idea")
-    id("org.jetbrains.gradle.plugin.idea-ext")
-}
-
-idea {
-    module {
-        isDownloadJavadoc = true
-        isDownloadSources = true
-        jdkName = INHERITED
-    }
-}
+@RequiresOptIn(message = "This is an internal implementation detail you shouldn't be interacting with.")
+@Retention(AnnotationRetention.BINARY)
+@Target(
+    AnnotationTarget.CLASS,
+    AnnotationTarget.FUNCTION,
+    AnnotationTarget.FIELD,
+    AnnotationTarget.PROPERTY_SETTER,
+    AnnotationTarget.CONSTRUCTOR,
+)
+annotation class InternalDetail

@@ -34,6 +34,13 @@ plugins {
     kotlin("plugin.spring")
 }
 
+allOpen {
+    // https://youtrack.jetbrains.com/issue/KT-79389
+    annotation("jakarta.persistence.Entity")
+    annotation("jakarta.persistence.MappedSuperclass")
+    annotation("jakarta.persistence.Embeddable")
+}
+
 configurations.configureEach {
     resolutionStrategy.eachDependency {
         when {
@@ -48,9 +55,7 @@ configurations.configureEach {
 
 dependencies {
     implementation(platform(SpringBootPlugin.BOM_COORDINATES))
-
     implementation(libs.findLibrary("kotlin.reflect").get())
-    implementation(libs.findLibrary("kotlinx.serialization.json").get())
 
     testImplementation(libs.findLibrary("spring.boot.test").get())
     developmentOnly(libs.findLibrary("spring.boot.devtools").get())
