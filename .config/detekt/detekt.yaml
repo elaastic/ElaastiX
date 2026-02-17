@@ -34,3 +34,11 @@ style:
   # Allow to-do and fix-me comments (flagged by default)
   ForbiddenComment:
     comments: [ 'STOPSHIP:' ]
+  ForbiddenImport:
+    active: true
+    forbiddenImports:
+      # Enforce use of Kotlin-native types
+      - value: java.util.UUID
+        reason: Use Kotlin's Uuid type
+      - value: java.time.Instant
+        reason: Use Kotlin's Instant type

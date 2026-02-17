@@ -17,6 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This file is where we deal with JPA compat, which only speaks Java.
+// We need to use some classes (such as UUID) we otherwise ban from the codebase.
+@file:Suppress("ForbiddenImport")
+
 package org.elaastix.commons.jpa
 
 import jakarta.persistence.AttributeConverter
@@ -34,6 +38,7 @@ import java.time.OffsetDateTime as JavaOffsetDateTime
 @Converter(autoApply = true)
 internal class UuidConverter : AttributeConverter<Uuid, UUID> {
     override fun convertToDatabaseColumn(attribute: Uuid?): UUID? = attribute?.toJavaUuid()
+
     override fun convertToEntityAttribute(dbData: UUID?): Uuid? = dbData?.toKotlinUuid()
 }
 

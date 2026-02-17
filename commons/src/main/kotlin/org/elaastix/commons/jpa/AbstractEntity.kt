@@ -33,20 +33,24 @@ import kotlin.time.Instant
 import kotlin.uuid.Uuid
 
 @MappedSuperclass
+@Suppress("AbstractClassCanBeConcreteClass") // Don't want the class to be constructible.
 abstract class AbstractEntity {
     @Id
     var id: Uuid = Uuid.generateV7()
-        @JpaImmutable protected set
+        /* @JpaImmutable -- Causes ByteBuddy to crash during Hibernate's bytecode enhancement... */
+        protected set
 
     @NotNull
     var updatedAt: Instant = Clock.System.now()
-        @JpaImmutable protected set
+        /* @JpaImmutable -- Causes ByteBuddy to crash during Hibernate's bytecode enhancement... */
+        protected set
 
     @Version
     @NotNull
     @InternalDetail
     var version: Long? = null
-        @JpaImmutable protected set
+        /* @JpaImmutable -- Causes ByteBuddy to crash during Hibernate's bytecode enhancement... */
+        protected set
 
     @PrePersist
     @PreUpdate
@@ -56,7 +60,7 @@ abstract class AbstractEntity {
         updatedAt = Clock.System.now()
     }
 
-    final override fun equals(other: Any?): Boolean {
+    override fun equals(other: Any?): Boolean {
         // Implementation researched by JPA Buddy.
         // Best current practice at the time of writing.
         if (this === other) return true
@@ -70,7 +74,7 @@ abstract class AbstractEntity {
     }
 
     // Since we're using universally unique identifiers, the hashcode of the ID is enough.
-    final override fun hashCode(): Int = id.hashCode()
+    override fun hashCode(): Int = id.hashCode()
 
     private final val Any.hibernateAwareJavaClass: Class<*>
         get() = if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass else this.javaClass
