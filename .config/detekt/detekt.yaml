@@ -10,11 +10,14 @@ comments:
   # TODO: Define whether we want to enforce documentation across the project or not.
   #       FWIW, documentation shows up in generated docs by SpringDoc.
   UndocumentedPublicClass:
-    active: false
+    active: true
+    severity: warning
   UndocumentedPublicFunction:
-    active: false
+    active: true
+    severity: warning
   UndocumentedPublicProperty:
-    active: false
+    active: true
+    severity: warning
 
 complexity:
   ReplaceSafeCallChainWithRun:

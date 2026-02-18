@@ -24,7 +24,6 @@ import jakarta.persistence.Converter
 import org.hibernate.boot.model.TypeContributions
 import org.hibernate.boot.model.TypeContributor
 import org.hibernate.service.ServiceRegistry
-import java.time.ZoneOffset
 import java.util.UUID
 import kotlin.time.Instant
 import kotlin.time.toJavaInstant
@@ -32,10 +31,19 @@ import kotlin.time.toKotlinInstant
 import kotlin.uuid.Uuid
 import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
-import java.time.OffsetDateTime as JavaOffsetDateTime
+import java.time.Instant as JavaInstant
 
+/**
+ * Custom [TypeContributor] responsible for registering the package's converters to the Hibernate context.
+ *
+ * Implementation has to cope with Hibernate bug [HHH-20070](https://hibernate.atlassian.net/browse/HHH-20070);
+ * the contributor is invoked twice, causing duplicate registration that leads to application start failure.
+ *
+ * The contributor will be automatically picked by Hibernate thanks to the
+ * `META-INF/services/org.hibernate.boot.model.TypeContributor` file.
+ */
 class HibernateTypeContributor : TypeContributor {
-    companion object {
+    private companion object {
         // Workaround for https://hibernate.atlassian.net/browse/HHH-20070
         private var initialised = false
     }
@@ -49,6 +57,16 @@ class HibernateTypeContributor : TypeContributor {
     }
 }
 
+/**
+ * JPA Converter responsible for handling the conversion from [Uuid] to [UUID].
+ * Automatically applied, to allow seamless usage of [Uuid] in entities.
+ *
+ * [UUID] is a [basic type](https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a486) that
+ * JPA can deal with.
+ *
+ * **WARNING**: JPA [`@Id`][jakarta.persistence.Id] is **incompatible** with converters.
+ * This incompatibility is dealt with by [AbstractEntity].
+ */
 @Converter(autoApply = true)
 class UuidConverter : AttributeConverter<Uuid, UUID> {
     override fun convertToDatabaseColumn(attribute: Uuid?): UUID? = attribute?.toJavaUuid()
@@ -56,11 +74,17 @@ class UuidConverter : AttributeConverter<Uuid, UUID> {
     override fun convertToEntityAttribute(dbData: UUID?): Uuid? = dbData?.toKotlinUuid()
 }
 
+/**
+ * JPA Converter responsible for handling the conversion from Kotlin's [Instant] to [JavaInstant].
+ * Automatically applied, to allow seamless usage of [Instant] in entities.
+ *
+ * Recent versions of JPA (3.2) classify [JavaInstant] as a
+ * [basic type](https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a486), so no further
+ * conversion is required.
+ */
 @Converter(autoApply = true)
-class InstantConverter : AttributeConverter<Instant, JavaOffsetDateTime> {
-    override fun convertToDatabaseColumn(attribute: Instant?): JavaOffsetDateTime? =
-        attribute?.toJavaInstant()?.atOffset(ZoneOffset.UTC)
+class InstantConverter : AttributeConverter<Instant, JavaInstant> {
+    override fun convertToDatabaseColumn(attribute: Instant?): JavaInstant? = attribute?.toJavaInstant()
 
-    override fun convertToEntityAttribute(dbData: JavaOffsetDateTime?): Instant? =
-        dbData?.toInstant()?.toKotlinInstant()
+    override fun convertToEntityAttribute(dbData: JavaInstant?): Instant? = dbData?.toKotlinInstant()
 }
