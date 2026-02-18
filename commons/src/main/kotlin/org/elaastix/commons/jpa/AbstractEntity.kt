@@ -19,48 +19,59 @@
 
 package org.elaastix.commons.jpa
 
+import jakarta.persistence.Column
 import jakarta.persistence.Id
 import jakarta.persistence.MappedSuperclass
 import jakarta.persistence.PrePersist
 import jakarta.persistence.PreUpdate
+import jakarta.persistence.Transient
 import jakarta.persistence.Version
 import jakarta.validation.constraints.NotNull
 import org.elaastix.commons.platform.InternalDetail
 import org.elaastix.commons.platform.JpaImmutable
 import org.hibernate.proxy.HibernateProxy
+import java.util.UUID
 import kotlin.time.Clock
 import kotlin.time.Instant
 import kotlin.uuid.Uuid
+import kotlin.uuid.toJavaUuid
+import kotlin.uuid.toKotlinUuid
 
 @MappedSuperclass
 @Suppress("AbstractClassCanBeConcreteClass") // Don't want the class to be constructible.
 abstract class AbstractEntity {
+    // Use of a backing field is "required", as JPA doesn't allow AttributeConverters along with `@Id`...
+    // Doing it manually is an acceptable compromise; this logic is going to be reused universally.
+    // Note on performance of using a new UUID as default value: this is in fact not an issue since the no-arg
+    // constructor *does not initialise properties by default*! No useless generation happening when JPA constructs.
     @Id
-    var id: Uuid = Uuid.generateV7()
-        /* @JpaImmutable -- Causes ByteBuddy to crash during Hibernate's bytecode enhancement... */
-        protected set
+    @Column(name = "id")
+    private var _id: UUID = Uuid.generateV7().toJavaUuid()
+        @JpaImmutable set
+
+    @delegate:Transient
+    val id: Uuid by lazy { _id.toKotlinUuid() }
 
     @NotNull
     var updatedAt: Instant = Clock.System.now()
-        /* @JpaImmutable -- Causes ByteBuddy to crash during Hibernate's bytecode enhancement... */
-        protected set
+        @JpaImmutable protected set
 
     @Version
     @NotNull
     @InternalDetail
     var version: Long? = null
-        /* @JpaImmutable -- Causes ByteBuddy to crash during Hibernate's bytecode enhancement... */
-        protected set
+        @JpaImmutable protected set
 
     @PrePersist
     @PreUpdate
     @Suppress("UnusedPrivateMember") // Actually used by JPA provider. Spec allows use of any visibility.
     private fun updateTimestamp() {
+        // Implemented "by hand" to cope with the fact we're not using Java native types.
         @OptIn(JpaImmutable::class)
         updatedAt = Clock.System.now()
     }
 
-    override fun equals(other: Any?): Boolean {
+    final override fun equals(other: Any?): Boolean {
         // Implementation researched by JPA Buddy.
         // Best current practice at the time of writing.
         if (this === other) return true
@@ -74,7 +85,7 @@ abstract class AbstractEntity {
     }
 
     // Since we're using universally unique identifiers, the hashcode of the ID is enough.
-    override fun hashCode(): Int = id.hashCode()
+    final override fun hashCode(): Int = id.hashCode()
 
     private final val Any.hibernateAwareJavaClass: Class<*>
         get() = if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass else this.javaClass

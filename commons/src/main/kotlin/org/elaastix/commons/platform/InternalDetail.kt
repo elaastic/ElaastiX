@@ -24,7 +24,7 @@ package org.elaastix.commons.platform
 @Target(
     AnnotationTarget.CLASS,
     AnnotationTarget.FUNCTION,
-    AnnotationTarget.FIELD,
+    AnnotationTarget.PROPERTY,
     AnnotationTarget.PROPERTY_SETTER,
     AnnotationTarget.CONSTRUCTOR,
 )

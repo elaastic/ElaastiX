@@ -20,7 +20,7 @@
 plugins {
     id("conventions.idea")
     id("conventions.kotlin")
-    id("conventions.spring")
+    id("conventions.spring-lib")
     id("conventions.test")
 }
 

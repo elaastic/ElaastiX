@@ -19,7 +19,6 @@
 
 package conventions
 
-import org.springframework.boot.gradle.plugin.SpringBootPlugin
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 
@@ -27,50 +26,12 @@ val libs = the<VersionCatalogsExtension>().named("libs")
 
 plugins {
     id("conventions.java")
-    id("org.springframework.boot")
-    id("org.hibernate.orm")
-
-    kotlin("plugin.jpa")
-    kotlin("plugin.spring")
-}
-
-allOpen {
-    // https://youtrack.jetbrains.com/issue/KT-79389
-    annotation("jakarta.persistence.Entity")
-    annotation("jakarta.persistence.MappedSuperclass")
-    annotation("jakarta.persistence.Embeddable")
-}
-
-configurations.configureEach {
-    resolutionStrategy.eachDependency {
-        when {
-            // Override Hibernate's version
-            // There's no easy way to sync the Gradle plugin's version with the version Spring uses
-            // To make sure there's no issue, re-align everything based on the version in our own catalogue
-            requested.group == "org.hibernate.orm" ->
-                useVersion(libs.findVersion("hibernate").get().requiredVersion)
-        }
-    }
+    id("conventions.spring-lib")
 }
 
 dependencies {
-    implementation(platform(SpringBootPlugin.BOM_COORDINATES))
-    implementation(libs.findLibrary("kotlin.reflect").get())
-
     testImplementation(libs.findLibrary("spring.boot.test").get())
     developmentOnly(libs.findLibrary("spring.boot.devtools").get())
-}
-
-configurations.all {
-    exclude(group = "org.mockito", module = "mockito-core")
-    exclude(group = "org.mockito", module = "mockito-junit-jupiter")
-    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-}
-
-springBoot {
-    buildInfo {
-        excludes = setOf("time")
-    }
 }
 
 hibernate {

@@ -17,14 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// This file is where we deal with JPA compat, which only speaks Java.
-// We need to use some classes (such as UUID) we otherwise ban from the codebase.
-@file:Suppress("ForbiddenImport")
-
 package org.elaastix.commons.jpa
 
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter
+import org.hibernate.boot.model.TypeContributions
+import org.hibernate.boot.model.TypeContributor
+import org.hibernate.service.ServiceRegistry
 import java.time.ZoneOffset
 import java.util.UUID
 import kotlin.time.Instant
@@ -35,15 +34,30 @@ import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 import java.time.OffsetDateTime as JavaOffsetDateTime
 
+class HibernateTypeContributor : TypeContributor {
+    companion object {
+        // Workaround for https://hibernate.atlassian.net/browse/HHH-20070
+        private var initialised = false
+    }
+
+    override fun contribute(typeContributions: TypeContributions, serviceRegistry: ServiceRegistry) {
+        if (!initialised) {
+            initialised = true
+            typeContributions.contributeAttributeConverter(UuidConverter::class.java)
+            typeContributions.contributeAttributeConverter(InstantConverter::class.java)
+        }
+    }
+}
+
 @Converter(autoApply = true)
-internal class UuidConverter : AttributeConverter<Uuid, UUID> {
+class UuidConverter : AttributeConverter<Uuid, UUID> {
     override fun convertToDatabaseColumn(attribute: Uuid?): UUID? = attribute?.toJavaUuid()
 
     override fun convertToEntityAttribute(dbData: UUID?): Uuid? = dbData?.toKotlinUuid()
 }
 
 @Converter(autoApply = true)
-internal class InstantConverter : AttributeConverter<Instant, JavaOffsetDateTime> {
+class InstantConverter : AttributeConverter<Instant, JavaOffsetDateTime> {
     override fun convertToDatabaseColumn(attribute: Instant?): JavaOffsetDateTime? =
         attribute?.toJavaInstant()?.atOffset(ZoneOffset.UTC)
 

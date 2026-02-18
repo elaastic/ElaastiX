@@ -42,3 +42,5 @@ style:
         reason: Use Kotlin's Uuid type
       - value: java.time.Instant
         reason: Use Kotlin's Instant type
+    excludes:
+      - "**/commons/jpa/**" # Compat layer

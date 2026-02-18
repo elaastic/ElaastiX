@@ -17,11 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+package org.elaastix.commons.jpa
 
-import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.entities.User
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.JpaRepository
+import java.util.UUID
 
-@Repository
-interface UserRepository : ElaastixRepository<User>
+typealias ElaastixRepository<T> = JpaRepository<T, UUID>
