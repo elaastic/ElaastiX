@@ -25,9 +25,10 @@ import org.springframework.boot.runApplication
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
+@Suppress("UndocumentedPublicClass")
 class ElaastixServerApplication
 
+@Suppress("UndocumentedPublicFunction", "SpreadOperator")
 fun main(args: Array<String>) {
-    @Suppress("SpreadOperator")
     runApplication<ElaastixServerApplication>(*args)
 }

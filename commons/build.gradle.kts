@@ -17,11 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+plugins {
+    id("conventions.idea")
+    id("conventions.kotlin")
+    id("conventions.spring-lib")
+    id("conventions.test")
+}
 
-import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.entities.User
-import org.springframework.stereotype.Repository
+dependencies {
+    implementation(libs.spring.boot.jpa)
+    implementation(libs.spring.boot.validation)
 
-@Repository
-interface UserRepository : ElaastixRepository<User>
+    testImplementation(libs.spring.boot.jpa.test)
+    testImplementation(libs.spring.boot.validation.test)
+}

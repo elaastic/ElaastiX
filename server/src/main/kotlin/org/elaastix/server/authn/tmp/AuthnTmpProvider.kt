@@ -28,12 +28,12 @@ import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.stereotype.Component
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 @Component
 class AuthnTmpProvider(val userRepository: UserRepository) : AuthenticationProvider {
     override fun authenticate(authentication: Authentication): Authentication? {
-        val user = (authentication.principal as? UUID)?.let(userRepository::findByIdOrNull)
+        val user = (authentication.principal as? Uuid)?.let(userRepository::findByIdOrNull)
             ?: throw BadCredentialsException("Bad credentials")
 
         return UsernamePasswordAuthenticationToken(

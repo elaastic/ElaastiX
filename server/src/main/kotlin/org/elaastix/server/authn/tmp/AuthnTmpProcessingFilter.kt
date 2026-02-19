@@ -33,7 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.security.web.util.matcher.RequestMatcher
-import java.util.UUID
+import kotlin.uuid.Uuid
 
 class AuthnTmpProcessingFilter(requestMatcher: RequestMatcher, authenticationManager: AuthenticationManager) :
     AbstractAuthenticationProcessingFilter(requestMatcher) {
@@ -45,8 +45,7 @@ class AuthnTmpProcessingFilter(requestMatcher: RequestMatcher, authenticationMan
         val token = request.getHeader("Authorization")
             ?: throw BadCredentialsException("You must authenticate to access this endpoint")
 
-        val uuid = token.runCatching(UUID::fromString).getOrNull()
-            ?: throw BadCredentialsException("Bad credentials")
+        val uuid = Uuid.parseOrNull(token) ?: throw BadCredentialsException("Bad credentials")
 
         return authenticationManager.authenticate(
             PreAuthenticatedAuthenticationToken(uuid, null),

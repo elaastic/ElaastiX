@@ -20,20 +20,13 @@
 package org.elaastix.server.users.entities
 
 import jakarta.persistence.Entity
-import jakarta.persistence.Id
 import jakarta.persistence.Table
-import jakarta.persistence.Version
-import org.elaastix.server.utils.generateUuid7
-import java.util.UUID
+import org.elaastix.commons.jpa.AbstractEntity
 import org.elaastix.mm.user.User as MMUser
 
 @Entity
 // Hibernate just casually broke `globally_quoted_identifiers` and doesn't want to fix it. https://hibernate.atlassian.net/browse/HHH-19973
 @Table(name = "\"user\"")
-class User : MMUser {
-    @Id
-    var id: UUID = generateUuid7()
-
-    @Version
-    var version: Long? = null
-}
+class User :
+    AbstractEntity(),
+    MMUser

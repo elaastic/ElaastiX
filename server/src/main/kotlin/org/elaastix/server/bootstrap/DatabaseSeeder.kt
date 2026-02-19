@@ -19,18 +19,22 @@
 
 package org.elaastix.server.bootstrap
 
-import jakarta.annotation.PostConstruct
 import org.elaastix.server.users.UserRepository
 import org.elaastix.server.users.entities.User
+import org.springframework.boot.ApplicationArguments
+import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Profile
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 
 @Component
 @Profile("develop")
-class DatabaseSeeder(val userRepository: UserRepository) {
-    @PostConstruct
-    fun doInitUsers() {
+class DatabaseSeeder(val userRepository: UserRepository) : ApplicationRunner {
+    override fun run(args: ApplicationArguments) {
+        doInitUsers()
+    }
+
+    private fun doInitUsers() {
         if (userRepository.count() == 0L) {
             userRepository.save(User())
             userRepository.save(User())
@@ -38,6 +42,7 @@ class DatabaseSeeder(val userRepository: UserRepository) {
         }
 
         @Suppress("MagicNumber")
-        userRepository.findAll(Pageable.ofSize(3)).forEachIndexed { idx, user -> println("Test user $idx: ${user.id}") }
+        userRepository.findAll(Pageable.ofSize(3))
+            .forEachIndexed { idx, user -> println("Test user ${idx + 1}: ${user.id}") }
     }
 }

@@ -46,7 +46,13 @@ kotlin {
         jvmTarget.set(JvmTarget.valueOf("JVM_$jdkVersion"))
         languageVersion.set(kotlinVersion)
         apiVersion.set(kotlinVersion)
-        // allWarningsAsErrors = true -- hmmm... ;)
+
+        // We do things RIGHT in this house.
+        allWarningsAsErrors = true
+
+        // We want to use Kotlin's Uuid, as it comes with built-in UUIDv7 generation,
+        // and is supported out of the box by kotlinx.serialization.
+        optIn.add("kotlin.uuid.ExperimentalUuidApi")
     }
 }
 
@@ -68,6 +74,10 @@ tasks.withType<Detekt>().configureEach {
 
 dependencies {
     implementation(platform(libs.findLibrary("kotlin.bom").get()))
+
+    implementation(libs.findLibrary("kotlinx.serialization.core").get())
+    implementation(libs.findLibrary("kotlinx.serialization.json").get())
+    implementation(libs.findLibrary("kotlinx.serialization.cbor").get())
 
     detektPlugins(libs.findLibrary("detekt.ktlint").get())
 }

@@ -19,7 +19,8 @@
 
 CREATE TABLE "user"
 (
-    id      UUID    NOT NULL,
-    version BIGINT  NOT NULL,
+    id         UUID                        NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    version    BIGINT                      NOT NULL,
     CONSTRAINT pk_user PRIMARY KEY (id)
 );

@@ -17,11 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+package org.elaastix.commons.jpa
 
-import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.entities.User
-import org.springframework.stereotype.Repository
+import org.springframework.data.jpa.repository.JpaRepository
+import kotlin.uuid.Uuid
 
-@Repository
-interface UserRepository : ElaastixRepository<User>
+/**
+ * Specialised Repository type for use in all Elaastix projects. Pre-defines the correct type for identifiers to
+ * reduce repetitions.
+ *
+ * Repositories will expect Kotlin's [Uuid] instead of Java's [java.util.UUID] for better integration with the
+ * rest of the codebase. The [UuidConverter] will transparently convert it to something JPA can work with.
+ *
+ * @param T Type of entities managed by the repository. Must be a subclass of [AbstractEntity].
+ */
+interface ElaastixRepository<T : AbstractEntity> : JpaRepository<T, Uuid>
