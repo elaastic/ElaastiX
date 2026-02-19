@@ -43,10 +43,8 @@ import java.time.Instant as JavaInstant
  * `META-INF/services/org.hibernate.boot.model.TypeContributor` file.
  */
 class HibernateTypeContributor : TypeContributor {
-    private companion object {
-        // Workaround for https://hibernate.atlassian.net/browse/HHH-20070
-        private var initialised = false
-    }
+    // Workaround for https://hibernate.atlassian.net/browse/HHH-20070
+    private var initialised = false
 
     override fun contribute(typeContributions: TypeContributions, serviceRegistry: ServiceRegistry) {
         if (!initialised) {
