@@ -34,7 +34,10 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher
 
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig(val authProvider: AuthnTmpProvider, val authConfig: AuthenticationConfiguration) {
+class WebSecurityConfig(
+    private val authProvider: AuthnTmpProvider,
+    private val authConfig: AuthenticationConfiguration,
+) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.authenticationProvider(authProvider)

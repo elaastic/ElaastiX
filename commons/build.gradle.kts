@@ -27,6 +27,7 @@ plugins {
 dependencies {
     implementation(libs.spring.boot.jpa)
     implementation(libs.spring.boot.validation)
+    implementation(libs.hypersistence.utils)
 
     testImplementation(libs.spring.boot.jpa.test)
     testImplementation(libs.spring.boot.validation.test)

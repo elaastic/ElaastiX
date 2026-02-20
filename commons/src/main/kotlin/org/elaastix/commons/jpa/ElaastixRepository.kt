@@ -19,16 +19,20 @@
 
 package org.elaastix.commons.jpa
 
-import org.springframework.data.jpa.repository.JpaRepository
+import io.hypersistence.utils.spring.repository.BaseJpaRepository
+import org.springframework.data.repository.NoRepositoryBean
 import kotlin.uuid.Uuid
 
 /**
- * Specialised Repository type for use in all Elaastix projects. Pre-defines the correct type for identifiers to
- * reduce repetitions.
- *
- * Repositories will expect Kotlin's [Uuid] instead of Java's [java.util.UUID] for better integration with the
- * rest of the codebase. The [UuidConverter] will transparently convert it to something JPA can work with.
+ * Specialised Repository type for use in all Elaastix projects.
+ * Wrapper around Hypersistence Utils's [BaseJpaRepository].
  *
  * @param T Type of entities managed by the repository. Must be a subclass of [AbstractEntity].
  */
-interface ElaastixRepository<T : AbstractEntity> : JpaRepository<T, Uuid>
+@NoRepositoryBean
+interface ElaastixRepository<T : AbstractEntity> : BaseJpaRepository<T, Uuid> {
+    /**
+     * Helper to use Kotlin nullability instead of Java's `Optional`, which is more idiomatic.
+     */
+    fun findByIdOrNull(id: Uuid): T? = findById(id).orElse(null)
+}

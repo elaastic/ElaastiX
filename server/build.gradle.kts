@@ -39,6 +39,7 @@ dependencies {
     implementation(libs.spring.boot.webmvc)
     implementation(libs.spring.boot.kotlinx.serialization.json)
     implementation(libs.flyway.postgresql)
+    implementation(libs.hypersistence.utils)
     runtimeOnly(libs.jdbc.postgresql)
 
     testImplementation(libs.spring.boot.actuator.test)
