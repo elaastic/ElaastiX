@@ -1,0 +1,87 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package scenario {
+    abstract class Scenario
+
+    class Lane
+
+    Process "1" *-- "0..*" Lane
+
+    class ManualScenario extends Process {
+        createActivitySession()
+        startActivitySession(sessionId)
+        closeActivitySession(sessionId)
+    }
+
+    class DirectedSequenceScenario extends Process {
+        sequenceScenarioLane
+        learnersScenarioLane
+    }
+
+
+    class SequenceFlow
+
+    Process *-- SequenceFlow
+    Process *-- FlowNode
+
+    SequenceFlow --> FlowNode :> source
+    SequenceFlow --> FlowNode :> target
+
+    abstract class FlowNode
+
+    abstract class Activity extends FlowNode
+
+    class SubProcess extends Activity
+
+    SubProcess o-- SequenceFlow
+
+    abstract class ActivityDecorator extends Activity {
+        decoratedActivity: Activity
+    }
+
+    ActivityDecorator --> LearningActivity
+
+    class TimedActivity extends ActivityDecorator
+    class RepeatedActivity extends ActivityDecorator
+
+
+    Lane "1" o-- "*" FlowNode : contains >
+
+    abstract class Event extends FlowNode {
+        watchers
+    }
+    note top
+        Activated by external events
+        (e.g. the 2nd phase of the sequence starts)
+    end note
+
+    abstract class Gateway extends FlowNode {
+        branches: List<Pair<Condition, ScenarioNode>>
+    }
+
+    abstract class ProcessingTask extends Activity
+    note top
+        Run a process
+        without involving the learner
+        (e.g., compute a pairing)
+    end note
+
+    abstract class LearningActivity extends Activity
+    note top: Create and/or join activity session
+
+    abstract class ConfigProvider
+    abstract class MaterialProvider
+    LearningActivity --> ConfigProvider
+    LearningActivity --> MaterialProvider
+
+    class StaticConfigProvider extends ConfigProvider
+    class StaticMaterialProvider extends MaterialProvider
+    abstract class SequenceMaterialProvider extends MaterialProvider
+
+    class Grade {
+        value: BigDecimal
+        max: BigDecimal
+    }
+}
+@enduml

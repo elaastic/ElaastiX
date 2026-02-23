@@ -1,0 +1,26 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+!include ./uml/user.puml
+!include ./uml/scenario.puml
+!include ./uml/activity-metamodel.puml
+
+class Assignment {
+    teachers: Set<Teacher | TeacherCohort>
+    learners: Set<LearnerUser | LearnerCohort>
+    sequences: List<Sequence>
+}
+note top
+An assignment contains a list of learning sequence.
+An assignment is managed by users registered as teachers.
+An assignment is played by users registered as learners.
+end note
+
+Assignment "*" o- "*" Learner : registered as learners <
+Assignment "*" o- "*" Teacher : registered as teachers <
+Assignment "*" o- "*" LearnerCohort : registered as learners <
+Assignment "*" o- "*" TeacherCohort : registered as teachers <
+
+Assignment *- activity.metamodel.Sequence
+
+@enduml

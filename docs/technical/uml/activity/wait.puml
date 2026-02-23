@@ -1,0 +1,12 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package activity.generic {
+    class WaitActivitySession extends activity.metamodel.ActivitySession
+}
+note top
+A WaitActivitySession is used to make learners wait for an event to happen
+before they can proceed to the next activity in the sequence.
+end note
+
+@enduml
