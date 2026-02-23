@@ -53,11 +53,11 @@ package activity.response {
         explanation: String
     }
 
-    class SingleChoiceResponse extends Response {
+    class SingleChoiceResponse extends CloseResponse {
         selectedChoice: Choice
     }
 
-    class MultipleChoiceResponse extends Response {
+    class MultipleChoiceResponse extends CloseResponse {
         selectedChoices: List<Choice>
     }
 
