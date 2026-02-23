@@ -10,11 +10,14 @@ comments:
   # TODO: Define whether we want to enforce documentation across the project or not.
   #       FWIW, documentation shows up in generated docs by SpringDoc.
   UndocumentedPublicClass:
-    active: false
+    active: true
+    severity: warning
   UndocumentedPublicFunction:
-    active: false
+    active: true
+    severity: warning
   UndocumentedPublicProperty:
-    active: false
+    active: true
+    severity: warning
 
 complexity:
   ReplaceSafeCallChainWithRun:
@@ -34,3 +37,13 @@ style:
   # Allow to-do and fix-me comments (flagged by default)
   ForbiddenComment:
     comments: [ 'STOPSHIP:' ]
+  ForbiddenImport:
+    active: true
+    forbiddenImports:
+      # Enforce use of Kotlin-native types
+      - value: java.util.UUID
+        reason: Use Kotlin's Uuid type
+      - value: java.time.Instant
+        reason: Use Kotlin's Instant type
+    excludes:
+      - "**/commons/jpa/**" # Compat layer

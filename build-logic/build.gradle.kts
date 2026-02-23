@@ -84,5 +84,5 @@ dependencies {
     detektPlugins(libs.detekt.ktlint)
 }
 
-fun plugin(plugin: Provider<PluginDependency>) =
+fun plugin(plugin: Provider<PluginDependency>): Provider<String> =
     plugin.map { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" }

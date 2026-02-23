@@ -17,11 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+package org.elaastix.commons.platform
 
-import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.entities.User
-import org.springframework.stereotype.Repository
-
-@Repository
-interface UserRepository : ElaastixRepository<User>
+/**
+ * Annotation flagging a setter of an otherwise immutable (or managed) entity property as an implementation detail
+ * imposed by JPA that SHOULD NOT be interacted with.
+ *
+ * Will require the use of [OptIn], or a compile-time error will be raised.
+ */
+@RequiresOptIn(message = "This setter is reserved for JPA and should not be used directly.")
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.PROPERTY_SETTER)
+annotation class JpaImmutable

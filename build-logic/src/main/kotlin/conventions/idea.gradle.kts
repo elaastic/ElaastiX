@@ -28,6 +28,8 @@ plugins {
 
 idea {
     module {
+        isDownloadJavadoc = true
+        isDownloadSources = true
         jdkName = INHERITED
     }
 }
