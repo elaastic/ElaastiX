@@ -18,7 +18,7 @@ package activity.judge {
     JudgeActivitySession --> Learner
     JudgeActivitySession --> JudgeActivityConfig
     JudgeActivitySession *-- Judgement
-    JudgeActivitySession *-- activity.metamodel.Material
+    JudgeActivitySession o-- activity.metamodel.Material
 
     class Judgement implements activity.metamodel.LearnerOutput {
         material: activity.metamodel.Material
