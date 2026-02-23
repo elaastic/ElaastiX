@@ -1,22 +1,24 @@
 [versions]
 jdk = "25"
-kotlin = "2.3.0"
+kotlin = "2.3.10"
 # ----
 detekt = "2.0.0-alpha.2"
-flyway = "11.20.0"
-hibernate = "7.1.8.Final"
+flyway = "12.0.1"
+hibernate = "7.2.4.Final" # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
 ideax = "1.3"
-jdbc-postgresql = "42.7.8"
-junit = "6.0.1"
+jdbc-postgresql = "42.7.9"
+junit = "6.0.3"
 kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.10.0"
-mockk = "1.14.7"
-spring-boot = "4.0.1"
+mockk = "1.14.9"
+spring-boot = "4.0.2"
+hypersistence-utils = "3.15.2"
 
 [libraries]
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 detekt-ktlint = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
 flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
+hypersistence-utils = { module = "io.hypersistence:hypersistence-utils-hibernate-71", version.ref = "hypersistence-utils" }
 jdbc-postgresql = { module = "org.postgresql:postgresql", version.ref = "jdbc-postgresql" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }

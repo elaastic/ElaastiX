@@ -19,12 +19,17 @@
 
 package org.elaastix.server
 
+import io.hypersistence.utils.spring.repository.BaseJpaRepositoryImpl
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @SpringBootApplication
 @ConfigurationPropertiesScan
+// TODO: Find a more elegant solution to automatically configure it within Elaastix Commons
+// Not fond of having this here, but let's avoid another time sink for now.
+@EnableJpaRepositories(repositoryBaseClass = BaseJpaRepositoryImpl::class)
 @Suppress("UndocumentedPublicClass")
 class ElaastixServerApplication
 
