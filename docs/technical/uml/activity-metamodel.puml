@@ -70,5 +70,11 @@ package activity.metamodel {
         transform(material: Material): Term
     }
 
-}
+
+    interface Content
+    class RawContent implements Content {
+        data: String
+    }
+
+    class TiptapContent implements Content
 @enduml

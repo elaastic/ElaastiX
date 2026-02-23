@@ -29,7 +29,7 @@ package activity.response {
     }
 
     abstract class Question implements activity.metamodel.Material {
-        statement: String
+        statement: Content
         explanatoryFeedback: String
     }
 
@@ -46,11 +46,11 @@ package activity.response {
     }
 
     class OpenResponse extends Response {
-        answer: String
+        answer: Content
     }
 
     abstract class CloseResponse extends Response {
-        explanation: String
+        explanation: Content
     }
 
     class SingleChoiceResponse extends CloseResponse {
