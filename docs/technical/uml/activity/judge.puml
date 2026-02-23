@@ -20,9 +20,15 @@ package activity.judge {
     JudgeActivitySession *-- Judgement
     JudgeActivitySession o-- activity.metamodel.Material
 
+    interface JudgementValue
+
+    class LikertValue implements JudgementValue {
+        value: LikertScale
+    }
+
     class Judgement implements activity.metamodel.LearnerOutput {
         material: activity.metamodel.Material
-        judgement
+        value: JudgementValue
 
     }
     Judgement --> activity.metamodel.Material
