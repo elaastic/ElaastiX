@@ -11,7 +11,7 @@ package activity.response {
         material: Question
         output: Response
 
-        submitResponse()
+        submitResponse(response: Response)
     }
 
     class ChangeResponseActivitySession extends ResponseActivitySession {
