@@ -21,6 +21,6 @@ Assignment "*" o- "*" Teacher : registered as teachers <
 Assignment "*" o- "*" LearnerCohort : registered as learners <
 Assignment "*" o- "*" TeacherCohort : registered as teachers <
 
-Assignment *- activity.metamodel.Sequence : contains >
+Assignment *- activity.metamodel.Sequence
 
 @enduml
