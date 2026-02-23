@@ -11,7 +11,7 @@ package activity.chat {
         topic: Material
     }
 
-    ChatActivitySession *-- Learner
+    ChatActivitySession o-- Learner
     ChatActivitySession --> activity.metamodel.Material
 }
 
