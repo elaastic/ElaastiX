@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/hints',
     '@nuxtjs/i18n',
+    // '@nuxtjs/storybook',
   ],
 
   devtools: {
