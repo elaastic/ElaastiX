@@ -59,9 +59,15 @@ package activity.metamodel {
 
     LearnerOutput -- Learner : Produced by >
 
+    interface ConditionExpression {
+        evaluate(term: Term): boolean
+    }
+
+    interface Term
+
     interface MaterialTransformer {
         supports(material: Material): boolean
-        transform(material: Material): any
+        transform(material: Material): Term
     }
 
 }
