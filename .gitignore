@@ -33,6 +33,7 @@ build
 .cache
 coverage
 dist
+storybook-static
 
 # Node dependencies
 node_modules
@@ -43,6 +44,3 @@ logs
 
 # Misc
 .DS_Store
-
-*storybook.log
-storybook-static
