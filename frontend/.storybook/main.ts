@@ -11,4 +11,5 @@ const config: StorybookConfig = {
   ],
   framework: '@storybook-vue/nuxt',
 }
+
 export default config

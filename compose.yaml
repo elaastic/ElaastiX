@@ -67,6 +67,8 @@ services:
       # Hold generated files and trunk-folders in container-private volumes.
       - /app/frontend/node_modules
       - nuxt-trunk:/app/frontend/.nuxt
+      - nuxt-trunk:/root/.nuxt
+      - nuxt-trunk:/root/.storybook
     tmpfs:
       - /tmp
     labels:

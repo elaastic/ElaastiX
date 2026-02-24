@@ -1,17 +1,17 @@
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@tailwindcss/oxide'
-  - esbuild
+shamefullyHoist: true
+blockExoticSubdeps: true
 
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
   - vue-demi
 
-# https://pnpm.io/settings#trustpolicy
-# https://pnpm.io/settings#blockexoticsubdeps
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@tailwindcss/oxide'
+  - esbuild
+
 trustPolicy: no-downgrade
-blockExoticSubdeps: true
 
 trustPolicyExclude:
   - chokidar@4.0.3  # https://github.com/paulmillr/chokidar/issues/1440
