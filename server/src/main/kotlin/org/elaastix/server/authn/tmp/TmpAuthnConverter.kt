@@ -19,14 +19,13 @@
 
 package org.elaastix.server.authn.tmp
 
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
-import org.springframework.security.web.util.matcher.RequestMatcher
+import jakarta.servlet.http.HttpServletRequest
+import org.springframework.security.web.authentication.AuthenticationConverter
+import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
+import kotlin.uuid.Uuid
 
-class AuthnTmpProcessingFilter(requestMatcher: RequestMatcher, authenticationManager: AuthenticationManager) :
-    AbstractAuthenticationProcessingFilter(requestMatcher) {
-    init {
-        setAuthenticationManager(authenticationManager)
-        setAuthenticationConverter(TmpAuthnConverter())
-    }
+class TmpAuthnConverter : AuthenticationConverter {
+    override fun convert(request: HttpServletRequest) = request.getHeader("Authorization")
+        ?.let(Uuid::parseOrNull)
+        ?.let { PreAuthenticatedAuthenticationToken(it, null) }
 }
