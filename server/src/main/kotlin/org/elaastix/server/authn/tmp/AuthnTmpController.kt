@@ -28,6 +28,6 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/authn/tmp")
 class AuthnTmpController(val authenticationHolder: AuthenticationHolder) {
-    @GetMapping("/who-am-i")
+    @GetMapping("/who-am-i", version = "1+")
     fun whoAmI(): String? = authenticationHolder.authenticatedUser.required().id.toString()
 }
