@@ -6,3 +6,5 @@
 **/.nuxt
 **/.output
 **/node_modules
+**/coverage
+**/storybook-static

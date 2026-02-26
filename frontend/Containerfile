@@ -8,6 +8,8 @@ WORKDIR /app/frontend
 
 # Only copy package files to leverage Docker's cache system when only source code changes
 COPY frontend/package.json frontend/pnpm-workspace.yaml frontend/pnpm-lock.yaml /app/frontend/
+#COPY frontend/patches /app/frontend/patches
+
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 FROM base AS build

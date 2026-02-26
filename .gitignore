@@ -31,7 +31,9 @@ build
 .nuxt
 .nitro
 .cache
+coverage
 dist
+storybook-static
 
 # Node dependencies
 node_modules

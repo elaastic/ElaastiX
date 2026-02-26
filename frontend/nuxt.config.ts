@@ -3,12 +3,13 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/eslint',
     '@nuxt/ui',
-    '@nuxt/test-utils',
+    '@nuxt/test-utils/module',
     '@nuxt/image',
     '@nuxt/icon',
     '@nuxt/fonts',
     '@nuxt/hints',
     '@nuxtjs/i18n',
+    // '@nuxtjs/storybook',
   ],
 
   devtools: {
