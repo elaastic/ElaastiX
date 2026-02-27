@@ -20,28 +20,26 @@
 package org.elaastix.server.authn.tmp
 
 import org.elaastix.server.users.UserRepository
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 import org.springframework.stereotype.Component
 import kotlin.uuid.Uuid
 
 @Component
-class AuthnTmpProvider(val userRepository: UserRepository) : AuthenticationProvider {
-    override fun authenticate(authentication: Authentication): Authentication? {
-        val user = (authentication.principal as? Uuid)?.let(userRepository::findByIdOrNull)
-            ?: throw BadCredentialsException("Bad credentials")
-
-        return UsernamePasswordAuthenticationToken(
-            user,
-            null,
-            emptyList<GrantedAuthority>(),
-        )
-    }
+class AuthnTmpProvider(private val userRepository: UserRepository) : AuthenticationProvider {
+    override fun authenticate(authentication: Authentication) = (authentication.principal as? Uuid)
+        ?.let { userRepository.findByIdOrNull(it) }
+        ?.let {
+            UsernamePasswordAuthenticationToken(
+                it,
+                null,
+                emptyList(),
+            )
+        }
+        ?: throw BadCredentialsException("Bad credentials")
 
     override fun supports(authentication: Class<*>): Boolean =
         PreAuthenticatedAuthenticationToken::class.java == authentication

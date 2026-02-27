@@ -17,16 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn.tmp
+package org.elaastix.server.infrastructure.bff.dtos
 
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
-import org.springframework.security.web.util.matcher.RequestMatcher
+import kotlinx.serialization.Serializable
+import org.elaastix.server.users.dtos.UserAccountDto
 
-class AuthnTmpProcessingFilter(requestMatcher: RequestMatcher, authenticationManager: AuthenticationManager) :
-    AbstractAuthenticationProcessingFilter(requestMatcher) {
-    init {
-        setAuthenticationManager(authenticationManager)
-        setAuthenticationConverter(TmpAuthnConverter())
-    }
-}
+/**
+ * Context and configuration data used by the first-party Nuxt app on startup.
+ */
+@Serializable
+data class NuxtContextDto(
+    /** List of enabled feature flags for the frontend. */
+    val featureFlags: List<Unit>,
+    /** The currently authenticated user's account, if authenticated. */
+    val currentUser: UserAccountDto?,
+)
