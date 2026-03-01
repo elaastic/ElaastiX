@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.bootstrap
+package org.elaastix.server.infrastructure.seed
 
 import org.elaastix.server.users.UserRepository
 import org.elaastix.server.users.entities.User
