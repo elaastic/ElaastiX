@@ -17,16 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn.tmp
+import type { Meta, StoryObj } from '@nuxtjs/storybook'
 
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
-import org.springframework.security.web.util.matcher.RequestMatcher
+import MyNuxtWelcome from './MyWelcome.vue'
 
-class AuthnTmpProcessingFilter(requestMatcher: RequestMatcher, authenticationManager: AuthenticationManager) :
-    AbstractAuthenticationProcessingFilter(requestMatcher) {
-    init {
-        setAuthenticationManager(authenticationManager)
-        setAuthenticationConverter(TmpAuthnConverter())
-    }
+// More on how to set up stories at: https://storybook.js.org/docs/vue/writing-stories/introduction
+
+const meta = {
+  title: 'Example/NuxtWelcome',
+  component: MyNuxtWelcome,
+  // This component will have an automatically generated docsPage entry: https://storybook.js.org/docs/vue/writing-docs/autodocs
+  tags: ['autodocs'],
+} satisfies Meta<typeof MyNuxtWelcome>
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+export const NuxtWelcomeStory: Story = {
+  args: {},
 }

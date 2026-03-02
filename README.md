@@ -87,6 +87,7 @@ ElaastiX
 ├── .config/                    Repository and project config files. Loosely follows the XDG convention.
 ├── .github/                    GitHub-specific configuration files
 ├── build-logic/                Convention plugins (Gradle)
+├── commons/                    Code shared throughout the Elaastix projects
 ├── docs/                       Documentation of the project
 │   └── specs                   └── Specifications
 ├── frontend/                   Nuxt web application
@@ -206,3 +207,9 @@ also see the console directly.
 > [!NOTE]
 > Simply running the application will not enable the in-IDE debugging capabilities; make sure to run via the debug
 > button within the IDE.
+
+#### Storybook
+Right now, it's required to run Storybook separately and there is no Docker configuration to do it easily. We're
+waiting on upstream to fix bugs with the Nuxt integration...
+
+In the meantime, the easiest way is to run Storybook locally, via `pnpm run storybook`.

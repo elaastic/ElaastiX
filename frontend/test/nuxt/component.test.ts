@@ -17,16 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn.tmp
+import { describe, expect, it } from 'vitest'
+import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { defineComponent, h } from 'vue'
 
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
-import org.springframework.security.web.util.matcher.RequestMatcher
+describe('component test example', () => {
+  it('can mount components', async () => {
+    const TestComponent = defineComponent({
+      setup() {
+        return () => h('div', 'Hello Nuxt!')
+      },
+    })
 
-class AuthnTmpProcessingFilter(requestMatcher: RequestMatcher, authenticationManager: AuthenticationManager) :
-    AbstractAuthenticationProcessingFilter(requestMatcher) {
-    init {
-        setAuthenticationManager(authenticationManager)
-        setAuthenticationConverter(TmpAuthnConverter())
-    }
-}
+    const component = await mountSuspended(TestComponent)
+
+    expect(component.text()).toBe('Hello Nuxt!')
+  })
+})

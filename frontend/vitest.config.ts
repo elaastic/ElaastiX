@@ -17,16 +17,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn.tmp
+import { fileURLToPath } from 'node:url'
+import { defineConfig } from 'vitest/config'
+import { defineVitestProject } from '@nuxt/test-utils/config'
 
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
-import org.springframework.security.web.util.matcher.RequestMatcher
-
-class AuthnTmpProcessingFilter(requestMatcher: RequestMatcher, authenticationManager: AuthenticationManager) :
-    AbstractAuthenticationProcessingFilter(requestMatcher) {
-    init {
-        setAuthenticationManager(authenticationManager)
-        setAuthenticationConverter(TmpAuthnConverter())
-    }
-}
+export default defineConfig({
+  test: {
+    projects: [
+      {
+        test: {
+          name: 'unit',
+          include: ['test/unit/*.{test,spec}.ts'],
+          environment: 'node',
+        },
+      },
+      await defineVitestProject({
+        test: {
+          name: 'nuxt',
+          include: ['test/nuxt/*.{test,spec}.ts'],
+          environment: 'nuxt',
+          environmentOptions: {
+            nuxt: {
+              rootDir: fileURLToPath(new URL('.', import.meta.url)),
+              domEnvironment: 'happy-dom',
+            },
+          },
+        },
+      }),
+    ],
+    coverage: {
+      enabled: true,
+      provider: 'v8',
+    },
+  },
+})

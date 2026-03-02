@@ -17,16 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn.tmp
+package org.elaastix.server.users.dtos
 
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
-import org.springframework.security.web.util.matcher.RequestMatcher
+import kotlinx.serialization.Serializable
+import kotlin.uuid.Uuid
 
-class AuthnTmpProcessingFilter(requestMatcher: RequestMatcher, authenticationManager: AuthenticationManager) :
-    AbstractAuthenticationProcessingFilter(requestMatcher) {
-    init {
-        setAuthenticationManager(authenticationManager)
-        setAuthenticationConverter(TmpAuthnConverter())
-    }
-}
+/**
+ * A user account. Holds all profile-related information and limited
+ */
+@Serializable
+data class UserAccountDto(
+    /** The user's unique ID. */
+    val id: Uuid,
+)
