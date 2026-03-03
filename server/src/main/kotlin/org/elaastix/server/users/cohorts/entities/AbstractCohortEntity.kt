@@ -29,8 +29,8 @@ import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.elaastix.commons.jpa.AbstractEntity
-import org.elaastix.mm.user.User
-import org.elaastix.mm.user.cohort.Cohort
+import org.elaastix.mm.users.User
+import org.elaastix.mm.users.cohorts.Cohort
 import org.elaastix.server.users.entities.AbstractUserEntity
 
 /**

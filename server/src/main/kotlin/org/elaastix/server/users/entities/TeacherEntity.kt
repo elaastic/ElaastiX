@@ -21,7 +21,7 @@ package org.elaastix.server.users.entities
 
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
-import org.elaastix.mm.user.Teacher
+import org.elaastix.mm.users.Teacher
 
 /**
  * @see [Teacher]

@@ -17,10 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.user.cohort
+package org.elaastix.mm.users.cohorts
 
 import org.elaastix.mm.MmObject
-import org.elaastix.mm.user.User
+import org.elaastix.mm.users.User
 
 /**
  * An organisational-level group of users who share a common discriminator.

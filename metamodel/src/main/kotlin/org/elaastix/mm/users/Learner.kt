@@ -17,12 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.user.cohort
-
-import org.elaastix.mm.user.Learner
+package org.elaastix.mm.users
 
 /**
- * A group of [Learner] who share a common organisational-level characteristic.
- * For example, "2nd-year Computer Science undergraduates" (of a given University).
+ * A type of user who is going to participate in pedagogical activities.
  */
-interface LearnerCohort : Cohort<Learner>
+interface Learner : User

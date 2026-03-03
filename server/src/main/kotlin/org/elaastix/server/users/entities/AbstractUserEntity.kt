@@ -25,7 +25,7 @@ import jakarta.persistence.Inheritance
 import jakarta.persistence.InheritanceType
 import jakarta.persistence.Table
 import org.elaastix.commons.jpa.AbstractEntity
-import org.elaastix.mm.user.User
+import org.elaastix.mm.users.User
 
 /**
  * Abstract entity for users.

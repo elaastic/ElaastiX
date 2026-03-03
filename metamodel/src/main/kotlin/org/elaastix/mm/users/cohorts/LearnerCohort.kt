@@ -17,12 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.user.cohort
+package org.elaastix.mm.users.cohorts
 
-import org.elaastix.mm.user.Teacher
+import org.elaastix.mm.users.Learner
 
 /**
- * A group of [Teacher] who share a common organisational-level characteristic.
- * For example, "Spring Boot lecturers - 1st year postgraduates" (of a given University).
+ * A group of [Learner] who share a common organisational-level characteristic.
+ * For example, "2nd-year Computer Science undergraduates" (of a given University).
  */
-interface TeacherCohort : Cohort<Teacher>
+interface LearnerCohort : Cohort<Learner>

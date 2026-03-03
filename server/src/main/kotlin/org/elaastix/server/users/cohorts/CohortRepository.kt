@@ -20,7 +20,7 @@
 package org.elaastix.server.users.cohorts
 
 import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.mm.user.User
+import org.elaastix.mm.users.User
 import org.elaastix.server.users.cohorts.entities.AbstractCohortEntity
 import org.springframework.stereotype.Repository
 

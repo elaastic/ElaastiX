@@ -22,8 +22,8 @@ package org.elaastix.server.users.cohorts.entities
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToMany
-import org.elaastix.mm.user.Teacher
-import org.elaastix.mm.user.cohort.TeacherCohort
+import org.elaastix.mm.users.Teacher
+import org.elaastix.mm.users.cohorts.TeacherCohort
 import org.elaastix.server.users.entities.AbstractUserEntity
 import org.elaastix.server.users.entities.TeacherEntity
 

@@ -17,9 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.user
+package org.elaastix.mm.users.cohorts
+
+import org.elaastix.mm.users.Teacher
 
 /**
- * A type of user who is going to participate in pedagogical activities.
+ * A group of [Teacher] who share a common organisational-level characteristic.
+ * For example, "Spring Boot lecturers - 1st year postgraduates" (of a given University).
  */
-interface Learner : User
+interface TeacherCohort : Cohort<Teacher>
