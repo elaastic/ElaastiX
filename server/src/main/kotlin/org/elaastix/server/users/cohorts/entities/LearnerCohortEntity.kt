@@ -17,14 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.user
+package org.elaastix.server.users.cohorts.entities
 
-import org.elaastix.mm.MmObject
+import jakarta.persistence.DiscriminatorValue
+import jakarta.persistence.Entity
+import jakarta.persistence.ManyToMany
+import org.elaastix.mm.user.Learner
+import org.elaastix.mm.user.cohort.LearnerCohort
+import org.elaastix.server.users.entities.AbstractUserEntity
+import org.elaastix.server.users.entities.LearnerEntity
 
 /**
- * A generic user, of any role.
- *
- * Any concrete user MUST NOT directly inherit from this class, but rather an existing subclass.
- * This interface is effectively sealed, but Kotlin's `sealed` semantics are too restrictive to apply the modifier.
+ * @see [LearnerCohort]
  */
-interface User : MmObject
+@Entity
+@DiscriminatorValue("LEARNER")
+class LearnerCohortEntity(
+    name: String,
+    administrators: MutableSet<AbstractUserEntity>,
+
+    @ManyToMany
+    override var members: MutableSet<LearnerEntity>,
+) : AbstractCohortEntity<Learner>(
+        name,
+        administrators,
+    ),
+    LearnerCohort

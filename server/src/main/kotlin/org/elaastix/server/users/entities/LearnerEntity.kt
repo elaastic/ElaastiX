@@ -17,14 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.user
+package org.elaastix.server.users.entities
 
-import org.elaastix.mm.MmObject
+import jakarta.persistence.DiscriminatorValue
+import jakarta.persistence.Entity
+import org.elaastix.mm.user.Learner
 
 /**
- * A generic user, of any role.
- *
- * Any concrete user MUST NOT directly inherit from this class, but rather an existing subclass.
- * This interface is effectively sealed, but Kotlin's `sealed` semantics are too restrictive to apply the modifier.
+ * @see [Learner]
  */
-interface User : MmObject
+@Entity
+@DiscriminatorValue("LEARNER")
+class LearnerEntity :
+    AbstractUserEntity(),
+    Learner

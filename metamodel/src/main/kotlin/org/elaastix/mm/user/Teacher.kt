@@ -19,12 +19,7 @@
 
 package org.elaastix.mm.user
 
-import org.elaastix.mm.MmObject
-
 /**
- * A generic user, of any role.
- *
- * Any concrete user MUST NOT directly inherit from this class, but rather an existing subclass.
- * This interface is effectively sealed, but Kotlin's `sealed` semantics are too restrictive to apply the modifier.
+ * A type of user who is going to author and orchestrate pedagogical activities.
  */
-interface User : MmObject
+interface Teacher : User

@@ -17,14 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.user
+package org.elaastix.server.users.entities
 
-import org.elaastix.mm.MmObject
+import jakarta.persistence.DiscriminatorColumn
+import jakarta.persistence.Entity
+import jakarta.persistence.Inheritance
+import jakarta.persistence.InheritanceType
+import jakarta.persistence.Table
+import org.elaastix.commons.jpa.AbstractEntity
+import org.elaastix.mm.user.User
 
 /**
- * A generic user, of any role.
+ * Abstract entity for users.
+ * Defines the JPA inheritance strategy used for specialised entities.
  *
- * Any concrete user MUST NOT directly inherit from this class, but rather an existing subclass.
- * This interface is effectively sealed, but Kotlin's `sealed` semantics are too restrictive to apply the modifier.
+ * @see [User]
  */
-interface User : MmObject
+@Entity
+@Table(name = "users")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "userType", length = 16)
+abstract class AbstractUserEntity :
+    AbstractEntity(),
+    User

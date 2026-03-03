@@ -17,14 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.user
+package org.elaastix.mm.user.cohort
 
-import org.elaastix.mm.MmObject
+import org.elaastix.mm.user.Teacher
 
 /**
- * A generic user, of any role.
- *
- * Any concrete user MUST NOT directly inherit from this class, but rather an existing subclass.
- * This interface is effectively sealed, but Kotlin's `sealed` semantics are too restrictive to apply the modifier.
+ * A group of [Teacher] who share a common organisational-level characteristic.
+ * For example, "Spring Boot lecturers - 1st year postgraduates" (of a given University).
  */
-interface User : MmObject
+interface TeacherCohort : Cohort<Teacher>

@@ -17,14 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.user
+package org.elaastix.server.users
 
-import org.elaastix.mm.MmObject
+import org.elaastix.commons.jpa.ElaastixRepository
+import org.elaastix.server.users.entities.TeacherEntity
+import org.springframework.stereotype.Repository
 
-/**
- * A generic user, of any role.
- *
- * Any concrete user MUST NOT directly inherit from this class, but rather an existing subclass.
- * This interface is effectively sealed, but Kotlin's `sealed` semantics are too restrictive to apply the modifier.
- */
-interface User : MmObject
+@Repository
+interface TeacherRepository : ElaastixRepository<TeacherEntity>

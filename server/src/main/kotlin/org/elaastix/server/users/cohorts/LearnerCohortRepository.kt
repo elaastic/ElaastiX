@@ -17,16 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users.entities
+package org.elaastix.server.users.cohorts
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import org.elaastix.commons.jpa.AbstractEntity
-import org.elaastix.mm.user.User as MMUser
+import org.elaastix.commons.jpa.ElaastixRepository
+import org.elaastix.server.users.cohorts.entities.LearnerCohortEntity
+import org.springframework.stereotype.Repository
 
-@Entity
-// Hibernate just casually broke `globally_quoted_identifiers` and doesn't want to fix it. https://hibernate.atlassian.net/browse/HHH-19973
-@Table(name = "\"user\"")
-class User :
-    AbstractEntity(),
-    MMUser
+@Repository
+interface LearnerCohortRepository : ElaastixRepository<LearnerCohortEntity>

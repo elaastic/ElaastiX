@@ -17,10 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-CREATE TABLE "user"
-(
-    id         UUID                        NOT NULL,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    version    BIGINT                      NOT NULL,
-    CONSTRAINT pk_user PRIMARY KEY (id)
-);
+package org.elaastix.server.users.cohorts
+
+import org.elaastix.commons.jpa.ElaastixRepository
+import org.elaastix.server.users.cohorts.entities.TeacherCohortEntity
+import org.springframework.stereotype.Repository
+
+@Repository
+interface TeacherCohortRepository : ElaastixRepository<TeacherCohortEntity>

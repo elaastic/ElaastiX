@@ -19,7 +19,7 @@
 
 package org.elaastix.server.authn
 
-import org.elaastix.server.users.entities.User
+import org.elaastix.server.users.entities.AbstractUserEntity
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
@@ -31,8 +31,8 @@ import org.springframework.web.client.HttpClientErrorException
  * For correctness, [authenticatedUser] is specified as nullable, as there is no guarantee authentication succeeded.
  * Only after checking for whether the user is non-null can we safely assert that the user is indeed authenticated.
  *
- * A convenience helper [`User?.required`][required] is provided to get a non-nullable [User] without having to deal
- * with null checking everytime.
+ * A convenience helper [`AbstractUserEntity?.required`][required] is provided to get a non-nullable
+ * [AbstractUserEntity] without having to deal with null checking everytime.
  */
 @Component
 class AuthenticationHolder {
@@ -45,11 +45,12 @@ class AuthenticationHolder {
     /**
      * Authenticated user for the current context. `null` if unauthenticated.
      */
-    val authenticatedUser: User?
-        get() = SecurityContextHolder.getContext().authentication?.principal as? User
+    val authenticatedUser: AbstractUserEntity?
+        get() = SecurityContextHolder.getContext().authentication?.principal as? AbstractUserEntity
 }
 
 /**
- * Convenience helper for getting a non-null [User] reference, aborting the HTTP request with status code 401 otherwise.
+ * Convenience helper for getting a non-null [AbstractUserEntity] reference.
+ * Aborting the HTTP request with status code 401 otherwise.
  */
-fun User?.required(): User = this ?: throw HttpClientErrorException(HttpStatus.UNAUTHORIZED)
+fun AbstractUserEntity?.required(): AbstractUserEntity = this ?: throw HttpClientErrorException(HttpStatus.UNAUTHORIZED)
