@@ -29,7 +29,7 @@ import org.elaastix.mm.user.User
  * As for [User], any concrete cohort MUST NOT directly inherit from this class, but rather an existing subclass.
  * This interface is effectively sealed, but Kotlin's `sealed` semantics are too restrictive to apply the modifier.
  */
-interface Cohort<T : User> : MmObject {
+interface Cohort<out T : User> : MmObject {
     /**
      * Name of the cohort.
      */

@@ -1,0 +1,36 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package metamodel.users {
+    interface User <<sealed>> extends metamodel.MmObject {
+        'todo
+    }
+
+    interface Learner extends User {
+        'todo
+    }
+
+    interface Teacher extends User {
+        'todo
+    }
+
+    package cohorts {
+        interface Cohort<out T : User> <<sealed>> extends metamodel.MmObject {
+            +name: String
+            +members: Set<T>
+            +administrators: Set<User>
+        }
+
+        Cohort "*" --o "1..*" User : administrated by >
+
+        interface LearnerCohort extends Cohort
+
+        LearnerCohort "*" --o "*" Learner
+
+        interface TeacherCohort extends Cohort
+
+        TeacherCohort "*" --o "*" Teacher
+    }
+}
+
+@enduml
