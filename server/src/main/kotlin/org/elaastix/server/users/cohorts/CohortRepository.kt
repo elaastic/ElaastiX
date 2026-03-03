@@ -20,9 +20,9 @@
 package org.elaastix.server.users.cohorts
 
 import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.mm.users.User
 import org.elaastix.server.users.cohorts.entities.AbstractCohortEntity
+import org.elaastix.server.users.entities.AbstractUserEntity
 import org.springframework.stereotype.Repository
 
 @Repository
-interface CohortRepository : ElaastixRepository<AbstractCohortEntity<User>>
+interface CohortRepository : ElaastixRepository<AbstractCohortEntity<AbstractUserEntity>>
