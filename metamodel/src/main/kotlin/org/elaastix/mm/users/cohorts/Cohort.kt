@@ -45,7 +45,7 @@ interface Cohort<out T : User> : MmObject {
      * They MAY also appear in [members], but otherwise they're not counted as members of the cohort.
      *
      * Unlike for members, there is no requirement regarding the homogeneity of roles. People of different roles can
-     * be administrator of the same cohort.
+     * be administrators of the same cohort.
      */
     val administrators: Set<User>
 }
