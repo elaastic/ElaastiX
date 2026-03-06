@@ -17,6 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.user
+package org.elaastix.server.users.cohorts
 
-interface User
+import org.elaastix.commons.jpa.ElaastixRepository
+import org.elaastix.server.users.cohorts.entities.TeacherCohortEntity
+import org.springframework.stereotype.Repository
+
+@Repository
+interface TeacherCohortRepository : ElaastixRepository<TeacherCohortEntity>

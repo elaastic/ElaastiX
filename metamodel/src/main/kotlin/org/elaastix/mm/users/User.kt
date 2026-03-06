@@ -17,17 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+package org.elaastix.mm.users
 
-import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.entities.AbstractUserEntity
-import org.springframework.data.domain.Pageable
-import org.springframework.data.jpa.repository.Query
-import org.springframework.stereotype.Repository
+import org.elaastix.mm.MmObject
 
-@Repository
-interface UserRepository : ElaastixRepository<AbstractUserEntity> {
-    @Suppress("UndocumentedPublicFunction")
-    @Query("FROM AbstractUserEntity")
-    fun dangerouslyFindAll(pageable: Pageable): List<AbstractUserEntity>
-}
+/**
+ * A generic user, of any role.
+ *
+ * Any concrete user MUST NOT directly inherit from this class, but rather an existing subclass.
+ * This interface is effectively sealed, but Kotlin's `sealed` semantics are too restrictive to apply the modifier.
+ */
+interface User : MmObject

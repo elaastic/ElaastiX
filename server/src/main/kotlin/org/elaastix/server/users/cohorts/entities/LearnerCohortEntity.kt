@@ -17,17 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+package org.elaastix.server.users.cohorts.entities
 
-import org.elaastix.commons.jpa.ElaastixRepository
+import jakarta.persistence.DiscriminatorValue
+import jakarta.persistence.Entity
+import jakarta.persistence.ManyToMany
+import org.elaastix.mm.users.Learner
+import org.elaastix.mm.users.cohorts.LearnerCohort
 import org.elaastix.server.users.entities.AbstractUserEntity
-import org.springframework.data.domain.Pageable
-import org.springframework.data.jpa.repository.Query
-import org.springframework.stereotype.Repository
+import org.elaastix.server.users.entities.LearnerEntity
 
-@Repository
-interface UserRepository : ElaastixRepository<AbstractUserEntity> {
-    @Suppress("UndocumentedPublicFunction")
-    @Query("FROM AbstractUserEntity")
-    fun dangerouslyFindAll(pageable: Pageable): List<AbstractUserEntity>
-}
+/**
+ * @see [LearnerCohort]
+ */
+@Entity
+@DiscriminatorValue("LEARNER")
+class LearnerCohortEntity(
+    name: String,
+    administrators: MutableSet<AbstractUserEntity>,
+
+    @ManyToMany
+    override var members: MutableSet<LearnerEntity>,
+) : AbstractCohortEntity<Learner>(
+        name,
+        administrators,
+    ),
+    LearnerCohort

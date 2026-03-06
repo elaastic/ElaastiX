@@ -17,17 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+package org.elaastix.server.users.entities
 
-import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.entities.AbstractUserEntity
-import org.springframework.data.domain.Pageable
-import org.springframework.data.jpa.repository.Query
-import org.springframework.stereotype.Repository
+import jakarta.persistence.DiscriminatorValue
+import jakarta.persistence.Entity
+import org.elaastix.mm.users.Teacher
 
-@Repository
-interface UserRepository : ElaastixRepository<AbstractUserEntity> {
-    @Suppress("UndocumentedPublicFunction")
-    @Query("FROM AbstractUserEntity")
-    fun dangerouslyFindAll(pageable: Pageable): List<AbstractUserEntity>
-}
+/**
+ * @see [Teacher]
+ */
+@Entity
+@DiscriminatorValue("TEACHER")
+class TeacherEntity :
+    AbstractUserEntity(),
+    Teacher

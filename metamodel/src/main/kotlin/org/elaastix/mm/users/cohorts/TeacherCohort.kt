@@ -17,10 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-CREATE TABLE "user"
-(
-    id         UUID                        NOT NULL,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    version    BIGINT                      NOT NULL,
-    CONSTRAINT pk_user PRIMARY KEY (id)
-);
+package org.elaastix.mm.users.cohorts
+
+import org.elaastix.mm.users.Teacher
+
+/**
+ * A group of [Teacher] who share a common organisational-level characteristic.
+ * For example, "Spring Boot lecturers - 1st year postgraduates" (of a given University).
+ */
+interface TeacherCohort : Cohort<Teacher>

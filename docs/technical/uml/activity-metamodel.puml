@@ -1,6 +1,8 @@
 @startuml
 'https://plantuml.com/class-diagram
 
+'TODO: cleanup, and move + adapt to new structure in ./metamodel/
+
 package activity.metamodel {
     class  Sequence {
         state: State

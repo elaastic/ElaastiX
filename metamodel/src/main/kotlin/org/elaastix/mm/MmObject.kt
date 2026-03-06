@@ -17,17 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+package org.elaastix.mm
 
-import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.entities.AbstractUserEntity
-import org.springframework.data.domain.Pageable
-import org.springframework.data.jpa.repository.Query
-import org.springframework.stereotype.Repository
+import kotlin.time.Instant
+import kotlin.uuid.Uuid
 
-@Repository
-interface UserRepository : ElaastixRepository<AbstractUserEntity> {
-    @Suppress("UndocumentedPublicFunction")
-    @Query("FROM AbstractUserEntity")
-    fun dangerouslyFindAll(pageable: Pageable): List<AbstractUserEntity>
+/**
+ * Base interface of all objects from the metamodel.
+ */
+interface MmObject {
+    /**
+     * A globally unique identifier tied to the object.
+     */
+    val id: Uuid
+
+    /**
+     * Instant at which the creation of the object occurred.
+     */
+    val createdAt: Instant
+
+    /**
+     * Instant at which the last modification occurred.
+     * If the object has never been modified, then it is equivalent (but not necessarily equal) to the creation date.
+     */
+    val updatedAt: Instant
 }
