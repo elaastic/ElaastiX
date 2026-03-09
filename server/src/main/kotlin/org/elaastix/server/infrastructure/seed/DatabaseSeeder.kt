@@ -20,7 +20,7 @@
 package org.elaastix.server.infrastructure.seed
 
 import org.elaastix.server.users.UserRepository
-import org.elaastix.server.users.entities.LearnerEntity
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Profile
@@ -41,9 +41,9 @@ class DatabaseSeeder(private val userRepository: UserRepository) : ApplicationRu
 
     private fun doInitUsers() {
         if (userRepository.count() == 0L) {
-            userRepository.persist(LearnerEntity())
-            userRepository.persist(LearnerEntity())
-            userRepository.persist(LearnerEntity())
+            userRepository.persist(UserEntity(isWriterModeEnabled = true, isAdministrator = true))
+            userRepository.persist(UserEntity(isWriterModeEnabled = true))
+            userRepository.persist(UserEntity())
         }
 
         // Gross workaround the lack of findAll.
