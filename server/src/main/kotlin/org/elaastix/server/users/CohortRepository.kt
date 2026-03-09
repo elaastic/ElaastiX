@@ -17,11 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users.cohorts
+package org.elaastix.server.users
 
 import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.cohorts.entities.LearnerCohortEntity
+import org.elaastix.server.users.entities.CohortEntity
 import org.springframework.stereotype.Repository
 
 @Repository
-interface LearnerCohortRepository : ElaastixRepository<LearnerCohortEntity>
+interface CohortRepository : ElaastixRepository<CohortEntity>

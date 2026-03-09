@@ -19,7 +19,8 @@
 
 package org.elaastix.server.authn
 
-import org.elaastix.server.users.entities.AbstractUserEntity
+import org.elaastix.mm.users.User
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
@@ -31,8 +32,8 @@ import org.springframework.web.client.HttpClientErrorException
  * For correctness, [authenticatedUser] is specified as nullable, as there is no guarantee authentication succeeded.
  * Only after checking for whether the user is non-null can we safely assert that the user is indeed authenticated.
  *
- * A convenience helper [`AbstractUserEntity?.required`][required] is provided to get a non-nullable
- * [AbstractUserEntity] without having to deal with null checking everytime.
+ * A convenience helper [required] is provided to get a non-nullable user without having to deal with null checking
+ * everytime.
  */
 @Component
 class AuthenticationHolder {
@@ -45,12 +46,18 @@ class AuthenticationHolder {
     /**
      * Authenticated user for the current context. `null` if unauthenticated.
      */
-    val authenticatedUser: AbstractUserEntity?
-        get() = SecurityContextHolder.getContext().authentication?.principal as? AbstractUserEntity
+    val authenticatedUser: User?
+        get() = authenticatedUserEntity
+
+    /**
+     * Authenticated user entity for the current context. `null` if unauthenticated.
+     */
+    val authenticatedUserEntity: UserEntity?
+        get() = SecurityContextHolder.getContext().authentication?.principal as? UserEntity
 }
 
 /**
- * Convenience helper for getting a non-null [AbstractUserEntity] reference.
- * Aborting the HTTP request with status code 401 otherwise.
+ * Convenience helper for getting a non-null [User] (or any of its subtypes) references.
+ * Aborts the HTTP request with status code 401 if `null`.
  */
-fun AbstractUserEntity?.required(): AbstractUserEntity = this ?: throw HttpClientErrorException(HttpStatus.UNAUTHORIZED)
+fun <T : User> T?.required(): T = this ?: throw HttpClientErrorException(HttpStatus.UNAUTHORIZED)

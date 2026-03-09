@@ -2,34 +2,21 @@
 'https://plantuml.com/class-diagram
 
 package metamodel.users {
-    interface User <<sealed>> extends metamodel.MmObject {
+    interface User extends metamodel.MmObject {
         'todo
-    }
-
-    interface Learner extends User {
-        'todo
-    }
-
-    interface Teacher extends User {
-        'todo
+        +isWriterModeEnabled: Boolean
+        +isAdministrator: Boolean
     }
 
     package cohorts {
-        interface Cohort<out T : User> <<sealed>> extends metamodel.MmObject {
+        interface Cohort extends metamodel.MmObject {
             +name: String
-            +members: Set<T>
+            +members: Set<User>
             +administrators: Set<User>
         }
 
         Cohort "*" --o "1..*" User : administrated by >
-
-        interface LearnerCohort extends Cohort
-
-        LearnerCohort "*" --o "*" Learner
-
-        interface TeacherCohort extends Cohort
-
-        TeacherCohort "*" --o "*" Teacher
+        Cohort "*" --o "*" User : member of <
     }
 }
 

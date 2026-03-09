@@ -17,12 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.users.cohorts
+package org.elaastix.server.users.entities
 
-import org.elaastix.mm.users.Teacher
+import jakarta.persistence.Entity
+import jakarta.persistence.ManyToMany
+import jakarta.persistence.Table
+import jakarta.validation.constraints.NotBlank
+import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
+import org.elaastix.commons.jpa.AbstractEntity
+import org.elaastix.mm.users.Cohort
 
 /**
- * A group of [Teacher] who share a common organisational-level characteristic.
- * For example, "Spring Boot lecturers - 1st year postgraduates" (of a given University).
+ * @see [Cohort]
  */
-interface TeacherCohort : Cohort<Teacher>
+@Entity
+@Table(name = "cohorts")
+class CohortEntity(
+    @NotNull
+    @NotBlank
+    @Size(min = 2, max = 64)
+    override var name: String,
+
+    @ManyToMany
+    override var members: MutableSet<UserEntity>,
+
+    @ManyToMany
+    override var administrators: MutableSet<UserEntity>,
+) : AbstractEntity(),
+    Cohort

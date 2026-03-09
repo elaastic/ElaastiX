@@ -17,11 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users.cohorts
+package org.elaastix.server.users.entities
 
-import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.cohorts.entities.TeacherCohortEntity
-import org.springframework.stereotype.Repository
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
+import jakarta.validation.constraints.NotNull
+import org.elaastix.commons.jpa.AbstractEntity
+import org.elaastix.mm.users.User
 
-@Repository
-interface TeacherCohortRepository : ElaastixRepository<TeacherCohortEntity>
+/**
+ * @see [User]
+ */
+@Entity
+@Table(name = "users")
+class UserEntity(
+    @NotNull
+    override var isWriterModeEnabled: Boolean = false,
+
+    @NotNull
+    override var isAdministrator: Boolean = false,
+) : AbstractEntity(),
+    User

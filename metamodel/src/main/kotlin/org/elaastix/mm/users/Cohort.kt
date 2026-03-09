@@ -17,19 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.users.cohorts
+package org.elaastix.mm.users
 
 import org.elaastix.mm.MmObject
-import org.elaastix.mm.users.User
 
 /**
  * An organisational-level group of users who share a common discriminator.
  * For example, "2nd-year Computer Science undergraduates" (of a given University).
- *
- * As for [User], any concrete cohort MUST NOT directly inherit from this class, but rather an existing subclass.
- * This interface is effectively sealed, but Kotlin's `sealed` semantics are too restrictive to apply the modifier.
  */
-interface Cohort<out T : User> : MmObject {
+interface Cohort : MmObject {
     /**
      * Name of the cohort.
      */
@@ -38,14 +34,11 @@ interface Cohort<out T : User> : MmObject {
     /**
      * Members of the cohort.
      */
-    val members: Set<T>
+    val members: Set<User>
 
     /**
      * Administrators of the cohort.
      * They MAY also appear in [members], but otherwise they're not counted as members of the cohort.
-     *
-     * Unlike for members, there is no requirement regarding the homogeneity of roles. People of different roles can
-     * be administrators of the same cohort.
      */
     val administrators: Set<User>
 }

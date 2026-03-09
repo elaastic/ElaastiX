@@ -22,9 +22,19 @@ package org.elaastix.mm.users
 import org.elaastix.mm.MmObject
 
 /**
- * A generic user, of any role.
- *
- * Any concrete user MUST NOT directly inherit from this class, but rather an existing subclass.
- * This interface is effectively sealed, but Kotlin's `sealed` semantics are too restrictive to apply the modifier.
+ * An Elaastix user.
+ * MAY be backed by a concrete account, but this is not guaranteed.
  */
-interface User : MmObject
+interface User : MmObject {
+    /**
+     * Whether the user has opted into authoring features.
+     * Enables the creation of pedagogical material and activities.
+     */
+    val isWriterModeEnabled: Boolean
+
+    /**
+     * Whether the user is a platform administrator.
+     * An administrator has **unlimited** rights and MAY bypass all authorisation checks.
+     */
+    val isAdministrator: Boolean
+}

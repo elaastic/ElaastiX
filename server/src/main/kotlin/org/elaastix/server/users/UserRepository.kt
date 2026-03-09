@@ -20,14 +20,14 @@
 package org.elaastix.server.users
 
 import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.entities.AbstractUserEntity
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserRepository : ElaastixRepository<AbstractUserEntity> {
+interface UserRepository : ElaastixRepository<UserEntity> {
     @Suppress("UndocumentedPublicFunction")
-    @Query("FROM AbstractUserEntity")
-    fun dangerouslyFindAll(pageable: Pageable): List<AbstractUserEntity>
+    @Query("FROM UserEntity")
+    fun dangerouslyFindAll(pageable: Pageable): List<UserEntity>
 }
