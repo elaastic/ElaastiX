@@ -7,13 +7,17 @@ COPY gradle/ ./gradle/
 COPY build-logic/ ./build-logic/
 COPY frontend/*.gradle.kts ./frontend/
 COPY metamodel/*.gradle.kts ./metamodel/
+COPY commons/*.gradle.kts ./commons/
 COPY server/*.gradle.kts ./server/
 COPY *.gradle.kts *.gradle gradle.properties gradlew ./
 
 # Make Gradle download dependencies (and build `build-logic`) prior to copying sources.
-# This makes better use of Docker's cache system. We can't use cache mounts as dev image needs libs at runtime.
 RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew --no-daemon :metamodel:resolveDependencies :server:resolveDependencies :server:classes
+    ./gradlew --no-daemon \
+      :commons:resolveDependencies \
+      :metamodel:resolveDependencies \
+      :server:resolveDependencies \
+      :server:classes
 
 
 FROM base AS develop
