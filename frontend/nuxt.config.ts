@@ -15,6 +15,13 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  runtimeConfig: {
+    public: {
+      version: 'v0-indev',
+      gitHash: 'deadbeef',
+    },
+  },
+
   routeRules: {},
 
   compatibilityDate: '2025-07-15',

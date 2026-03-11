@@ -18,8 +18,7 @@
   -->
 
 <script setup lang="ts">
-const VERSION = import.meta.env.ELX_VERSION ?? '0-indev'
-const HASH = import.meta.env.ELX_GIT_HASH ?? 'deadbeef'
+const { public: { version, gitHash } } = useRuntimeConfig()
 </script>
 
 <template>
@@ -42,7 +41,7 @@ const HASH = import.meta.env.ELX_GIT_HASH ?? 'deadbeef'
       </NuxtLink>
     </div>
     <span class="font-mono font-thin text-[0.8em]">
-      v{{ VERSION }} ({{ HASH }})
+      {{ version }} ({{ gitHash }})
     </span>
   </div>
 </template>
