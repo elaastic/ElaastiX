@@ -4,5 +4,8 @@ export default defineAppConfig({
       primary: 'green',
       neutral: 'slate',
     },
+    link: {
+      base: 'underline',
+    },
   },
 })
