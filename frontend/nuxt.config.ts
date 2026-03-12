@@ -8,36 +8,40 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/fonts',
     '@nuxt/hints',
+    '@nuxt/a11y',
     '@nuxtjs/i18n',
     // '@nuxtjs/storybook',
   ],
 
-  devtools: {
-    enabled: true,
-  },
-
   css: ['~/assets/css/main.css'],
 
-  routeRules: {
-    '/': { prerender: true },
+  runtimeConfig: {
+    public: {
+      version: 'v0-indev',
+      gitHash: 'deadbeef',
+    },
   },
 
-  compatibilityDate: '2025-01-15',
+  routeRules: {},
+
+  compatibilityDate: '2025-07-15',
 
   eslint: {
     config: {
       stylistic: {
         commaDangle: 'always-multiline',
         braceStyle: '1tbs',
+
       },
     },
   },
 
   i18n: {
-    locales: [
-      { code: 'en', language: 'en-US' },
-      { code: 'fr', language: 'fr-FR' },
-    ],
     defaultLocale: 'en',
+    locales: [
+      { code: 'en', name: 'English', language: 'en-GB', file: 'en.json' },
+      { code: 'fr', name: 'Français', language: 'fr-FR', file: 'fr.json' },
+    ],
+    strategy: 'no_prefix',
   },
 })
