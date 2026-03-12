@@ -1,6 +1,8 @@
 @startuml(id=User)
 'https://plantuml.com/class-diagram
 
+'TODO: adapt with metamodel/users.puml
+
 class User
 class Learner extends User
 class Teacher extends User

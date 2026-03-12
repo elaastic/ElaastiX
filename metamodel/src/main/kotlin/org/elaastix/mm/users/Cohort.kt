@@ -17,16 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users.entities
+package org.elaastix.mm.users
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Table
-import org.elaastix.commons.jpa.AbstractEntity
-import org.elaastix.mm.user.User as MMUser
+import org.elaastix.mm.MmObject
 
-@Entity
-// Hibernate just casually broke `globally_quoted_identifiers` and doesn't want to fix it. https://hibernate.atlassian.net/browse/HHH-19973
-@Table(name = "\"user\"")
-class User :
-    AbstractEntity(),
-    MMUser
+/**
+ * An organisational-level group of users who share a common discriminator.
+ * For example, "2nd-year Computer Science undergraduates" (of a given University).
+ */
+interface Cohort : MmObject {
+    /**
+     * Name of the cohort.
+     */
+    val name: String
+
+    /**
+     * Members of the cohort.
+     */
+    val members: Set<User>
+
+    /**
+     * Administrators of the cohort.
+     * They MAY also appear in [members], but otherwise they're not counted as members of the cohort.
+     */
+    val administrators: Set<User>
+}

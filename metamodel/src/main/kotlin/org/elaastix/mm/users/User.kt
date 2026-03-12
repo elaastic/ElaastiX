@@ -17,6 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.user
+package org.elaastix.mm.users
 
-interface User
+import org.elaastix.mm.MmObject
+
+/**
+ * An Elaastix user.
+ * MAY be backed by a concrete account, but this is not guaranteed.
+ */
+interface User : MmObject {
+    /**
+     * Whether the user has opted into authoring features.
+     * Enables the creation of pedagogical material and activities.
+     */
+    val isWriterModeEnabled: Boolean
+
+    /**
+     * Whether the user is a platform administrator.
+     * An administrator has **unlimited** rights and MAY bypass all authorisation checks.
+     */
+    val isAdministrator: Boolean
+}

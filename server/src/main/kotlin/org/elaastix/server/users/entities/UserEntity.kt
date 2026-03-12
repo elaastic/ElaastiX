@@ -17,10 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-CREATE TABLE "user"
-(
-    id         UUID                        NOT NULL,
-    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
-    version    BIGINT                      NOT NULL,
-    CONSTRAINT pk_user PRIMARY KEY (id)
-);
+package org.elaastix.server.users.entities
+
+import jakarta.persistence.Entity
+import jakarta.persistence.Table
+import jakarta.validation.constraints.NotNull
+import org.elaastix.commons.jpa.AbstractEntity
+import org.elaastix.mm.users.User
+
+/**
+ * @see [User]
+ */
+@Entity
+@Table(name = "users")
+class UserEntity(
+    @NotNull
+    override var isWriterModeEnabled: Boolean = false,
+
+    @NotNull
+    override var isAdministrator: Boolean = false,
+) : AbstractEntity(),
+    User

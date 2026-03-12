@@ -1,0 +1,23 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package metamodel.users {
+    interface User extends metamodel.MmObject {
+        'todo
+        +isWriterModeEnabled: Boolean
+        +isAdministrator: Boolean
+    }
+
+    package cohorts {
+        interface Cohort extends metamodel.MmObject {
+            +name: String
+            +members: Set<User>
+            +administrators: Set<User>
+        }
+
+        Cohort "*" --o "1..*" User : administrated by >
+        Cohort "*" --o "*" User : member of <
+    }
+}
+
+@enduml

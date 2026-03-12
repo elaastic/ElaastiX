@@ -20,12 +20,10 @@
 package org.elaastix.server.infrastructure.seed
 
 import org.elaastix.server.users.UserRepository
-import org.elaastix.server.users.entities.User
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.boot.ApplicationArguments
 import org.springframework.boot.ApplicationRunner
 import org.springframework.context.annotation.Profile
-import org.springframework.data.domain.Example
-import org.springframework.data.domain.ExampleMatcher
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Component
 
@@ -43,17 +41,13 @@ class DatabaseSeeder(private val userRepository: UserRepository) : ApplicationRu
 
     private fun doInitUsers() {
         if (userRepository.count() == 0L) {
-            userRepository.persist(User())
-            userRepository.persist(User())
-            userRepository.persist(User())
+            userRepository.persist(UserEntity(isWriterModeEnabled = true, isAdministrator = true))
+            userRepository.persist(UserEntity(isWriterModeEnabled = true))
+            userRepository.persist(UserEntity())
         }
 
         // Gross workaround the lack of findAll.
-        userRepository.findAll(
-            Example.of(
-                User(),
-                ExampleMatcher.matchingAny(),
-            ),
+        userRepository.dangerouslyFindAll(
             @Suppress("MagicNumber")
             Pageable.ofSize(3),
         )

@@ -1,0 +1,7 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+!include ./metamodel/base.puml
+!include ./metamodel/users.puml
+
+@enduml
