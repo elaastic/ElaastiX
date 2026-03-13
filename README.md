@@ -1,5 +1,13 @@
 # ElaastiX
 
+## Project description
+> Engage your learners, reveal their thinking
+
+
+ElaastiX is a pedagogical activity orchestration platform, empowering teachers with tools to provide personalised and
+collaborative learning experiences to their learners.
+
+
 ## Getting started
 TL;DR:
 - Install Docker
