@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-title: ElaastiX
+title: Elaastic
 message: >-
   If you use this software, please cite it using the
   metadata from this file.
@@ -21,7 +21,7 @@ authors:
     orcid: 'https://orcid.org/0009-0002-8575-2879'
 repository-code: 'https://github.com/elaastic/elaastix'
 abstract: >-
-    ElaastiX is a pedagogical activity orchestration platform, empowering teachers with tools to provide personalised and
+    Elaastic is a pedagogical activity orchestration platform, empowering teachers with tools to provide personalised and
     collaborative learning experiences to their learners.
 keywords:
   - education
