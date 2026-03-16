@@ -1,0 +1,24 @@
+{
+  "tagline": "Engage your learners, reveal their thinking",
+  "description": "ElaastiX is a pedagogical activity orchestration platform, empowering teachers with tools to provide personalised and collaborative learning experiences to their learners.",
+  "documentation": "Documentation",
+  "source-code": "Source code",
+  "legal": {
+    "about": "About",
+    "notice": "Legal notice",
+    "about-elaastix": "About ElaastiX",
+    "project": {
+      "str": "ElaastiX is a project of the {0} team, at the {1}",
+      "talent": "TALENT",
+      "irit": "Institut de Recherche en Informatique de Toulouse"
+    },
+    "license": {
+      "str": "Licensed under the {0} license",
+      "link": "AGPL-3.0-or-later"
+    },
+    "cat": {
+      "str": "{0} (by River Kao on Unsplash)",
+      "link": "Arbitrary photo of a cat"
+    }
+  }
+}

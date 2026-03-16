@@ -8,7 +8,7 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 end_of_line = lf
 
-[*.{yaml,yml,json,js,ts,vue}]
+[*.{yaml,yml,json,js,ts,vue,css}]
 indent_size = 2
 
 [*.{bat,cmd}]
