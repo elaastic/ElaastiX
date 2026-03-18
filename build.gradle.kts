@@ -27,6 +27,7 @@ plugins {
 idea {
     module {
         excludeDirs.add(file(".kotlin"))
+        excludeDirs.add(file(".mise"))
     }
 
     project {

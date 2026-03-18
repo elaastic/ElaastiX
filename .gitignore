@@ -17,6 +17,7 @@
 .config/garage/credentials.env
 
 # Mise
+.mise
 mise/config.local.toml
 mise/config.*.local.toml
 

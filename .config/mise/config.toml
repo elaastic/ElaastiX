@@ -9,6 +9,17 @@ java = "temurin-25"
 typos = "latest"
 jq = "latest"
 
+[prepare.pnpm]
+auto = true
+sources = ["pnpm-workspace.yaml", "pnpm-lock.yaml", "frontend/package.json"]
+outputs = ["node_modules", "frontend/node_modules"]
+
+[prepare.garage-creds]
+auto = true
+sources = ["compose.yaml", ".config/garage/configure.sh"]
+outputs = [".config/garage/credentials.env"]
+run = "sh .config/garage/configure.sh"
+
 [hooks]
 postinstall = [
     # Configure git pre-commit hook  -- TODO: https://hk.jdx.dev/

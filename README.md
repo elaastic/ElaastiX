@@ -13,7 +13,7 @@ TL;DR:
 - Install Docker
 - Install [Mise](https://mise.jdx.dev)
 - Clone the repository and `cd` into it
-- Run `mise trust && mise install`
+- Run `mise trust && mise install && mise prep`
 - Open in IntelliJ IDEA Ultimate
 
 > [!CAUTION]
@@ -33,7 +33,7 @@ The project uses [Mise](https://mise.jdx.dev) for managing all the tools require
 the project with `mise trust`, and then run `mise install`.
 
 > [!CAUTION]
-> The `mise install` command will also configure important aspects of the project. Skipping this step is
+> The `mise prep` command will also configure important aspects of the project. Skipping this step is
 > will result in an **INCOMPLETE** development environment that will **NOT WORK**.
 
 The IntelliJ plugin should configure everything for you automatically. You may need to adjust in IntelliJ
@@ -208,9 +208,8 @@ Go to Settings > Tools > Web Browsers and Preview.
 > all other developers. Make a duplicate of the config and edit this local, private copy instead.
 
 #### Debug from the IDE
-When debugging the `Nuxt.js app` run configuration, breakpoints set in the IDE
-Breakpoints set within the IDE will automatically work and let you observe the context from the debug window. You can
-also see the console directly.
+When debugging the `Nuxt.js app` run configuration, breakpoints set within the IDE will automatically work and let you
+observe the context from the debug window. You can also see the console directly.
 
 > [!NOTE]
 > Simply running the application will not enable the in-IDE debugging capabilities; make sure to run via the debug
