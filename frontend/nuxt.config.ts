@@ -29,9 +29,9 @@ export default defineNuxtConfig({
   eslint: {
     config: {
       stylistic: {
+        indent: 'tab',
         commaDangle: 'always-multiline',
         braceStyle: '1tbs',
-
       },
     },
   },
