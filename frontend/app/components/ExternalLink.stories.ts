@@ -22,14 +22,14 @@ import type { Meta, StoryObj } from '@nuxtjs/storybook'
 import ExternalLink from './ExternalLink.vue'
 
 const meta = {
-  title: 'Misc/ExternalLink',
-  component: ExternalLink,
-  tags: ['autodocs'],
+	title: 'Misc/ExternalLink',
+	component: ExternalLink,
+	tags: ['autodocs'],
 } satisfies Meta<typeof ExternalLink>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const ExternalLinkStory: Story = {
-  args: {},
+	args: {},
 }

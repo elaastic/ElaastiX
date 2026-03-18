@@ -7,19 +7,19 @@ const lang = computed(() => locales[locale.value].code)
 const dir = computed(() => locales[locale.value].dir)
 
 useHead({
-  htmlAttrs: {
-    lang,
-    dir,
-  },
+	htmlAttrs: {
+		lang,
+		dir,
+	},
 })
 </script>
 
 <template>
-  <UApp :locale="locales[locale]">
-    <NuxtLoadingIndicator />
-    <NuxtRouteAnnouncer />
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </UApp>
+	<UApp :locale="locales[locale]">
+		<NuxtLoadingIndicator />
+		<NuxtRouteAnnouncer />
+		<NuxtLayout>
+			<NuxtPage />
+		</NuxtLayout>
+	</UApp>
 </template>

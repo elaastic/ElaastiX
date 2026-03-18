@@ -25,3 +25,9 @@ ij_kotlin_packages_to_use_import_on_demand = unset
 
 # Match Ktlint's default import order
 ij_kotlin_imports_layout = *,java.**,javax.**,kotlin.**,^
+
+[*.{yml,yaml}]
+# YAML: Yet Another Mediocre Language
+# https://yaml.org/faq/#why-does-yaml-forbid-tabs
+indent_style=space
+indent_size=2

@@ -21,52 +21,52 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 
 const links = [
-  [
-    {
-      label: 'Account',
-      icon: 'i-lucide-user',
-      to: '/settings',
-      exact: true,
-    },
-    {
-      label: 'Security & Privacy',
-      icon: 'i-lucide-shield',
-      to: '/settings/security',
-    },
-  ],
-  [
-    {
-      label: 'Administration',
-      icon: 'i-lucide-cog',
-      to: '/settings/admin',
-    },
-  ],
+	[
+		{
+			label: 'Account',
+			icon: 'i-lucide-user',
+			to: '/settings',
+			exact: true,
+		},
+		{
+			label: 'Security & Privacy',
+			icon: 'i-lucide-shield',
+			to: '/settings/security',
+		},
+	],
+	[
+		{
+			label: 'Administration',
+			icon: 'i-lucide-cog',
+			to: '/settings/admin',
+		},
+	],
 ] satisfies NavigationMenuItem[][]
 </script>
 
 <template>
-  <UDashboardPanel id="settings">
-    <template #header>
-      <UDashboardNavbar title="Settings">
-        <template #leading>
-          <UDashboardSidebarCollapse />
-        </template>
-      </UDashboardNavbar>
+	<UDashboardPanel id="settings">
+		<template #header>
+			<UDashboardNavbar title="Settings">
+				<template #leading>
+					<UDashboardSidebarCollapse />
+				</template>
+			</UDashboardNavbar>
 
-      <UDashboardToolbar>
-        <!-- NOTE: The `-mx-1` class is used to align with the `DashboardSidebarCollapse` button here. -->
-        <UNavigationMenu
-          :items="links"
-          highlight
-          class="-mx-1 flex-1"
-        />
-      </UDashboardToolbar>
-    </template>
+			<UDashboardToolbar>
+				<!-- NOTE: The `-mx-1` class is used to align with the `DashboardSidebarCollapse` button here. -->
+				<UNavigationMenu
+					:items="links"
+					highlight
+					class="-mx-1 flex-1"
+				/>
+			</UDashboardToolbar>
+		</template>
 
-    <template #body>
-      <div class="flex flex-col gap-4 sm:gap-6 w-full lg:max-w-2xl mx-auto">
-        <NuxtPage />
-      </div>
-    </template>
-  </UDashboardPanel>
+		<template #body>
+			<div class="flex flex-col gap-4 sm:gap-6 w-full lg:max-w-2xl mx-auto">
+				<NuxtPage />
+			</div>
+		</template>
+	</UDashboardPanel>
 </template>

@@ -18,68 +18,68 @@
   -->
 
 <template>
-  <UModal
-    :title="$t('legal.about-elaastix')"
-    :ui="{ content: 'max-w-xl' }"
-  >
-    <slot />
+	<UModal
+		:title="$t('legal.about-elaastix')"
+		:ui="{ content: 'max-w-xl' }"
+	>
+		<slot />
 
-    <template #body>
-      <div class="flex flex-col gap-4">
-        <p class="text-lg uppercase font-title font-bold text-primary">
-          {{ $t('tagline') }}
-        </p>
-        <p>
-          {{ $t('description') }}
-        </p>
-        <p>
-          <i18n-t keypath="legal.project.str">
-            <ExternalLink to="https://www.irit.fr/TALENT">
-              {{ $t('legal.project.talent') }}
-            </ExternalLink>
-            <ExternalLink to="https://www.irit.fr/">
-              {{ $t('legal.project.irit') }}
-            </ExternalLink>
-          </i18n-t>
-        </p>
-        <ul class="list-inside list-disc ml-2">
-          <li>
-            <ExternalLink to="/legal">
-              {{ $t('legal.notice') }}
-            </ExternalLink>
-          </li>
-          <li>
-            <ExternalLink to="https://github.com/elaastic/elaastix">
-              {{ $t('source-code') }}
-            </ExternalLink>
-          </li>
-          <li>
-            <ExternalLink to="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
-              {{ $t('documentation') }}
-            </ExternalLink>
-          </li>
-          <li>
-            <!-- https://unsplash.com/s/photos/cat?license=free -->
-            <i18n-t keypath="legal.cat.str">
-              <ExternalLink to="https://images.unsplash.com/photo-1626602411112-10742f9a3ab8?q=80&w=1974&auto=format&fit=crop">
-                {{ $t('legal.cat.link') }}
-              </ExternalLink>
-            </i18n-t>
-          </li>
-        </ul>
-      </div>
-      <hr class="my-4 text-neutral-300">
-      <div class="text-sm">
-        <div>Copyright &copy; Université de Toulouse</div>
-        <div>Copyright &copy; Université Toulouse Capitole</div>
-        <div>
-          <i18n-t keypath="legal.license.str">
-            <ExternalLink to="https://github.com/elaastic/elaastix/blob/main/LICENSE">
-              {{ $t('legal.license.link') }}
-            </ExternalLink>
-          </i18n-t>
-        </div>
-      </div>
-    </template>
-  </UModal>
+		<template #body>
+			<div class="flex flex-col gap-4">
+				<p class="text-lg uppercase font-title font-bold text-primary">
+					{{ $t('tagline') }}
+				</p>
+				<p>
+					{{ $t('description') }}
+				</p>
+				<p>
+					<i18n-t keypath="legal.project.str">
+						<ExternalLink to="https://www.irit.fr/TALENT">
+							{{ $t('legal.project.talent') }}
+						</ExternalLink>
+						<ExternalLink to="https://www.irit.fr/">
+							{{ $t('legal.project.irit') }}
+						</ExternalLink>
+					</i18n-t>
+				</p>
+				<ul class="list-inside list-disc ml-2">
+					<li>
+						<ExternalLink to="/legal">
+							{{ $t('legal.notice') }}
+						</ExternalLink>
+					</li>
+					<li>
+						<ExternalLink to="https://github.com/elaastic/elaastix">
+							{{ $t('source-code') }}
+						</ExternalLink>
+					</li>
+					<li>
+						<ExternalLink to="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+							{{ $t('documentation') }}
+						</ExternalLink>
+					</li>
+					<li>
+						<!-- https://unsplash.com/s/photos/cat?license=free -->
+						<i18n-t keypath="legal.cat.str">
+							<ExternalLink to="https://images.unsplash.com/photo-1626602411112-10742f9a3ab8?q=80&w=1974&auto=format&fit=crop">
+								{{ $t('legal.cat.link') }}
+							</ExternalLink>
+						</i18n-t>
+					</li>
+				</ul>
+			</div>
+			<hr class="my-4 text-neutral-300">
+			<div class="text-sm">
+				<div>Copyright &copy; Université de Toulouse</div>
+				<div>Copyright &copy; Université Toulouse Capitole</div>
+				<div>
+					<i18n-t keypath="legal.license.str">
+						<ExternalLink to="https://github.com/elaastic/elaastix/blob/main/LICENSE">
+							{{ $t('legal.license.link') }}
+						</ExternalLink>
+					</i18n-t>
+				</div>
+			</div>
+		</template>
+	</UModal>
 </template>

@@ -18,10 +18,10 @@
  */
 
 declare module 'nuxt/schema' {
-  interface PublicRuntimeConfig {
-    version: string
-    gitHash: string
-  }
+	interface PublicRuntimeConfig {
+		version: string
+		gitHash: string
+	}
 }
 
 export {}

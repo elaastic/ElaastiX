@@ -21,74 +21,74 @@
 import type { NavigationMenuItem } from '@nuxt/ui'
 
 const links = [
-  [
-    {
-      label: 'Home',
-      icon: 'i-lucide-house',
-      to: '/',
-    },
-    {
-      label: 'Assignments',
-      icon: 'i-lucide-briefcase-business',
-      to: '/assignments',
-      badge: '4',
-    },
-    {
-      label: 'Resources',
-      icon: 'i-lucide-folder',
-      to: '/resources',
-    },
-    {
-      label: 'Cohorts',
-      icon: 'i-lucide-users',
-      to: '/cohorts',
-    },
-  ],
+	[
+		{
+			label: 'Home',
+			icon: 'i-lucide-house',
+			to: '/',
+		},
+		{
+			label: 'Assignments',
+			icon: 'i-lucide-briefcase-business',
+			to: '/assignments',
+			badge: '4',
+		},
+		{
+			label: 'Resources',
+			icon: 'i-lucide-folder',
+			to: '/resources',
+		},
+		{
+			label: 'Cohorts',
+			icon: 'i-lucide-users',
+			to: '/cohorts',
+		},
+	],
 ] satisfies NavigationMenuItem[][]
 </script>
 
 <template>
-  <UDashboardGroup>
-    <UDashboardSidebar
-      id="default"
-      collapsible
-      resizable
-      class="bg-elevated/25"
-      :ui="{ footer: 'lg:border-t lg:border-default' }"
-    >
-      <template #header="{ collapsed }">
-        <!-- low effort logo while we wait for the real one ;^) -->
-        <div class="font-[Comic_Neue] font-bold text-xl">
-          <span
-            v-if="collapsed"
-            class="flex justify-center items-center size-5 m-1.5"
-          >
-            e
-          </span>
-          <span
-            v-else
-            class="flex justify-center items-center px-4"
-          >
-            elaastix
-          </span>
-        </div>
-      </template>
+	<UDashboardGroup>
+		<UDashboardSidebar
+			id="default"
+			collapsible
+			resizable
+			class="bg-elevated/25"
+			:ui="{ footer: 'lg:border-t lg:border-default' }"
+		>
+			<template #header="{ collapsed }">
+				<!-- low effort logo while we wait for the real one ;^) -->
+				<div class="font-[Comic_Neue] font-bold text-xl">
+					<span
+						v-if="collapsed"
+						class="flex justify-center items-center size-5 m-1.5"
+					>
+						e
+					</span>
+					<span
+						v-else
+						class="flex justify-center items-center px-4"
+					>
+						elaastix
+					</span>
+				</div>
+			</template>
 
-      <template #default="{ collapsed }">
-        <UNavigationMenu
-          :items="links"
-          :collapsed="collapsed"
-          orientation="vertical"
-          tooltip
-          popover
-        />
-      </template>
+			<template #default="{ collapsed }">
+				<UNavigationMenu
+					:items="links"
+					:collapsed="collapsed"
+					orientation="vertical"
+					tooltip
+					popover
+				/>
+			</template>
 
-      <template #footer="{ collapsed }">
-        <UserMenu :collapsed="collapsed" />
-      </template>
-    </UDashboardSidebar>
+			<template #footer="{ collapsed }">
+				<UserMenu :collapsed="collapsed" />
+			</template>
+		</UDashboardSidebar>
 
-    <slot />
-  </UDashboardGroup>
+		<slot />
+	</UDashboardGroup>
 </template>

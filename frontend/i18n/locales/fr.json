@@ -1,24 +1,24 @@
 {
-  "tagline": "Engagez vos élèves, révélez leur raisonnement",
-  "description": "ElaastiX est une plateforme d'orchestration d'activités pédagogiques, permettant aux enseignants de proposer des parcours d'apprentissage personnalisés et collaboratifs aux apprenants.",
-  "documentation": "Documentation",
-  "source-code": "Code source",
-  "legal": {
-    "about": "À propos",
-    "notice": "Mentions légales",
-    "about-elaastix": "À propos d'ElaastiX",
-    "project": {
-      "str": "ElaastiX est un projet de l'équipe {0}, à l'{1}",
-      "talent": "TALENT",
-      "irit": "Institut de Recherche en Informatique de Toulouse"
-    },
-    "license": {
-      "str": "Publié sous licence {0}",
-      "link": "AGPL-3.0-or-later"
-    },
-    "cat": {
-      "str": "{0} (par River Kao sur Unsplash)",
-      "link": "Photo arbitraire d'un chat"
-    }
-  }
+	"tagline": "Engagez vos élèves, révélez leur raisonnement",
+	"description": "ElaastiX est une plateforme d'orchestration d'activités pédagogiques, permettant aux enseignants de proposer des parcours d'apprentissage personnalisés et collaboratifs aux apprenants.",
+	"documentation": "Documentation",
+	"source-code": "Code source",
+	"legal": {
+		"about": "À propos",
+		"notice": "Mentions légales",
+		"about-elaastix": "À propos d'ElaastiX",
+		"project": {
+			"str": "ElaastiX est un projet de l'équipe {0}, à l'{1}",
+			"talent": "TALENT",
+			"irit": "Institut de Recherche en Informatique de Toulouse"
+		},
+		"license": {
+			"str": "Publié sous licence {0}",
+			"link": "AGPL-3.0-or-later"
+		},
+		"cat": {
+			"str": "{0} (par River Kao sur Unsplash)",
+			"link": "Photo arbitraire d'un chat"
+		}
+	}
 }

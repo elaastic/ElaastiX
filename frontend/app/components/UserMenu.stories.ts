@@ -22,14 +22,14 @@ import type { Meta, StoryObj } from '@nuxtjs/storybook'
 import UserMenu from './UserMenu.vue'
 
 const meta = {
-  title: 'Sidebar/UserMenu',
-  component: UserMenu,
-  tags: ['autodocs'],
+	title: 'Sidebar/UserMenu',
+	component: UserMenu,
+	tags: ['autodocs'],
 } satisfies Meta<typeof UserMenu>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const UserMenuStory: Story = {
-  args: {},
+	args: {},
 }
