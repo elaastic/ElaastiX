@@ -6,16 +6,17 @@ experimental = true
 [tools]
 # Java and Node are also configured via .tool-versions, as IJ supports it natively.
 # This is not ideal as the config is duplicated, but it is better than being completely broken :)
-node = { version = "24", postinstall = "corepack enable" }
 java = "temurin-25"
-typos = "latest"
 jq = "latest"
+node = { version = "24", postinstall = "corepack enable" }
 pkl = "latest"
+typos = "latest"
 # Appending -l makes sh read .profile, and mitigates IJ not running git with appropriate env vars.
-hk = { version = "latest", postinstall = "hk install --mise && sed -i 's/^#!\\/bin\\/sh$/\\0 -l/' .git/hooks/*" }
-taplo = "latest"
 actionlint = "latest"
 ghalint = "latest"
+hk = { version = "latest", postinstall = "hk install --mise && sed -i 's/^#!\\/bin\\/sh$/\\0 -l/' .git/hooks/*" }
+just = "latest"
+taplo = "latest"
 zizmor = "latest"
 
 [prepare.pnpm]
@@ -30,10 +31,10 @@ outputs = [".config/garage/credentials.env"]
 run = "sh .config/garage/configure.sh"
 
 [shell_alias]
+eslint = "pnpm eslint"
 garage = "docker compose exec -it storage /garage"
 psql = "docker compose exec -it postgres psql -U elaastix"
 typos = "typos --config {{config_root}}/.config/typos/config.toml"
-eslint = "pnpm eslint"
 
 [env]
 NODE_ENV = "development"

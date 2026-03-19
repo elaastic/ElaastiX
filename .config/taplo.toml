@@ -5,9 +5,15 @@ exclude = ["**/node_modules/**", "**/target/**"]
 [formatting]
 indent_string = "\t"
 
-
 [[rule]]
 include = ["gradle/libs.versions.toml"]
+
+[rule.formatting]
+reorder_keys = true
+
+[[rule]]
+include = [".config/mise/config.toml"]
+keys = ["tools", "shell_alias", "env"]
 
 [rule.formatting]
 reorder_keys = true

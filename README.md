@@ -79,13 +79,18 @@ and there is no support for JavaScript, TypeScript, and Vue (but support for the
 If you're not using a JetBrains IDE, additional configuration might be required.
 
 ### Running the project
-You can run the project using `docker compose up -d`, or via the run configurations available in IntelliJ (recommended).
+You can run the project using `just start`, or via the run configurations available in IntelliJ (recommended).
 
 The various parts of the app are reachable on the following endpoints:
 - Nuxt webapp: http://elaastix.localhost
 - Spring REST API: http://elaastix.localhost/api
 - Garage S3 server: http://storage.elaastix.localhost
 - Traefik console: http://traefik.localhost
+
+When running via `just`, a tmux session is started. To switch between tabs, use `Ctrl+B` and then numbers `0-9` to
+select a tab. See [tmux(1)] for more information. To tear everything down, run `just stop`.
+
+To see all the available commands in the project, run `just --list`.
 
 ## Project structure
 Files and folders that aren't worth of interest are not mentioned below. If it's not there, then it's most likely not
@@ -220,3 +225,5 @@ Right now, it's required to run Storybook separately and there is no Docker conf
 waiting on upstream to fix bugs with the Nuxt integration...
 
 In the meantime, the easiest way is to run Storybook locally, via `pnpm run storybook`.
+
+[tmux(1)]: https://man.archlinux.org/man/tmux.1

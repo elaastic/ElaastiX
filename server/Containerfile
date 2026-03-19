@@ -38,6 +38,7 @@ ARG VERSION
 ARG REVISION
 
 COPY metamodel/ ./metamodel/
+COPY commons/ ./commons/
 COPY server/ ./server/
 RUN ./gradlew -DVERSION=$VERSION -DREVISION=$REVISION --offline --no-daemon :server:bootJar -x test
 
