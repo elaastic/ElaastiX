@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import dev.detekt.gradle.Detekt
 import org.jetbrains.gradle.ext.copyright
 import org.jetbrains.gradle.ext.settings
 
 plugins {
     id("conventions.idea")
+    alias(libs.plugins.detekt)
 }
 
 idea {
@@ -60,5 +62,55 @@ idea {
                 }
             }
         }
+    }
+}
+
+dependencies {
+    detektPlugins(libs.detekt.ktlint)
+}
+
+detekt {
+    parallel = true
+    buildUponDefaultConfig = true
+    config.setFrom("./.config/detekt/detekt.yaml")
+
+    val nonKotlinProjects = listOf(":frontend")
+
+    source.from(
+        file("build.gradle.kts"),
+        file("settings.gradle.kts"),
+        file("build-logic/src"),
+        file("build-logic/build.gradle.kts"),
+        file("build-logic/settings.gradle.kts"),
+        subprojects
+            .filter { it.path !in nonKotlinProjects }
+            .flatMap { listOf(it.file("src"), it.file("build.gradle.kts"), it.file("settings.gradle.kts")) },
+    )
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = libs.versions.jdk
+    autoCorrect = project.hasProperty("detekt.fix")
+
+    if (project.hasProperty("detekt.only")) {
+        setSource(
+            project.property("detekt.only").toString()
+                .split(";;")
+                .map { file(it) },
+        )
+
+        // From Detekt's documentation
+        val typeResolutionEnabled = !classpath.isEmpty
+        if (typeResolutionEnabled && project.hasProperty("precommit")) {
+            // We must exclude kts files from pre-commit hook to prevent detekt from crashing
+            // This is a workaround for the https://github.com/detekt/detekt/issues/5501
+            exclude("*.gradle.kts")
+        }
+    }
+
+    exclude("**/resources/**", "**/build/**", "**/generated/**")
+
+    reports {
+        sarif.required = true
     }
 }

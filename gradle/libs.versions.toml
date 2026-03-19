@@ -4,7 +4,8 @@ kotlin = "2.3.10"
 # ----
 detekt = "2.0.0-alpha.2"
 flyway = "12.0.1"
-hibernate = "7.2.4.Final" # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
+hibernate = "7.2.4.Final"        # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
+hypersistence-utils = "3.15.2"
 ideax = "1.3"
 jdbc-postgresql = "42.7.9"
 junit = "6.0.3"
@@ -12,10 +13,8 @@ kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.10.0"
 mockk = "1.14.9"
 spring-boot = "4.0.2"
-hypersistence-utils = "3.15.2"
 
 [libraries]
-kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 detekt-ktlint = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
 flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 hypersistence-utils = { module = "io.hypersistence:hypersistence-utils-hibernate-71", version.ref = "hypersistence-utils" }
@@ -24,11 +23,12 @@ junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
 junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit" }
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
+kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-bdd = { module = "io.mockk:mockk-bdd", version.ref = "mockk" }
 spring-boot-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
@@ -36,10 +36,10 @@ spring-boot-actuator-test = { module = "org.springframework.boot:spring-boot-sta
 spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "spring-boot" }
 spring-boot-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway", version.ref = "spring-boot" }
 spring-boot-flyway-test = { module = "org.springframework.boot:spring-boot-starter-flyway-test", version.ref = "spring-boot" }
-spring-boot-kotlinx-serialization-json = { module = "org.springframework.boot:spring-boot-starter-kotlinx-serialization-json", version.ref = "spring-boot" }
-spring-boot-kotlinx-serialization-json-test = { module = "org.springframework.boot:spring-boot-starter-kotlinx-serialization-json-test", version.ref = "spring-boot" }
 spring-boot-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
 spring-boot-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test", version.ref = "spring-boot" }
+spring-boot-kotlinx-serialization-json = { module = "org.springframework.boot:spring-boot-starter-kotlinx-serialization-json", version.ref = "spring-boot" }
+spring-boot-kotlinx-serialization-json-test = { module = "org.springframework.boot:spring-boot-starter-kotlinx-serialization-json-test", version.ref = "spring-boot" }
 spring-boot-mail = { module = "org.springframework.boot:spring-boot-starter-mail", version.ref = "spring-boot" }
 spring-boot-mail-test = { module = "org.springframework.boot:spring-boot-starter-mail-test", version.ref = "spring-boot" }
 spring-boot-opentelemetry = { module = "org.springframework.boot:spring-boot-starter-opentelemetry", version.ref = "spring-boot" }

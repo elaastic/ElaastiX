@@ -19,7 +19,6 @@
 
 package conventions
 
-import dev.detekt.gradle.Detekt
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
@@ -27,7 +26,6 @@ val libs = the<VersionCatalogsExtension>().named("libs")
 
 plugins {
     id("conventions.java")
-    id("dev.detekt")
 
     kotlin("jvm")
     kotlin("plugin.serialization")
@@ -56,28 +54,10 @@ kotlin {
     }
 }
 
-detekt {
-    parallel = true
-    autoCorrect = true
-    buildUponDefaultConfig = true
-
-    config.setFrom(File(rootProject.projectDir, ".config/detekt/detekt.yaml"))
-}
-
-tasks.withType<Detekt>().configureEach {
-    exclude("**/resources/**", "**/build/**", "**/generated/**")
-
-    reports {
-        sarif.required = true
-    }
-}
-
 dependencies {
     implementation(platform(libs.findLibrary("kotlin.bom").get()))
 
     implementation(libs.findLibrary("kotlinx.serialization.core").get())
     implementation(libs.findLibrary("kotlinx.serialization.json").get())
     implementation(libs.findLibrary("kotlinx.serialization.cbor").get())
-
-    detektPlugins(libs.findLibrary("detekt.ktlint").get())
 }
