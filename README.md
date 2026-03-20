@@ -100,11 +100,28 @@ ElaastiX
 │   └── technical/              └── Specifications (as UML diagrams)
 ├── frontend/                   Nuxt web application (see: https://nuxt.com/docs/4.x/directory-structure)
 │   └── layers/                 └── Nuxt layers (see: https://nuxt.com/docs/4.x/getting-started/layers)
+│       └── .../                    └── See `Nuxt layers` below for the list of layers in the Nuxt app
 ├── gradle/                     Gradle-related files
 │   └── libs.versions.toml      └── Version catalogue
 └── metamodel/                  Metamodel library package
 └── server/                     Spring Boot application monolith
 ```
+
+### Nuxt layers
+- `0.base`: Core infrastructure, components, styles, etc.
+- `1.xxx`: Layers implementing a given area of the ElaastiX webapp
+  - `author`: Authoring tools for teachers
+  - `orchestrator`: Scenario composition and management
+  - `dashboard`: Teacher's dashboard for ongoing and completed activities
+  - `player`: Pedagogical activity player for learners
+  - `account`: Account management
+- `2.xxx`: Layers implementing a pedagogical activity module
+  - `question`: Encompasses 2 types of activities
+    - Answering one or more questions
+    - Changing (or keeping) a previous answer to a question
+  - `judge`: Peer review activity
+  - `chat`: Anonymous chat between peers
+- `9.admin`: Platform administration features
 
 ### Compose services
 > [!NOTE]
