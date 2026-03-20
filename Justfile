@@ -28,13 +28,12 @@ fix-all:
 start:
 	docker compose up --build -d
 	mise x tmux -- tmux new-session -d -s elaastix \; \
-		setw -g mouse on \; \
 		new-window -c 'frontend' -n 'Frontend' 'pnpm run dev; $SHELL' \; \
 		new-window -n 'Backend' 'docker compose attach server; $SHELL' \; \
 		new-window -n 'Postgres' 'docker compose attach postgres; $SHELL' \; \
 		new-window -n 'Garage' 'docker compose attach storage; $SHELL' \; \
-		new-window -n 'Traefik' 'docker compose attach traefik; $SHELL' \; \
 		select-window -t:0 \; \
+		setw -g mouse on \; \
 		attach
 
 [group('run')]

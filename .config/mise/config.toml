@@ -6,17 +6,17 @@ experimental = true
 [tools]
 # Java and Node are also configured via .tool-versions, as IJ supports it natively.
 # This is not ideal as the config is duplicated, but it is better than being completely broken :)
-java = "temurin-25"
-jq = "latest"
-node = { version = "24", postinstall = "corepack enable" }
-pkl = "latest"
-typos = "latest"
-# Appending -l makes sh read .profile, and mitigates IJ not running git with appropriate env vars.
+# For hk: appending `-l` makes `sh` read `.profile`, and mitigates IJ not running git with appropriate env vars.
 actionlint = "latest"
 ghalint = "latest"
 hk = { version = "latest", postinstall = "hk install --mise && sed -i 's/^#!\\/bin\\/sh$/\\0 -l/' .git/hooks/*" }
+java = "temurin-25"
+jq = "latest"
 just = "latest"
+node = { version = "24", postinstall = "corepack enable" }
+pkl = "latest"
 taplo = "latest"
+typos = "latest"
 zizmor = "latest"
 
 [prepare.pnpm]
@@ -24,7 +24,7 @@ auto = true
 sources = ["pnpm-workspace.yaml", "pnpm-lock.yaml", "frontend/package.json"]
 outputs = ["node_modules", "frontend/node_modules"]
 
-[prepare.garage-creds]
+[prepare.garage]
 auto = true
 sources = ["compose.yaml", ".config/garage/configure.sh"]
 outputs = [".config/garage/credentials.env"]

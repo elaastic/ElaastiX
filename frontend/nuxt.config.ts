@@ -26,6 +26,12 @@ export default defineNuxtConfig({
 
 	compatibilityDate: '2025-07-15',
 
+	nitro: {
+		devProxy: {
+			'/api': { target: 'http://localhost:8080', prependPath: false },
+		},
+	},
+
 	eslint: {
 		config: {
 			stylistic: {
