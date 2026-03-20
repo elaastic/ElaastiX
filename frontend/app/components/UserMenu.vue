@@ -96,6 +96,13 @@ const items = computed<DropdownMenuItem[][]>(() => ([
 	],
 	[
 		{
+			label: 'Administration',
+			icon: 'i-lucide-cog',
+			external: true,
+		},
+	],
+	[
+		{
 			label: 'Log out',
 			icon: 'i-lucide-log-out',
 			color: 'error',

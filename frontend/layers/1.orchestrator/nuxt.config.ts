@@ -17,26 +17,4 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
-
-rootProject.name = "ElaastiX"
-
-includeBuild("build-logic")
-include(
-    "commons",
-    "metamodel",
-    "server",
-    "frontend",
-)
-
-pluginManagement {
-    repositories {
-        gradlePluginPortal()
-    }
-}
-
-dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
-    }
-}
+export default defineNuxtConfig({})

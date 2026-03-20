@@ -1,19 +1,18 @@
-# ElaastiX
+# Elaastic
 
-## Project description
 > Engage your learners, reveal their thinking
 
-
-ElaastiX is a pedagogical activity orchestration platform, empowering teachers with tools to provide personalised and
+Elaastic is a pedagogical activity orchestration platform, empowering teachers with tools to provide personalised and
 collaborative learning experiences to their learners.
 
+ElaastiX (this repository) is the software platform that powers Elaastic and its ecosystem.
 
 ## Getting started
 TL;DR:
 - Install Docker
 - Install [Mise](https://mise.jdx.dev)
 - Clone the repository and `cd` into it
-- Run `mise trust && mise install`
+- Run `mise trust && mise install && mise prep`
 - Open in IntelliJ IDEA Ultimate
 
 > [!CAUTION]
@@ -24,16 +23,12 @@ TL;DR:
 Docker with the Compose plugin is also required to run the project.
 Please see the [Docker Documentation](https://docs.docker.com/engine/install/) for how to install it.
 
-> [!IMPORTANT]
-> If you're using a rootless installation, make sure to set the `DOCKER_SOCKET` environment variable to the path to
-> the Docker socket. It is necessary for Traefik to function properly.
-
 ### Mise
 The project uses [Mise](https://mise.jdx.dev) for managing all the tools required to work with the project. Make sure to trust
 the project with `mise trust`, and then run `mise install`.
 
 > [!CAUTION]
-> The `mise install` command will also configure important aspects of the project. Skipping this step is
+> The `mise prep` command will also configure important aspects of the project. Skipping this step is
 > will result in an **INCOMPLETE** development environment that will **NOT WORK**.
 
 The IntelliJ plugin should configure everything for you automatically. You may need to adjust in IntelliJ
@@ -79,31 +74,54 @@ and there is no support for JavaScript, TypeScript, and Vue (but support for the
 If you're not using a JetBrains IDE, additional configuration might be required.
 
 ### Running the project
-You can run the project using `docker compose up -d`, or via the run configurations available in IntelliJ (recommended).
+You can run the project using `just start`, or via the run configurations available in IntelliJ (recommended).
 
-The various parts of the app are reachable on the following endpoints:
-- Nuxt webapp: http://elaastix.localhost
-- Spring REST API: http://elaastix.localhost/api
-- Garage S3 server: http://storage.elaastix.localhost
-- Traefik console: http://traefik.localhost
+The various parts of the app are reachable on the following endpoints (in development):
+- Nuxt webapp: http://localhost:3000
+- Spring REST API: http://localhost:8080 (also available at http://localhost:3000/api when the Nuxt webapp is running)
+- Garage S3 server: http://localhost:3900
+
+When running via `just`, a tmux session is started. To switch between tabs, use `Ctrl+B` and then numbers `0-9` to
+select a tab. See [tmux(1)] for more information. To tear everything down, run `just stop`.
+
+To see all the available commands in the project, run `just --list`.
 
 ## Project structure
 Files and folders that aren't worth of interest are not mentioned below. If it's not there, then it's most likely not
 something you should have to worry about.
 ```
 ElaastiX
-├── .config/                    Repository and project config files. Loosely follows the XDG convention.
+├── .config/                    Repository and project config files. Loosely follows the XDG convention
 ├── .github/                    GitHub-specific configuration files
 ├── build-logic/                Convention plugins (Gradle)
 ├── commons/                    Code shared throughout the Elaastix projects
 ├── docs/                       Documentation of the project
-│   └── specs                   └── Specifications
-├── frontend/                   Nuxt web application
+│   ├── specs/                  ├── Specifications (as user stories)
+│   └── technical/              └── Specifications (as UML diagrams)
+├── frontend/                   Nuxt web application (see: https://nuxt.com/docs/4.x/directory-structure)
+│   └── layers/                 └── Nuxt layers (see: https://nuxt.com/docs/4.x/getting-started/layers)
+│       └── .../                    └── See `Nuxt layers` below for the list of layers in the Nuxt app
 ├── gradle/                     Gradle-related files
 │   └── libs.versions.toml      └── Version catalogue
 └── metamodel/                  Metamodel library package
 └── server/                     Spring Boot application monolith
 ```
+
+### Nuxt layers
+- `0.base`: Core infrastructure, components, styles, etc.
+- `1.xxx`: Layers implementing a given area of the ElaastiX webapp
+  - `author`: Authoring tools for teachers
+  - `orchestrator`: Scenario composition and management
+  - `dashboard`: Teacher's dashboard for ongoing and completed activities
+  - `player`: Pedagogical activity player for learners
+  - `account`: Account management
+- `2.xxx`: Layers implementing a pedagogical activity module
+  - `question`: Encompasses 2 types of activities
+    - Answering one or more questions
+    - Changing (or keeping) a previous answer to a question
+  - `judge`: Peer review activity
+  - `chat`: Anonymous chat between peers
+- `9.admin`: Platform administration features
 
 ### Compose services
 > [!NOTE]
@@ -116,17 +134,16 @@ ElaastiX
 | `frontend`       | Nuxt.js webapp                            | **Elaastix itself**                                                         |
 | `postgres`       | PostgreSQL 18 server                      | **Y**                                                                       |
 | `storage`        | Garage (S3-compatible)[^s3-compat] server | **Y**                                                                       |
-| `traefik`        | Traefik reverse-proxy                     | N                                                                           |
 | `otel-collector` | OpenTelemetry collector.                  | N, but **expected by default**. See [disable telemetry](#disable-telemetry) |
 
 [^s3-compat]: Elaastix is tested with Garage specifically, and the first-party staging and production deployments use
 it as well. It should, however, work perfectly fine with any S3-compatible solution from any vendor.
 
 #### Default development credentials
-| Service    | Username         | Password         | Additional information                                                     |
-|------------|------------------|------------------|----------------------------------------------------------------------------|
-| PostgreSQL | `elaastix`       | `elaastix`       | Database: `elaastix`                                                       |
-| Garage     | *Auto generated* | *Auto generated* | Generated during `mise install`, saved in `.config/garage/credentials.env` |
+| Service    | Username         | Password         | Additional information                                                  |
+|------------|------------------|------------------|-------------------------------------------------------------------------|
+| PostgreSQL | `elaastix`       | `elaastix`       | Database: `elaastix`                                                    |
+| Garage     | *Auto generated* | *Auto generated* | Generated during `mise prep`, saved in `.config/garage/credentials.env` |
 
 ### Spring monolith
 
@@ -195,9 +212,9 @@ management:
 
 ### Nuxt.js webapp
 The Nuxt development server can be started via Compose. Within IntelliJ, the following run configurations exist:
-- `Frontend dev server`: starts the frontend service (**without the backend**) in Compose
-- `Nuxt.js app`: Runs `Frontend dev server`, and opens the webapp in Chrome
-  - Can be run in Debug, which will let you inspect the console, variables, and set breakpoints within the IDE directly
+- `Nuxt.js app`: starts the Nuxt development server. **Don't use the debugger on it, it'll attach to the dev server.**
+- `Debug Nuxt.js app`: opens the Nuxt app in a browser. Can be run in Debug, which will let you inspect the console,
+   variables, and set breakpoints within the IDE directly. It will use a blank browser profile when debugging.
 
 Chrome is used, as the IDE uses the Chrome DevTools Protocol to power its debugging features. While IntelliJ mentions
 'Chrome' specifically, you can configure any Chromium-based browser (which is almost all browsers...) instead.
@@ -208,16 +225,17 @@ Go to Settings > Tools > Web Browsers and Preview.
 > all other developers. Make a duplicate of the config and edit this local, private copy instead.
 
 #### Debug from the IDE
-When debugging the `Nuxt.js app` run configuration, breakpoints set in the IDE
-Breakpoints set within the IDE will automatically work and let you observe the context from the debug window. You can
-also see the console directly.
+When debugging the Nuxt.js app, breakpoints set within the IDE will automatically work and let you observe the context
+from the debug window. You can also see the console directly.
 
 > [!NOTE]
-> Simply running the application will not enable the in-IDE debugging capabilities; make sure to run via the debug
-> button within the IDE.
+> Simply running the `Debug Nuxt.js app` configuration will not enable the in-IDE debugging capabilities; make sure to
+> run via the debug button within the IDE.
 
 #### Storybook
-Right now, it's required to run Storybook separately and there is no Docker configuration to do it easily. We're
-waiting on upstream to fix bugs with the Nuxt integration...
+Right now, it's required to run Storybook separately and there is no configuration to do it easily. We're waiting on
+upstream to fix bugs with the Nuxt integration...
 
 In the meantime, the easiest way is to run Storybook locally, via `pnpm run storybook`.
+
+[tmux(1)]: https://man.archlinux.org/man/tmux.1

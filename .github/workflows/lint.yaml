@@ -13,10 +13,27 @@ jobs:
     runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v5
-      - name: Spellcheck
-        uses: crate-ci/typos@v1.42.3
-        with:
-          config: .config/typos/config.toml
+      - uses: jdx/mise-action@v3
+      - run: typos -c .config/typos/config.toml
+
+  toml:
+    name: TOML
+    timeout-minutes: 10
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+      - run: taplo format --check
+      - run: taplo lint
+
+  actionlint:
+    name: GitHub Actions
+    timeout-minutes: 10
+    runs-on: ubuntu-slim
+    steps:
+      - uses: actions/checkout@v5
+      - uses: jdx/mise-action@v3
+      - run: actionlint
 
   kotlin:  # TODO(Cynthia): generate SARIF reports and push them to GitHub
     name: Kotlin lint
@@ -28,7 +45,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v5
 
       # TODO(Cynthia): Proper reports to GitHub etc...
-      - run: ./gradlew :build-logic:detekt detekt
+      - run: ./gradlew detekt
 
   js-lint:
     name: JavaScript lint

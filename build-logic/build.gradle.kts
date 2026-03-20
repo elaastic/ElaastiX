@@ -17,7 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import dev.detekt.gradle.Detekt
 import org.gradle.plugins.ide.idea.model.Module.INHERITED
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
@@ -26,7 +25,6 @@ plugins {
     id("idea")
     `kotlin-dsl`
     alias(libs.plugins.ideax)
-    alias(libs.plugins.detekt)
 }
 
 idea {
@@ -39,29 +37,13 @@ idea {
 kotlin {
     compilerOptions {
         val kotlinVersion = KotlinVersion.valueOf(
-            "KOTLIN_${libs.versions.kotlin.get().substringBeforeLast(".").replace(".", "_")}"
+            "KOTLIN_${libs.versions.kotlin.get().substringBeforeLast(".").replace(".", "_")}",
         )
 
         jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.jdk.get()}"))
         languageVersion.set(kotlinVersion)
         apiVersion.set(kotlinVersion)
         allWarningsAsErrors = true
-    }
-}
-
-detekt {
-    parallel = true
-    autoCorrect = true
-    buildUponDefaultConfig = true
-
-    config.setFrom("../.config/detekt/detekt.yaml")
-}
-
-tasks.withType<Detekt>().configureEach {
-    exclude("**/resources/**", "**/build/**", "**/generated/**")
-
-    reports {
-        sarif.required = true
     }
 }
 
@@ -78,11 +60,9 @@ dependencies {
     implementation(plugin(libs.plugins.kotlin.serialization))
     implementation(plugin(libs.plugins.spring.boot))
     implementation(plugin(libs.plugins.hibernate))
-    implementation(plugin(libs.plugins.detekt))
     implementation(plugin(libs.plugins.ideax))
-
-    detektPlugins(libs.detekt.ktlint)
 }
 
+/** Helper to transform plugin dependencies from the catalogue into a plain dependency specifier. */
 fun plugin(plugin: Provider<PluginDependency>): Provider<String> =
     plugin.map { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" }

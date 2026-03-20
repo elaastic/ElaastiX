@@ -1,3 +1,6 @@
+packages:
+  - frontend
+
 shamefullyHoist: true
 blockExoticSubdeps: true
 

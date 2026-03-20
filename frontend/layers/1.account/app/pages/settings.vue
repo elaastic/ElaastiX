@@ -38,7 +38,8 @@ const links = [
 		{
 			label: 'Administration',
 			icon: 'i-lucide-cog',
-			to: '/settings/admin',
+			external: true,
+			to: '/_admin',
 		},
 	],
 ] satisfies NavigationMenuItem[][]

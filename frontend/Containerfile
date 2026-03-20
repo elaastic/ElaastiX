@@ -1,4 +1,4 @@
-FROM node:24-alpine AS base
+FROM node:24-alpine AS build
 
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
@@ -7,12 +7,9 @@ RUN npm i -g corepack && corepack enable
 WORKDIR /app/frontend
 
 # Only copy package files to leverage Docker's cache system when only source code changes
-COPY frontend/package.json frontend/pnpm-workspace.yaml frontend/pnpm-lock.yaml /app/frontend/
-#COPY frontend/patches /app/frontend/patches
-
+COPY pnpm-workspace.yaml pnpm-lock.yaml /app/
+COPY frontend/package.json /app/frontend/
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-
-FROM base AS build
 
 COPY frontend /app/frontend
 RUN pnpm run build
