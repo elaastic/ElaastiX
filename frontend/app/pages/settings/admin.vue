@@ -18,5 +18,5 @@
   -->
 
 <template>
-  Nothing here yet
+	Nothing here yet
 </template>

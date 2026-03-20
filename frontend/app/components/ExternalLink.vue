@@ -18,11 +18,11 @@
   -->
 
 <template>
-  <ULink target="_blank">
-    <slot />
-    <UIcon
-      name="i-lucide-arrow-up-right"
-      class="size-3 text-dimmed"
-    />
-  </ULink>
+	<ULink target="_blank">
+		<slot />
+		<UIcon
+			name="i-lucide-arrow-up-right"
+			class="size-3 text-dimmed"
+		/>
+	</ULink>
 </template>

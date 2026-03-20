@@ -1,0 +1,5 @@
+# See blame.ignoreRevsFile in git-config(1) and --ignore-revs-file in git-blame(1) for more information about this file.
+# Please keep the order antichronological, with a date and a comment explaining the change being masked from blame output.
+
+# 2026-03-18: Converted indentation of non-Kotlin code to tabs
+afbfd4ae9eb733503588535526d0f62b3cb9976f

@@ -2,16 +2,16 @@
 @import "@nuxt/ui";
 
 @theme static {
-  --font-title: 'Exo 2', sans-serif;
-  --font-sans: 'Cabin', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+	--font-title: 'Exo 2', sans-serif;
+	--font-sans: 'Cabin', sans-serif;
+	--font-mono: 'JetBrains Mono', monospace;
 
-  --color-indigo-*: initial;
+	--color-indigo-*: initial;
 
-  --color-midnight-green: #0D3B40;
-  --color-nyanza: #D8F3DA;
-  --color-indigo: #2C4663;
-  --color-pastel-yellow: #FEFBB2;
+	--color-midnight-green: #0D3B40;
+	--color-nyanza: #D8F3DA;
+	--color-indigo: #2C4663;
+	--color-pastel-yellow: #FEFBB2;
 
-  --ui-primary: var(--color-midnight-green);
+	--ui-primary: var(--color-midnight-green);
 }

@@ -3,10 +3,10 @@ import storybook from 'eslint-plugin-storybook'
 import withNuxt from './.nuxt/eslint.config.mjs'
 
 export default withNuxt([
-  ...storybook.configs['flat/recommended'],
-  {
-    rules: {
-      'vue/no-multiple-template-root': 'off',
-    },
-  },
+	...storybook.configs['flat/recommended'],
+	{
+		rules: {
+			'vue/no-multiple-template-root': 'off',
+		},
+	},
 ])

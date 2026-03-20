@@ -22,26 +22,26 @@ const { public: { version, gitHash } } = useRuntimeConfig()
 </script>
 
 <template>
-  <div class="flex flex-col items-center text-toned text-xs">
-    <div class="flex items-center gap-4">
-      <DialogAbout>
-        <UButton
-          class="shrink-0 p-0 text-xs underline cursor-pointer"
-          color="neutral"
-          variant="link"
-        >
-          {{ $t('legal.about') }}
-        </UButton>
-      </DialogAbout>
-      <NuxtLink
-        to="/legal"
-        class="shrink-0 underline text-muted hover:text-default transition-colors"
-      >
-        {{ $t('legal.notice') }}
-      </NuxtLink>
-    </div>
-    <span class="font-mono font-thin text-[0.8em]">
-      {{ version }} ({{ gitHash }})
-    </span>
-  </div>
+	<div class="flex flex-col items-center text-toned text-xs">
+		<div class="flex items-center gap-4">
+			<DialogAbout>
+				<UButton
+					class="shrink-0 p-0 text-xs underline cursor-pointer"
+					color="neutral"
+					variant="link"
+				>
+					{{ $t('legal.about') }}
+				</UButton>
+			</DialogAbout>
+			<NuxtLink
+				to="/legal"
+				class="shrink-0 underline text-muted hover:text-default transition-colors"
+			>
+				{{ $t('legal.notice') }}
+			</NuxtLink>
+		</div>
+		<span class="font-mono font-thin text-[0.8em]">
+			{{ version }} ({{ gitHash }})
+		</span>
+	</div>
 </template>

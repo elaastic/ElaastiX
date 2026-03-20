@@ -22,14 +22,14 @@ import type { Meta, StoryObj } from '@nuxtjs/storybook'
 import VersionAndLegal from './VersionAndLegal.vue'
 
 const meta = {
-  title: 'Misc/VersionAndLegal',
-  component: VersionAndLegal,
-  tags: ['autodocs'],
+	title: 'Misc/VersionAndLegal',
+	component: VersionAndLegal,
+	tags: ['autodocs'],
 } satisfies Meta<typeof VersionAndLegal>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const UserMenuStory: Story = {
-  args: {},
+	args: {},
 }

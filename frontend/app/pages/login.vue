@@ -22,80 +22,80 @@ import type { AuthFormField, FormSubmitEvent } from '@nuxt/ui'
 import * as v from 'valibot'
 
 definePageMeta({
-  layout: false,
+	layout: false,
 })
 
 const toast = useToast()
 
 const fields: AuthFormField[] = [{
-  name: 'login',
-  type: 'text',
-  label: 'Login',
-  placeholder: 'Enter your login',
-  required: true,
-  defaultValue: '',
+	name: 'login',
+	type: 'text',
+	label: 'Login',
+	placeholder: 'Enter your login',
+	required: true,
+	defaultValue: '',
 }, {
-  name: 'password',
-  label: 'Password',
-  type: 'password',
-  placeholder: 'Enter your password',
-  required: true,
-  defaultValue: '',
+	name: 'password',
+	label: 'Password',
+	type: 'password',
+	placeholder: 'Enter your password',
+	required: true,
+	defaultValue: '',
 }, {
-  name: 'remember',
-  label: 'Remember me',
-  type: 'checkbox',
+	name: 'remember',
+	label: 'Remember me',
+	type: 'checkbox',
 }]
 
 const providers = [{
-  label: 'Google',
-  icon: 'i-simple-icons-google',
-  onClick: () => {
-    toast.add({ title: 'Google', description: 'Login with Google' })
-  },
+	label: 'Google',
+	icon: 'i-simple-icons-google',
+	onClick: () => {
+		toast.add({ title: 'Google', description: 'Login with Google' })
+	},
 }, {
-  label: 'GitHub',
-  icon: 'i-simple-icons-github',
-  onClick: () => {
-    toast.add({ title: 'GitHub', description: 'Login with GitHub' })
-  },
+	label: 'GitHub',
+	icon: 'i-simple-icons-github',
+	onClick: () => {
+		toast.add({ title: 'GitHub', description: 'Login with GitHub' })
+	},
 }]
 
 const LoginSchema = v.object({
-  login: v.pipe(
-    v.string(),
-    v.nonEmpty('Please enter your login'),
-    v.maxLength(128),
-  ),
-  // Don't impose length/complexity constraints on the current password
-  // It may not be up to requirements (e.g. set before policy changes, bypassed via internal systems, ...).
-  password: v.pipe(
-    v.string(),
-    v.nonEmpty('Please enter your password'),
-    v.maxLength(512),
-  ),
+	login: v.pipe(
+		v.string(),
+		v.nonEmpty('Please enter your login'),
+		v.maxLength(128),
+	),
+	// Don't impose length/complexity constraints on the current password
+	// It may not be up to requirements (e.g. set before policy changes, bypassed via internal systems, ...).
+	password: v.pipe(
+		v.string(),
+		v.nonEmpty('Please enter your password'),
+		v.maxLength(512),
+	),
 })
 
 type LoginData = v.InferInput<typeof LoginSchema>
 
 function onSubmit(payload: FormSubmitEvent<LoginData>) {
-  console.log('Submitted', payload)
+	console.log('Submitted', payload)
 }
 </script>
 
 <template>
-  <div class="min-h-svh flex flex-col items-center justify-center gap-4 p-4">
-    <UPageCard class="w-full max-w-md">
-      <UAuthForm
-        :schema="LoginSchema"
-        title="Login"
-        description="Enter your credentials to access your account."
-        icon="i-lucide-user"
-        :fields="fields"
-        :providers="providers"
-        @submit="onSubmit"
-      />
-    </UPageCard>
-    <VersionAndLegal class="w-full max-w-md" />
-  </div>
+	<div class="min-h-svh flex flex-col items-center justify-center gap-4 p-4">
+		<UPageCard class="w-full max-w-md">
+			<UAuthForm
+				:schema="LoginSchema"
+				title="Login"
+				description="Enter your credentials to access your account."
+				icon="i-lucide-user"
+				:fields="fields"
+				:providers="providers"
+				@submit="onSubmit"
+			/>
+		</UPageCard>
+		<VersionAndLegal class="w-full max-w-md" />
+	</div>
 </template>
