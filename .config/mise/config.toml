@@ -6,10 +6,9 @@ experimental = true
 [tools]
 # Java and Node are also configured via .tool-versions, as IJ supports it natively.
 # This is not ideal as the config is duplicated, but it is better than being completely broken :)
-# For hk: appending `-l` makes `sh` read `.profile`, and mitigates IJ not running git with appropriate env vars.
 actionlint = "latest"
 ghalint = "latest"
-hk = { version = "latest", postinstall = "hk install --mise && sed -i 's/^#!\\/bin\\/sh$/\\0 -l/' .git/hooks/*" }
+hk = "latest"
 java = "temurin-25"
 jq = "latest"
 just = "latest"
@@ -29,6 +28,12 @@ auto = true
 sources = ["compose.yaml", ".config/garage/configure.sh"]
 outputs = [".config/garage/credentials.env"]
 run = "sh .config/garage/configure.sh"
+
+[prepare.hk]
+sources = [".config/mise/config.toml", ".config/hk.pkl"]
+outputs = [".git/hooks/pre-commit", ".git/hooks/commit-msg"]
+# Appending `-l` makes `sh` read `.profile`, and mitigates IJ not running git with appropriate env vars...
+run = "hk install --mise && find '.git/hooks' -type f -exec sed -i 's/^#!\\/bin\\/sh$/\\0 -l/' {} ';'"
 
 [shell_alias]
 eslint = "pnpm eslint"

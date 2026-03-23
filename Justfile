@@ -42,6 +42,7 @@ stop:
 	docker compose stop
 	-mise x tmux -- tmux kill-session -t elaastix
 
+[confirm]
 [group('misc')]
 [doc('Cleans the repository to its original state. WILL RESET LOCAL CONFIGURATION (e.g. mise.local.toml)')]
 clean:
