@@ -11,16 +11,19 @@ package metamodel.activity {
 	}
 
 	enum AbsoluteGrade {
-		INCORRECT,
-		CORRECT,
-		PARTIAL,
-		NEUTRAL,
+		FAILED
+		PASS
+		PARTIAL
+		NEUTRAL
 	}
 
 	class ScalarGrade <<embeddable>> {
 		value: BigDecimal
 		max: BigDecimal
 	}
+
+	AbsoluteGradable +-- AbsoluteGrade
+	ScalarGradable +-- ScalarGrade
 }
 
 @enduml

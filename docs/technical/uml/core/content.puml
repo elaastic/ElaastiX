@@ -8,17 +8,26 @@ package core.content {
 		+contents: String
 	}
 
+	note bottom of MarkdownContent
+		Obsidian Flavoured Markdown
+		`__` (double underscore) as <u>underline</u>
+	end note
+
 	' silly: Out of all the old things I wish we could bring back to the Internet, bbcode is *not* one of them. :p
 	class MarkdownText implements metamodel.content.FormattedText {
 		+contents: String
 	}
+
+	note bottom of MarkdownText
+		`__` (double underscore) as <u>underline</u>
+	end note
 
 	class AttachedContent implements metamodel.content.Content {
 		+attachment: Attachment
 		+instruction: FormattedText?
 	}
 
-	class RichContent implements metamodel.content.Content {
+	class TipTapContent implements metamodel.content.RichContent {
 		+contents: JSONB
 	}
 
@@ -60,12 +69,8 @@ package core.content {
 		'TODO (trivial)
 	}
 
-	AttachedContent --> Attachment
-	RichContent ..> Attachment: May contain >
-
-	note right of RichContent::contents
-		TipTap document.
-	end note
+	AttachedContent *-> Attachment
+	TipTapContent ..> Attachment: May contain >
 }
 
 @enduml
