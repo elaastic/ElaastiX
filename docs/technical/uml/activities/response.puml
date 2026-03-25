@@ -1,0 +1,102 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+!include ../metamodel.puml
+
+package activities.response {
+	package model {
+		abstract class Question <<sealed>> implements metamodel.activity.Material {
+			+statement: Content
+			+explanation: Content?
+		}
+
+		class OpenQuestion extends Question {
+			+expectedAnswer: PlainContent
+		}
+
+		class ClosedQuestion extends Question {
+			+choices: List<FormattedText>
+			+correctAnswer: ClosedAnswer
+			+multiple: Boolean
+		}
+
+		abstract class Response<T: Question> <<sealed>> implements metamodel.activity.Material, metamodel.activity.ScalarGradable {
+			{abstract} +question: T
+		}
+
+		class OpenResponse extends Response {
+			+question: OpenQuestion
+			+answer: PlainContent
+			+confidenceDegree: Int?
+		}
+
+		class ClosedResponse extends Response implements metamodel.activity.AbsoluteGradable {
+			+question: ClosedQuestion
+			+answer: ClosedAnswer
+			+selfExplanation: PlainContent?
+			+confidenceDegree: Int?
+		}
+
+		OpenQuestion o-- OpenResponse
+		ClosedQuestion o-- ClosedResponse
+
+		class AmendedOpenResponse extends OpenResponse {
+			previous: OpenResponse
+			changeMotive: PlainContent?
+		}
+
+		class AmendedClosedResponse extends ClosedResponse {
+			previous: ClosedResponse
+			changeMotive: PlainContent?
+		}
+
+		AmendedOpenResponse --> OpenResponse
+		AmendedClosedResponse --> ClosedResponse
+
+		class ClosedAnswer <<(V,pink) value class>> {
+			-value: List<UInt>
+			__
+			+hasMultiple(): Boolean
+			+asSingle(): UInt
+			+asMultiple(): List<UInt>
+			__
+			{static} +single(answer: UInt): Self
+			{static} +multiple(answer: List<UInt>): Self
+		}
+
+		ClosedQuestion::correctAnswer --> ClosedAnswer
+		ClosedResponse::answer --> ClosedAnswer
+
+		note left of ClosedAnswer::value
+			Indices in the question's choices list
+		end note
+	}
+
+	class ResponseActivityConfig
+
+	/'
+	class ResponseActivitySession extends activity.metamodel.ActivitySession {
+		learner: Learner
+		activityConfig: ResponseActivityConfig
+		material: Question
+		output: Response
+
+		submitResponse(response: Response)
+	}
+
+	class ChangeResponseActivitySession extends ResponseActivitySession {
+		previousResponse: Response
+		modifyResponse()
+	}
+
+	ResponseActivitySession --> Learner
+	ResponseActivitySession --> Response
+	ResponseActivitySession --> ResponseActivityConfig
+
+	class ResponseActivityConfig implements activity.metamodel.ActivityConfig {
+		provideConfidenceDegree: boolean
+		provideExplanation: boolean
+	}
+	'/
+}
+@enduml

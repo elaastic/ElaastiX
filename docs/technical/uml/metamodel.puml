@@ -3,5 +3,7 @@
 
 !include ./metamodel/base.puml
 !include ./metamodel/users.puml
+!include ./metamodel/content.puml
+!include ./metamodel/activity.puml
 
 @enduml
