@@ -20,12 +20,16 @@
 package org.elaastix.mm.content
 
 /**
- * A type of content that can be formatted, but MUST NOT make use of advanced and/or custom widgets.
+ * A type of content that can be structured and formatted, but MUST NOT make use of advanced and/or custom widgets.
  *
- * Contents that would conform to the "formatting-only" requirements are for example:
+ * This type of content SHOULD always be "mostly-valid"; that is, anything thrown at it should render and be readable
+ * on a best-effort basis. In other words, implementations SHOULD take resiliency seriously and implement recovery
+ * mechanisms if needed.
+ *
+ * Formats that would be appropriate for this type of content are for example:
  * CommonMark, Obsidian Flavoured Markdown¹ (excluding tasks and embedded HTML), AsciiDoc, ...
  *
- * 1: OFM states support for LaTeX, but it actually only supports Math macros (which is desired here).
+ * 1: OFM states support for LaTeX, but it actually only supports math-related macros. This is the desired behaviour.
  *    See the MathJax documentation: https://docs.mathjax.org/en/v4.1/input/tex/differences.html
  */
 interface FormattedContent : RichContent

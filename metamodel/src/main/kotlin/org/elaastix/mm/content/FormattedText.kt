@@ -24,8 +24,20 @@ package org.elaastix.mm.content
  * It MUST NOT provide any structural formatting capabilities (e.g. titles, codeblocks...).
  * New lines are not necessarily forbidden, but renderers MUST normalise all whitespace as simple spaces.
  *
+ * Implementations MUST losslessly convert from and to a plain [String]. This implies the following invariants:
+ * - `FormattedText.fromString(fstr.toString()) == fstr`
+ * - For two instances of a same subclass, `fstr1 == fstr2 <=> fstr1.toString() == fstr.toString()`
+ *
  * Examples of compliant formats are:
  * - CommonMark (0.31.2) § 6 "Inlines" ONLY, excluding § 6.4 "Images", § 6.6 "Raw HTML", § 6.7 "Hard line breaks".
  * - BBCode (from phpBB), excluding `img`, `list`, `code`, `quote`.
  */
-interface FormattedText : RichContent
+interface FormattedText : RichContent {
+    /**
+     * Losslessly convert a formatted text to a String.
+     *
+     * Type information (the kind of formatted text) is not encoded; it is up to the callee to perform any tagging
+     * deemed appropriate.
+     */
+    override fun toString(): String
+}

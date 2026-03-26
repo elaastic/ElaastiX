@@ -27,8 +27,9 @@ package org.elaastix.mm.content
  * customised TipTap documents, Typst, LaTeX, ...
  *
  * Appropriate when authoring complex resources that can make use of the features it provides. In cases where
- * only formatting capabilities are desired, [FormattedContent] is more appropriate and a lot more robust against
- * accidental (or malicious) misuse.
+ * only formatting capabilities are desired, [FormattedContent] is more appropriate and RECOMMENDED. It will be a lot
+ * more resilient against misuse (voluntary or involuntary), and potentially more secure, thanks to its reduced feature
+ * set. Advanced features imply a greater attack surface, and a higher risk of broken content (i.e. unreadable).
  *
  * @see FormattedContent
  */
