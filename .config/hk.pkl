@@ -1,0 +1,84 @@
+amends "package://github.com/jdx/hk/releases/download/v1.38.0/hk@1.38.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.38.0/hk@1.38.0#/Builtins.pkl"
+
+exclude = List(
+	"gradlew",
+	"gradlew.bat",
+	"pnpm-lock.yaml",
+)
+
+local frontend = new Mapping<String, Step> {
+	["eslint"] = (Builtins.eslint) {
+		glob = List("**/*.js", "**/*.ts", "**/*.vue")
+		check = "cd {{workspace}} && pnpm eslint {{workspace_files}}"
+		fix = "cd {{workspace}} && pnpm eslint --fix {{workspace_files}}"
+		workspace_indicator = "package.json"
+	}
+}
+
+local backend = new Mapping<String, Step> {
+	// If we decide this is too slow, consider using only Ktlint (via Mise)?
+	["detekt"] {
+		glob = List("**/*.kt", "**/*.kts")
+		check = "./gradlew detekt -Pdetekt.only=\"{{ files_list | join(sep=';;') }}\""
+		fix = "./gradlew detekt -Pdetekt.only=\"{{ files_list | join(sep=';;') }}\" -Pdetekt.fix"
+	}
+}
+
+local ci = new Mapping<String, Step> {
+	["actionlint"] = (Builtins.actionlint)
+	// Actions kinda in a draft state, need Renovatebot to be operational too (to pin action by hash)
+	// ["ghalint-workflow"] = (Builtins.ghalint_workflow)
+	// ["ghalint-action"] = (Builtins.ghalint_action)
+	// ["zizmor"] = (Builtins.zizmor)
+}
+
+// Shared linters (apply to all components)
+local shared = new Mapping<String, Step> {
+	// Might be good to have at some point, but unclear how it'll play with Nuxt MDC (MDCLint?)
+	// ["markdown"] = (Builtins.markdown_lint)
+	["taplo"] = (Builtins.taplo)
+	["taplo-format"] = (Builtins.taplo_format)
+
+	["pkl"] = (Builtins.pkl)
+
+	["typos"] = (Builtins.typos) {
+		check_diff = Builtins.typos.check_diff.replaceAll("typos", "typos --config .config/typos/config.toml")
+		fix = Builtins.typos.fix.replaceAll("typos", "typos --config .config/typos/config.toml")
+	}
+
+	// Builtin hk checks
+	["check-byte-order-marker"] = (Builtins.check_byte_order_marker)
+	["trailing-whitespace"] = (Builtins.trailing_whitespace)
+	["check-added-large-files"] = (Builtins.check_added_large_files)
+	["check-merge-conflict"] = (Builtins.check_merge_conflict)
+}
+
+// Merge all in a flat object (so hk does run everything in parallel)
+local check_steps = new Mapping<String, Step> {
+	...frontend
+	...backend
+	...ci
+	...shared
+}
+
+hooks {
+	["pre-commit"] {
+		fix = true
+		stash = "git"
+		steps = check_steps
+	}
+	["commit-msg"] {
+		steps {
+			["conventional-commits"] = (Builtins.check_conventional_commit)
+		}
+	}
+	["check"] {
+		steps = check_steps
+	}
+	["fix"] {
+		fix = true
+		stash = "none"
+		steps = check_steps
+	}
+}

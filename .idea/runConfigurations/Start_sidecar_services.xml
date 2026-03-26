@@ -6,7 +6,6 @@
           <list>
             <option value="postgres" />
             <option value="storage" />
-            <option value="traefik" />
           </list>
         </option>
         <option name="sourceFilePath" value="compose.yaml" />

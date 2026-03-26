@@ -20,9 +20,7 @@
 
 # Re-build every time the source code changes. Spring will automatically restart
 while inotifywait -r -e modify /app/src/main/; do
-  ./gradlew --offline --no-daemon :server:classes
+  ./gradlew --no-daemon :server:classes
 done > /dev/null 2>&1 &
 
-# Forcefully make Gradle offline to not download new dependencies.
-# While convenient, the image as a whole should be rebuilt instead. Let's enforce good practices :)
-exec ./gradlew --offline --no-daemon "$@"
+exec ./gradlew --no-daemon "$@"

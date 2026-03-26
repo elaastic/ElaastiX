@@ -1,6 +1,19 @@
 FROM eclipse-temurin:25-jdk-alpine AS base
 
-WORKDIR /build
+WORKDIR /work
+COPY gradle.properties gradlew ./
+COPY gradle/wrapper ./gradle/
+
+FROM base AS develop
+
+# Will be used by the development containers
+COPY server/docker-entrypoint-dev.sh ./server/
+ENTRYPOINT [ "/work/server/docker-entrypoint-dev.sh" ]
+
+FROM base AS build
+
+ARG VERSION
+ARG REVISION
 
 # Copy core project files
 COPY gradle/ ./gradle/
@@ -9,7 +22,7 @@ COPY frontend/*.gradle.kts ./frontend/
 COPY metamodel/*.gradle.kts ./metamodel/
 COPY commons/*.gradle.kts ./commons/
 COPY server/*.gradle.kts ./server/
-COPY *.gradle.kts *.gradle gradle.properties gradlew ./
+COPY *.gradle.kts *.gradle ./
 
 # Make Gradle download dependencies (and build `build-logic`) prior to copying sources.
 RUN --mount=type=cache,target=/root/.gradle \
@@ -19,25 +32,8 @@ RUN --mount=type=cache,target=/root/.gradle \
       :server:resolveDependencies \
       :server:classes
 
-
-FROM base AS develop
-
-# Can't use the cached data while actually running the container, so we have to copy it out.
-ENV GRADLE_USER_HOME=/root/.gradle2
-RUN --mount=type=cache,target=/root/.gradle \
-    cp -r /root/.gradle /root/.gradle2
-
-# Will be used by the development containers
-COPY server/docker-entrypoint-dev.sh ./server/
-ENTRYPOINT [ "/build/server/docker-entrypoint-dev.sh" ]
-
-
-FROM base AS build
-
-ARG VERSION
-ARG REVISION
-
 COPY metamodel/ ./metamodel/
+COPY commons/ ./commons/
 COPY server/ ./server/
 RUN ./gradlew -DVERSION=$VERSION -DREVISION=$REVISION --offline --no-daemon :server:bootJar -x test
 

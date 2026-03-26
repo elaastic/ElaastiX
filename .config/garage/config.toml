@@ -11,4 +11,4 @@ rpc_secret = "decafbad00000000000000000000000000000000000000000000000000000000"
 [s3_api]
 s3_region = "garage"
 api_bind_addr = "[::]:3900"
-root_domain = ".storage.elaastix.localhost"
+root_domain = ".localhost"

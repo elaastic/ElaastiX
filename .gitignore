@@ -17,8 +17,12 @@
 .config/garage/credentials.env
 
 # Mise
+.mise
 mise/config.local.toml
 mise/config.*.local.toml
+
+# HK
+hk.local.pkl
 
 # Gradle dev/build outputs
 .gradle

@@ -1,30 +1,46 @@
+#:schema https://mise.jdx.dev/schema/mise.json
+
 [settings]
 experimental = true
 
 [tools]
 # Java and Node are also configured via .tool-versions, as IJ supports it natively.
 # This is not ideal as the config is duplicated, but it is better than being completely broken :)
-node = { version = "24", postinstall = "corepack enable" }
+actionlint = "latest"
+ghalint = "latest"
+hk = "latest"
 java = "temurin-25"
-typos = "latest"
 jq = "latest"
+just = "latest"
+node = { version = "24", postinstall = "corepack enable" }
+pkl = "latest"
+taplo = "latest"
+typos = "latest"
+zizmor = "latest"
 
-[hooks]
-postinstall = [
-    # Configure git pre-commit hook  -- TODO: https://hk.jdx.dev/
-    'printf "#!/usr/bin/env bash\n$(which mise) task run _precommit" > .git/hooks/pre-commit',
-    "chmod +x .git/hooks/pre-commit",
-    # Configure Garage
-    'sh ./.config/garage/configure.sh'
-]
+[prepare.pnpm]
+auto = true
+sources = ["pnpm-workspace.yaml", "pnpm-lock.yaml", "frontend/package.json"]
+outputs = ["node_modules", "frontend/node_modules"]
 
-[tasks._precommit]
-hide = true
-run = [
-    "typos -c .config/typos/config.toml",
-    "./gradlew :build-logic:detekt detekt"
-]
+[prepare.garage]
+auto = true
+sources = ["compose.yaml", ".config/garage/configure.sh"]
+outputs = [".config/garage/credentials.env"]
+run = "sh .config/garage/configure.sh"
+
+[prepare.hk]
+sources = [".config/mise/config.toml", ".config/hk.pkl"]
+outputs = [".git/hooks/pre-commit", ".git/hooks/commit-msg"]
+# Appending `-l` makes `sh` read `.profile`, and mitigates IJ not running git with appropriate env vars...
+run = "hk install --mise && find '.git/hooks' -type f -exec sed -i 's/^#!\\/bin\\/sh$/\\0 -l/' {} ';'"
 
 [shell_alias]
+eslint = "pnpm eslint"
 garage = "docker compose exec -it storage /garage"
 psql = "docker compose exec -it postgres psql -U elaastix"
+typos = "typos --config {{config_root}}/.config/typos/config.toml"
+
+[env]
+NODE_ENV = "development"
+TAPLO_CONFIG = "{{config_root}}/.config/taplo.toml"
