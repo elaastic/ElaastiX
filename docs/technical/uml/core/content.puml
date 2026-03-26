@@ -69,7 +69,7 @@ package core.content {
 		'TODO (trivial)
 	}
 
-	AttachedContent *-> Attachment
+	AttachedContent *-- Attachment
 	TipTapContent ..> Attachment: May contain >
 }
 
