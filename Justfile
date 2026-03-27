@@ -42,9 +42,14 @@ stop:
 	docker compose stop
 	-mise x tmux -- tmux kill-session -t elaastix
 
-[confirm]
 [group('misc')]
-[doc('Cleans the repository to its original state. WILL RESET LOCAL CONFIGURATION (e.g. mise.local.toml)')]
+[doc('Cleans the repository to its original state. Will erase local configuration (e.g. mise.local.toml), but preserve the IJ shelf.')]
+[confirm('This action WILL ERASE ALL LOCAL CONFIGS AND UNTRACKED FILES. IJ shelves will be preserved. Continue?')]
 clean:
 	docker compose down
-	git clean -xdf
+	git clean -xdf --exclude .idea/shelf
+
+[group('misc')]
+[doc('Lists all files that would be cleaned by the clean task.')]
+clean-dry:
+	git clean --dry-run -xdf --exclude .idea/shelf
