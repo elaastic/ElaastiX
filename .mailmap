@@ -1,0 +1,7 @@
+#
+# File used by Git to map old commits to new (or more appropriate) email addresses.
+# List should be preferably alphabetically sorted.
+# See man gitmailmap(5) for more details.
+#
+Franck Silvestre <franck.silvestre@irit.fr> <franck.silvestre@ik.me>
+John Tranier <john.tranier@ticetime.com> <john.tranier@isae-supaero.fr>

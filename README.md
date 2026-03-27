@@ -96,8 +96,8 @@ ElaastiX
 ├── build-logic/                Convention plugins (Gradle)
 ├── commons/                    Code shared throughout the Elaastix projects
 ├── docs/                       Documentation of the project
-│   ├── specs/                  ├── Specifications (as user stories)
-│   └── technical/              └── Specifications (as UML diagrams)
+│   ├── specs/                  ├── Specifications of the project (the "what")
+│   └── technical/              └── Specifications of the technical implementation (the "how")
 ├── frontend/                   Nuxt web application (see: https://nuxt.com/docs/4.x/directory-structure)
 │   └── layers/                 └── Nuxt layers (see: https://nuxt.com/docs/4.x/getting-started/layers)
 │       └── .../                    └── See `Nuxt layers` below for the list of layers in the Nuxt app

@@ -1,7 +1,7 @@
 @startuml(id=User)
 'https://plantuml.com/class-diagram
 
-'TODO: adapt with metamodel/users.puml
+'TODO: adapt with metamodel/users.puml, move to core/users.puml
 
 class User
 class Learner extends User
@@ -9,15 +9,15 @@ class Teacher extends User
 
 class UserAccount
 note top
-    UserAccount provide access to the system for a User
-    and holds its personal data.
-    The UserAccount may be removed for GPDR compliance
-    while keeping the User entity so that the
-    relational model is preserved.
+	UserAccount provide access to the system for a User
+	and holds its personal data.
+	The UserAccount may be removed for GDPR compliance
+	while keeping the User entity so that the
+	relational model is preserved.
 end note
 
 interface Cohort {
-    users: Set<User>
+	users: Set<User>
 }
 
 class LearnerCohort implements Cohort
