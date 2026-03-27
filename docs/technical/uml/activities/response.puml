@@ -7,7 +7,7 @@ package activities.response {
 	package model {
 		abstract class Question <<sealed>> implements metamodel.activity.Material {
 			+statement: RichContent
-			+expectedAnswer: Any
+			{abstract} +expectedAnswer: Any
 			+answerExplanation: RichContent?
 		}
 
