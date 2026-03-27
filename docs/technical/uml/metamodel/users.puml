@@ -15,8 +15,8 @@ package metamodel.users {
 			+administrators: Set<User>
 		}
 
-		Cohort "*" --o "1..*" User : administrated by >
-		Cohort "*" --o "*" User : member of <
+		Cohort "*" o-- "1..*" User : administrated by >
+		Cohort "*" o-- "*" User : member of <
 	}
 }
 

@@ -17,7 +17,7 @@ package metamodel.activity {
 		NEUTRAL
 	}
 
-	class ScalarGrade <<embeddable>> {
+	class ScalarGrade {
 		value: BigDecimal
 		max: BigDecimal
 	}

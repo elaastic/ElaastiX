@@ -6,8 +6,9 @@
 package activities.response {
 	package model {
 		abstract class Question <<sealed>> implements metamodel.activity.Material {
-			+statement: Content
-			+explanation: Content?
+			+statement: RichContent
+			+expectedAnswer: Any
+			+answerExplanation: RichContent?
 		}
 
 		class OpenQuestion extends Question {
@@ -15,43 +16,33 @@ package activities.response {
 		}
 
 		class ClosedQuestion extends Question {
-			+choices: List<FormattedText>
-			+correctAnswer: ClosedAnswer
 			+multiple: Boolean
+			+choices: List<FormattedText>
+			+expectedAnswer: ClosedAnswer
 		}
 
 		abstract class Response<T: Question> <<sealed>> implements metamodel.activity.Material, metamodel.activity.ScalarGradable {
+			{abstract} +amendedResponse: Response<T>?
 			{abstract} +question: T
+			{abstract} +answer: Any
+			+selfExplanation: PlainContent?
+			+confidenceDegree: UInt?
 		}
 
-		class OpenResponse extends Response {
+		class OpenResponse extends Response<OpenQuestion> {
+			+amendedResponse: OpenResponse?
 			+question: OpenQuestion
 			+answer: PlainContent
-			+confidenceDegree: Int?
 		}
 
-		class ClosedResponse extends Response implements metamodel.activity.AbsoluteGradable {
+		class ClosedResponse extends Response<ClosedQuestion> implements metamodel.activity.AbsoluteGradable {
+			+amendedResponse: ClosedResponse?
 			+question: ClosedQuestion
 			+answer: ClosedAnswer
-			+selfExplanation: PlainContent?
-			+confidenceDegree: Int?
 		}
 
 		OpenQuestion o-- OpenResponse
 		ClosedQuestion o-- ClosedResponse
-
-		class AmendedOpenResponse extends OpenResponse {
-			previous: OpenResponse
-			changeMotive: PlainContent?
-		}
-
-		class AmendedClosedResponse extends ClosedResponse {
-			previous: ClosedResponse
-			changeMotive: PlainContent?
-		}
-
-		AmendedOpenResponse --> OpenResponse
-		AmendedClosedResponse --> ClosedResponse
 
 		class ClosedAnswer <<(V,pink) value class>> {
 			-value: List<UInt>
@@ -64,7 +55,7 @@ package activities.response {
 			{static} +multiple(answer: List<UInt>): Self
 		}
 
-		ClosedQuestion::correctAnswer --> ClosedAnswer
+		ClosedQuestion::expectedAnswer --> ClosedAnswer
 		ClosedResponse::answer --> ClosedAnswer
 
 		note left of ClosedAnswer::value
