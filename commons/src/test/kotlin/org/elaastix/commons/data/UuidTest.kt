@@ -67,13 +67,13 @@ class UuidTest {
     @Nested
     inner class JsonUuidTest {
         @Test
-        fun `it serialises Uuid as a Base36 string in JSON format`() {
+        fun `serialises Uuid as a Base36 string in JSON format`() {
             val json = Json.encodeToString(TEST_OBJ)
             assertThat(json).isEqualTo(JSON_ENCODED)
         }
 
         @Test
-        fun `it deserialises Uuid from a Base36 string in JSON format`() {
+        fun `deserialises Uuid from a Base36 string in JSON format`() {
             val obj: TestObj = Json.decodeFromString(JSON_ENCODED)
             assertThat(obj).isEqualTo(TEST_OBJ)
         }
@@ -91,13 +91,13 @@ class UuidTest {
         }
 
         @Test
-        fun `it serialises Uuid as a Base36 string in CBOR format`() {
+        fun `serialises Uuid as a Base36 string in CBOR format`() {
             val cbor = Cbor.encodeToByteArray(TEST_OBJ)
             assertThat(cbor).isEqualTo(CBOR_ENCODED)
         }
 
         @Test
-        fun `it deserialises Uuid from a Base36 string in CBOR format`() {
+        fun `deserialises Uuid from a Base36 string in CBOR format`() {
             val obj: TestObj = Cbor.decodeFromByteArray(CBOR_ENCODED)
             assertThat(obj).isEqualTo(TEST_OBJ)
         }
