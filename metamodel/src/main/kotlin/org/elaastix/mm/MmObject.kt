@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("ForbiddenImport") // We don't have access to Elaastix Commons here
+
 package org.elaastix.mm
 
 import kotlin.time.Instant

@@ -21,6 +21,7 @@ package org.elaastix.commons.jpa
 
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter
+import org.elaastix.commons.data.Uuid
 import org.hibernate.boot.model.TypeContributions
 import org.hibernate.boot.model.TypeContributor
 import org.hibernate.service.ServiceRegistry
@@ -28,7 +29,6 @@ import java.util.UUID
 import kotlin.time.Instant
 import kotlin.time.toJavaInstant
 import kotlin.time.toKotlinInstant
-import kotlin.uuid.Uuid
 import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 import java.time.Instant as JavaInstant

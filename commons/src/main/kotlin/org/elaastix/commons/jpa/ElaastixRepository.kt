@@ -20,8 +20,8 @@
 package org.elaastix.commons.jpa
 
 import io.hypersistence.utils.spring.repository.BaseJpaRepository
+import org.elaastix.commons.data.Uuid
 import org.springframework.data.repository.NoRepositoryBean
-import kotlin.uuid.Uuid
 
 /**
  * Specialised Repository type for use in all Elaastix projects.

@@ -27,12 +27,12 @@ import jakarta.persistence.PreUpdate
 import jakarta.persistence.Transient
 import jakarta.persistence.Version
 import jakarta.validation.constraints.NotNull
+import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.platform.JpaImmutable
 import org.hibernate.proxy.HibernateProxy
 import java.util.UUID
 import kotlin.time.Clock
 import kotlin.time.Instant
-import kotlin.uuid.Uuid
 import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 
