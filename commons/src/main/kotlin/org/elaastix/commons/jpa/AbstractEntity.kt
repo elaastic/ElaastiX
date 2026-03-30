@@ -129,6 +129,7 @@ abstract class AbstractEntity {
      */
     final override fun hashCode(): Int = id.hashCode()
 
-    private final val Any.hibernateAwareJavaClass: Class<*>
+    @get:Transient
+    private val Any.hibernateAwareJavaClass: Class<*>
         get() = if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass else this.javaClass
 }
