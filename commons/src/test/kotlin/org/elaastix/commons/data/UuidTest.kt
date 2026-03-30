@@ -49,6 +49,7 @@ class UuidTest {
         val TEST_OBJ = TestObj(TEST_UUID)
 
         val CBOR_ENCODED =
+            @Suppress("Indentation") // On purpose, for readability.
             @OptIn(ExperimentalUnsignedTypes::class)
             ubyteArrayOf(
                 // @formatter:off
@@ -82,21 +83,22 @@ class UuidTest {
     @OptIn(ExperimentalSerializationApi::class)
     inner class CborUuidTest {
         // Gotcha: https://github.com/Kotlin/kotlinx.serialization/issues/3058
-        // We autoconfigure things in Spring Boot for more idiomatic CBOR serde ootb
-        fun Cbor() = Cbor {
-            alwaysUseByteString = true;
+        // We (will; cbor not yet configured at all) autoconfigure things in Spring for more idiomatic CBOR serde ootb
+        @Suppress("PropertyName", "VariableNaming") // To shadow `Cbor`
+        val Cbor = Cbor {
+            alwaysUseByteString = true
             useDefiniteLengthEncoding = true
         }
 
         @Test
         fun `it serialises Uuid as a Base36 string in CBOR format`() {
-            val cbor = Cbor().encodeToByteArray(TEST_OBJ)
+            val cbor = Cbor.encodeToByteArray(TEST_OBJ)
             assertThat(cbor).isEqualTo(CBOR_ENCODED)
         }
 
         @Test
         fun `it deserialises Uuid from a Base36 string in CBOR format`() {
-            val obj: TestObj = Cbor().decodeFromByteArray(CBOR_ENCODED)
+            val obj: TestObj = Cbor.decodeFromByteArray(CBOR_ENCODED)
             assertThat(obj).isEqualTo(TEST_OBJ)
         }
     }

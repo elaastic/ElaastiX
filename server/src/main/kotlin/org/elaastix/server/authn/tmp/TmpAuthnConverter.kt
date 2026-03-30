@@ -25,7 +25,8 @@ import org.springframework.security.web.authentication.AuthenticationConverter
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 
 class TmpAuthnConverter : AuthenticationConverter {
-    override fun convert(request: HttpServletRequest) = request.getHeader("Authorization")
-        ?.let(Uuid::parseOrNull)
-        ?.let { PreAuthenticatedAuthenticationToken(it, null) }
+    override fun convert(request: HttpServletRequest) =
+        request.getHeader("Authorization")
+            ?.let(Uuid::parseOrNull)
+            ?.let { PreAuthenticatedAuthenticationToken(it, null) }
 }

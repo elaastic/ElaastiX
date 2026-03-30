@@ -50,32 +50,38 @@ object UuidSerializer : KSerializer<KtUuid> {
     override val descriptor: SerialDescriptor =
         buildSerialDescriptor("org.elaastix.commons.data.Uuid", SerialKind.CONTEXTUAL)
 
-    override fun serialize(encoder: Encoder, value: KtUuid) = when {
-        encoder is CborEncoder -> serializeAsBytes(encoder, value)
-        else -> serializeAsString(encoder, value)
-    }
+    override fun serialize(encoder: Encoder, value: KtUuid) =
+        when {
+            encoder is CborEncoder -> serializeAsBytes(encoder, value)
+            else -> serializeAsString(encoder, value)
+        }
 
-    override fun deserialize(decoder: Decoder) = when {
-        decoder is CborDecoder -> deserializeFromBytes(decoder)
-        else -> deserializeFromString(decoder)
-    }
+    override fun deserialize(decoder: Decoder) =
+        when {
+            decoder is CborDecoder -> deserializeFromBytes(decoder)
+            else -> deserializeFromString(decoder)
+        }
 
-    private fun serializeAsBytes(encoder: Encoder, value: KtUuid) = encoder.encodeSerializableValue(
-        ByteArraySerializer(),
-        value.toByteArray(),
-    )
-
-    private fun deserializeFromBytes(decoder: Decoder) = KtUuid.fromByteArray(
-        decoder.decodeSerializableValue(
+    private fun serializeAsBytes(encoder: Encoder, value: KtUuid) =
+        encoder.encodeSerializableValue(
             ByteArraySerializer(),
-        ),
-    )
+            value.toByteArray(),
+        )
 
-    private fun serializeAsString(encoder: Encoder, value: KtUuid) = encoder.encodeString(
-        BigInteger(value.toByteArray()).toString(BASE36_RADIX),
-    )
+    private fun deserializeFromBytes(decoder: Decoder) =
+        KtUuid.fromByteArray(
+            decoder.decodeSerializableValue(
+                ByteArraySerializer(),
+            ),
+        )
 
-    private fun deserializeFromString(decoder: Decoder) = KtUuid.fromByteArray(
-        BigInteger(decoder.decodeString(), BASE36_RADIX).toByteArray(),
-    )
+    private fun serializeAsString(encoder: Encoder, value: KtUuid) =
+        encoder.encodeString(
+            BigInteger(value.toByteArray()).toString(BASE36_RADIX),
+        )
+
+    private fun deserializeFromString(decoder: Decoder) =
+        KtUuid.fromByteArray(
+            BigInteger(decoder.decodeString(), BASE36_RADIX).toByteArray(),
+        )
 }
