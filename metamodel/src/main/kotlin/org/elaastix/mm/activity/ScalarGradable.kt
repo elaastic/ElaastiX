@@ -32,17 +32,33 @@ interface ScalarGradable {
     /** The scalar grade given to the object. */
     val absoluteGrade: ScalarGrade
 
-    /** A linear grade, as an arbitrary number between zero and an upper bound. */
-    data class ScalarGrade(
-        /** Maximum grade that can be obtained. MUST be non-zero and positive. */
-        val max: BigDecimal,
-        /** The given grade. MUST conform to `0 <= grade <= max`. */
-        val grade: BigDecimal,
-    ) {
-        init {
-            require(grade.signum() != -1) { "Grade must be positive or zero" }
-            require(max.signum() == 1) { "Maximum value of the grade must be strictly positive" }
-            require(grade.compareTo(max) != 1) { "Grade must be less than or equal to the maximum grade" }
-        }
+    /**
+     * A linear grade, as an arbitrary number between zero and an upper bound.
+     */
+    interface ScalarGrade {
+        /** The given grade. MUST be less than or equal to [max]. */
+        val grade: UInt
+
+        /** Maximum grade that can be obtained. MUST be non-zero. */
+        val max: UInt
+
+        /**
+         * Returns the grade as a decimal value between 0 and 1.
+         *
+         * Suitable for all general purpose use-cases, but not entirely lossless.
+         *
+         * @see asBigDecimal
+         */
+        fun asDouble(): Double = grade.toDouble() / max.toDouble()
+
+        /**
+         * Returns the grade as a lossless decimal value between 0 and 1.
+         *
+         * While lossless and suitable for exact arithmetic, it is not appropriate for general purpose use due to
+         * the memory and performance overhead (on average 2-3x slower than [Double]).
+         *
+         * @see asDouble
+         */
+        fun asBigDecimal(): BigDecimal = BigDecimal.valueOf(grade.toLong()).divide(BigDecimal.valueOf(max.toLong()))
     }
 }
