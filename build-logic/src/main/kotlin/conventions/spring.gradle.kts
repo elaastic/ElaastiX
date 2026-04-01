@@ -27,6 +27,7 @@ val libs = the<VersionCatalogsExtension>().named("libs")
 plugins {
     id("conventions.java")
     id("conventions.spring-lib")
+    id("conventions.hibernate-lib")
 }
 
 dependencies {

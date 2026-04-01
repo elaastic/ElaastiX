@@ -26,17 +26,9 @@ val libs = the<VersionCatalogsExtension>().named("libs")
 plugins {
     id("conventions.java")
     id("org.springframework.boot")
-    id("org.hibernate.orm") // Plugin should automatically override Hibernate's version
 
     kotlin("plugin.jpa")
     kotlin("plugin.spring")
-}
-
-allOpen {
-    // https://youtrack.jetbrains.com/issue/KT-79389
-    annotation("jakarta.persistence.Entity")
-    annotation("jakarta.persistence.MappedSuperclass")
-    annotation("jakarta.persistence.Embeddable")
 }
 
 dependencies {
