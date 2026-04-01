@@ -21,4 +21,28 @@ plugins {
     id("conventions.idea")
     id("conventions.kotlin")
     id("conventions.test")
+    id("conventions.spring-lib")
+}
+
+val main by sourceSets.getting
+
+val impl by sourceSets.creating {
+    compileClasspath += main.output
+    runtimeClasspath += main.output
+}
+
+val test by sourceSets.getting {
+    compileClasspath += impl.output
+    runtimeClasspath += impl.output
+}
+
+dependencies {
+    val implImplementation by configurations
+
+    implImplementation(libs.spring.boot.jpa)
+    implImplementation(libs.spring.boot.validation)
+    implImplementation(libs.hypersistence.utils)
+
+    testImplementation(libs.spring.boot.jpa.test)
+    testImplementation(libs.spring.boot.validation.test)
 }
