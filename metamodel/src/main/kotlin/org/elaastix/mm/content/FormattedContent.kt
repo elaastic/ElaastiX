@@ -19,6 +19,8 @@
 
 package org.elaastix.mm.content
 
+import kotlinx.serialization.json.JsonElement
+
 /**
  * A type of content that can be structured and formatted, but MUST NOT make use of advanced and/or custom widgets.
  *
@@ -29,7 +31,14 @@ package org.elaastix.mm.content
  * Formats that would be appropriate for this type of content are for example:
  * CommonMark, Obsidian Flavoured Markdown¹ (excluding tasks and embedded HTML), AsciiDoc, ...
  *
+ * **IMPORTANT**: All subclasses MUST have a companion object named `Factory` that inherits [FormattedContentFactory].
+ *
  * 1: OFM states support for LaTeX, but it actually only supports math-related macros. This is the desired behaviour.
  *    See the MathJax documentation: https://docs.mathjax.org/en/v4.1/input/tex/differences.html
  */
-interface FormattedContent : RichContent
+interface FormattedContent : RichContent {
+    /** Factory that'll be used by the JPA mapper. */
+    interface FormattedContentFactory : RichContent.RichContentFactory {
+        override fun fromJson(json: JsonElement): FormattedContent
+    }
+}
