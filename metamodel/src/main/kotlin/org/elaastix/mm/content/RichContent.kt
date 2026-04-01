@@ -19,6 +19,8 @@
 
 package org.elaastix.mm.content
 
+import kotlinx.serialization.json.JsonElement
+
 /**
  * A rich content is the least restricted type of content in ElaastiX, with no limits on what it allows.
  * Implementations are allowed to provide highly advanced interactive widgets if they desire.
@@ -31,6 +33,17 @@ package org.elaastix.mm.content
  * more resilient against misuse (voluntary or involuntary), and potentially more secure, thanks to its reduced feature
  * set. Advanced features imply a greater attack surface, and a higher risk of broken content (i.e. unreadable).
  *
+ * **IMPORTANT**: All subclasses MUST have a companion object named `Factory` that inherits [RichContentFactory].
+ *
  * @see FormattedContent
  */
-interface RichContent
+interface RichContent {
+    /** Transforms the content into a JSON element that'll be saved to the database. */
+    fun toJson(): JsonElement
+
+    /** Factory that'll be used by the JPA mapper. */
+    interface RichContentFactory {
+        /** Constructs an instance of the content from the stored JSON element. */
+        fun fromJson(json: JsonElement): RichContent
+    }
+}
