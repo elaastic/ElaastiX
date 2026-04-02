@@ -4,79 +4,63 @@
 'TODO: cleanup, and move + adapt to new structure in ./metamodel/
 
 package activity.metamodel {
-    class  Sequence {
-        state: State
-        scenario: Scenario
-        start()
-        pause()
-        resume()
-        stop()
-    }
+	class Sequence {
+		state: State
+		scenario: Scenario
+		start()
+		pause()
+		resume()
+		stop()
+	}
 
-    enum State {
-        OPEN
-        PENDING
-        RUNNING
-        PAUSED
-        CLOSED
-    }
+	enum State {
+		OPEN
+		PENDING
+		RUNNING
+		PAUSED
+		CLOSED
+	}
 
-    Sequence --> State
-    Sequence --> scenario.Scenario
+	Sequence --> State
+	Sequence --> scenario.Scenario
 
-    Scenario *- ActivitySession : Managed by <
+	Scenario *- ActivitySession : Managed by <
 
-    abstract class ActivitySession {
-        context: Sequence
-        activityConfig: ActivityConfig
-        state: State
-        abstract getLearners(): Set<Learner>
-        abstract getInputMaterial(): Set<Material>
-        abstract getLearnerOutput(): Set<LearnerOutput>
-    }
+	abstract class ActivitySession {
+		context: Sequence
+		activityConfig: ActivityConfig
+		state: State
+		abstract getLearners(): Set<Learner>
+		abstract getInputMaterial(): Set<Material>
+		abstract getLearnerOutput(): Set<LearnerOutput>
+	}
 
-    class ActivitySessionLog
+	class ActivitySessionLog
 
-    ActivitySession --> Sequence
-    ActivitySession -- ActivitySessionReport : Produced by >
-    ActivitySession --> State
-    ActivitySession --> ActivitySessionLog
-    ActivitySession --> ActivityConfig
-    ActivitySession *-- LearnerOutput
-    ActivitySession o-- Material
+	ActivitySession --> Sequence
+	ActivitySession -- ActivitySessionReport : Produced by >
+	ActivitySession --> State
+	ActivitySession --> ActivitySessionLog
+	ActivitySession --> ActivityConfig
+	ActivitySession *-- LearnerOutput
+	ActivitySession o-- Material
 
-    interface ActivitySessionReport
-    interface LearnerActivitySessionReport
+	interface ActivitySessionReport
+	interface LearnerActivitySessionReport
 
-    LearnerActivitySessionReport -- Learner
-    LearnerActivitySessionReport -- ActivitySessionReport
+	LearnerActivitySessionReport -- Learner
+	LearnerActivitySessionReport -- ActivitySessionReport
 
-    interface ActivityConfig
+	interface ActivityConfig
 
-    interface Material
+	interface ConditionExpression {
+		evaluate(term: Term): boolean
+	}
 
-    abstract class LearnerOutput extends Material {
-        author: Learner
-    }
+	interface Term
 
-    LearnerOutput -- Learner : Produced by >
-
-    interface ConditionExpression {
-        evaluate(term: Term): boolean
-    }
-
-    interface Term
-
-    interface MaterialTransformer {
-        supports(material: Material): boolean
-        transform(material: Material): Term
-    }
-
-
-    interface Content
-    class RawContent implements Content {
-        data: String
-    }
-
-    class TiptapContent implements Content
+	interface MaterialTransformer {
+		supports(material: Material): boolean
+		transform(material: Material): Term
+	}
 @enduml

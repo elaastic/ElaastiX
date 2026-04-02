@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package metamodel.content {
+	' Resource?
+	interface Material extends metamodel.MmObject {
+		'TODO: consider richer authorship information
+		+author: User
+	}
+
+	interface RichContent
+
+	interface FormattedContent extends RichContent
+	note right: Only lightweight formatting permitted.
+
+	interface FormattedText extends FormattedContent {
+		+toString(): String
+		{static} +fromString(str: String): FormattedText
+	}
+
+	note right
+		Only inline formatting permitted (bold, italics...).
+		MUST losslessly serialize into a String.
+	end note
+
+	Material --> metamodel.users.User: Authored by >
+}
+
+@enduml

@@ -1,0 +1,29 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+package metamodel.activity {
+	interface AbsoluteGradable {
+		+absoluteGrade: AbsoluteGrade
+	}
+
+	interface ScalarGradable {
+		+scalarGrade: ScalarGrade
+	}
+
+	enum AbsoluteGrade {
+		FAILED
+		PASS
+		PARTIAL
+		NEUTRAL
+	}
+
+	class ScalarGrade {
+		value: BigDecimal
+		max: BigDecimal
+	}
+
+	AbsoluteGradable +-- AbsoluteGrade
+	ScalarGradable +-- ScalarGrade
+}
+
+@enduml

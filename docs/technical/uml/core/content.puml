@@ -1,0 +1,76 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+!include ../metamodel/content.puml
+
+package core.content {
+	class MarkdownContent implements metamodel.content.PlainContent {
+		+contents: String
+	}
+
+	note bottom of MarkdownContent
+		Obsidian Flavoured Markdown
+		`__` (double underscore) as <u>underline</u>
+	end note
+
+	' silly: Out of all the old things I wish we could bring back to the Internet, bbcode is *not* one of them. :p
+	class MarkdownText implements metamodel.content.FormattedText {
+		+contents: String
+	}
+
+	note bottom of MarkdownText
+		`__` (double underscore) as <u>underline</u>
+	end note
+
+	class AttachedContent implements metamodel.content.Content {
+		+attachment: Attachment
+		+instruction: FormattedText?
+	}
+
+	class TipTapContent implements metamodel.content.RichContent {
+		+contents: JSONB
+	}
+
+	note right of AttachedContent::instruction
+		Intended to be <b>short</b>, as a lightweight alternative
+		to RichContent. Useful to display differently in more space
+		constrained devices (e.g. phones).
+	end note
+
+	'TODO: figure out how to store that in DB... JSONB? lol
+	interface Attachment
+
+	class FileAttachment implements Attachment {
+		'TODO: type and way to get the ref?
+	}
+
+	' screw google but eh, it is what it is
+	class YoutubeAttachment implements Attachment {
+		+videoId: String
+		' language teachers, rejoice
+		'   `?cc_load_policy=3` used to be a working undocumented trick.
+		'   Some have reported success using the embed API to unload the cc module.
+		'   Might not be feasible but there's definitely an audience this would appeal to.
+		+disallowClosedCaptions: Boolean
+	}
+
+	note bottom of YoutubeAttachment
+		Implementations SHOULD use the Privacy
+		Enhanced Mode of the player.
+		'https://support.google.com/youtube/answer/171780?hl=en&rd=1#zippy=%2Cturn-on-privacy-enhanced-mode:~:text=The%20Privacy%20Enhanced%20Mode%20of%20the%20YouTube%20embedded%20player
+	end note
+
+	class GithubGistAttachment implements Attachment {
+		' Support for GitHub Enterprise Server is most likely pointless so let's not bother (until someone complains lol)
+		'TODO (trivial)
+	}
+
+	class GitlabSnippetAttachment implements Attachment {
+		'TODO (trivial)
+	}
+
+	AttachedContent *-- Attachment
+	TipTapContent ..> Attachment: May contain >
+}
+
+@enduml

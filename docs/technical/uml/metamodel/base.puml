@@ -2,17 +2,17 @@
 'https://plantuml.com/class-diagram
 
 package metamodel {
-    interface MmObject {
-        +id: Uuid
-        +createdAt: Instant
-        +updatedAt: Instant
-        -version: Long
-    }
+	interface MmObject {
+		+id: Uuid
+		+createdAt: Instant
+		+updatedAt: Instant
+		-version: Long
+	}
 
-    note left of MmObject::createdAt
-        MAY be derived
-        from a UUID v7
-    end note
+	note left of MmObject::createdAt
+		MAY be derived
+		from a UUID v7
+	end note
 }
 
 @enduml
