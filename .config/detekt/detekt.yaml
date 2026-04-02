@@ -30,6 +30,8 @@ complexity:
 
 ktlint:
   code_style: ktlint_official
+  FunctionSignature:  # Detekt overrides this with `default` instead of the (better) default of Ktlint
+    functionBodyExpressionWrapping: multiline
 
 performance:
   CouldBeSequence:
@@ -42,10 +44,13 @@ style:
   ForbiddenImport:
     active: true
     forbiddenImports:
-      # Enforce use of Kotlin-native types
+      # Enforce use of Kotlin-native types (or a type alias, when annotations are systematically needed...)
       - value: java.util.UUID
-        reason: Use Kotlin's Uuid type
+        reason: Use org.elaastix.commons.data.Uuid instead
+      - value: kotlin.uuid.Uuid
+        reason: Use org.elaastix.commons.data.Uuid instead
       - value: java.time.Instant
         reason: Use Kotlin's Instant type
     excludes:
-      - "**/commons/jpa/**" # Compat layer
+      - "**/commons/jpa/**"     # Compat layer
+      - "**/commons/data/Uuid.kt"  # Uuid type alias
