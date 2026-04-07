@@ -1,6 +1,16 @@
 [default]
 # A bit too harsh and complains a lot (but on unactionable items e.g. CSS's "color" property ;-;)
 # locale = "en-gb"
+extend-ignore-re = [
+	# Ignore lines that end with `# spellchecker:disable-line`
+	"(?Rm)^.*(#|//)\\s*spellchecker:disable-line.*",
+	# Ignore the line after `# spellchecker:ignore-next-line`:
+	"(#|//)\\s*spellchecker:ignore-next-line.*\\n.*",
+	"<!--\\s*spellchecker:ignore-next-line.*?-->\\n.*",
+	# Ignore blocks between `# spellchecker:off` and `# spellchecker:on`
+	"(?s)(#|//)\\s*spellchecker:off.*?\\n\\s*(#|//)\\s*spellchecker:on",
+	"(?s)<!--\\s*spellchecker:off((?-s).*?-->).*?\\n\\s*<!--\\s*spellchecker:on\\s*-->",
+]
 
 [files]
 extend-exclude = ["frontend/i18n/locales/*.json"]

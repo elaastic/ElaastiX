@@ -296,16 +296,20 @@ Note: for collaborators under the CNRS umbrella, **only** the CNRS-provided *Emm
 Use of **any** other general-purpose generative AI service is **strictly forbidden**.
 
 Recommended further reads:
+<!-- spellchecker:off -- struggles with French content lol -->
 - [Linux Kernel Guidelines for Tool-Generated Content]
 - (FR) [Charte du bon usage des IA génératives à l'Université de Toulouse]
-- (FR) [Communication Responsible - Comprendre les impacts et les usages de l'IA générative] (ADEME)
+- (FR) [Communication Responsable - Comprendre les impacts et les usages de l'IA générative] (ADEME)
 - (FR) [Cadre d'usage de l'IA en éducation] (Ministère de l'Éducation Nationale)
+<!-- spellchecker:on -->
 
 [tmux(1)]: https://man.archlinux.org/man/tmux.1
 [RFC2119]: https://datatracker.ietf.org/doc/html/rfc2119
 [RFC8174]: https://datatracker.ietf.org/doc/html/rfc8174
 
+<!-- spellchecker:off -- struggles with French content lol -->
 [Linux Kernel Guidelines for Tool-Generated Content]: https://docs.kernel.org/process/generated-content.html
 [Charte du bon usage des IA génératives à l'Université de Toulouse]: https://www.univ-tlse3.fr/medias/fichier/charte-du-bon-usage-des-ia-generatives-a-l-universite_1755517998722-pdf
-[Communication Responsible - Comprendre les impacts et les usages de l'IA générative]: https://communication-responsable.ademe.fr/numerique-responsable/comprendre-impacts-usages-ia-generative
+[Communication Responsable - Comprendre les impacts et les usages de l'IA générative]: https://communication-responsable.ademe.fr/numerique-responsable/comprendre-impacts-usages-ia-generative
 [Cadre d'usage de l'IA en éducation]: https://www.education.gouv.fr/cadre-d-usage-de-l-ia-en-education-450647
+<!-- spellchecker:on -->
