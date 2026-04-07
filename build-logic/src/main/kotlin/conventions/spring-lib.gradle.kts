@@ -32,13 +32,6 @@ plugins {
     kotlin("plugin.spring")
 }
 
-allOpen {
-    // https://youtrack.jetbrains.com/issue/KT-79389
-    annotation("jakarta.persistence.Entity")
-    annotation("jakarta.persistence.MappedSuperclass")
-    annotation("jakarta.persistence.Embeddable")
-}
-
 dependencies {
     implementation(platform(SpringBootPlugin.BOM_COORDINATES))
     implementation(libs.findLibrary("kotlin.reflect").get())

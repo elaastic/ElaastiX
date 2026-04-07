@@ -55,7 +55,7 @@ kotlin {
 }
 
 dependencies {
-    implementation(platform(libs.findLibrary("kotlin.bom").get()))
+    implementation(enforcedPlatform(libs.findLibrary("kotlin.bom").get()))
 
     implementation(libs.findLibrary("kotlinx.serialization.core").get())
     implementation(libs.findLibrary("kotlinx.serialization.json").get())

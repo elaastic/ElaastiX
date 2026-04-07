@@ -35,10 +35,7 @@ dependencies {
 }
 
 hibernate {
-    enhancement {
-        enableDirtyTracking = true
-        enableLazyInitialization = true
-    }
+    enhancement
 }
 
 tasks.named<Test>("test") {
