@@ -20,12 +20,13 @@
 package org.elaastix.server.authn.tmp
 
 import jakarta.servlet.http.HttpServletRequest
+import org.elaastix.commons.data.Uuid
 import org.springframework.security.web.authentication.AuthenticationConverter
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
-import kotlin.uuid.Uuid
 
 class TmpAuthnConverter : AuthenticationConverter {
-    override fun convert(request: HttpServletRequest) = request.getHeader("Authorization")
-        ?.let(Uuid::parseOrNull)
-        ?.let { PreAuthenticatedAuthenticationToken(it, null) }
+    override fun convert(request: HttpServletRequest) =
+        request.getHeader("Authorization")
+            ?.let(Uuid::parseOrNull)
+            ?.let { PreAuthenticatedAuthenticationToken(it, null) }
 }

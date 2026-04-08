@@ -20,7 +20,7 @@
 package org.elaastix.server.users.dtos
 
 import kotlinx.serialization.Serializable
-import kotlin.uuid.Uuid
+import org.elaastix.commons.data.Uuid
 
 /**
  * A user account. Holds all profile-related information and limited
