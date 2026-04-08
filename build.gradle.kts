@@ -21,9 +21,14 @@ import dev.detekt.gradle.Detekt
 import org.jetbrains.gradle.ext.copyright
 import org.jetbrains.gradle.ext.settings
 
+val nonKotlinProjects = listOf(":frontend")
+val isKotlinProject = { p: Project -> p.path !in nonKotlinProjects }
+
 plugins {
     id("conventions.idea")
+
     alias(libs.plugins.detekt)
+    alias(libs.plugins.kotlin.kover)
 }
 
 idea {
@@ -67,14 +72,16 @@ idea {
 
 dependencies {
     detektPlugins(libs.detekt.ktlint)
+
+    kover(project(":commons"))
+    kover(project(":metamodel"))
+    kover(project(":server"))
 }
 
 detekt {
     parallel = true
     buildUponDefaultConfig = true
     config.setFrom("./.config/detekt/detekt.yaml")
-
-    val nonKotlinProjects = listOf(":frontend")
 
     source.from(
         file("build.gradle.kts"),
@@ -83,7 +90,7 @@ detekt {
         file("build-logic/build.gradle.kts"),
         file("build-logic/settings.gradle.kts"),
         subprojects
-            .filter { it.path !in nonKotlinProjects }
+            .filter(isKotlinProject)
             .flatMap { listOf(it.file("src"), it.file("build.gradle.kts"), it.file("settings.gradle.kts")) },
     )
 }
@@ -112,5 +119,15 @@ tasks.withType<Detekt>().configureEach {
 
     reports {
         sarif.required = true
+    }
+}
+
+kover {
+    reports {
+        filters {
+            excludes {
+                annotatedBy("org.elaastix.commons.platform.ExcludeFromCoverage")
+            }
+        }
     }
 }

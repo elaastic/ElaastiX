@@ -59,6 +59,7 @@ dependencies {
     implementation(plugin(libs.plugins.kotlin.jpa))
     implementation(plugin(libs.plugins.kotlin.spring))
     implementation(plugin(libs.plugins.kotlin.serialization))
+    implementation(plugin(libs.plugins.kotlin.kover))
     implementation(plugin(libs.plugins.spring.boot))
     implementation(plugin(libs.plugins.hibernate))
     implementation(plugin(libs.plugins.ideax))

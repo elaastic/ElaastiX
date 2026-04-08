@@ -17,23 +17,59 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("unused") // Modern Gradle uses `by xxx`
+
 package conventions
 
 val libs = the<VersionCatalogsExtension>().named("libs")
 
 plugins {
+    `jvm-test-suite`
     id("conventions.java")
+    id("org.jetbrains.kotlinx.kover")
 }
 
-dependencies {
-    testImplementation(platform(libs.findLibrary("junit.bom").get()))
-    testImplementation(libs.findLibrary("junit.jupiter").get())
-    testRuntimeOnly(libs.findLibrary("junit.platform").get())
-
-    testImplementation(libs.findLibrary("mockk").get())
-    testImplementation(libs.findLibrary("mockk.bdd").get())
+configurations.configureEach {
+    exclude(group = "org.mockito", module = "mockito-core")
+    exclude(group = "org.mockito", module = "mockito-junit-jupiter")
+    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
+@Suppress("UnstableApiUsage")
+testing {
+    suites {
+        withType<JvmTestSuite>().configureEach {
+            useJUnitJupiter(libs.findVersion("junit").get().requiredVersion)
+
+            dependencies {
+                implementation(project())
+                implementation(libs.findLibrary("assertj").get())
+            }
+        }
+
+        val test by existing(JvmTestSuite::class) {
+            dependencies {
+                implementation(libs.findLibrary("mockk").get())
+                implementation(libs.findLibrary("mockk.bdd").get())
+            }
+        }
+    }
+}
+
+kover {
+    // TODO: Separate reports for unit tests vs integration tests
+
+    reports {
+        filters {
+            excludes {
+                annotatedBy("org.elaastix.commons.platform.ExcludeFromCoverage")
+            }
+        }
+
+        total {
+            xml {
+                onCheck.set(true)
+            }
+        }
+    }
 }
