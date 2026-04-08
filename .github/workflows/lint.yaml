@@ -1,5 +1,12 @@
 name: Lint
 
+permissions:
+  contents: read
+
+concurrency: # Green Software Engineering Practices: https://github.com/Cambridge-ICCS/green-ci
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [ main ]
@@ -9,40 +16,70 @@ on:
 jobs:
   typos:
     name: Typos
-    timeout-minutes: 10
+    timeout-minutes: 5
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
       - run: typos -c .config/typos/config.toml
 
   toml:
     name: TOML
-    timeout-minutes: 10
+    timeout-minutes: 5
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
       - run: taplo format --check
       - run: taplo lint
 
   actionlint:
-    name: GitHub Actions
-    timeout-minutes: 10
+    name: GitHub Actions (actionlint)
+    timeout-minutes: 5
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
       - run: actionlint
+
+  zizmor:
+    name: GitHub Actions (zizmor)
+    timeout-minutes: 5
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
+      - run: zizmor -p .
 
   kotlin:
     name: Kotlin lint
-    timeout-minutes: 60
+    timeout-minutes: 15
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
+      security-events: write  # Required to upload Code Quality reports (they're all folded under the Advanced Security umbrella, hence the perm name)
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       - run: ./gradlew detekt
 
@@ -54,11 +91,15 @@ jobs:
 
   js-lint:
     name: JavaScript lint
-    timeout-minutes: 20
+    timeout-minutes: 15
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
       - uses: actions/setup-node@v6
         with:
           cache: pnpm
@@ -71,11 +112,15 @@ jobs:
 
   js-typecheck:
     name: JavaScript typechecking
-    timeout-minutes: 20
+    timeout-minutes: 15
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
       - uses: actions/setup-node@v6
         with:
           cache: pnpm

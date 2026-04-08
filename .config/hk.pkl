@@ -27,10 +27,7 @@ local backend = new Mapping<String, Step> {
 
 local ci = new Mapping<String, Step> {
 	["actionlint"] = (Builtins.actionlint)
-	// Actions kinda in a draft state, need Renovatebot to be operational too (to pin action by hash)
-	// ["ghalint-workflow"] = (Builtins.ghalint_workflow)
-	// ["ghalint-action"] = (Builtins.ghalint_action)
-	// ["zizmor"] = (Builtins.zizmor)
+	["zizmor"] = (Builtins.zizmor)
 }
 
 // Shared linters (apply to all components)

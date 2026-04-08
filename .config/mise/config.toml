@@ -8,7 +8,6 @@ experimental = true
 # Java and Node are also configured via .tool-versions, as IJ supports it natively.
 # This is not ideal as the config is duplicated, but it is better than being completely broken :)
 actionlint = "latest"
-ghalint = "latest"
 hk = "latest"
 java = "temurin-25"
 jq = "latest"

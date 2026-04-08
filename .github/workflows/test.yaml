@@ -1,5 +1,12 @@
 name: Test
 
+permissions:
+  contents: read
+
+concurrency: # Green Software Engineering Practices: https://github.com/Cambridge-ICCS/green-ci
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
     branches: [ main ]
@@ -9,20 +16,29 @@ on:
 jobs:
   kotlin:
     name: Run Kotlin tests
-    timeout-minutes: 60
+    timeout-minutes: 30
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
+      # Green Software Engineering Practices calls for always using fail-fast.
+      # However, aborting the runs could result in an incomplete report and more CI runs due to overlooked failures.
+      # This is a situation where the savings are so small it's not worth (and may in the end have a net negative impact).
       fail-fast: false
       matrix:
         project: [server, commons, metamodel]
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4
+      - uses: gradle/actions/setup-gradle@v6
 
       # Not ideal but it works...
       - run: docker compose up --wait postgres storage
-      - run: ./gradlew :${{ matrix.project }}:koverXmlReport
+      - run: ./gradlew :"$PROJECT":koverXmlReport
+        env:
+          PROJECT: ${{ matrix.project }}
 
       - name: Publish test report
         uses: mikepenz/action-junit-report@v6
@@ -31,26 +47,28 @@ jobs:
           report_paths: ${{ matrix.project }}/build/test-results/test/TEST-*.xml
 
       - name: Upload coverage report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: kotlin-codecov-report-${{ matrix.project }}
           path: ${{ matrix.project }}/build/reports/kover/report.xml
 
   kotlin-codecov-report:
     name: Aggregate code coverage reports
-    timeout-minutes: 10
+    timeout-minutes: 5
     runs-on: ubuntu-slim
+    permissions:
+      pull-requests: write  # Required to publish/update coverage report comment
     needs: kotlin
     steps:
       - name: Merge coverage reports
-        uses: actions/upload-artifact/merge@v4
+        uses: actions/upload-artifact/merge@v7
         with:
           name: kotlin-codecov-report
           pattern: kotlin-codecov-report-*
           delete-merged: true
 
       - name: Download coverage reports
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: kotlin-codecov-report
 
@@ -63,6 +81,7 @@ jobs:
             ${{ github.workspace }}/metamodel/build/reports/kover/report.xml
           title: Code Coverage
           update-comment: true
+          # TODO: enable these? :)
           #min-coverage-overall: 80
           #min-coverage-changed-files: 80
           coverage-counter-type: BRANCH
