@@ -2,8 +2,8 @@ name: Lint
 
 on:
   push:
-    branches: [main]
-    tags: [v*]
+    branches: [ main ]
+    tags: [ v* ]
   pull_request:
 
 jobs:
@@ -35,17 +35,22 @@ jobs:
       - uses: jdx/mise-action@v3
       - run: actionlint
 
-  kotlin:  # TODO(Cynthia): generate SARIF reports and push them to GitHub
+  kotlin:
     name: Kotlin lint
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v5
       - uses: jdx/mise-action@v3
       - uses: gradle/actions/setup-gradle@v5
 
-      # TODO(Cynthia): Proper reports to GitHub etc...
       - run: ./gradlew detekt
+
+      - name: Upload SARIF report to GitHub CodeQL
+        uses: github/codeql-action/upload-sarif@v4
+        if: success() || failure()
+        with:
+          sarif_file: build/reports/detekt/detekt.sarif
 
   js-lint:
     name: JavaScript lint
@@ -54,11 +59,13 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: jdx/mise-action@v3
-      - uses: ./.github/actions/pnpm-cache
+      - uses: actions/setup-node@v6
+        with:
+          cache: pnpm
       - run: pnpm i --frozen-lockfile
         working-directory: frontend
 
-      # TODO(Cynthia): Proper reports to GitHub etc...
+      # setup-node configures an eslint problem matcher ootb
       - run: pnpm run lint
         working-directory: frontend
 
@@ -69,9 +76,11 @@ jobs:
     steps:
       - uses: actions/checkout@v5
       - uses: jdx/mise-action@v3
-      - uses: ./.github/actions/pnpm-cache
+      - uses: actions/setup-node@v6
+        with:
+          cache: pnpm
       - run: pnpm i --frozen-lockfile
         working-directory: frontend
-
+      # setup-node configures a tsc problem matcher ootb
       - run: pnpm run typecheck
         working-directory: frontend

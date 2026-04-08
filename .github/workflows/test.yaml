@@ -2,15 +2,19 @@ name: Test
 
 on:
   push:
-    branches: [main]
-    tags: [v*]
+    branches: [ main ]
+    tags: [ v* ]
   pull_request:
 
 jobs:
-  server:
-    name: Spring server monolith
+  kotlin:
+    name: Run Kotlin tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [server, commons, metamodel]
     steps:
       - uses: actions/checkout@v5
       - uses: jdx/mise-action@v3
@@ -18,5 +22,47 @@ jobs:
 
       # Not ideal but it works...
       - run: docker compose up --wait postgres storage
-      # TODO(Cynthia): Proper reports to GitHub etc...
-      - run: ./gradlew :server:test
+      - run: ./gradlew :${{ matrix.project }}:koverXmlReport
+
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v6
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: ${{ matrix.project }}/build/test-results/test/TEST-*.xml
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: kotlin-codecov-report-${{ matrix.project }}
+          path: ${{ matrix.project }}/build/reports/kover/report.xml
+
+  kotlin-codecov-report:
+    name: Aggregate code coverage reports
+    timeout-minutes: 10
+    runs-on: ubuntu-slim
+    needs: kotlin
+    steps:
+      - name: Merge coverage reports
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: kotlin-codecov-report
+          pattern: kotlin-codecov-report-*
+          delete-merged: true
+
+      - name: Download coverage reports
+        uses: actions/download-artifact@v4
+        with:
+          name: kotlin-codecov-report
+
+      - name: Publish coverage report
+        uses: mi-kas/kover-report@v2
+        with:
+          path: |
+            ${{ github.workspace }}/server/build/reports/kover/report.xml
+            ${{ github.workspace }}/commons/build/reports/kover/report.xml
+            ${{ github.workspace }}/metamodel/build/reports/kover/report.xml
+          title: Code Coverage
+          update-comment: true
+          #min-coverage-overall: 80
+          #min-coverage-changed-files: 80
+          coverage-counter-type: BRANCH
