@@ -87,6 +87,12 @@ select a tab. See [tmux(1)] for more information. To tear everything down, run `
 To see all the available commands in the project, run `just --list`.
 
 ## Project structure
+### Documentation language
+The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT
+RECOMMENDED", "MAY", and "OPTIONAL" in this document and project documentation are to be interpreted as described
+in BCP 14 [[RFC2119]] [[RFC8174]] when, and only when, they appear in all capitals, as shown here.
+
+### Directory layout
 Files and folders that aren't worth of interest are not mentioned below. If it's not there, then it's most likely not
 something you should have to worry about.
 ```
@@ -100,28 +106,12 @@ ElaastiX
 │   └── technical/              └── Specifications of the technical implementation (the "how")
 ├── frontend/                   Nuxt web application (see: https://nuxt.com/docs/4.x/directory-structure)
 │   └── layers/                 └── Nuxt layers (see: https://nuxt.com/docs/4.x/getting-started/layers)
-│       └── .../                    └── See `Nuxt layers` below for the list of layers in the Nuxt app
+│       └── .../                    └── See `Nuxt.js webapp > Layers` for the list of layers in the Nuxt app
 ├── gradle/                     Gradle-related files
 │   └── libs.versions.toml      └── Version catalogue
 └── metamodel/                  Metamodel library package
 └── server/                     Spring Boot application monolith
 ```
-
-### Nuxt layers
-- `0.base`: Core infrastructure, components, styles, etc.
-- `1.xxx`: Layers implementing a given area of the ElaastiX webapp
-  - `author`: Authoring tools for teachers
-  - `orchestrator`: Scenario composition and management
-  - `dashboard`: Teacher's dashboard for ongoing and completed activities
-  - `player`: Pedagogical activity player for learners
-  - `account`: Account management
-- `2.xxx`: Layers implementing a pedagogical activity module
-  - `question`: Encompasses 2 types of activities
-    - Answering one or more questions
-    - Changing (or keeping) a previous answer to a question
-  - `judge`: Peer review activity
-  - `chat`: Anonymous chat between peers
-- `9.admin`: Platform administration features
 
 ### Compose services
 > [!NOTE]
@@ -224,6 +214,22 @@ Go to Settings > Tools > Web Browsers and Preview.
 > Please do not modify the existing run configurations! These are shared in the project and modifications will impact
 > all other developers. Make a duplicate of the config and edit this local, private copy instead.
 
+#### Layers
+- `0.base`: Core infrastructure, components, styles, etc.
+- `1.xxx`: Layers implementing a given area of the ElaastiX webapp
+  - `author`: Authoring tools for teachers
+  - `orchestrator`: Scenario composition and management
+  - `dashboard`: Teacher's dashboard for ongoing and completed activities
+  - `player`: Pedagogical activity player for learners
+  - `account`: Account management
+- `2.xxx`: Layers implementing a pedagogical activity module
+  - `response`: Encompasses 2 types of activities
+    - Answering one or more questions
+    - Changing (or keeping) a previous answer to a question
+  - `judge`: Peer review activity
+  - `chat`: Anonymous chat between peers
+- `9.admin`: Platform administration features
+
 #### Debug from the IDE
 When debugging the Nuxt.js app, breakpoints set within the IDE will automatically work and let you observe the context
 from the debug window. You can also see the console directly.
@@ -238,4 +244,72 @@ upstream to fix bugs with the Nuxt integration...
 
 In the meantime, the easiest way is to run Storybook locally, via `pnpm run storybook`.
 
+### AI policy
+In compliance with the policies of the University of Toulouse and CNRS, who oversee the project, use of generative
+artificial intelligence MUST be kept reasonable and ethical.
+
+The project tolerates AI-assisted contributions, given such contributions comply with the following policy. It applies
+to content (of any kind) that is directly committed to the repository, commit messages, posts on the issue tracker,
+pull request descriptions, review comments, discussions, etc. If an AI agent is used but without any of its output
+(original **or derived**) being directly committed, then this policy does not apply. When in doubt, prefer transparency.
+
+> [!NOTE]
+> As a reminder, **ANY** content pulled from an external source is subject to attribution requirements. For instance,
+> code found on Stack Overflow is licensed under a [CC BY-SA licence](https://stackoverflow.com/help/licensing).
+
+AI-assisted contributions MUST comply with ALL the following requirements:
+
+- The contribution SHOULD NOT include substantial portions of AI-generated content. At the very least, the contributor
+  MUST be familiar with the proposed changes and able to explain (and justify) the changes *on their own*.
+- AI assistance MUST NOT substantially or fully substitute the reasoning expected of a software engineer and alike.
+  - Contributors are expected to exercise due diligence regarding the code they commit, in terms of
+    *local code quality* (formatting, variable naming...), *global code quality* (factorisation, generalisation...),
+    *integration* (whether the proposed solution follows conventions in place), and *relevance* (whether the proposed
+    solution adequately satisfies the problem at hand).
+- The use of AI assistance MUST be disclosed.
+  - When artefacts are being committed to the repository, the *commit message* MUST mention it.
+    - For instance, put `Assisted by generative AI.` as last paragraph, before trailers.
+  - If commit messages are AI generated, the *PR description* MUST mention it. If the commit message is more than just
+    a subject line and optionally a sentence or two in the body, then the commit message MUST mention it as described
+    above.
+  - Documentation presented to users MUST disclose it has been generated and/or assisted by generative AI.
+    - A final paragraph SHALL be added, in italics:
+        `Written [in part] with the assistance of generative AI. Reviewed by humans.`
+    - When only sections are AI generated, they SHOULD be clearly identified with comments around.
+      - e.g.: `<!-- AI Generated --> [...] <!-- END: AI Generated -->`
+    - If the use of AI is strictly limited to content review, it is not needed to add this disclosure.
+  - For all other content (e.g. PR description), the mention MUST immediately follow (or precede) the content.
+  - The specific tool used and/or the specific model MUST NOT be part of the git history.
+    - The git history is not an advert space, and such information does not have any value past the code review.
+    - Direct mention of specific agentic software or models SHOULD be generally avoided everywhere.
+  - Git trailers MUST NOT mention an AI model and/or agentic software. `Co-authored-by`, `Reviewed-by`, `Acked-by`,
+    or any [other](https://lore.kernel.org/git/60ad75ac7ffca_2ae08208b@natae.notmuch) trailer is for organic creatures
+    only.
+- The contributor assumes full responsibility for the contributed code, whether generated by AI or not.
+  - This includes but is not limited to the compliance with applicable intellectual property law in France.
+
+Users of generative AI tools are invited to carefully weigh in on the ethical and environmental impact of AI usage.
+This includes but is not limited to its energy consumption, the impact on artistic creation, the integrity and
+authenticity of scientific work, academic fraud, decreased critical thinking, etc.
+
+Note: for collaborators under the CNRS umbrella, **only** the CNRS-provided *Emmy* chatbot is allowed.
+Use of **any** other general-purpose generative AI service is **strictly forbidden**.
+
+Recommended further reads:
+<!-- spellchecker:off -- struggles with French content lol -->
+- [Linux Kernel Guidelines for Tool-Generated Content]
+- (FR) [Charte du bon usage des IA génératives à l'Université de Toulouse]
+- (FR) [Communication Responsable - Comprendre les impacts et les usages de l'IA générative] (ADEME)
+- (FR) [Cadre d'usage de l'IA en éducation] (Ministère de l'Éducation Nationale)
+<!-- spellchecker:on -->
+
 [tmux(1)]: https://man.archlinux.org/man/tmux.1
+[RFC2119]: https://datatracker.ietf.org/doc/html/rfc2119
+[RFC8174]: https://datatracker.ietf.org/doc/html/rfc8174
+
+<!-- spellchecker:off -- struggles with French content lol -->
+[Linux Kernel Guidelines for Tool-Generated Content]: https://docs.kernel.org/process/generated-content.html
+[Charte du bon usage des IA génératives à l'Université de Toulouse]: https://www.univ-tlse3.fr/medias/fichier/charte-du-bon-usage-des-ia-generatives-a-l-universite_1755517998722-pdf
+[Communication Responsable - Comprendre les impacts et les usages de l'IA générative]: https://communication-responsable.ademe.fr/numerique-responsable/comprendre-impacts-usages-ia-generative
+[Cadre d'usage de l'IA en éducation]: https://www.education.gouv.fr/cadre-d-usage-de-l-ia-en-education-450647
+<!-- spellchecker:on -->
