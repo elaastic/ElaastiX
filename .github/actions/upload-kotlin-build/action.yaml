@@ -1,0 +1,22 @@
+name: Upload Kotlin build results
+description: Compresses and uploads all build artefacts of Kotlin subprojects
+
+runs:
+  using: composite
+  steps:
+    - name: Compress build results
+      shell: bash
+      run: |
+        tar -cf root.tzst build
+        tar -cf server.tzst server/build
+        tar -cf commons.tzst commons/build
+        tar -cf metamodel.tzst metamodel/build
+        tar -cf build-logic.tzst build-logic/build
+        tar -cf kotlin-build-result.tar root.tzst server.tzst commons.tzst metamodel.tzst build-logic.tzst
+
+    - name: Upload build results
+      uses: actions/upload-artifact@v7
+      with:
+        path: kotlin-build-result.tar
+        archive: false
+        retention-days: 7

@@ -1,0 +1,20 @@
+name: Download Kotlin build results
+description: Downloads and de-compresses all build artefacts of Kotlin subprojects
+
+runs:
+  using: composite
+  steps:
+    - name: Download build results
+      uses: actions/download-artifact@v8
+      with:
+        name: kotlin-build-result.tar
+
+    - name: Decompress build results
+      shell: bash
+      run: |
+        tar -xf kotlin-build-result.tar
+        tar -xf build-logic.tzst build-logic/build
+        tar -xf metamodel.tzst metamodel/build
+        tar -xf commons.tzst commons/build
+        tar -xf server.tzst server/build
+        tar -xf root.tzst build

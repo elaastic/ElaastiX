@@ -79,7 +79,7 @@ jobs:
   kotlin:
     name: Kotlin lint
     timeout-minutes: 15
-    runs-on: ubuntu-slim
+    runs-on: ubuntu-latest
     permissions:
       contents: read
       security-events: write  # Required to upload Code Quality reports (they're all folded under the Advanced Security umbrella, hence the perm name)
@@ -95,6 +95,7 @@ jobs:
         with:
           # Protect against cache poisoning by NOT using cache in release builds
           cache-disabled: ${{ startsWith(github.ref, 'refs/tags/') }}
+          cache-read-only: false
 
       - run: ./gradlew detekt
 
