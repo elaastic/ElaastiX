@@ -154,12 +154,14 @@ jobs:
         if: success() || failure() # always run even if the previous step fails
         with:
           path: build/reports/kover/report.xml
-          title: Code Coverage
+          title: 🛡️ Kotlin Code Coverage
           update-comment: true
           # TODO: enable these? :)
           #min-coverage-overall: 80
           #min-coverage-changed-files: 80
-          coverage-counter-type: BRANCH
+          # Branch coverage is a superior metric, but Kover doesn't consider a "branch-less" code path as a branch on its own. Kinda makes sense but nullifies the value of branch as reported metric.
+          # Instruction coverage, as a percentage, is a good enough compromise and won't hide partial branch coverage for single-line expressions (e.g. null handling).
+          coverage-counter-type: INSTRUCTION
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v7
