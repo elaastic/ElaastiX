@@ -31,15 +31,16 @@ import jakarta.persistence.Embeddable
 internal final data class ScalarGradeImpl(
     // Validation using Jakarta is too annoying (cross-field validation boilerplate is HUGE).
     // Validated in the form of a smart constructor instead. Much less verbose, will still do the trick :)
-    override val grade: UInt,
-    override val max: UInt,
+    override val grade: Double,
+    override val max: Double,
 ) : ScalarGradable.ScalarGrade
 
 /**
  * Factory to create an instance of [ScalarGradable.ScalarGrade].
  */
-fun ScalarGrade(grade: UInt, max: UInt): ScalarGradable.ScalarGrade {
-    require(max != 0U) { "Maximum value of the grade must be strictly positive" }
+fun ScalarGrade(grade: Double, max: Double): ScalarGradable.ScalarGrade {
+    require(grade >= 0) { "Grade must be positive or zero" }
+    require(max > 0) { "Maximum value of the grade must be strictly positive" }
     require(grade <= max) { "Grade must be less than or equal to the maximum grade" }
 
     return ScalarGradeImpl(grade, max)

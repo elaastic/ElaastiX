@@ -19,8 +19,6 @@
 
 package org.elaastix.mm.activity
 
-import java.math.BigDecimal
-
 /**
  * Denotes objects that can be given a grade, on a linear scale between zero and an arbitrary upper bound.
  * Such grades can be represented as-is (e.g. 16/20), or as a percentage.
@@ -37,28 +35,14 @@ interface ScalarGradable {
      */
     interface ScalarGrade {
         /** The given grade. MUST be less than or equal to [max]. */
-        val grade: UInt
+        val grade: Double
 
         /** Maximum grade that can be obtained. MUST be non-zero. */
-        val max: UInt
+        val max: Double
 
         /**
          * Returns the grade as a decimal value between 0 and 1.
-         *
-         * Suitable for all general purpose use-cases, but not entirely lossless.
-         *
-         * @see asBigDecimal
          */
-        fun asDouble(): Double = grade.toDouble() / max.toDouble()
-
-        /**
-         * Returns the grade as a lossless decimal value between 0 and 1.
-         *
-         * While lossless and suitable for exact arithmetic, it is not appropriate for general purpose use due to
-         * the memory and performance overhead (on average 2-3x slower than [Double]).
-         *
-         * @see asDouble
-         */
-        fun asBigDecimal(): BigDecimal = BigDecimal.valueOf(grade.toLong()).divide(BigDecimal.valueOf(max.toLong()))
+        fun asDouble(): Double = grade / max
     }
 }

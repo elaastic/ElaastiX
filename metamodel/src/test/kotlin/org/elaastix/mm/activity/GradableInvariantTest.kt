@@ -25,22 +25,32 @@ import org.junit.jupiter.api.assertThrows
 
 class GradableInvariantTest {
     @Test
+    fun `does not allow scalar grades with a negative maximum value`() {
+        assertThrows<IllegalArgumentException> { ScalarGrade(grade = 0.0, max = 0.0) }
+    }
+
+    @Test
     fun `does not allow scalar grades with a zero maximum value`() {
-        assertThrows<IllegalArgumentException> { ScalarGrade(grade = 0U, max = 0U) }
+        assertThrows<IllegalArgumentException> { ScalarGrade(grade = 0.0, max = 0.0) }
+    }
+
+    @Test
+    fun `does now allow negative scalar grades`() {
+        assertThrows<IllegalArgumentException> { ScalarGrade(grade = -10.0, max = 10.0) }
     }
 
     @Test
     fun `does allow scalar grades equal to zero`() {
-        assertDoesNotThrow { ScalarGrade(grade = 0U, max = 10U) }
+        assertDoesNotThrow { ScalarGrade(grade = 0.0, max = 10.0) }
     }
 
     @Test
     fun `does allow scalar grades equal to the maximum value`() {
-        assertDoesNotThrow { ScalarGrade(grade = 10U, max = 10U) }
+        assertDoesNotThrow { ScalarGrade(grade = 10.0, max = 10.0) }
     }
 
     @Test
     fun `does now allow scalar grades greater than the maximum value`() {
-        assertThrows<IllegalArgumentException> { ScalarGrade(grade = 20U, max = 10U) }
+        assertThrows<IllegalArgumentException> { ScalarGrade(grade = 20.0, max = 10.0) }
     }
 }
