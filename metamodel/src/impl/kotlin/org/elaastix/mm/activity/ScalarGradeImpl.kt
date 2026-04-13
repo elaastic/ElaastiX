@@ -45,3 +45,9 @@ fun ScalarGrade(grade: Double, max: Double): ScalarGradable.ScalarGrade {
 
     return ScalarGradeImpl(grade, max)
 }
+
+// Implementation guidance if trying to bypass the invariant check:
+// 1. Make sure bypassing the invariant check is actually necessary. Invariant violation = UB
+//    If performance is the issue, make sure there are no other improvements that can be made (e.g. caching)
+// 2. Create a function named `ScalarGradeUnchecked`, and annotate it with `@Unsafe` from Elaastix Commons.
+//    Those familiar with the Rust programming language will be familiar with this pattern. ;)
