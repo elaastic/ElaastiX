@@ -57,6 +57,7 @@ testing {
 }
 
 kover {
+    useJacoco() // https://github.com/Kotlin/kotlinx-kover/issues/720
     // TODO: Separate reports for unit tests vs integration tests
 
     reports {
