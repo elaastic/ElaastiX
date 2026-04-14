@@ -13,6 +13,10 @@
             <java-class>kotlin.uuid.Uuid</java-class>
             <sql-type>uuid</sql-type>
           </mapping-type>
+          <mapping-type sql-type-parameter="Nothing">
+            <java-class>org.elaastix.mm.content.RichContent</java-class>
+            <sql-type>jsonb</sql-type>
+          </mapping-type>
         </mapping-types>
       </database-info>
     </database-infos>

@@ -33,7 +33,7 @@ import kotlinx.serialization.json.JsonElement
  * more resilient against misuse (voluntary or involuntary), and potentially more secure, thanks to its reduced feature
  * set. Advanced features imply a greater attack surface, and a higher risk of broken content (i.e. unreadable).
  *
- * **IMPORTANT**: All subclasses MUST have a companion object named `Factory` that inherits [RichContentFactory].
+ * **IMPORTANT**: All subclasses MUST have a companion object named `Factory` that inherits [RichContent.Factory].
  *
  * @see FormattedContent
  */
@@ -42,7 +42,7 @@ interface RichContent {
     fun toJson(): JsonElement
 
     /** Factory that'll be used by the JPA mapper. */
-    interface RichContentFactory {
+    interface Factory {
         /** Constructs an instance of the content from the stored JSON element. */
         fun fromJson(json: JsonElement): RichContent
     }

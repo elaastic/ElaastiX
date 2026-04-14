@@ -35,7 +35,7 @@ import kotlinx.serialization.json.JsonPrimitive
  * - CommonMark (0.31.2) § 6 "Inlines" ONLY, excluding § 6.4 "Images", § 6.6 "Raw HTML", § 6.7 "Hard line breaks".
  * - BBCode (from phpBB), excluding `img`, `list`, `code`, `quote`.
  *
- * **IMPORTANT**: All subclasses MUST have a companion object named `Factory` that inherits [FormattedTextFactory].
+ * **IMPORTANT**: All subclasses MUST have a companion object named `Factory` that inherits [FormattedText.Factory].
  */
 interface FormattedText : FormattedContent {
     /**
@@ -49,7 +49,7 @@ interface FormattedText : FormattedContent {
     override fun toJson(): JsonElement = JsonPrimitive(toString())
 
     /** Factory that'll be used by the JPA mapper. */
-    interface FormattedTextFactory : FormattedContent.FormattedContentFactory {
+    interface Factory : FormattedContent.Factory {
         override fun fromJson(json: JsonElement): FormattedText {
             require(json is JsonPrimitive && json.isString) {
                 when (json) {

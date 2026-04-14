@@ -25,7 +25,7 @@ import jakarta.persistence.Embeddable
 @Embeddable
 @PublishedApi
 @Suppress(
-    "RedundantModalityModifier", // all-open wants to make it open; explicit final is needed to get a Java Record.
+    "RedundantModalityModifier", // all-open wants to make it open; explicit final is needed for Java Record compat.
     "JpaEntityWithValAttributesInspection", // https://youtrack.jetbrains.com/issue/KTIJ-37754
 )
 internal final data class ScalarGradeImpl(

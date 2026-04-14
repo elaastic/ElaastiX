@@ -38,7 +38,7 @@ import kotlinx.serialization.json.JsonElement
  */
 interface FormattedContent : RichContent {
     /** Factory that'll be used by the JPA mapper. */
-    interface FormattedContentFactory : RichContent.RichContentFactory {
+    interface Factory : RichContent.Factory {
         override fun fromJson(json: JsonElement): FormattedContent
     }
 }

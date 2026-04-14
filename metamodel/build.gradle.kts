@@ -27,13 +27,13 @@ plugins {
 val main by sourceSets.getting
 
 val impl by sourceSets.creating {
-    compileClasspath += main.output
-    runtimeClasspath += main.output
+    compileClasspath += main.compileClasspath + main.output
+    runtimeClasspath += main.runtimeClasspath + main.output
 }
 
 val test by sourceSets.getting {
-    compileClasspath += impl.output
-    runtimeClasspath += impl.output
+    compileClasspath += impl.compileClasspath + impl.output
+    runtimeClasspath += impl.runtimeClasspath + impl.output
 }
 
 dependencies {
@@ -45,4 +45,11 @@ dependencies {
 
     testImplementation(libs.spring.boot.jpa.test)
     testImplementation(libs.spring.boot.validation.test)
+    testImplementation(libs.spring.boot.testcontainers)
+
+    testImplementation(libs.testcontainers)
+    testImplementation(libs.testcontainers.junit)
+    testImplementation(libs.testcontainers.postgres)
+
+    testRuntimeOnly(libs.jdbc.postgresql)
 }
