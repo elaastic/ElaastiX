@@ -20,6 +20,7 @@
 package org.elaastix.server.authn.tmp
 
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.platform.ExcludeFromCoverage
 import org.elaastix.server.users.UserRepository
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.BadCredentialsException
@@ -29,6 +30,8 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 import org.springframework.stereotype.Component
 
 @Component
+@Suppress("UndocumentedPublicClass", "UndocumentedPublicProperty", "UndocumentedPublicFunction")
+@ExcludeFromCoverage("Temporary implementation", ref = "https://github.com/elaastic/ElaastiX/issues/9")
 class AuthnTmpProvider(private val userRepository: UserRepository) : AuthenticationProvider {
     override fun authenticate(authentication: Authentication) =
         (authentication.principal as? Uuid)

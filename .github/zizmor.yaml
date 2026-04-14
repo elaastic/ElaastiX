@@ -1,0 +1,4 @@
+rules:
+  # TODO: Need Renovatebot to be operational to be viable
+  unpinned-uses:
+    disable: true

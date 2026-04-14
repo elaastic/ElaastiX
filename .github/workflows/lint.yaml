@@ -1,77 +1,153 @@
 name: Lint
 
+permissions:
+  contents: read
+
+concurrency: # Green Software Engineering Practices: https://github.com/Cambridge-ICCS/green-ci
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
-    branches: [main]
-    tags: [v*]
+    branches: [ main ]
+    tags: [ v* ]
   pull_request:
 
 jobs:
   typos:
     name: Typos
-    timeout-minutes: 10
+    timeout-minutes: 5
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
       - run: typos -c .config/typos/config.toml
 
   toml:
     name: TOML
-    timeout-minutes: 10
+    timeout-minutes: 5
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
       - run: taplo format --check
       - run: taplo lint
 
   actionlint:
-    name: GitHub Actions
-    timeout-minutes: 10
+    name: GitHub Actions (actionlint)
+    timeout-minutes: 5
     runs-on: ubuntu-slim
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
       - run: actionlint
 
-  kotlin:  # TODO(Cynthia): generate SARIF reports and push them to GitHub
-    name: Kotlin lint
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
+  zizmor:
+    name: GitHub Actions (zizmor)
+    timeout-minutes: 5
+    runs-on: ubuntu-latest  # ubuntu-slim support: https://github.com/zizmorcore/zizmor-action/issues/74
+    permissions:
+      contents: read
+      security-events: write  # Required to upload Code Quality reports (they're all folded under the Advanced Security umbrella, hence the perm name)
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: zizmorcore/zizmor-action@71321a20a9ded102f6e9ce5718a2fcec2c4f70d8 # v0.5.2
 
-      # TODO(Cynthia): Proper reports to GitHub etc...
+  kotlin:
+    name: Kotlin lint
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write  # Required to upload Code Quality reports (they're all folded under the Advanced Security umbrella, hence the perm name)
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
+      - uses: gradle/actions/setup-gradle@v6  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache-disabled: ${{ startsWith(github.ref, 'refs/tags/') }}
+          cache-read-only: false
+
       - run: ./gradlew detekt
+
+      - name: Upload SARIF report to GitHub CodeQL
+        uses: github/codeql-action/upload-sarif@v4
+        if: success() || failure()
+        with:
+          sarif_file: build/reports/detekt/detekt.sarif
 
   js-lint:
     name: JavaScript lint
-    timeout-minutes: 20
+    timeout-minutes: 15
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
-      - uses: ./.github/actions/pnpm-cache
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
+      - uses: actions/setup-node@v6  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          cache: ${{ startsWith(github.ref, 'refs/tags/') && '' || 'pnpm' }}
       - run: pnpm i --frozen-lockfile
         working-directory: frontend
 
-      # TODO(Cynthia): Proper reports to GitHub etc...
+      # setup-node configures an eslint problem matcher ootb
       - run: pnpm run lint
         working-directory: frontend
 
   js-typecheck:
     name: JavaScript typechecking
-    timeout-minutes: 20
+    timeout-minutes: 15
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
-      - uses: ./.github/actions/pnpm-cache
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
+      - uses: actions/setup-node@v6  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          cache: ${{ startsWith(github.ref, 'refs/tags/') && '' || 'pnpm' }}
       - run: pnpm i --frozen-lockfile
         working-directory: frontend
-
+      # setup-node configures a tsc problem matcher ootb
       - run: pnpm run typecheck
         working-directory: frontend

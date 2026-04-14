@@ -2,26 +2,26 @@
 jdk = "25"
 kotlin = "2.3.20"
 # ----
+assertj = "3.18.1"
 detekt = "2.0.0-alpha.2"
-flyway = "12.0.1"
-hibernate = "7.2.4.Final"        # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
+flyway = "12.3.0"
+hibernate = "7.2.10.Final"       # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
 hypersistence-utils = "3.15.2"
-ideax = "1.3"
+ideax = "1.4.1"
 jdbc-postgresql = "42.7.9"
 junit = "6.0.3"
 kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.10.0"
+kover = "0.9.8"
 mockk = "1.14.9"
-spring-boot = "4.0.2"
+spring-boot = "4.0.5"
 
 [libraries]
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 detekt-ktlint = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
 flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 hypersistence-utils = { module = "io.hypersistence:hypersistence-utils-hibernate-71", version.ref = "hypersistence-utils" }
 jdbc-postgresql = { module = "org.postgresql:postgresql", version.ref = "jdbc-postgresql" }
-junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
-junit-jupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junit" }
-junit-platform = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit" }
 kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
@@ -62,6 +62,7 @@ hibernate = { id = "org.hibernate.orm", version.ref = "hibernate" }
 ideax = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "ideax" }
 kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }

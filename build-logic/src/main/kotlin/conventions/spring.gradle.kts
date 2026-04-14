@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("unused") // Modern Gradle uses `by xxx`
+
 package conventions
 
 import org.springframework.boot.gradle.tasks.bundling.BootJar
@@ -30,19 +32,11 @@ plugins {
 }
 
 dependencies {
-    testImplementation(libs.findLibrary("spring.boot.test").get())
     developmentOnly(libs.findLibrary("spring.boot.devtools").get())
 }
 
 hibernate {
-    enhancement {
-        enableDirtyTracking = true
-        enableLazyInitialization = true
-    }
-}
-
-tasks.named<Test>("test") {
-    jvmArgs = listOf("-Dspring.profiles.active=develop,testing")
+    enhancement
 }
 
 tasks.named<BootJar>("bootJar") {

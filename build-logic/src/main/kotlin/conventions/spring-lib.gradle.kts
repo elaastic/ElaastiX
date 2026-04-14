@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@file:Suppress("unused") // Modern Gradle uses `by xxx`
+
 package conventions
 
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
@@ -24,6 +26,7 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 val libs = the<VersionCatalogsExtension>().named("libs")
 
 plugins {
+    `jvm-test-suite`
     id("conventions.java")
     id("org.springframework.boot")
     id("org.hibernate.orm") // Plugin should automatically override Hibernate's version
@@ -32,22 +35,28 @@ plugins {
     kotlin("plugin.spring")
 }
 
-allOpen {
-    // https://youtrack.jetbrains.com/issue/KT-79389
-    annotation("jakarta.persistence.Entity")
-    annotation("jakarta.persistence.MappedSuperclass")
-    annotation("jakarta.persistence.Embeddable")
-}
-
 dependencies {
     implementation(platform(SpringBootPlugin.BOM_COORDINATES))
     implementation(libs.findLibrary("kotlin.reflect").get())
 }
 
-configurations.all {
-    exclude(group = "org.mockito", module = "mockito-core")
-    exclude(group = "org.mockito", module = "mockito-junit-jupiter")
-    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+@Suppress("UnstableApiUsage")
+testing {
+    suites {
+        // TODO: Separate unit tests and integration tests (for Kover reporting)
+        // val integrationTest by registering(JvmTestSuite::class) {
+        val test by existing(JvmTestSuite::class) {
+            dependencies {
+                implementation(libs.findLibrary("spring.boot.test").get())
+            }
+
+            targets.configureEach {
+                testTask.configure {
+                    jvmArgs = listOf("-Dspring.profiles.active=develop,testing")
+                }
+            }
+        }
+    }
 }
 
 springBoot {

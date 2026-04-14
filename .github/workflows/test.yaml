@@ -1,22 +1,171 @@
 name: Test
 
+permissions:
+  contents: read
+
+concurrency: # Green Software Engineering Practices: https://github.com/Cambridge-ICCS/green-ci
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 on:
   push:
-    branches: [main]
-    tags: [v*]
+    branches: [ main ]
+    tags: [ v* ]
   pull_request:
 
 jobs:
-  server:
-    name: Spring server monolith
-    timeout-minutes: 60
+  build-kotlin:
+    name: Build Kotlin sources
+    timeout-minutes: 30
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v5
-      - uses: jdx/mise-action@v3
-      - uses: gradle/actions/setup-gradle@v5
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
+      - uses: gradle/actions/setup-gradle@v6 # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache-disabled: ${{ startsWith(github.ref, 'refs/tags/') }}
+          cache-read-only: false
+
+      - run: ./gradlew classes testClasses
+      - uses: ./.github/actions/upload-kotlin-build
+
+  kotlin:
+    name: Run Kotlin tests
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    needs: build-kotlin
+    strategy:
+      # Green Software Engineering Practices calls for always using fail-fast.
+      # However, aborting the runs could result in an incomplete report and more CI runs due to overlooked failures.
+      # This is a situation where the savings are so small it's not worth (and may in the end have a net negative impact).
+      fail-fast: false
+      matrix:
+        project: [server, commons]
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
+      - uses: gradle/actions/setup-gradle@v6 # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache-disabled: ${{ startsWith(github.ref, 'refs/tags/') }}
+          cache-read-only: true  # Cache has already been warmed up, no need to waste time uploading it again
+      - uses: ./.github/actions/download-kotlin-build
 
       # Not ideal but it works...
       - run: docker compose up --wait postgres storage
-      # TODO(Cynthia): Proper reports to GitHub etc...
-      - run: ./gradlew :server:test
+        if: matrix.project == 'server'
+
+      # Explicitly skip compile tasks to force the use of the restored ones above.
+      - name: Run tests
+        run: ./gradlew :"$PROJECT":test :"$PROJECT":koverBinaryReport
+          -x :build-logic:jar -x classes -x testClasses -x compileKotlin -x compileTestKotlin
+        env:
+          PROJECT: ${{ matrix.project }}
+
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v6
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: ${{ matrix.project }}/build/test-results/test/TEST-*.xml
+          truncate_stack_traces: false
+          annotate_only: true
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v7
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          name: kotlin-codecov-report-raw-${{ matrix.project }}
+          path: ${{ matrix.project }}/build/kover
+          include-hidden-files: true
+
+  kotlin-codecov-aggregate:
+    name: Aggregate coverage reports
+    timeout-minutes: 5
+    runs-on: ubuntu-slim
+    permissions:
+      contents: read
+    needs: kotlin
+    steps:
+      - uses: actions/upload-artifact/merge@v7
+        with:
+          name: kotlin-codecov-report-raw
+          pattern: kotlin-codecov-report-raw-*
+          include-hidden-files: true
+          separate-directories: true
+          delete-merged: true
+
+  kotlin-codecov-report:
+    name: Publish coverage reports
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write  # Required to publish/update coverage report comment
+    needs: kotlin-codecov-aggregate
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@v4  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache: ${{ !startsWith(github.ref, 'refs/tags/') }}
+      - uses: gradle/actions/setup-gradle@v6  # zizmor: ignore[cache-poisoning] -- Cache disabled in sensitive runs
+        with:
+          # Protect against cache poisoning by NOT using cache in release builds
+          cache-disabled: ${{ startsWith(github.ref, 'refs/tags/') }}
+          cache-read-only: true  # Cache has already been warmed up, no need to waste time uploading it again
+
+      - uses: ./.github/actions/download-kotlin-build
+      - name: Download coverage reports
+        uses: actions/download-artifact@v8
+        with:
+          name: kotlin-codecov-report-raw
+
+      - name: Prepare coverage reports for Kover
+        run: |
+          subprojects=(commons server)
+          for sp in "${subprojects[@]}"; do
+            mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-$sp" "$GITHUB_WORKSPACE/$sp/build/kover"
+          done
+        env:
+          GHA_DEBUG: ${{ runner.debug == '1' && 'true' || 'false' }}
+
+      # Explicitly skip Kover artefact generation to force the use of the restored ones above.
+      - run: ./gradlew :koverXmlReport :koverHtmlReport -x :build-logic:jar -x koverGenerateArtifact
+
+      - name: Publish coverage report
+        uses: mi-kas/kover-report@v2
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          path: build/reports/kover/report.xml
+          title: 🛡️ Kotlin Code Coverage
+          update-comment: true
+          # TODO: enable these? :)
+          #min-coverage-overall: 80
+          #min-coverage-changed-files: 80
+          # Branch coverage is a superior metric, but Kover doesn't consider a "branch-less" code path as a branch on its own. Kinda makes sense but nullifies the value of branch as reported metric.
+          # Instruction coverage, as a percentage, is a good enough compromise and won't hide partial branch coverage for single-line expressions (e.g. null handling).
+          coverage-counter-type: INSTRUCTION
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v7
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          name: kotlin-codecov-report
+          path: build/reports/kover

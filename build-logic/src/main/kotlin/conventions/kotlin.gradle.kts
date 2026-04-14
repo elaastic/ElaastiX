@@ -41,9 +41,9 @@ kotlin {
         )
 
         freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
-        jvmTarget.set(JvmTarget.valueOf("JVM_$jdkVersion"))
-        languageVersion.set(kotlinVersion)
-        apiVersion.set(kotlinVersion)
+        jvmTarget = JvmTarget.valueOf("JVM_$jdkVersion")
+        languageVersion = kotlinVersion
+        apiVersion = kotlinVersion
 
         // We do things RIGHT in this house.
         allWarningsAsErrors = true
@@ -55,7 +55,7 @@ kotlin {
 }
 
 dependencies {
-    implementation(platform(libs.findLibrary("kotlin.bom").get()))
+    implementation(enforcedPlatform(libs.findLibrary("kotlin.bom").get()))
 
     implementation(libs.findLibrary("kotlinx.serialization.core").get())
     implementation(libs.findLibrary("kotlinx.serialization.json").get())

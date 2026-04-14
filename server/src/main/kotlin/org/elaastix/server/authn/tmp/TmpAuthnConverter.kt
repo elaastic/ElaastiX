@@ -21,9 +21,12 @@ package org.elaastix.server.authn.tmp
 
 import jakarta.servlet.http.HttpServletRequest
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.platform.ExcludeFromCoverage
 import org.springframework.security.web.authentication.AuthenticationConverter
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken
 
+@Suppress("UndocumentedPublicClass", "UndocumentedPublicProperty", "UndocumentedPublicFunction")
+@ExcludeFromCoverage("Temporary implementation", ref = "https://github.com/elaastic/ElaastiX/issues/9")
 class TmpAuthnConverter : AuthenticationConverter {
     override fun convert(request: HttpServletRequest) =
         request.getHeader("Authorization")
