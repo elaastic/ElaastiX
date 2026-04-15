@@ -74,15 +74,32 @@ class ContentSerializersTest {
         }
 
         @Suppress("unused") // Used via reflection
-        class BadRichContentNoFactory(val data: Map<String, JsonElement>) : RichContent {
+        class BadNoFactory(val data: Map<String, JsonElement>) : RichContent {
             override fun toJson(): JsonElement = JsonObject(data)
         }
 
         @Suppress("unused") // Used via reflection
-        class BadRichContentBadFactory(val data: Map<String, JsonElement>) : RichContent {
+        class BadFactoryImpl(val data: Map<String, JsonElement>) : RichContent {
             override fun toJson(): JsonElement = JsonObject(data)
 
             companion object Factory
+        }
+
+        class BadFactoryLangType(val data: Map<String, JsonElement>) : RichContent {
+            override fun toJson(): JsonElement = JsonObject(data)
+
+            @Suppress("unused") // "Used" via reflection
+            class Factory : RichContent.Factory {
+                override fun fromJson(json: JsonElement): RichContent = BadFactoryLangType(emptyMap())
+            }
+        }
+
+        class BadFactoryWrongName(val data: Map<String, JsonElement>) : RichContent {
+            override fun toJson(): JsonElement = JsonObject(data)
+
+            companion object Usine : RichContent.Factory {
+                override fun fromJson(json: JsonElement): RichContent = BadFactoryWrongName(emptyMap())
+            }
         }
     }
 
@@ -180,7 +197,7 @@ class ContentSerializersTest {
         mockkObject(TestFormattedText.Factory)
         given { TestFormattedText.fromJson(any()) } answers { callOriginal() }
 
-        val result: FormattedContent = Json.decodeFromString(
+        val result: FormattedText = Json.decodeFromString(
             $$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$TestFormattedText",""" +
                 """"d":"some plaintext"}""",
         )
@@ -197,18 +214,58 @@ class ContentSerializersTest {
     fun `does not deserialises objects without a Factory`() {
         assertThrows<IllegalStateException> {
             Json.decodeFromString<RichContent>(
-                $$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadRichContentNoFactory",""" +
+                $$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadNoFactory",""" +
                     """"d":"some plaintext"}""",
             )
         }
     }
 
     @Test
-    fun `does not deserialises objects with an improper Factory`() {
+    fun `does not deserialises objects with an improper Factory implementation`() {
         assertThrows<IllegalStateException> {
             Json.decodeFromString<RichContent>(
-                $$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadRichContentBadFactory",""" +
+                $$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadFactoryImpl",""" +
                     """"d":"some plaintext"}""",
+            )
+        }
+    }
+
+    @Test
+    fun `does not deserialises objects with an improper Factory lang type`() {
+        assertThrows<IllegalStateException> {
+            Json.decodeFromString<RichContent>(
+                $$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadFactoryLangType",""" +
+                    """"d":"some plaintext"}""",
+            )
+        }
+    }
+
+    @Test
+    fun `does not deserialises objects with an improper Factory name`() {
+        assertThrows<IllegalStateException> {
+            Json.decodeFromString<RichContent>(
+                $$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadFactoryWrongName",""" +
+                    """"d":"some plaintext"}""",
+            )
+        }
+    }
+
+    @Test
+    fun `does not deserialises formatted text from a complex JSON object`() {
+        assertThrows<IllegalArgumentException> {
+            Json.decodeFromString<FormattedText>(
+                $$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$TestFormattedText",""" +
+                    """"d":{"wow":"meow"}}""",
+            )
+        }
+    }
+
+    @Test
+    fun `does not deserialises formatted text from a non-string primitive JSON element`() {
+        assertThrows<IllegalArgumentException> {
+            Json.decodeFromString<FormattedText>(
+                $$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$TestFormattedText",""" +
+                    """"d":false}""",
             )
         }
     }

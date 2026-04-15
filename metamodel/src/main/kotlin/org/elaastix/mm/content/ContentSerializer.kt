@@ -83,7 +83,7 @@ class FormattedContentSerializer : AbstractContentSerializer<FormattedContent>()
     override val descriptor = SerialDescriptor("org.elaastix.mm.FormattedContent", delegate.descriptor)
 }
 
-/** Serializer for [RichContent]. */
+/** Serializer for [FormattedText]. */
 class FormattedTextSerializer : AbstractContentSerializer<FormattedText>() {
     override val descriptor = SerialDescriptor("org.elaastix.mm.FormattedText", delegate.descriptor)
 }

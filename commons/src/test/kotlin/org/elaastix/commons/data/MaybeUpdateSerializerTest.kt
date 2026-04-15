@@ -27,7 +27,7 @@ import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-class MaybeUpdateSerializationTest {
+class MaybeUpdateSerializerTest {
     companion object {
         @Serializable
         data class TestObj(
