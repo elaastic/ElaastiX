@@ -43,7 +43,7 @@ abstract class AbstractContentSerializer<T : RichContent> internal constructor()
             ContentWrapper(
                 clazz = value::class.jvmName,
                 data = value.toJson(),
-            )
+            ),
         )
 
     override fun deserialize(decoder: Decoder): T {
@@ -66,9 +66,9 @@ abstract class AbstractContentSerializer<T : RichContent> internal constructor()
 
     @Serializable
     internal data class ContentWrapper(
-		@SerialName("c")
+        @SerialName("c")
         val clazz: String,
-		@SerialName("d")
+        @SerialName("d")
         val data: JsonElement,
     )
 }
