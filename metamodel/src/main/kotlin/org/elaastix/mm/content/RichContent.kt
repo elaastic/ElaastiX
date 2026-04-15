@@ -19,6 +19,7 @@
 
 package org.elaastix.mm.content
 
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 
 /**
@@ -37,6 +38,7 @@ import kotlinx.serialization.json.JsonElement
  *
  * @see FormattedContent
  */
+@Serializable(with = RichContentSerializer::class)
 interface RichContent {
     /** Transforms the content into a JSON element that'll be saved to the database. */
     fun toJson(): JsonElement

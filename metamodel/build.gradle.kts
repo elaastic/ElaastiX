@@ -47,6 +47,7 @@ dependencies {
     testImplementation(libs.spring.boot.validation.test)
     testImplementation(libs.spring.boot.testcontainers)
 
+    testImplementation(project(":commons"))
     testImplementation(libs.testcontainers)
     testImplementation(libs.testcontainers.junit)
     testImplementation(libs.testcontainers.postgres)

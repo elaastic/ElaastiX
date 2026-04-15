@@ -17,9 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.content.it
+package org.elaastix.mm.content
 
-import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.EntityManager
 import jakarta.persistence.GeneratedValue
@@ -30,8 +29,9 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import org.assertj.core.api.Assertions.assertThat
-import org.elaastix.mm.content.RichContent
-import org.hibernate.annotations.ColumnTransformer
+import org.elaastix.commons.jpa.ElaastixHibernateAutoConfiguration
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.springframework.beans.factory.annotation.Autowired
@@ -48,9 +48,9 @@ import org.testcontainers.postgresql.PostgreSQLContainer
 
 @Suppress("JpaDataSourceORMInspection", "SqlResolve")
 @DataJpaTest(properties = ["spring.jpa.hibernate.ddl-auto=create"])
-@Import(ContentJpaConverterIntegrationTest.TransactionUtil::class)
+@Import(ContentSerializerDatabaseIntegrationTest.TransactionUtil::class, ElaastixHibernateAutoConfiguration::class)
 @Transactional(propagation = Propagation.NEVER)
-class ContentJpaConverterIntegrationTest {
+class ContentSerializerDatabaseIntegrationTest {
     companion object {
         @JvmField
         @Container
@@ -91,6 +91,21 @@ class ContentJpaConverterIntegrationTest {
             ),
         )
 
+        // Sanity check: DDL is correct
+        val typ = assertDoesNotThrow {
+            tu.runWithTransaction {
+                em.createNativeQuery(
+                    "SELECT data_type FROM information_schema.columns " +
+                        "WHERE table_name = 'test_entity' AND column_name = 'content'"
+                ).singleResult
+            }
+        }
+
+        assertThat(typ)
+            .isNotNull
+            .isInstanceOf(String::class.java)
+            .isEqualTo("jsonb")
+
         // Validate that saving the entity works
 
         val id = assertDoesNotThrow {
@@ -109,12 +124,16 @@ class ContentJpaConverterIntegrationTest {
                 em.find(TestEntity::class.java, id)
             }
         }.also { assertThat(it).isNotNull }!!
-        assertThat(entity.content.data).isEqualTo(data)
+        val content = entity.content as TestRichContent
+        assertThat(content.data).isEqualTo(data)
 
         // Validate that a native query works as expected
 
         val res = assertDoesNotThrow {
             tu.runWithTransaction {
+                println(em.createNativeQuery("SELECT content::text FROM test_entity WHERE id = :id")
+                    .apply { setParameter("id", id) }
+                    .singleResult)
                 em.createNativeQuery("SELECT content->'d'->'obj'->>'wow' FROM test_entity WHERE id = :id")
                     .apply { setParameter("id", id) }
                     .singleResult
@@ -141,10 +160,8 @@ class ContentJpaConverterIntegrationTest {
         @Suppress("unused")
         var id: Long? = null,
 
-        @Suppress("JpaAttributeTypeInspection") // https://youtrack.jetbrains.com/issue/IDEA-191568
-        @ColumnTransformer(write = "?::jsonb", read = "content::text")
-        @Column(columnDefinition = "jsonb")
-        var content: TestRichContent,
+        @JdbcTypeCode(SqlTypes.JSON)
+        var content: RichContent,
     )
 
     @SpringBootConfiguration

@@ -19,6 +19,7 @@
 
 package org.elaastix.mm.content
 
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 
@@ -37,6 +38,7 @@ import kotlinx.serialization.json.JsonPrimitive
  *
  * **IMPORTANT**: All subclasses MUST have a companion object named `Factory` that inherits [FormattedText.Factory].
  */
+@Serializable(with = FormattedTextSerializer::class)
 interface FormattedText : FormattedContent {
     /**
      * Losslessly convert a formatted text to a String.
@@ -52,10 +54,11 @@ interface FormattedText : FormattedContent {
     interface Factory : FormattedContent.Factory {
         override fun fromJson(json: JsonElement): FormattedText {
             require(json is JsonPrimitive && json.isString) {
-                when (json) {
-                    is JsonPrimitive -> "Expected a JSON string, got $json"
-                    else -> "Expected a JSON string, got ${json::class.simpleName}"
-                }
+                "Expected a JSON string, got " +
+                    when (json) {
+                        is JsonPrimitive -> json.content
+                        else -> json::class.simpleName
+                    }
             }
 
             return fromString(json.content)
