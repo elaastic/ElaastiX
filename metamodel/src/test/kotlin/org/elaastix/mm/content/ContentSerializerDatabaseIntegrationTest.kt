@@ -96,7 +96,7 @@ class ContentSerializerDatabaseIntegrationTest {
             tu.runWithTransaction {
                 em.createNativeQuery(
                     "SELECT data_type FROM information_schema.columns " +
-                        "WHERE table_name = 'test_entity' AND column_name = 'content'"
+                        "WHERE table_name = 'test_entity' AND column_name = 'content'",
                 ).singleResult
             }
         }
@@ -131,9 +131,6 @@ class ContentSerializerDatabaseIntegrationTest {
 
         val res = assertDoesNotThrow {
             tu.runWithTransaction {
-                println(em.createNativeQuery("SELECT content::text FROM test_entity WHERE id = :id")
-                    .apply { setParameter("id", id) }
-                    .singleResult)
                 em.createNativeQuery("SELECT content->'d'->'obj'->>'wow' FROM test_entity WHERE id = :id")
                     .apply { setParameter("id", id) }
                     .singleResult
