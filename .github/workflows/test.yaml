@@ -71,8 +71,8 @@ jobs:
         if: matrix.project == 'server'
 
       # Explicitly skip compile tasks to force the use of the restored ones above.
-      - name: Run tests
-        run: ./gradlew :"$PROJECT":test :"$PROJECT":koverBinaryReport
+      - name: Run tests with coverage
+        run: ./gradlew :"$PROJECT":test :"$PROJECT":koverLog
           -x :build-logic:jar -x classes -x testClasses -x compileKotlin -x compileTestKotlin
         env:
           PROJECT: ${{ matrix.project }}

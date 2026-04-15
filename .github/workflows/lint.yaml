@@ -98,10 +98,11 @@ jobs:
           cache-read-only: false
 
       - run: ./gradlew detekt
+        # GitHub recommends only failing on exec errors for jobs integrating with Code Scanning
+        continue-on-error: true
 
       - name: Upload SARIF report to GitHub CodeQL
         uses: github/codeql-action/upload-sarif@v4
-        if: success() || failure()
         with:
           sarif_file: build/reports/detekt/detekt.sarif
 
