@@ -15,6 +15,7 @@ kotlinx-serialization = "1.10.0"
 kover = "0.9.8"
 mockk = "1.14.9"
 spring-boot = "4.0.5"
+testcontainers = "2.0.4"
 
 [libraries]
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
@@ -49,12 +50,16 @@ spring-boot-security-oauth2 = { module = "org.springframework.boot:spring-boot-s
 spring-boot-security-oauth2-test = { module = "org.springframework.boot:spring-boot-starter-security-oauth2-client-test", version.ref = "spring-boot" }
 spring-boot-security-test = { module = "org.springframework.boot:spring-boot-starter-security-test", version.ref = "spring-boot" }
 spring-boot-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "spring-boot" }
 spring-boot-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "spring-boot" }
 spring-boot-thymeleaf-test = { module = "org.springframework.boot:spring-boot-starter-thymeleaf-test", version.ref = "spring-boot" }
 spring-boot-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
 spring-boot-validation-test = { module = "org.springframework.boot:spring-boot-starter-validation-test", version.ref = "spring-boot" }
 spring-boot-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc", version.ref = "spring-boot" }
 spring-boot-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test", version.ref = "spring-boot" }
+testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
+testcontainers-junit = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
+testcontainers-postgres = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
 
 [plugins]
 detekt = { id = "dev.detekt", version.ref = "detekt" }

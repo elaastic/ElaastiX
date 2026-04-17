@@ -17,19 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+package conventions
+
 plugins {
-    id("conventions.idea")
-    id("conventions.kotlin")
-    id("conventions.spring-lib")
-    id("conventions.hibernate-lib")
-    id("conventions.test")
-}
+    id("conventions.java")
+    id("org.hibernate.orm") // Plugin should automatically override Hibernate's version
 
-dependencies {
-    implementation(libs.spring.boot.jpa)
-    implementation(libs.spring.boot.validation)
-    implementation(libs.hypersistence.utils)
-
-    testImplementation(libs.spring.boot.jpa.test)
-    testImplementation(libs.spring.boot.validation.test)
+    kotlin("plugin.jpa")
 }

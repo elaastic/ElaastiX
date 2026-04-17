@@ -24,6 +24,7 @@ package org.elaastix.commons.platform
  * Requires an explicit message clarifying the reason behind the exclusion.
  * Can also include a link to an issue, if appropriate.
  */
+@Suppress("unused") // Used by humans ;)
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
 annotation class ExcludeFromCoverage(

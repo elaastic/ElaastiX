@@ -21,6 +21,7 @@ package org.elaastix.commons.jpa
 
 import io.hypersistence.utils.spring.repository.BaseJpaRepository
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.platform.ExcludeFromCoverage
 import org.springframework.data.repository.NoRepositoryBean
 
 /**
@@ -34,5 +35,6 @@ interface ElaastixRepository<T : AbstractEntity> : BaseJpaRepository<T, Uuid> {
     /**
      * Helper to use Kotlin nullability instead of Java's `Optional`, which is more idiomatic.
      */
+    @ExcludeFromCoverage("Trivial helper")
     fun findByIdOrNull(id: Uuid): T? = findById(id).orElse(null)
 }

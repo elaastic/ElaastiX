@@ -25,6 +25,7 @@ import kotlinx.serialization.SerializationException
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
+import org.elaastix.commons.platform.ExcludeFromCoverage
 
 /**
  * Wrapper class that materialises both the absence of data and a null value as two distinct concepts.
@@ -106,4 +107,5 @@ class MaybeUpdateSerializer<T>(private val valueSerializer: KSerializer<T>) : KS
 /**
  * Helper to transform a value of any type into a value wrapped in [MaybeUpdate].
  */
+@ExcludeFromCoverage("Trivial helper")
 inline fun <reified T> T.asUpdateOp(): MaybeUpdate<T> = MaybeUpdate.Update(this)

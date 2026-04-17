@@ -17,19 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("conventions.idea")
-    id("conventions.kotlin")
-    id("conventions.spring-lib")
-    id("conventions.hibernate-lib")
-    id("conventions.test")
-}
+package org.elaastix.commons.jpa
 
-dependencies {
-    implementation(libs.spring.boot.jpa)
-    implementation(libs.spring.boot.validation)
-    implementation(libs.hypersistence.utils)
+import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.context.annotation.PropertySource
 
-    testImplementation(libs.spring.boot.jpa.test)
-    testImplementation(libs.spring.boot.validation.test)
-}
+/**
+ * Autoconfiguration class loading the library's Hibernate default settings.
+ */
+@AutoConfiguration
+@PropertySource("classpath:hibernate.properties")
+class ElaastixHibernateAutoConfiguration

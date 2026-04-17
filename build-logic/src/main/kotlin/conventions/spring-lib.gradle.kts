@@ -29,7 +29,6 @@ plugins {
     `jvm-test-suite`
     id("conventions.java")
     id("org.springframework.boot")
-    id("org.hibernate.orm") // Plugin should automatically override Hibernate's version
 
     kotlin("plugin.jpa")
     kotlin("plugin.spring")

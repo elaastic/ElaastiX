@@ -19,6 +19,10 @@
 
 package org.elaastix.mm.content
 
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.JsonPrimitive
+
 /**
  * A type of content that can only make use of inline formatting (bold, italics, ...).
  * It MUST NOT provide any structural formatting capabilities (e.g. titles, codeblocks...).
@@ -31,8 +35,11 @@ package org.elaastix.mm.content
  * Examples of compliant formats are:
  * - CommonMark (0.31.2) § 6 "Inlines" ONLY, excluding § 6.4 "Images", § 6.6 "Raw HTML", § 6.7 "Hard line breaks".
  * - BBCode (from phpBB), excluding `img`, `list`, `code`, `quote`.
+ *
+ * **IMPORTANT**: All subclasses MUST have a companion object named `Factory` that inherits [FormattedText.Factory].
  */
-interface FormattedText : RichContent {
+@Serializable(with = FormattedTextSerializer::class)
+interface FormattedText : FormattedContent {
     /**
      * Losslessly convert a formatted text to a String.
      *
@@ -40,4 +47,24 @@ interface FormattedText : RichContent {
      * deemed appropriate.
      */
     override fun toString(): String
+
+    override fun toJson(): JsonElement = JsonPrimitive(toString())
+
+    /** Factory that'll be used by the JPA mapper. */
+    interface Factory : FormattedContent.Factory {
+        override fun fromJson(json: JsonElement): FormattedText {
+            require(json is JsonPrimitive && json.isString) {
+                "Expected a JSON string, got " +
+                    when (json) {
+                        is JsonPrimitive -> json.content
+                        else -> json::class.simpleName
+                    }
+            }
+
+            return fromString(json.content)
+        }
+
+        /** Constructs an instance of the content from the stored string. */
+        fun fromString(string: String): FormattedText
+    }
 }

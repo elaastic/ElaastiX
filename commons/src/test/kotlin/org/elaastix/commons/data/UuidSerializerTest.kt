@@ -29,7 +29,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
 
-class UuidTest {
+class UuidSerializerTest {
     companion object {
         @Serializable
         data class TestObj(val value: Uuid)

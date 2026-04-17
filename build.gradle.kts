@@ -123,6 +123,8 @@ tasks.withType<Detekt>().configureEach {
 }
 
 kover {
+    useJacoco() // https://github.com/Kotlin/kotlinx-kover/issues/720
+
     reports {
         filters {
             excludes {
