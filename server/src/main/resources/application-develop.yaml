@@ -5,6 +5,8 @@ spring:
     username: elaastix
     password: elaastix
 
+springdoc.paths-to-exclude: []
+
 # Disable OpenTelemetry in development
 management:
   otlp.metrics.export.enabled: false

@@ -20,11 +20,31 @@
 package org.elaastix.server
 
 import io.hypersistence.utils.spring.repository.BaseJpaRepositoryImpl
+import io.swagger.v3.oas.annotations.OpenAPIDefinition
+import io.swagger.v3.oas.annotations.info.Contact
+import io.swagger.v3.oas.annotations.info.Info
+import io.swagger.v3.oas.annotations.info.License
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
+@OpenAPIDefinition(
+    info = Info(
+        title = "ElaastiX platform API documentation",
+        description = "API documentation for the ElaastiX platform",
+        // termsOfService = ""
+        contact = Contact(
+            name = "Franck Silvestre",
+            email = "franck.silvestre@irit.fr",
+        ),
+        license = License(
+            name = "GNU Affero General Public License 3.0 or later",
+            url = "https://github.com/elaastic/elaastix/blob/main/LICENSE",
+            identifier = "AGPL-3.0-or-later",
+        ),
+    ),
+)
 @SpringBootApplication
 @ConfigurationPropertiesScan
 // TODO: Find a more elegant solution to automatically configure it within Elaastix Commons

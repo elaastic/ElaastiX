@@ -34,6 +34,10 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.util.matcher.AnyRequestMatcher
 
+/**
+ * Configuration class for Spring Security.
+ * See https://docs.spring.io/spring-security/reference/servlet/integrations/mvc.html
+ */
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig(
@@ -41,6 +45,7 @@ class WebSecurityConfig(
     private val authConfig: AuthenticationConfiguration,
 ) {
     @Bean
+    @Suppress("UndocumentedPublicFunction")
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.authenticationProvider(authProvider)
         http {
@@ -60,6 +65,10 @@ class WebSecurityConfig(
 
             authorizeHttpRequests {
                 authorize("/v*/internal/nuxt/context-v1", permitAll)
+                authorize("/actuator/**", permitAll)
+                authorize("/openapi.json", permitAll)
+                authorize("/documentation", permitAll)
+                authorize("/documentation/**", permitAll)
                 authorize(anyRequest, authenticated)
             }
 

@@ -15,6 +15,7 @@ kotlinx-serialization = "1.10.0"
 kover = "0.9.8"
 mockk = "1.14.9"
 spring-boot = "4.0.5"
+springdoc = "3.0.3"
 testcontainers = "2.0.4"
 
 [libraries]
@@ -57,6 +58,7 @@ spring-boot-validation = { module = "org.springframework.boot:spring-boot-starte
 spring-boot-validation-test = { module = "org.springframework.boot:spring-boot-starter-validation-test", version.ref = "spring-boot" }
 spring-boot-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc", version.ref = "spring-boot" }
 spring-boot-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test", version.ref = "spring-boot" }
+springdoc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-scalar", version.ref = "springdoc" }
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-junit = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
 testcontainers-postgres = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
