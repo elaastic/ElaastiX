@@ -29,6 +29,7 @@ export default defineNuxtConfig({
 		'@nuxt/a11y',
 		'@nuxtjs/i18n',
 		// '@nuxtjs/storybook',
+		'nuxt-open-fetch',
 	],
 
 	devtools: { enabled: true },
@@ -69,5 +70,14 @@ export default defineNuxtConfig({
 			{ code: 'fr', name: 'Français', language: 'fr-FR', file: 'fr.json' },
 		],
 		strategy: 'no_prefix',
+	},
+
+	openFetch: {
+		clients: {
+			api: {
+				baseURL: '/api/',
+				schema: '../server/build/openapi.json',
+			},
+		},
 	},
 })

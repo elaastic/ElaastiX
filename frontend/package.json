@@ -28,6 +28,7 @@
 		"@nuxt/ui": "^4.5.1",
 		"@nuxtjs/i18n": "^10.2.3",
 		"nuxt": "^4.4.2",
+		"nuxt-open-fetch": "^0.13.9",
 		"tailwindcss": "^4.2.2",
 		"valibot": "^1.3.1"
 	},
