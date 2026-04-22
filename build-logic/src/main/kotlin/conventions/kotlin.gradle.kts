@@ -29,6 +29,7 @@ plugins {
 
     kotlin("jvm")
     kotlin("plugin.serialization")
+    id("com.google.devtools.ksp")
 }
 
 kotlin {
@@ -61,4 +62,7 @@ dependencies {
     implementation(libs.findLibrary("kotlinx.serialization.core").get())
     implementation(libs.findLibrary("kotlinx.serialization.json").get())
     implementation(libs.findLibrary("kotlinx.serialization.cbor").get())
+
+    implementation(libs.findLibrary("springdoc.kdoc.rt").get())
+    ksp(libs.findLibrary("springdoc.kdoc.ksp").get())
 }

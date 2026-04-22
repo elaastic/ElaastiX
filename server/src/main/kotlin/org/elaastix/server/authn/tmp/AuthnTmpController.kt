@@ -19,6 +19,7 @@
 
 package org.elaastix.server.authn.tmp
 
+import io.swagger.v3.oas.annotations.Hidden
 import org.elaastix.commons.platform.ExcludeFromCoverage
 import org.elaastix.server.authn.AuthenticationHolder
 import org.elaastix.server.authn.required
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+@Hidden
 @RestController
 @RequestMapping("/authn/tmp")
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicProperty", "UndocumentedPublicFunction")

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.infrastructure.config
+package org.elaastix.server.infrastructure.openapi
 
 import org.springdoc.core.customizers.ServerBaseUrlCustomizer
 import org.springframework.beans.factory.annotation.Value
@@ -31,7 +31,7 @@ import org.springframework.stereotype.Component
  * This allows using the Scalar documentation via `localhost:8080` without issues.
  */
 @Component
-class SpringdocBaseUrlCustomiser(
+class BaseUrlCustomiser(
     @Value("#{environment.acceptsProfiles('develop')}")
     private val isDevelop: Boolean,
     @Value($$"${server.port:8080}")
