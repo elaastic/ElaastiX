@@ -20,5 +20,25 @@
 			"str": "{0} (by River Kao on Unsplash)",
 			"link": "Arbitrary photo of a cat"
 		}
+	},
+	"likert": {
+		"AGREEMENT": [
+			"Strongly disagree",
+			"Disagree",
+			"Somewhat disagree",
+			"Neutral",
+			"Somewhat agree",
+			"Agree",
+			"Strongly agree"
+		],
+		"CONFIDENCE": [
+			"Not confident at all",
+			"Not confident",
+			"Not very confident",
+			"Neutral",
+			"Somewhat confident",
+			"Confident",
+			"Very confident"
+		]
 	}
 }

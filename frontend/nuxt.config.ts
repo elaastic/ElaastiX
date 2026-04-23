@@ -17,16 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { defaultLocale, locales } from './config/i18n'
+
 export default defineNuxtConfig({
 	modules: [
 		'@nuxt/eslint',
 		'@nuxt/ui',
-		// '@nuxt/test-utils/module',
+		'@nuxt/test-utils',
 		'@nuxt/image',
-		// '@nuxt/icon',
-		// '@nuxt/fonts',
-		// '@nuxt/hints',
-		// '@nuxt/a11y',
+		'@nuxt/icon',
+		'@nuxt/fonts',
+		'@nuxt/hints',
+		'@nuxt/a11y',
 		'@nuxtjs/i18n',
 		// '@nuxtjs/storybook',
 		'nuxt-open-fetch',
@@ -35,6 +37,12 @@ export default defineNuxtConfig({
 	devtools: { enabled: true },
 
 	css: ['~/assets/css/main.css'],
+
+	router: {
+		options: {
+			scrollBehaviorType: 'smooth',
+		},
+	},
 
 	runtimeConfig: {
 		public: {
@@ -64,11 +72,8 @@ export default defineNuxtConfig({
 	},
 
 	i18n: {
-		defaultLocale: 'en',
-		locales: [
-			{ code: 'en', name: 'English', language: 'en-GB', file: 'en.json' },
-			{ code: 'fr', name: 'Français', language: 'fr-FR', file: 'fr.json' },
-		],
+		locales: locales,
+		defaultLocale: defaultLocale,
 		strategy: 'no_prefix',
 	},
 
