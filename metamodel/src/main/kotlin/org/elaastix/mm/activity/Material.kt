@@ -19,30 +19,17 @@
 
 package org.elaastix.mm.activity
 
+import org.elaastix.mm.MmObject
+import org.elaastix.mm.users.User
+
 /**
- * Denotes objects that can be given a grade, on a linear scale between zero and an arbitrary upper bound.
- * Such grades can be represented as-is (e.g. 16/20), or as a percentage.
- * Usually implemented by classes representing a production of a learner.
- *
- * @see ScalarGrade
+ * An arbitrary type of pedagogical resource.
+ * Can be used as an input to an activity, which may itself output new materials.
  */
-interface ScalarGradable {
-	/** The scalar grade given to the object. */
-	val absoluteGrade: ScalarGrade?
-
+interface Material : MmObject {
 	/**
-	 * A linear grade, as an arbitrary number between zero and an upper bound.
+	 * The author of the material.
+	 * TODO: refine tracking of owner/author/derived work
 	 */
-	interface ScalarGrade {
-		/** The given grade. MUST be less than or equal to [max]. */
-		val grade: Double
-
-		/** Maximum grade that can be obtained. MUST be non-zero. */
-		val max: Double
-
-		/**
-		 * Returns the grade as a decimal value between 0 and 1.
-		 */
-		fun asDouble(): Double = grade / max
-	}
+	val author: User
 }

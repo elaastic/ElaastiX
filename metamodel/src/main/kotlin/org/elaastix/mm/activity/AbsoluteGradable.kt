@@ -27,7 +27,7 @@ package org.elaastix.mm.activity
  */
 interface AbsoluteGradable {
 	/** The absolute grade given to the object. */
-	val absoluteGrade: AbsoluteGrade
+	val absoluteGrade: AbsoluteGrade?
 
 	/** Grades supported by absolute notation. */
 	enum class AbsoluteGrade {

@@ -25,6 +25,10 @@
             <java-class>kotlin.ULong</java-class>
             <sql-type>bigint</sql-type>
           </mapping-type>
+          <mapping-type sql-type-parameter="Nothing">
+            <java-class>T</java-class>
+            <sql-type>uuid</sql-type>
+          </mapping-type>
         </mapping-types>
       </database-info>
     </database-infos>
