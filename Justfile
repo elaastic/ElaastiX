@@ -24,6 +24,11 @@ fix-all:
 	hk fix --all
 
 [group('run')]
+[doc('Start sidecar services (Database, S3, etc...). Will wait for them to be healthy.')]
+sidecar:
+	docker compose up -d --wait postgres storage
+
+[group('run')]
 [doc('Start everything up, opening a tmux session for observing and managing all running services.')]
 start:
 	docker compose up --build -d
@@ -44,10 +49,9 @@ stop:
 
 [group('build')]
 [doc('Generates the OpenAPI 3.1 configuration spec file.')]
-openapi:
-	docker compose up --build --wait server
-	curl http://localhost:8080/openapi.json -o server/build/openapi.json
-	docker compose stop server
+openapi: sidecar
+	just gradle :server:bootRun --args=\"--spring.profiles.active=develop --spring.flyway.enable=false --logging.level.root=WARN --debug=false --server.port=0 --generate-openapi='`pwd`/server/build/openapi.json'\"
+	@test -f server/build/openapi.json
 
 [group('misc')]
 [doc('Cleans the repository to its original state. Will erase local configuration (e.g. mise.local.toml), but preserve the IJ shelf.')]
