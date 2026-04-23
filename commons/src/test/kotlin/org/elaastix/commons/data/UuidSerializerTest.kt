@@ -37,7 +37,7 @@ class UuidSerializerTest {
         val TEST_UUID = Uuid.parseHexDash(TEST_UUID_V7)
 
         const val TEST_UUID_V7 = "01513edc-8c60-7bb2-9f74-ebc6ee214673"
-        const val TEST_UUID_B36 = "2t2razan0q9kzr7gr55oi54j"
+        const val TEST_UUID_B36 = "02t2razan0q9kzr7gr55oi54j"
         val TEST_UUID_BYTES =
             @OptIn(ExperimentalUnsignedTypes::class)
             ubyteArrayOf(

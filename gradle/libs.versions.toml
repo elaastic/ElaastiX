@@ -1,6 +1,7 @@
 [versions]
 jdk = "25"
 kotlin = "2.3.20"
+ksp = "2.3.6"
 # ----
 assertj = "3.18.1"
 detekt = "2.0.0-alpha.2"
@@ -15,6 +16,8 @@ kotlinx-serialization = "1.10.0"
 kover = "0.9.8"
 mockk = "1.14.9"
 spring-boot = "4.0.5"
+springdoc = "3.0.3"
+springdoc-kdoc = "1.0.10"
 testcontainers = "2.0.4"
 
 [libraries]
@@ -57,6 +60,9 @@ spring-boot-validation = { module = "org.springframework.boot:spring-boot-starte
 spring-boot-validation-test = { module = "org.springframework.boot:spring-boot-starter-validation-test", version.ref = "spring-boot" }
 spring-boot-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc", version.ref = "spring-boot" }
 spring-boot-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test", version.ref = "spring-boot" }
+springdoc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-scalar", version.ref = "springdoc" }
+springdoc-kdoc-ksp = { module = "com.github.cosmos-official.vingle-springdoc-kdoc-provider:kdoc-processor", version.ref = "springdoc-kdoc" }
+springdoc-kdoc-rt = { module = "com.github.cosmos-official.vingle-springdoc-kdoc-provider:kdoc-runtime", version.ref = "springdoc-kdoc" }
 testcontainers = { module = "org.testcontainers:testcontainers", version.ref = "testcontainers" }
 testcontainers-junit = { module = "org.testcontainers:testcontainers-junit-jupiter", version.ref = "testcontainers" }
 testcontainers-postgres = { module = "org.testcontainers:testcontainers-postgresql", version.ref = "testcontainers" }
@@ -68,6 +74,7 @@ ideax = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "ideax" }
 kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }

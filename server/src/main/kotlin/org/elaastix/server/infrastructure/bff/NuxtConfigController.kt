@@ -32,14 +32,16 @@ import org.springframework.web.bind.annotation.RestController
  * versioned separately than the rest of the API. All endpoints will work the same regardless of the selected API
  * version.
  *
- * **Caution**: as the `internal` prefix suggests, this endpoint is **not intended for public use**. The endpoints and
+ * __Caution__: as the `internal` prefix suggests, this endpoint is **not intended for public use**. The endpoints and
  * their behaviour may change without notice, including changes that are not backwards compatible.
  */
 @RestController
 @RequestMapping("/internal/nuxt", version = "0+")
 class NuxtConfigController {
     /**
-     * Returns context and configuration information needed for the first-party Nuxt webapp.
+     * Get client context information.
+     *
+     * @return Context and configuration information needed for the first-party Nuxt webapp.
      */
     @GetMapping("/context-v1")
     fun getContextVersion1(): NuxtContextDto {

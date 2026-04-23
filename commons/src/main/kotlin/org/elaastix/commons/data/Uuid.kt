@@ -23,6 +23,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ByteArraySerializer
 import kotlinx.serialization.cbor.CborDecoder
 import kotlinx.serialization.cbor.CborEncoder
@@ -46,6 +47,9 @@ typealias Uuid =
  */
 @OptIn(ExperimentalSerializationApi::class) // Anything non-json is experimental atm
 object UuidSerializer : KSerializer<KtUuid> {
+    /** Length of a Uuid encoded as a Base36 string. */
+    const val UUID_LEN_B36 = 25
+
     @OptIn(InternalSerializationApi::class) // We don't really have a choice anyway
     override val descriptor: SerialDescriptor =
         buildSerialDescriptor("org.elaastix.commons.data.Uuid", SerialKind.CONTEXTUAL)
@@ -77,11 +81,20 @@ object UuidSerializer : KSerializer<KtUuid> {
 
     private fun serializeAsString(encoder: Encoder, value: KtUuid) =
         encoder.encodeString(
-            BigInteger(value.toByteArray()).toString(BASE36_RADIX),
+            BigInteger(value.toByteArray()).toString(BASE36_RADIX).padStart(UUID_LEN_B36, '0'),
         )
 
     private fun deserializeFromString(decoder: Decoder) =
         KtUuid.fromByteArray(
-            BigInteger(decoder.decodeString(), BASE36_RADIX).toByteArray(),
+            BigInteger(
+                decoder.decodeString().also {
+                    if (it.length != UUID_LEN_B36) {
+                        throw SerializationException(
+                            "Expected Uuid to be a string of length ${UUID_LEN_B36}, got ${it.length}",
+                        )
+                    }
+                },
+                BASE36_RADIX,
+            ).toByteArray(),
         )
 }

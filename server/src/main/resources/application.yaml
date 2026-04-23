@@ -10,3 +10,34 @@ spring:
     serialization:
       json:
         encode-defaults: true
+
+scalar:
+  enabled: true
+  telemetry: false
+  path: documentation
+  url: ./openapi.json
+  document-download-type: direct
+  agent:
+    # IJ fails to detect the properties of `scalar.agent`
+    # noinspection SpringBootApplicationYaml
+    disabled: true
+
+springdoc:
+  api-docs:
+    path: /openapi.json
+    enabled: true
+  packages-to-scan:
+    - org.elaastix
+  paths-to-exclude:  # Overridden in the develop profile, so the generated types for the Nuxt app include these.
+    - /v*/internal/**
+  disable-i18n: true
+  explicit-object-schema: true
+  # Might want to revisit that once we actually enable "dual stack" JSON and CBOR support
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,scalar

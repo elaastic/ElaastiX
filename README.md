@@ -12,7 +12,7 @@ TL;DR:
 - Install Docker
 - Install [Mise](https://mise.jdx.dev)
 - Clone the repository and `cd` into it
-- Run `mise trust && mise install && mise prep`
+- Run `mise trust && mise install && mise deps`
 - Open in IntelliJ IDEA Ultimate
 
 > [!CAUTION]
@@ -28,7 +28,7 @@ The project uses [Mise](https://mise.jdx.dev) for managing all the tools require
 the project with `mise trust`, and then run `mise install`.
 
 > [!CAUTION]
-> The `mise prep` command will also configure important aspects of the project. Skipping this step is
+> The `mise deps` command will also configure important aspects of the project. Skipping this step is
 > will result in an **INCOMPLETE** development environment that will **NOT WORK**.
 
 The IntelliJ plugin should configure everything for you automatically. You may need to adjust in IntelliJ
@@ -133,7 +133,7 @@ it as well. It should, however, work perfectly fine with any S3-compatible solut
 | Service    | Username         | Password         | Additional information                                                  |
 |------------|------------------|------------------|-------------------------------------------------------------------------|
 | PostgreSQL | `elaastix`       | `elaastix`       | Database: `elaastix`                                                    |
-| Garage     | *Auto generated* | *Auto generated* | Generated during `mise prep`, saved in `.config/garage/credentials.env` |
+| Garage     | *Auto generated* | *Auto generated* | Generated during `mise deps`, saved in `.config/garage/credentials.env` |
 
 ### Spring monolith
 
