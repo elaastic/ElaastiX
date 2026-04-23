@@ -16,3 +16,6 @@ overrides:
   vite: ^8
 
 pmOnFail: error
+
+patchedDependencies:
+  '@nuxt/fonts': patches/@nuxt__fonts.patch
