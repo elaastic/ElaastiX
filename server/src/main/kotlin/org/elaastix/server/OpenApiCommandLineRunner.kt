@@ -40,7 +40,7 @@ import kotlin.system.exitProcess
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class OpenApiCommandLineRunner(
-    @Value($$"${generate-openapi:null}")
+    @Value($$"${generate-openapi:#{null}}")
     private val generationPath: String?,
     private val openApiResource: OpenApiResource,
 ) : CommandLineRunner {
