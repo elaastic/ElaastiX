@@ -294,7 +294,7 @@ jobs:
       - name: Download OpenAPI spec file
         uses: actions/download-artifact@v8
         with:
-          name: openapi.json
+          name: openapi
           path: server/build
       - run: pnpm i --frozen-lockfile
         working-directory: frontend
@@ -324,7 +324,7 @@ jobs:
       - name: Download OpenAPI spec file
         uses: actions/download-artifact@v8
         with:
-          name: openapi.json
+          name: openapi
           path: server/build
       - run: pnpm i --frozen-lockfile
         working-directory: frontend
