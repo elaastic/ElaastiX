@@ -46,13 +46,20 @@ interface Props {
 	type?: LikertScaleType
 }
 
-const LABEL_TRUTH_TABLE = [
-	// LSB = Disagree, MSB = Agree
-	/* 3 */ 0b0101010,
-	/* 4 */ 0b1010101,
-	/* 5 */ 0b1101011,
-	/* 6 */ 0b1110111,
-	/* 7 */ 0b1111111,
+const ITEM_STRONG_NEGATIVE = 0
+const ITEM_MEDIUM_NEGATIVE = 1
+const ITEM_SLIGHT_NEGATIVE = 2
+const ITEM_PERHAPS_NEUTRAL = 3
+const ITEM_SLIGHT_POSITIVE = 4
+const ITEM_MEDIUM_POSITIVE = 5
+const ITEM_STRONG_POSITIVE = 6
+
+const LABELS = [
+	/* 3 */ [ITEM_MEDIUM_NEGATIVE, ITEM_PERHAPS_NEUTRAL, ITEM_MEDIUM_POSITIVE],
+	/* 4 */ [ITEM_STRONG_NEGATIVE, ITEM_SLIGHT_NEGATIVE, ITEM_SLIGHT_POSITIVE, ITEM_STRONG_POSITIVE],
+	/* 5 */ [ITEM_STRONG_NEGATIVE, ITEM_MEDIUM_NEGATIVE, ITEM_PERHAPS_NEUTRAL, ITEM_MEDIUM_POSITIVE, ITEM_STRONG_POSITIVE],
+	/* 6 */ [ITEM_STRONG_NEGATIVE, ITEM_MEDIUM_NEGATIVE, ITEM_SLIGHT_NEGATIVE, ITEM_SLIGHT_POSITIVE, ITEM_MEDIUM_POSITIVE, ITEM_STRONG_POSITIVE],
+	/* 7 */ [ITEM_STRONG_NEGATIVE, ITEM_MEDIUM_NEGATIVE, ITEM_SLIGHT_NEGATIVE, ITEM_PERHAPS_NEUTRAL, ITEM_SLIGHT_POSITIVE, ITEM_MEDIUM_POSITIVE, ITEM_STRONG_POSITIVE],
 ] as const
 </script>
 
@@ -64,22 +71,13 @@ const value = defineModel<number>()
 
 const { t } = useI18n()
 
-const likertItems = computed(() => {
+const likertItems = computed<RadioGroupItem[]>(() =>
 	// SAFETY: [3,7] - 3 = [0,4]
-	const tt = LABEL_TRUTH_TABLE[points - 3]!
-
-	const items: RadioGroupItem[] = []
-	for (let i = 0, v = 0; i < 7; i++) {
-		// noinspection JSBitwiseOperatorUsage
-		if ((1 << i) & tt)
-			items.push({
-				label: t(`likert.${type}.${i}`),
-				value: ++v,
-			})
-	}
-
-	return items
-})
+	LABELS[points - 3]!.map((l, i) => ({
+		label: t(`likert.${type}.${l}`),
+		value: i,
+	})),
+)
 </script>
 
 <template>
