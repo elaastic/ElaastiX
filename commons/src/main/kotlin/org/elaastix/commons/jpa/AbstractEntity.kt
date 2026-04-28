@@ -19,17 +19,15 @@
 
 package org.elaastix.commons.jpa
 
+import jakarta.persistence.EntityListeners
 import jakarta.persistence.Id
 import jakarta.persistence.MappedSuperclass
-import jakarta.persistence.PrePersist
-import jakarta.persistence.PreUpdate
 import jakarta.persistence.Transient
 import jakarta.persistence.Version
 import jakarta.validation.constraints.NotNull
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.platform.JpaImmutable
 import org.hibernate.proxy.HibernateProxy
-import kotlin.time.Clock
 import kotlin.time.Instant
 
 /**
@@ -39,6 +37,7 @@ import kotlin.time.Instant
  * All entities within Elaastix SHOULD inherit from AbstractEntity.
  */
 @MappedSuperclass
+@EntityListeners(EntityListener::class)
 @Suppress("AbstractClassCanBeConcreteClass") // Don't want the class to be constructible.
 abstract class AbstractEntity {
     /**
@@ -68,7 +67,7 @@ abstract class AbstractEntity {
      */
     @NotNull
     var updatedAt: Instant = createdAt
-        @JpaImmutable protected set
+        @JpaImmutable internal set
 
     @Version
     @NotNull
@@ -78,18 +77,6 @@ abstract class AbstractEntity {
     // https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a19
     @Suppress("UnusedPrivateMember")
     private var version: Long? = null
-
-    @PrePersist
-    @PreUpdate
-    // Actually used by JPA.
-    // Spec allow lifecycle callbacks to have any visibility, and only disallows `static` and `final`.
-    // https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#lifecycle-callback-methods
-    @Suppress("UnusedPrivateMember")
-    private fun updateTimestamp() {
-        // Implemented "by hand" to cope with the fact we're not using Java native types.
-        @OptIn(JpaImmutable::class)
-        updatedAt = Clock.System.now()
-    }
 
     /**
      * Checks if the entity is equal to [other].
