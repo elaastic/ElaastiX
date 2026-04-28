@@ -27,40 +27,40 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 val libs = the<VersionCatalogsExtension>().named("libs")
 
 plugins {
-    id("conventions.java")
-    id("conventions.spring-lib")
-    id("conventions.hibernate-lib")
+	id("conventions.java")
+	id("conventions.spring-lib")
+	id("conventions.hibernate-lib")
 }
 
 dependencies {
-    implementation(libs.findLibrary("springdoc").get())
-    developmentOnly(libs.findLibrary("spring.boot.devtools").get())
+	implementation(libs.findLibrary("springdoc").get())
+	developmentOnly(libs.findLibrary("spring.boot.devtools").get())
 }
 
 hibernate {
-    enhancement
+	enhancement
 }
 
 tasks.named<BootJar>("bootJar") {
-    archiveClassifier = "boot"
+	archiveClassifier = "boot"
 }
 
 tasks.register<BootRun>("bootRunDebug") {
-    val task = tasks.getByName<BootRun>("bootRun")
+	val task = tasks.getByName<BootRun>("bootRun")
 
-    mainClass = task.mainClass
-    classpath = task.classpath
-    jvmArgs = task.jvmArgs + listOf(
-        // Enable JMX and RMI. They are very nitpicky about port, map it to the SAME port on the host in Docker!
-        "-Dcom.sun.management.jmxremote",
-        "-Dcom.sun.management.jmxremote.host=0.0.0.0",
-        "-Dcom.sun.management.jmxremote.port=20177",
-        "-Dcom.sun.management.jmxremote.rmi.port=20177",
-        "-Dcom.sun.management.jmxremote.authenticate=false",
-        "-Dcom.sun.management.jmxremote.ssl=false",
-        "-Djava.rmi.server.hostname=localhost",
-        "-Dspring.jmx.enabled=true",
-        "-Dspring.application.admin.enabled=true",
-        "-Dspring.liveBeansView.mbeanDomain",
-    )
+	mainClass = task.mainClass
+	classpath = task.classpath
+	jvmArgs = task.jvmArgs + listOf(
+		// Enable JMX and RMI. They are very nitpicky about port, map it to the SAME port on the host in Docker!
+		"-Dcom.sun.management.jmxremote",
+		"-Dcom.sun.management.jmxremote.host=0.0.0.0",
+		"-Dcom.sun.management.jmxremote.port=20177",
+		"-Dcom.sun.management.jmxremote.rmi.port=20177",
+		"-Dcom.sun.management.jmxremote.authenticate=false",
+		"-Dcom.sun.management.jmxremote.ssl=false",
+		"-Djava.rmi.server.hostname=localhost",
+		"-Dspring.jmx.enabled=true",
+		"-Dspring.application.admin.enabled=true",
+		"-Dspring.liveBeansView.mbeanDomain",
+	)
 }

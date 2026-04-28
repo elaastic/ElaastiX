@@ -26,21 +26,21 @@ package org.elaastix.mm.activity
  * @see AbsoluteGrade
  */
 interface AbsoluteGradable {
-    /** The absolute grade given to the object. */
-    val absoluteGrade: AbsoluteGrade
+	/** The absolute grade given to the object. */
+	val absoluteGrade: AbsoluteGrade
 
-    /** Grades supported by absolute notation. */
-    enum class AbsoluteGrade {
-        /** Failing grade (e.g. wrong answer on a question). If only partially failing, consider using [PARTIAL] */
-        FAILED,
+	/** Grades supported by absolute notation. */
+	enum class AbsoluteGrade {
+		/** Failing grade (e.g. wrong answer on a question). If only partially failing, consider using [PARTIAL] */
+		FAILED,
 
-        /** Passing grade (e.g. correct answer on a question). If only partially passing, consider using [PARTIAL] */
-        PASS,
+		/** Passing grade (e.g. correct answer on a question). If only partially passing, consider using [PARTIAL] */
+		PASS,
 
-        /** Partially passing grade (e.g. one correct and one incorrect choices for a MCQ). */
-        PARTIAL,
+		/** Partially passing grade (e.g. one correct and one incorrect choices for a MCQ). */
+		PARTIAL,
 
-        /** Virtual grade used in situations where grading is not the intent (e.g. using a question as a poll). */
-        NEUTRAL,
-    }
+		/** Virtual grade used in situations where grading is not the intent (e.g. using a question as a poll). */
+		NEUTRAL,
+	}
 }

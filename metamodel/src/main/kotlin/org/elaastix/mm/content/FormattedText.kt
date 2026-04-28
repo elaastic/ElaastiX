@@ -40,31 +40,31 @@ import kotlinx.serialization.json.JsonPrimitive
  */
 @Serializable(with = FormattedTextSerializer::class)
 interface FormattedText : FormattedContent {
-    /**
-     * Losslessly convert a formatted text to a String.
-     *
-     * Type information (the kind of formatted text) is not encoded; it is up to the callee to perform any tagging
-     * deemed appropriate.
-     */
-    override fun toString(): String
+	/**
+	 * Losslessly convert a formatted text to a String.
+	 *
+	 * Type information (the kind of formatted text) is not encoded; it is up to the callee to perform any tagging
+	 * deemed appropriate.
+	 */
+	override fun toString(): String
 
-    override fun toJson(): JsonElement = JsonPrimitive(toString())
+	override fun toJson(): JsonElement = JsonPrimitive(toString())
 
-    /** Factory that'll be used by the JPA mapper. */
-    interface Factory : FormattedContent.Factory {
-        override fun fromJson(json: JsonElement): FormattedText {
-            require(json is JsonPrimitive && json.isString) {
-                "Expected a JSON string, got " +
-                    when (json) {
-                        is JsonPrimitive -> json.content
-                        else -> json::class.simpleName
-                    }
-            }
+	/** Factory that'll be used by the JPA mapper. */
+	interface Factory : FormattedContent.Factory {
+		override fun fromJson(json: JsonElement): FormattedText {
+			require(json is JsonPrimitive && json.isString) {
+				"Expected a JSON string, got " +
+					when (json) {
+						is JsonPrimitive -> json.content
+						else -> json::class.simpleName
+					}
+			}
 
-            return fromString(json.content)
-        }
+			return fromString(json.content)
+		}
 
-        /** Constructs an instance of the content from the stored string. */
-        fun fromString(string: String): FormattedText
-    }
+		/** Constructs an instance of the content from the stored string. */
+		fun fromString(string: String): FormattedText
+	}
 }

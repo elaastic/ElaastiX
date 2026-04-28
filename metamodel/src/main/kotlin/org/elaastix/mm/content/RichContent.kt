@@ -40,12 +40,12 @@ import kotlinx.serialization.json.JsonElement
  */
 @Serializable(with = RichContentSerializer::class)
 interface RichContent {
-    /** Transforms the content into a JSON element that'll be saved to the database. */
-    fun toJson(): JsonElement
+	/** Transforms the content into a JSON element that'll be saved to the database. */
+	fun toJson(): JsonElement
 
-    /** Factory that'll be used by the JPA mapper. */
-    interface Factory {
-        /** Constructs an instance of the content from the stored JSON element. */
-        fun fromJson(json: JsonElement): RichContent
-    }
+	/** Factory that'll be used by the JPA mapper. */
+	interface Factory {
+		/** Constructs an instance of the content from the stored JSON element. */
+		fun fromJson(json: JsonElement): RichContent
+	}
 }

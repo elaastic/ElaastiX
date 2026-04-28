@@ -26,54 +26,54 @@ version = project.findProperty("VERSION") ?: "0.0.0-SNAPSHOT"
 val revision = project.findProperty("REVISION") ?: ""
 
 plugins {
-    id("java")
+	id("java")
 }
 
 java {
-    val jdkVersion = libs.findVersion("jdk").get().requiredVersion
+	val jdkVersion = libs.findVersion("jdk").get().requiredVersion
 
-    toolchain {
-        languageVersion.set(
-            JavaLanguageVersion.of(jdkVersion),
-        )
-    }
+	toolchain {
+		languageVersion.set(
+			JavaLanguageVersion.of(jdkVersion),
+		)
+	}
 
-    sourceCompatibility = JavaVersion.toVersion(jdkVersion)
-    targetCompatibility = JavaVersion.toVersion(jdkVersion)
+	sourceCompatibility = JavaVersion.toVersion(jdkVersion)
+	targetCompatibility = JavaVersion.toVersion(jdkVersion)
 }
 
 tasks.withType<Jar> {
-    metaInf {
-        from("${rootProject.projectDir}/LICENSE")
-    }
+	metaInf {
+		from("${rootProject.projectDir}/LICENSE")
+	}
 }
 
 tasks.jar {
-    manifest {
-        attributes(
-            mapOf(
-                "Implementation-Title" to project.name,
-                "Implementation-Version" to project.version,
-                "Implementation-Vendor" to "IRIT TALENT team",
-                "Bundle-License" to "AGPL-3.0-or-later",
-                "Git-Revision" to revision,
-            ),
-        )
-    }
+	manifest {
+		attributes(
+			mapOf(
+				"Implementation-Title" to project.name,
+				"Implementation-Version" to project.version,
+				"Implementation-Vendor" to "IRIT TALENT team",
+				"Bundle-License" to "AGPL-3.0-or-later",
+				"Git-Revision" to revision,
+			),
+		)
+	}
 }
 
 tasks.register("resolveDependencies") {
-    doNotTrackState("Task must always be re-run to ensure all dependencies are downloaded locally")
-    group = "build"
+	doNotTrackState("Task must always be re-run to ensure all dependencies are downloaded locally")
+	group = "build"
 
-    configurations.compileClasspath.configure { resolve() }
-    configurations.runtimeClasspath.configure { resolve() }
+	configurations.compileClasspath.configure { resolve() }
+	configurations.runtimeClasspath.configure { resolve() }
 }
 
 tasks.register("resolveTestDependencies") {
-    doNotTrackState("Task must always be re-run to ensure all dependencies are downloaded locally")
-    group = "build"
+	doNotTrackState("Task must always be re-run to ensure all dependencies are downloaded locally")
+	group = "build"
 
-    configurations.testCompileClasspath.configure { resolve() }
-    configurations.testRuntimeClasspath.configure { resolve() }
+	configurations.testCompileClasspath.configure { resolve() }
+	configurations.testRuntimeClasspath.configure { resolve() }
 }

@@ -26,40 +26,40 @@ import org.springframework.boot.gradle.plugin.SpringBootPlugin
 val libs = the<VersionCatalogsExtension>().named("libs")
 
 plugins {
-    `jvm-test-suite`
-    id("conventions.java")
-    id("org.springframework.boot")
+	`jvm-test-suite`
+	id("conventions.java")
+	id("org.springframework.boot")
 
-    kotlin("plugin.jpa")
-    kotlin("plugin.spring")
+	kotlin("plugin.jpa")
+	kotlin("plugin.spring")
 }
 
 dependencies {
-    implementation(platform(SpringBootPlugin.BOM_COORDINATES))
-    implementation(libs.findLibrary("kotlin.reflect").get())
+	implementation(platform(SpringBootPlugin.BOM_COORDINATES))
+	implementation(libs.findLibrary("kotlin.reflect").get())
 }
 
 @Suppress("UnstableApiUsage")
 testing {
-    suites {
-        // TODO: Separate unit tests and integration tests (for Kover reporting)
-        // val integrationTest by registering(JvmTestSuite::class) {
-        val test by existing(JvmTestSuite::class) {
-            dependencies {
-                implementation(libs.findLibrary("spring.boot.test").get())
-            }
+	suites {
+		// TODO: Separate unit tests and integration tests (for Kover reporting)
+		// val integrationTest by registering(JvmTestSuite::class) {
+		val test by existing(JvmTestSuite::class) {
+			dependencies {
+				implementation(libs.findLibrary("spring.boot.test").get())
+			}
 
-            targets.configureEach {
-                testTask.configure {
-                    jvmArgs = listOf("-Dspring.profiles.active=develop,testing")
-                }
-            }
-        }
-    }
+			targets.configureEach {
+				testTask.configure {
+					jvmArgs = listOf("-Dspring.profiles.active=develop,testing")
+				}
+			}
+		}
+	}
 }
 
 springBoot {
-    buildInfo {
-        excludes = setOf("time")
-    }
+	buildInfo {
+		excludes = setOf("time")
+	}
 }

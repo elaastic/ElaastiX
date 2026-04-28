@@ -23,27 +23,27 @@ rootProject.name = "ElaastiX"
 
 includeBuild("build-logic")
 include(
-    "commons",
-    "metamodel",
-    "server",
-    "frontend",
+	"commons",
+	"metamodel",
+	"server",
+	"frontend",
 )
 
 pluginManagement {
-    repositories {
-        gradlePluginPortal()
-    }
+	repositories {
+		gradlePluginPortal()
+	}
 }
 
 dependencyResolutionManagement {
-    repositories {
-        mavenCentral()
+	repositories {
+		mavenCentral()
 
-        maven {
-            url = uri("https://jitpack.io")
-            content {
-                includeGroupByRegex("com\\.github\\..*")
-            }
-        }
-    }
+		maven {
+			url = uri("https://jitpack.io")
+			content {
+				includeGroupByRegex("com\\.github\\..*")
+			}
+		}
+	}
 }

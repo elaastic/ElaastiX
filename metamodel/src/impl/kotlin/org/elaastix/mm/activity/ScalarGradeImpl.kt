@@ -25,25 +25,25 @@ import jakarta.persistence.Embeddable
 @Embeddable
 @PublishedApi
 @Suppress(
-    "RedundantModalityModifier", // all-open wants to make it open; explicit final is needed for Java Record compat.
-    "JpaEntityWithValAttributesInspection", // https://youtrack.jetbrains.com/issue/KTIJ-37754
+	"RedundantModalityModifier", // all-open wants to make it open; explicit final is needed for Java Record compat.
+	"JpaEntityWithValAttributesInspection", // https://youtrack.jetbrains.com/issue/KTIJ-37754
 )
 internal final data class ScalarGradeImpl(
-    // Validation using Jakarta is too annoying (cross-field validation boilerplate is HUGE).
-    // Validated in the form of a smart constructor instead. Much less verbose, will still do the trick :)
-    override val grade: Double,
-    override val max: Double,
+	// Validation using Jakarta is too annoying (cross-field validation boilerplate is HUGE).
+	// Validated in the form of a smart constructor instead. Much less verbose, will still do the trick :)
+	override val grade: Double,
+	override val max: Double,
 ) : ScalarGradable.ScalarGrade
 
 /**
  * Factory to create an instance of [ScalarGradable.ScalarGrade].
  */
 fun ScalarGrade(grade: Double, max: Double): ScalarGradable.ScalarGrade {
-    require(grade >= 0) { "Grade must be positive or zero" }
-    require(max > 0) { "Maximum value of the grade must be strictly positive" }
-    require(grade <= max) { "Grade must be less than or equal to the maximum grade" }
+	require(grade >= 0) { "Grade must be positive or zero" }
+	require(max > 0) { "Maximum value of the grade must be strictly positive" }
+	require(grade <= max) { "Grade must be less than or equal to the maximum grade" }
 
-    return ScalarGradeImpl(grade, max)
+	return ScalarGradeImpl(grade, max)
 }
 
 // Implementation guidance if trying to bypass the invariant check:

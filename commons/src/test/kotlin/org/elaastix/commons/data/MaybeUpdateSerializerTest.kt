@@ -28,81 +28,81 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
 class MaybeUpdateSerializerTest {
-    companion object {
-        @Serializable
-        data class TestObj(
-            val prop1: String?,
-            val prop2: MaybeUpdate<String> = MaybeUpdate.Keep,
-            val prop3: MaybeUpdate<String?> = MaybeUpdate.Keep,
-        )
+	companion object {
+		@Serializable
+		data class TestObj(
+			val prop1: String?,
+			val prop2: MaybeUpdate<String> = MaybeUpdate.Keep,
+			val prop3: MaybeUpdate<String?> = MaybeUpdate.Keep,
+		)
 
-        @Serializable
-        data class BadTestObj(val prop: MaybeUpdate<Int>)
-    }
+		@Serializable
+		data class BadTestObj(val prop: MaybeUpdate<Int>)
+	}
 
-    @Nested
-    inner class Serialization {
-        private inline infix fun <reified T> T.serializesTo(json: String) {
-            assertThat(Json.encodeToString<T>(this)).isEqualTo(json)
-        }
+	@Nested
+	inner class Serialization {
+		private inline infix fun <reified T> T.serializesTo(json: String) {
+			assertThat(Json.encodeToString<T>(this)).isEqualTo(json)
+		}
 
-        @Test
-        fun `serializes objects with only 'normal' props specified`() =
-            TestObj(prop1 = "meow") serializesTo """{"prop1":"meow"}"""
+		@Test
+		fun `serializes objects with only 'normal' props specified`() =
+			TestObj(prop1 = "meow") serializesTo """{"prop1":"meow"}"""
 
-        @Test
-        fun `serializes objects with all props specified`() =
-            TestObj(prop1 = "meow", prop2 = "meow".asUpdateOp(), prop3 = null.asUpdateOp()) serializesTo
-                """{"prop1":"meow","prop2":"meow","prop3":null}"""
+		@Test
+		fun `serializes objects with all props specified`() =
+			TestObj(prop1 = "meow", prop2 = "meow".asUpdateOp(), prop3 = null.asUpdateOp()) serializesTo
+				"""{"prop1":"meow","prop2":"meow","prop3":null}"""
 
-        @Test
-        fun `serializes objects with a single optional props specified`() =
-            TestObj(prop1 = "meow", prop2 = "meow".asUpdateOp()) serializesTo
-                """{"prop1":"meow","prop2":"meow"}"""
+		@Test
+		fun `serializes objects with a single optional props specified`() =
+			TestObj(prop1 = "meow", prop2 = "meow".asUpdateOp()) serializesTo
+				"""{"prop1":"meow","prop2":"meow"}"""
 
-        @Test
-        fun `serializes an object violating MaybeUpdate default value invariant if a value is set`() =
-            BadTestObj(MaybeUpdate.Update(16)) serializesTo
-                """{"prop":16}"""
+		@Test
+		fun `serializes an object violating MaybeUpdate default value invariant if a value is set`() =
+			BadTestObj(MaybeUpdate.Update(16)) serializesTo
+				"""{"prop":16}"""
 
-        @Test
-        fun `fails to serialize an object violating MaybeUpdate default value invariant`() {
-            assertThrows<SerializationException> { Json.encodeToString(BadTestObj(MaybeUpdate.Keep)) }
-        }
-    }
+		@Test
+		fun `fails to serialize an object violating MaybeUpdate default value invariant`() {
+			assertThrows<SerializationException> { Json.encodeToString(BadTestObj(MaybeUpdate.Keep)) }
+		}
+	}
 
-    @Nested
-    inner class Deserialization {
-        private inline infix fun <reified T> String.deserializesTo(obj: T) {
-            assertThat(Json.decodeFromString<T>(this)).isEqualTo(obj)
-        }
+	@Nested
+	inner class Deserialization {
+		private inline infix fun <reified T> String.deserializesTo(obj: T) {
+			assertThat(Json.decodeFromString<T>(this)).isEqualTo(obj)
+		}
 
-        @Test
-        fun `deserialises objects with only 'normal' props specified`() =
-            """{"prop1":"meow"}""" deserializesTo TestObj(prop1 = "meow")
+		@Test
+		fun `deserialises objects with only 'normal' props specified`() =
+			"""{"prop1":"meow"}""" deserializesTo TestObj(prop1 = "meow")
 
-        @Test
-        fun `deserialises objects with all props specified`() =
-            """{"prop1":"meow","prop2":"meow","prop3":null}""" deserializesTo
-                TestObj(
-                    prop1 = "meow",
-                    prop2 = "meow".asUpdateOp(),
-                    prop3 = null.asUpdateOp(),
-                )
+		@Test
+		fun `deserialises objects with all props specified`() =
+			"""{"prop1":"meow","prop2":"meow","prop3":null}""" deserializesTo
+				TestObj(
+					prop1 = "meow",
+					prop2 = "meow".asUpdateOp(),
+					prop3 = null.asUpdateOp(),
+				)
 
-        @Test
-        fun `deserialises objects with a single optional props specified`() =
-            """{"prop1":"meow","prop2":"meow"}""" deserializesTo
-                TestObj(
-                    prop1 = "meow",
-                    prop2 = "meow".asUpdateOp(),
-                )
+		@Test
+		fun `deserialises objects with a single optional props specified`() =
+			"""{"prop1":"meow","prop2":"meow"}""" deserializesTo
+				TestObj(
+					prop1 = "meow",
+					prop2 = "meow".asUpdateOp(),
+				)
 
-        @Test
-        fun `rejects null values set in non-nullable optional values`() {
-            assertThrows<SerializationException> {
-                Json.decodeFromString<TestObj>("""{"prop1":"meow","prop2":null}""")
-            }
-        }
-    }
+		@Test
+		fun `rejects null values set in non-nullable optional values`() {
+			assertThrows<SerializationException> {
+				Json.decodeFromString<TestObj>("""{"prop1":"meow","prop2":null}""")
+			}
+		}
+	}
 }

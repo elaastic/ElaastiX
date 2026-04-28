@@ -40,34 +40,34 @@ import kotlin.system.exitProcess
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class OpenApiCommandLineRunner(
-    @Value($$"${generate-openapi:#{null}}")
-    private val generationPath: String?,
-    private val openApiResource: OpenApiResource,
+	@Value($$"${generate-openapi:#{null}}")
+	private val generationPath: String?,
+	private val openApiResource: OpenApiResource,
 ) : CommandLineRunner {
-    override fun run(vararg args: String) {
-        if (generationPath != null) {
-            val logger = LoggerFactory.getLogger(this::class.java)
+	override fun run(vararg args: String) {
+		if (generationPath != null) {
+			val logger = LoggerFactory.getLogger(this::class.java)
 
-            logger.info("Generating OpenAPI specification. The server will exit once this is complete.")
+			logger.info("Generating OpenAPI specification. The server will exit once this is complete.")
 
-            // It's protected. And putting together a fake HttpServletRequest is worse. Deal with it. >:(
-            val clazz = OpenApiResource::class.java.superclass
-            val getSpec = clazz.getDeclaredMethod("getOpenApi", String::class.java, Locale::class.java)
-            getSpec.trySetAccessible()
+			// It's protected. And putting together a fake HttpServletRequest is worse. Deal with it. >:(
+			val clazz = OpenApiResource::class.java.superclass
+			val getSpec = clazz.getDeclaredMethod("getOpenApi", String::class.java, Locale::class.java)
+			getSpec.trySetAccessible()
 
-            val writeJsonValue = clazz.getDeclaredMethod("writeJsonValue", OpenAPI::class.java)
-            writeJsonValue.trySetAccessible()
+			val writeJsonValue = clazz.getDeclaredMethod("writeJsonValue", OpenAPI::class.java)
+			writeJsonValue.trySetAccessible()
 
-            val spec = getSpec.invoke(openApiResource, "", Locale.UK) as OpenAPI
-            val json = writeJsonValue.invoke(openApiResource, spec) as ByteArray
+			val spec = getSpec.invoke(openApiResource, "", Locale.UK) as OpenAPI
+			val json = writeJsonValue.invoke(openApiResource, spec) as ByteArray
 
-            val file = File(generationPath)
-            val os = file.outputStream()
-            os.write(json)
-            os.close()
+			val file = File(generationPath)
+			val os = file.outputStream()
+			os.write(json)
+			os.close()
 
-            logger.info("Specification written to ${file.absolutePath}. Bye.")
-            exitProcess(0)
-        }
-    }
+			logger.info("Specification written to ${file.absolutePath}. Bye.")
+			exitProcess(0)
+		}
+	}
 }

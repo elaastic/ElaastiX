@@ -34,15 +34,15 @@ import org.elaastix.mm.users.Cohort
 @Entity
 @Table(name = "cohorts")
 class CohortEntity(
-    @NotNull
-    @NotBlank
-    @Size(min = 2, max = 64)
-    override var name: String,
+	@NotNull
+	@NotBlank
+	@Size(min = 2, max = 64)
+	override var name: String,
 
-    @ManyToMany
-    override var members: MutableSet<UserEntity>,
+	@ManyToMany
+	override var members: MutableSet<UserEntity>,
 
-    @ManyToMany
-    override var administrators: MutableSet<UserEntity>,
+	@ManyToMany
+	override var administrators: MutableSet<UserEntity>,
 ) : AbstractEntity(),
-    Cohort
+	Cohort

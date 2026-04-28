@@ -33,21 +33,21 @@ import java.lang.reflect.Type
  */
 @Component
 class PropertyCustomiser : PropertyCustomizer {
-    override fun customize(property: Schema<*>?, aType: AnnotatedType) =
-        when (val t = aType.type) {
-            is SimpleType -> customisePlainType(property, t.rawClass)
-            else -> customisePlainType(property, t)
-        }
+	override fun customize(property: Schema<*>?, aType: AnnotatedType) =
+		when (val t = aType.type) {
+			is SimpleType -> customisePlainType(property, t.rawClass)
+			else -> customisePlainType(property, t)
+		}
 
-    private fun customisePlainType(property: Schema<*>?, typ: Type) =
-        when (typ) {
-            Uuid::class.java ->
-                StringSchema().apply {
-                    pattern = "[a-zA-Z0-9]{25}"
-                    example = property?.example ?: "2t2razan0q9kzr7gr55oi54j"
-                    description = property?.description
-                }
+	private fun customisePlainType(property: Schema<*>?, typ: Type) =
+		when (typ) {
+			Uuid::class.java ->
+				StringSchema().apply {
+					pattern = "[a-zA-Z0-9]{25}"
+					example = property?.example ?: "2t2razan0q9kzr7gr55oi54j"
+					description = property?.description
+				}
 
-            else -> property
-        }
+			else -> property
+		}
 }

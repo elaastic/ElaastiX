@@ -18,12 +18,12 @@
  */
 
 plugins {
-    id("conventions.idea")
+	id("conventions.idea")
 }
 
 idea {
-    module {
-        excludeDirs.add(file(".nuxt"))
-        excludeDirs.add(file(".output"))
-    }
+	module {
+		excludeDirs.add(file(".nuxt"))
+		excludeDirs.add(file(".output"))
+	}
 }

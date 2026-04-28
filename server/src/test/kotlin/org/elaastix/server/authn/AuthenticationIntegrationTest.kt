@@ -29,24 +29,24 @@ import org.springframework.test.web.servlet.get
 @SpringBootTest
 @AutoConfigureMockMvc
 class AuthenticationIntegrationTest {
-    @Autowired
-    lateinit var mockMvc: MockMvc
+	@Autowired
+	lateinit var mockMvc: MockMvc
 
-    @Test
-    fun `accessing an endpoint without authenticating yields 401`() {
-        // TODO: improve :)
-        mockMvc.get("/").andExpect { status { isUnauthorized() } }
-    }
+	@Test
+	fun `accessing an endpoint without authenticating yields 401`() {
+		// TODO: improve :)
+		mockMvc.get("/").andExpect { status { isUnauthorized() } }
+	}
 
-    @Test
-    fun `accessing an endpoint with an invalid authentication token yields 401`() {
-        // TODO: improve :)
-        mockMvc
-            .get("/") {
-                headers {
-                    set("Authorization", "pls gib access trust")
-                }
-            }
-            .andExpect { status { isUnauthorized() } }
-    }
+	@Test
+	fun `accessing an endpoint with an invalid authentication token yields 401`() {
+		// TODO: improve :)
+		mockMvc
+			.get("/") {
+				headers {
+					set("Authorization", "pls gib access trust")
+				}
+			}
+			.andExpect { status { isUnauthorized() } }
+	}
 }

@@ -30,20 +30,20 @@ import org.springframework.boot.runApplication
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 @OpenAPIDefinition(
-    info = Info(
-        title = "ElaastiX platform API documentation",
-        description = "API documentation for the ElaastiX platform",
-        // termsOfService = ""
-        contact = Contact(
-            name = "Franck Silvestre",
-            email = "franck.silvestre@irit.fr",
-        ),
-        license = License(
-            name = "GNU Affero General Public License 3.0 or later",
-            url = "https://github.com/elaastic/elaastix/blob/main/LICENSE",
-            identifier = "AGPL-3.0-or-later",
-        ),
-    ),
+	info = Info(
+		title = "ElaastiX platform API documentation",
+		description = "API documentation for the ElaastiX platform",
+		// termsOfService = ""
+		contact = Contact(
+			name = "Franck Silvestre",
+			email = "franck.silvestre@irit.fr",
+		),
+		license = License(
+			name = "GNU Affero General Public License 3.0 or later",
+			url = "https://github.com/elaastic/elaastix/blob/main/LICENSE",
+			identifier = "AGPL-3.0-or-later",
+		),
+	),
 )
 @SpringBootApplication
 @ConfigurationPropertiesScan
@@ -55,5 +55,5 @@ class ElaastixServerApplication
 
 @Suppress("UndocumentedPublicFunction", "SpreadOperator")
 fun main(args: Array<String>) {
-    runApplication<ElaastixServerApplication>(*args)
+	runApplication<ElaastixServerApplication>(*args)
 }

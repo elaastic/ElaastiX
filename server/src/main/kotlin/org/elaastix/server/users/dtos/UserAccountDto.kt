@@ -27,6 +27,6 @@ import org.elaastix.commons.data.Uuid
  */
 @Serializable
 data class UserAccountDto(
-    /** The user's unique ID. */
-    val id: Uuid,
+	/** The user's unique ID. */
+	val id: Uuid,
 )

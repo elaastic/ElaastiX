@@ -40,71 +40,71 @@ import kotlin.time.Instant
 @EntityListeners(EntityListener::class)
 @Suppress("AbstractClassCanBeConcreteClass") // Don't want the class to be constructible.
 abstract class AbstractEntity {
-    /**
-     * ID of the entity. The ID is a UUID v7 as specified by [RFC 9562](https://www.rfc-editor.org/rfc/rfc9562.html).
-     */
-    @Id
-    var id: Uuid = Uuid.generateV7()
-        @JpaImmutable set
+	/**
+	 * ID of the entity. The ID is a UUID v7 as specified by [RFC 9562](https://www.rfc-editor.org/rfc/rfc9562.html).
+	 */
+	@Id
+	var id: Uuid = Uuid.generateV7()
+		@JpaImmutable set
 
-    /**
-     * Date of creation of the entity (millisecond precision).
-     * Derived from the [id], as UUID v7 encodes the creation timestamp.
-     *
-     * For querying the creation timestamp from the database, please refer to Postgres 18's
-     * [`uuid_extract_timestamp`](https://www.postgresql.org/docs/18/functions-uuid.html#FUNC_UUID_EXTRACT_TABLE).
-     */
-    @delegate:Transient
-    val createdAt by lazy {
-        @Suppress("MagicNumber")
-        val timestamp = (id.toLongs { msb, _ -> msb ushr 16 }) and 0xFFFFFFFFFFFFL
-        Instant.fromEpochMilliseconds(timestamp)
-    }
+	/**
+	 * Date of creation of the entity (millisecond precision).
+	 * Derived from the [id], as UUID v7 encodes the creation timestamp.
+	 *
+	 * For querying the creation timestamp from the database, please refer to Postgres 18's
+	 * [`uuid_extract_timestamp`](https://www.postgresql.org/docs/18/functions-uuid.html#FUNC_UUID_EXTRACT_TABLE).
+	 */
+	@delegate:Transient
+	val createdAt by lazy {
+		@Suppress("MagicNumber")
+		val timestamp = (id.toLongs { msb, _ -> msb ushr 16 }) and 0xFFFFFFFFFFFFL
+		Instant.fromEpochMilliseconds(timestamp)
+	}
 
-    /**
-     * Date of last modification of the entity (millisecond precision).
-     * Equal to the creation timestamp for newly created entities.
-     */
-    @NotNull
-    var updatedAt: Instant = createdAt
-        @JpaImmutable internal set
+	/**
+	 * Date of last modification of the entity (millisecond precision).
+	 * Equal to the creation timestamp for newly created entities.
+	 */
+	@NotNull
+	var updatedAt: Instant = createdAt
+		@JpaImmutable internal set
 
-    @Version
-    @NotNull
-    // Actually used by JPA.
-    // Spec allows use of any visibility for backing field, and we're using field access,
-    // meaning there is no concern related to getter/setter visibility that's applicable.
-    // https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a19
-    @Suppress("UnusedPrivateMember")
-    private var version: Long? = null
+	@Version
+	@NotNull
+	// Actually used by JPA.
+	// Spec allows use of any visibility for backing field, and we're using field access,
+	// meaning there is no concern related to getter/setter visibility that's applicable.
+	// https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a19
+	@Suppress("UnusedPrivateMember")
+	private var version: Long? = null
 
-    /**
-     * Checks if the entity is equal to [other].
-     * Equality is based on the entity's class and identifier.
-     *
-     * Details of the implementation have been researched by the JPA Buddy team (now part of the JetBrains ecosystem).
-     * It is specifically designed to be aware of Hibernate shenanigans, to avoid at all costs triggering side effects.
-     */
-    final override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other == null) return false
-        val oEffectiveClass = other.hibernateAwareJavaClass
-        val thisEffectiveClass = this.hibernateAwareJavaClass
-        if (thisEffectiveClass != oEffectiveClass) return false
+	/**
+	 * Checks if the entity is equal to [other].
+	 * Equality is based on the entity's class and identifier.
+	 *
+	 * Details of the implementation have been researched by the JPA Buddy team (now part of the JetBrains ecosystem).
+	 * It is specifically designed to be aware of Hibernate shenanigans, to avoid at all costs triggering side effects.
+	 */
+	final override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (other == null) return false
+		val oEffectiveClass = other.hibernateAwareJavaClass
+		val thisEffectiveClass = this.hibernateAwareJavaClass
+		if (thisEffectiveClass != oEffectiveClass) return false
 
-        // SAFETY: Cast is safe; verified the class type.
-        return id == (other as AbstractEntity).id
-    }
+		// SAFETY: Cast is safe; verified the class type.
+		return id == (other as AbstractEntity).id
+	}
 
-    /**
-     * Computes the hash for the entity.
-     *
-     * The hash is solely determined by the ID, which is safe as we use globally unique IDs,
-     * and allocate it immediately upon entity creation ensuring stability of the result hash.
-     */
-    final override fun hashCode(): Int = id.hashCode()
+	/**
+	 * Computes the hash for the entity.
+	 *
+	 * The hash is solely determined by the ID, which is safe as we use globally unique IDs,
+	 * and allocate it immediately upon entity creation ensuring stability of the result hash.
+	 */
+	final override fun hashCode(): Int = id.hashCode()
 
-    @get:Transient
-    private val Any.hibernateAwareJavaClass: Class<*>
-        get() = if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass else this.javaClass
+	@get:Transient
+	private val Any.hibernateAwareJavaClass: Class<*>
+		get() = if (this is HibernateProxy) this.hibernateLazyInitializer.persistentClass else this.javaClass
 }

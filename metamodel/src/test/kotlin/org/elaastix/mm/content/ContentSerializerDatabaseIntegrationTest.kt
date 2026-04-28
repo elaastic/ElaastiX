@@ -51,117 +51,117 @@ import org.testcontainers.postgresql.PostgreSQLContainer
 @Import(ContentSerializerDatabaseIntegrationTest.TransactionUtil::class, ElaastixHibernateAutoConfiguration::class)
 @Transactional(propagation = Propagation.NEVER)
 class ContentSerializerDatabaseIntegrationTest {
-    companion object {
-        @JvmField
-        @Container
-        @ServiceConnection
-        val postgres = PostgreSQLContainer("postgres:18-alpine")
+	companion object {
+		@JvmField
+		@Container
+		@ServiceConnection
+		val postgres = PostgreSQLContainer("postgres:18-alpine")
 
-        class TestRichContent(val data: Map<String, JsonElement>) : RichContent {
-            override fun toJson(): JsonElement = JsonObject(data)
+		class TestRichContent(val data: Map<String, JsonElement>) : RichContent {
+			override fun toJson(): JsonElement = JsonObject(data)
 
-            companion object Factory : RichContent.Factory {
-                override fun fromJson(json: JsonElement): RichContent {
-                    require(json is JsonObject) {
-                        "Invalid JsonElement (expected JsonObject got ${json::class.simpleName})"
-                    }
+			companion object Factory : RichContent.Factory {
+				override fun fromJson(json: JsonElement): RichContent {
+					require(json is JsonObject) {
+						"Invalid JsonElement (expected JsonObject got ${json::class.simpleName})"
+					}
 
-                    return TestRichContent(json)
-                }
-            }
-        }
-    }
+					return TestRichContent(json)
+				}
+			}
+		}
+	}
 
-    @Autowired
-    lateinit var em: EntityManager
+	@Autowired
+	lateinit var em: EntityManager
 
-    @Autowired
-    lateinit var tu: TransactionUtil
+	@Autowired
+	lateinit var tu: TransactionUtil
 
-    @Test
-    fun `saves to the postgres server via JPA successfully`() {
-        val data = mapOf(
-            "some" to JsonPrimitive("data"),
-            "number" to JsonPrimitive(0),
-            "bool" to JsonPrimitive(true),
-            "obj" to JsonObject(
-                mapOf(
-                    "wow" to JsonPrimitive("meow"),
-                ),
-            ),
-        )
+	@Test
+	fun `saves to the postgres server via JPA successfully`() {
+		val data = mapOf(
+			"some" to JsonPrimitive("data"),
+			"number" to JsonPrimitive(0),
+			"bool" to JsonPrimitive(true),
+			"obj" to JsonObject(
+				mapOf(
+					"wow" to JsonPrimitive("meow"),
+				),
+			),
+		)
 
-        // Sanity check: DDL is correct
-        val typ = assertDoesNotThrow {
-            tu.runWithTransaction {
-                em.createNativeQuery(
-                    "SELECT data_type FROM information_schema.columns " +
-                        "WHERE table_name = 'test_entity' AND column_name = 'content'",
-                ).singleResult
-            }
-        }
+		// Sanity check: DDL is correct
+		val typ = assertDoesNotThrow {
+			tu.runWithTransaction {
+				em.createNativeQuery(
+					"SELECT data_type FROM information_schema.columns " +
+						"WHERE table_name = 'test_entity' AND column_name = 'content'",
+				).singleResult
+			}
+		}
 
-        assertThat(typ)
-            .isNotNull
-            .isInstanceOf(String::class.java)
-            .isEqualTo("jsonb")
+		assertThat(typ)
+			.isNotNull
+			.isInstanceOf(String::class.java)
+			.isEqualTo("jsonb")
 
-        // Validate that saving the entity works
+		// Validate that saving the entity works
 
-        val id = assertDoesNotThrow {
-            tu.runWithTransaction {
-                val entity = TestEntity(content = TestRichContent(data))
-                em.persist(entity)
+		val id = assertDoesNotThrow {
+			tu.runWithTransaction {
+				val entity = TestEntity(content = TestRichContent(data))
+				em.persist(entity)
 
-                em.entityManagerFactory.persistenceUnitUtil.getIdentifier(entity) as? Long
-            }
-        }.also { assertThat(it).isNotNull }!!
+				em.entityManagerFactory.persistenceUnitUtil.getIdentifier(entity) as? Long
+			}
+		}.also { assertThat(it).isNotNull }!!
 
-        // Validate that retrieving the entity works
+		// Validate that retrieving the entity works
 
-        val entity = assertDoesNotThrow {
-            tu.runWithTransaction {
-                em.find(TestEntity::class.java, id)
-            }
-        }.also { assertThat(it).isNotNull }!!
-        val content = entity.content as TestRichContent
-        assertThat(content.data).isEqualTo(data)
+		val entity = assertDoesNotThrow {
+			tu.runWithTransaction {
+				em.find(TestEntity::class.java, id)
+			}
+		}.also { assertThat(it).isNotNull }!!
+		val content = entity.content as TestRichContent
+		assertThat(content.data).isEqualTo(data)
 
-        // Validate that a native query works as expected
+		// Validate that a native query works as expected
 
-        val res = assertDoesNotThrow {
-            tu.runWithTransaction {
-                em.createNativeQuery("SELECT content->'d'->'obj'->>'wow' FROM test_entity WHERE id = :id")
-                    .apply { setParameter("id", id) }
-                    .singleResult
-            }
-        }
+		val res = assertDoesNotThrow {
+			tu.runWithTransaction {
+				em.createNativeQuery("SELECT content->'d'->'obj'->>'wow' FROM test_entity WHERE id = :id")
+					.apply { setParameter("id", id) }
+					.singleResult
+			}
+		}
 
-        assertThat(res)
-            .isNotNull
-            .isInstanceOf(String::class.java)
-            .isEqualTo("meow")
-    }
+		assertThat(res)
+			.isNotNull
+			.isInstanceOf(String::class.java)
+			.isEqualTo("meow")
+	}
 
-    @Component
-    class TransactionUtil {
-        @Transactional
-        fun <X> runWithTransaction(f: () -> X): X = f()
-    }
+	@Component
+	class TransactionUtil {
+		@Transactional
+		fun <X> runWithTransaction(f: () -> X): X = f()
+	}
 
-    @Entity
-    @Table(name = "test_entity")
-    class TestEntity(
-        @Id
-        @GeneratedValue(strategy = GenerationType.SEQUENCE)
-        @Suppress("unused")
-        var id: Long? = null,
+	@Entity
+	@Table(name = "test_entity")
+	class TestEntity(
+		@Id
+		@GeneratedValue(strategy = GenerationType.SEQUENCE)
+		@Suppress("unused")
+		var id: Long? = null,
 
-        @JdbcTypeCode(SqlTypes.JSON)
-        var content: RichContent,
-    )
+		@JdbcTypeCode(SqlTypes.JSON)
+		var content: RichContent,
+	)
 
-    @SpringBootConfiguration
-    @AutoConfigurationPackage
-    class Config
+	@SpringBootConfiguration
+	@AutoConfigurationPackage
+	class Config
 }
