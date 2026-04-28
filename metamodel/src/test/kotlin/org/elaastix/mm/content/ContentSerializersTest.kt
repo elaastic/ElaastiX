@@ -36,7 +36,7 @@ class ContentSerializersTest {
 		class TestRichContent(val data: Map<String, JsonElement>) : RichContent {
 			override fun toJson(): JsonElement = JsonObject(data)
 
-			companion object Factory : RichContent.Factory {
+			companion object : RichContent.Factory {
 				override fun fromJson(json: JsonElement): RichContent {
 					require(json is JsonObject) {
 						"Invalid JsonElement (expected JsonObject got ${json::class.simpleName})"
@@ -50,7 +50,7 @@ class ContentSerializersTest {
 		class TestFormattedContent(val data: String) : FormattedContent {
 			override fun toJson(): JsonElement = JsonPrimitive(data)
 
-			companion object Factory : FormattedContent.Factory {
+			companion object : FormattedContent.Factory {
 				override fun fromJson(json: JsonElement): FormattedContent {
 					require(json is JsonPrimitive) {
 						"Invalid JsonElement (expected JsonPrimitive got ${json::class.simpleName})"
@@ -68,9 +68,14 @@ class ContentSerializersTest {
 		class TestFormattedText(val text: String) : FormattedText {
 			override fun toString(): String = text
 
-			companion object Factory : FormattedText.Factory {
+			companion object : FormattedText.Factory {
 				override fun fromString(string: String): FormattedText = TestFormattedText(string)
 			}
+		}
+
+		@Suppress("unused") // Used via reflection
+		class BadNoCompanion(val data: Map<String, JsonElement>) : RichContent {
+			override fun toJson(): JsonElement = JsonObject(data)
 		}
 
 		@Suppress("unused") // Used via reflection
@@ -82,23 +87,9 @@ class ContentSerializersTest {
 		class BadFactoryImpl(val data: Map<String, JsonElement>) : RichContent {
 			override fun toJson(): JsonElement = JsonObject(data)
 
-			companion object Factory
-		}
+			companion object {
 
-		class BadFactoryLangType(val data: Map<String, JsonElement>) : RichContent {
-			override fun toJson(): JsonElement = JsonObject(data)
-
-			@Suppress("unused") // "Used" via reflection
-			class Factory : RichContent.Factory {
-				override fun fromJson(json: JsonElement): RichContent = BadFactoryLangType(emptyMap())
-			}
-		}
-
-		class BadFactoryWrongName(val data: Map<String, JsonElement>) : RichContent {
-			override fun toJson(): JsonElement = JsonObject(data)
-
-			companion object Usine : RichContent.Factory {
-				override fun fromJson(json: JsonElement): RichContent = BadFactoryWrongName(emptyMap())
+				fun fromJson(json: JsonElement): RichContent = BadFactoryImpl(emptyMap())
 			}
 		}
 	}
@@ -158,7 +149,7 @@ class ContentSerializersTest {
 
 	@Test
 	fun `deserialises rich content from a plain JSON object`() {
-		mockkObject(TestRichContent.Factory)
+		mockkObject(TestRichContent.Companion)
 		given { TestRichContent.fromJson(any()) } answers { callOriginal() }
 
 		val result: RichContent = Json.decodeFromString(
@@ -176,7 +167,7 @@ class ContentSerializersTest {
 
 	@Test
 	fun `deserialises formatted content from a plain JSON object`() {
-		mockkObject(TestFormattedContent.Factory)
+		mockkObject(TestFormattedContent.Companion)
 		given { TestFormattedContent.fromJson(any()) } answers { callOriginal() }
 
 		val result: FormattedContent = Json.decodeFromString(
@@ -194,7 +185,7 @@ class ContentSerializersTest {
 
 	@Test
 	fun `deserialises formatted text from a plain JSON object`() {
-		mockkObject(TestFormattedText.Factory)
+		mockkObject(TestFormattedText.Companion)
 		given { TestFormattedText.fromJson(any()) } answers { callOriginal() }
 
 		val result: FormattedText = Json.decodeFromString(
@@ -211,7 +202,17 @@ class ContentSerializersTest {
 	}
 
 	@Test
-	fun `does not deserialises objects without a Factory`() {
+	fun `does not deserialises objects without a companion object`() {
+		assertThrows<IllegalStateException> {
+			Json.decodeFromString<RichContent>(
+				$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadNoCompanion",""" +
+					""""d":"some plaintext"}""",
+			)
+		}
+	}
+
+	@Test
+	fun `does not deserialises objects with an empty companion object`() {
 		assertThrows<IllegalStateException> {
 			Json.decodeFromString<RichContent>(
 				$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadNoFactory",""" +
@@ -221,30 +222,10 @@ class ContentSerializersTest {
 	}
 
 	@Test
-	fun `does not deserialises objects with an improper Factory implementation`() {
+	fun `does not deserialises objects with a companion that does not extend the factory interface`() {
 		assertThrows<IllegalStateException> {
 			Json.decodeFromString<RichContent>(
 				$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadFactoryImpl",""" +
-					""""d":"some plaintext"}""",
-			)
-		}
-	}
-
-	@Test
-	fun `does not deserialises objects with an improper Factory lang type`() {
-		assertThrows<IllegalStateException> {
-			Json.decodeFromString<RichContent>(
-				$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadFactoryLangType",""" +
-					""""d":"some plaintext"}""",
-			)
-		}
-	}
-
-	@Test
-	fun `does not deserialises objects with an improper Factory name`() {
-		assertThrows<IllegalStateException> {
-			Json.decodeFromString<RichContent>(
-				$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadFactoryWrongName",""" +
 					""""d":"some plaintext"}""",
 			)
 		}

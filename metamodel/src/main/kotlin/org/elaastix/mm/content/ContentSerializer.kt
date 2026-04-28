@@ -26,6 +26,7 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonElement
+import kotlin.reflect.full.companionObject
 import kotlin.reflect.jvm.jvmName
 
 /**
@@ -50,14 +51,14 @@ abstract class AbstractContentSerializer<T : RichContent> internal constructor()
 		val wrapper: ContentWrapper = decoder.decodeSerializableValue(delegate)
 		val clazz = Class.forName(wrapper.clazz).kotlin
 
-		val factoryClazz = clazz.nestedClasses.find { it.isCompanion && it.simpleName == "Factory" }
+		val factoryClazz = clazz.companionObject
 		checkNotNull(factoryClazz) {
-			"Target content class ${clazz.qualifiedName} does not have a Factory companion"
+			"Target content class ${clazz.qualifiedName} does not have a companion object"
 		}
 
 		val factory = factoryClazz.objectInstance as? RichContent.Factory
 		checkNotNull(factory) {
-			"Target content class ${clazz.qualifiedName}'s Factory does not implement the expected factory interface"
+			"Target content class ${clazz.qualifiedName}'s companion does not implement the expected factory interface"
 		}
 
 		@Suppress("UNCHECKED_CAST")
