@@ -19,7 +19,6 @@
 
 package org.elaastix.commons.jpa
 
-import jakarta.persistence.Column
 import jakarta.persistence.Id
 import jakarta.persistence.MappedSuperclass
 import jakarta.persistence.PrePersist
@@ -30,11 +29,8 @@ import jakarta.validation.constraints.NotNull
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.platform.JpaImmutable
 import org.hibernate.proxy.HibernateProxy
-import java.util.UUID
 import kotlin.time.Clock
 import kotlin.time.Instant
-import kotlin.uuid.toJavaUuid
-import kotlin.uuid.toKotlinUuid
 
 /**
  * Abstract class holding common properties shared by all entities.
@@ -45,20 +41,12 @@ import kotlin.uuid.toKotlinUuid
 @MappedSuperclass
 @Suppress("AbstractClassCanBeConcreteClass") // Don't want the class to be constructible.
 abstract class AbstractEntity {
-    // Use of a backing field is "required", as JPA doesn't allow AttributeConverters along with `@Id`...
-    // Doing it manually is an acceptable compromise; this logic is going to be reused universally.
-    // Note on performance of using a new UUID as default value: this is in fact not an issue since the no-arg
-    // constructor *does not initialise properties by default*! No useless generation happening when JPA constructs.
-    @Id
-    @Column(name = "id")
-    private var _id: UUID = Uuid.generateV7().toJavaUuid()
-        @JpaImmutable set
-
     /**
      * ID of the entity. The ID is a UUID v7 as specified by [RFC 9562](https://www.rfc-editor.org/rfc/rfc9562.html).
      */
-    @delegate:Transient
-    val id: Uuid by lazy { _id.toKotlinUuid() }
+    @Id
+    var id: Uuid = Uuid.generateV7()
+        @JpaImmutable set
 
     /**
      * Date of creation of the entity (millisecond precision).
@@ -70,7 +58,7 @@ abstract class AbstractEntity {
     @delegate:Transient
     val createdAt by lazy {
         @Suppress("MagicNumber")
-        val timestamp = (_id.mostSignificantBits ushr 16) and 0xFFFFFFFFFFFFL
+        val timestamp = (id.toLongs { msb, _ -> msb ushr 16 }) and 0xFFFFFFFFFFFFL
         Instant.fromEpochMilliseconds(timestamp)
     }
 
@@ -117,7 +105,7 @@ abstract class AbstractEntity {
         val thisEffectiveClass = this.hibernateAwareJavaClass
         if (thisEffectiveClass != oEffectiveClass) return false
 
-        // Cast is safe; verified the class type.
+        // SAFETY: Cast is safe; verified the class type.
         return id == (other as AbstractEntity).id
     }
 

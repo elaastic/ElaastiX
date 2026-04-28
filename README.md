@@ -44,6 +44,10 @@ The following commands automatically become available:
 - `garage`
 
 ### Editor
+> [!CAUTION]
+> IntelliJ IDEA currently has some major regressions with WSL support as of 2026.1. See []
+> While the usual advice is to use the latest versions, **do not upgrade to the 2026 series yet**.
+
 The project is configured for IntelliJ IDEA Ultimate. In other editions of IntelliJ IDEA, Spring support is limited
 and there is no support for JavaScript, TypeScript, and Vue (but support for these is available in WebStorm).
 

@@ -26,7 +26,7 @@ package org.elaastix.commons.platform
  */
 @Suppress("unused") // Used by humans ;)
 @Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class ExcludeFromCoverage(
     /** Explanation as to why the class or function is being excluded from code coverage calculations. */
     val message: String,

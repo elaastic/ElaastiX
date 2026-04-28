@@ -17,6 +17,14 @@
             <java-class>org.elaastix.mm.content.RichContent</java-class>
             <sql-type>jsonb</sql-type>
           </mapping-type>
+          <mapping-type sql-type-parameter="Nothing">
+            <java-class>kotlin.UInt</java-class>
+            <sql-type>integer</sql-type>
+          </mapping-type>
+          <mapping-type sql-type-parameter="Nothing">
+            <java-class>kotlin.ULong</java-class>
+            <sql-type>bigint</sql-type>
+          </mapping-type>
         </mapping-types>
       </database-info>
     </database-infos>
