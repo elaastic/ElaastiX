@@ -33,6 +33,9 @@ import kotlin.reflect.KClass
 
 /** Registry for all types of [RichContent], [FormattedContent], and [FormattedText]. */
 object ContentTypesRegistry {
+	// COVERAGE: inline reified functions suffer from reporting issues. They can't be excluded either.
+	// See: https://github.com/Kotlin/kotlinx-kover/issues/753
+
 	internal typealias ContentFactory<T> = (JsonElement) -> T
 	internal typealias PlaintextFactory<T> = (String) -> T
 
@@ -146,13 +149,13 @@ abstract class AbstractContentSerializer<T : RichContent> internal constructor()
 	internal val delegate = ContentWrapper.serializer()
 
 	override fun serialize(encoder: Encoder, value: T) =
-	    encoder.encodeSerializableValue(
-		delegate,
-		ContentWrapper(
-			clazz = value.getContentClassId(),
-			data = value.toJson(),
-		),
-	)
+		encoder.encodeSerializableValue(
+			delegate,
+			ContentWrapper(
+				clazz = value.getContentClassId(),
+				data = value.toJson(),
+			),
+		)
 
 	override fun deserialize(decoder: Decoder): T {
 		val wrapper: ContentWrapper = decoder.decodeSerializableValue(delegate)
