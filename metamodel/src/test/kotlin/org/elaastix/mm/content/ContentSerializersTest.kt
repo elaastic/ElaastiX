@@ -30,7 +30,6 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import org.assertj.core.api.Assertions.assertThat
-import org.elaastix.commons.utils.requireJsonString
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
@@ -49,8 +48,8 @@ class ContentSerializersTest {
 
 	companion object {
 		val testRichContentFactory: Factory<TestRichContent>
-		val testFormattedContentFactory: Factory<TestFormattedContent>
-		val testFormattedContentCustomIdFactory: Factory<TestFormattedContentCustomId>
+		val testFormattedContentFactory: FactoryText<TestFormattedContent>
+		val testFormattedContentCustomIdFactory: FactoryText<TestFormattedContentCustomId>
 		val testFormattedTextFactory: FactoryText<TestFormattedText>
 
 		open class TestRichContent(val data: Map<String, JsonElement>) : RichContent {
@@ -144,18 +143,16 @@ class ContentSerializersTest {
 				}.also { testRichContentFactory = it },
 			)
 
-			ContentTypesRegistry.registerContentType(
-				mockFactory {
-					requireJsonString(it)
-					TestFormattedContent(it.content)
+			ContentTypesRegistry.registerPlaintextType(
+				mockTextFactory {
+					TestFormattedContent(it)
 				}.also { testFormattedContentFactory = it },
 			)
 
-			ContentTypesRegistry.registerContentType(
+			ContentTypesRegistry.registerPlaintextType(
 				"AwesomeContent",
-				mockFactory {
-					requireJsonString(it)
-					TestFormattedContentCustomId(it.content)
+				mockTextFactory {
+					TestFormattedContentCustomId(it)
 				}.also { testFormattedContentCustomIdFactory = it },
 			)
 

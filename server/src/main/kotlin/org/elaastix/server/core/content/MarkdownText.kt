@@ -19,7 +19,6 @@
 
 package org.elaastix.server.core.content
 
-import org.elaastix.commons.utils.requireJsonString
 import org.elaastix.mm.content.ContentTypesRegistry
 import org.elaastix.mm.content.FormattedText
 
@@ -34,9 +33,8 @@ class MarkdownText(
 ) : FormattedText {
 	companion object {
 		init {
-			ContentTypesRegistry.registerContentType {
-				requireJsonString(it)
-				MarkdownContent(it.content)
+			ContentTypesRegistry.registerPlaintextType {
+				MarkdownText(it)
 			}
 		}
 	}

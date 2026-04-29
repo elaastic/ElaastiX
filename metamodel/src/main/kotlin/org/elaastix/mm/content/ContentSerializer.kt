@@ -69,7 +69,7 @@ object ContentTypesRegistry {
 	 * @throws IllegalArgumentException if the ID is already in use.
 	 * @throws IllegalArgumentException if the class is already registered.
 	 */
-	inline fun <reified T : FormattedText> registerPlaintextType(id: String, crossinline factory: PlaintextFactory<T>) =
+	inline fun <reified T : RichContent> registerPlaintextType(id: String, crossinline factory: PlaintextFactory<T>) =
 		registerPlaintextType(id, T::class, factory)
 
 	/**
@@ -88,7 +88,7 @@ object ContentTypesRegistry {
 		registerContentType(T::class.java.simpleName, T::class, factory)
 
 	/** Shortcut for registering content types with the ID predefined as the class's simple name. */
-	inline fun <reified T : FormattedText> registerPlaintextType(noinline factory: PlaintextFactory<T>) =
+	inline fun <reified T : RichContent> registerPlaintextType(noinline factory: PlaintextFactory<T>) =
 		registerPlaintextType(T::class.java.simpleName, T::class, factory)
 
 	/** Non-reified version of registerContentType. */
@@ -120,22 +120,21 @@ object ContentTypesRegistry {
 	}
 
 	/** Non-reified version of registerPlaintextType. */
-	inline fun <T : FormattedText> registerPlaintextType(
+	inline fun <T : RichContent> registerPlaintextType(
 	    id: String,
 	    clazz: KClass<T>,
 	    crossinline factory: PlaintextFactory<T>,
 	) = registerContentType(id, clazz) {
-			// FIXME: requireJsonString()
-			require(it is JsonPrimitive && it.isString) {
-				"Expected a JSON string, got " +
-					when (it) {
-						is JsonPrimitive -> it.content
-						else -> it::class.simpleName
-					}
-			}
-
-			factory.invoke(it.content)
+		require(it is JsonPrimitive && it.isString) {
+			"Expected a JSON string, got " +
+				when (it) {
+					is JsonPrimitive -> it.content
+					else -> it::class.simpleName
+				}
 		}
+
+		factory.invoke(it.content)
+	}
 }
 
 /**
@@ -146,13 +145,14 @@ object ContentTypesRegistry {
 abstract class AbstractContentSerializer<T : RichContent> internal constructor() : KSerializer<T> {
 	internal val delegate = ContentWrapper.serializer()
 
-	override fun serialize(encoder: Encoder, value: T) = encoder.encodeSerializableValue(
-			delegate,
-			ContentWrapper(
-				clazz = value.getContentClassId(),
-				data = value.toJson(),
-			),
-		)
+	override fun serialize(encoder: Encoder, value: T) =
+	    encoder.encodeSerializableValue(
+		delegate,
+		ContentWrapper(
+			clazz = value.getContentClassId(),
+			data = value.toJson(),
+		),
+	)
 
 	override fun deserialize(decoder: Decoder): T {
 		val wrapper: ContentWrapper = decoder.decodeSerializableValue(delegate)

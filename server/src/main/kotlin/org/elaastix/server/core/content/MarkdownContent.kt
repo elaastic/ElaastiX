@@ -20,7 +20,6 @@
 package org.elaastix.server.core.content
 
 import kotlinx.serialization.json.JsonPrimitive
-import org.elaastix.commons.utils.requireJsonString
 import org.elaastix.mm.content.ContentTypesRegistry
 import org.elaastix.mm.content.FormattedContent
 
@@ -33,9 +32,8 @@ class MarkdownContent(
 ) : FormattedContent {
 	companion object {
 		init {
-			ContentTypesRegistry.registerContentType {
-				requireJsonString(it)
-				MarkdownContent(it.content)
+			ContentTypesRegistry.registerPlaintextType {
+				MarkdownContent(it)
 			}
 		}
 	}
