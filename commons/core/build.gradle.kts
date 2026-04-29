@@ -17,34 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
-
-rootProject.name = "ElaastiX"
-
-includeBuild("build-logic")
-include(
-	"commons:core",
-	"commons:spring",
-	"metamodel",
-	"server",
-	"frontend",
-)
-
-pluginManagement {
-	repositories {
-		gradlePluginPortal()
-	}
-}
-
-dependencyResolutionManagement {
-	repositories {
-		mavenCentral()
-
-		maven {
-			url = uri("https://jitpack.io")
-			content {
-				includeGroupByRegex("com\\.github\\..*")
-			}
-		}
-	}
+plugins {
+	id("conventions.idea")
+	id("conventions.kotlin")
+	id("conventions.test")
 }

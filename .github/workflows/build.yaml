@@ -152,7 +152,7 @@ jobs:
       # This is a situation where the savings are so small it's not worth (and may in the end have a net negative impact).
       fail-fast: false
       matrix:
-        project: [server, commons, metamodel]
+        project: [server, commons:core, metamodel]
     steps:
       - uses: actions/checkout@v6
         with:
@@ -240,7 +240,7 @@ jobs:
 
       - name: Prepare coverage reports for Kover
         run: |
-          subprojects=(commons server metamodel)
+          subprojects=(commons/core server metamodel)
           for sp in "${subprojects[@]}"; do
             mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-$sp" "$GITHUB_WORKSPACE/$sp/build/kover"
           done

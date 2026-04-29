@@ -25,7 +25,6 @@ plugins {
 }
 
 dependencies {
-	implementation(project(":commons"))
 	implementation(project(":metamodel"))
 	implementation(libs.spring.boot.actuator)
 	implementation(libs.spring.boot.jpa)

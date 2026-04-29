@@ -24,13 +24,16 @@ COPY build-logic/ ./build-logic/
 COPY frontend/*.gradle.kts ./frontend/
 COPY metamodel/*.gradle.kts ./metamodel/
 COPY commons/*.gradle.kts ./commons/
+COPY commons/core/*.gradle.kts ./commons/core/
+COPY commons/spring/*.gradle.kts ./commons/spring/
 COPY server/*.gradle.kts ./server/
 COPY *.gradle.kts *.gradle ./
 
 # Make Gradle download dependencies (and build `build-logic`) prior to copying sources.
 RUN --mount=type=cache,target=/root/.gradle \
     ./gradlew --no-daemon \
-      :commons:resolveDependencies \
+      :commons:core:resolveDependencies \
+      :commons:spring:resolveDependencies \
       :metamodel:resolveDependencies \
       :server:resolveDependencies \
       :server:classes

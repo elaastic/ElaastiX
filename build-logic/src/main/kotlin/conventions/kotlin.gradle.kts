@@ -65,4 +65,8 @@ dependencies {
 
 	implementation(libs.findLibrary("springdoc.kdoc.rt").get())
 	ksp(libs.findLibrary("springdoc.kdoc.ksp").get())
+
+	if (project.path != ":commons:core") {
+		implementation(project(":commons:core"))
+	}
 }
