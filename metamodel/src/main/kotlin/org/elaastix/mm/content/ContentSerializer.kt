@@ -123,10 +123,11 @@ object ContentTypesRegistry {
 	}
 
 	/** Non-reified version of registerPlaintextType. */
+	@Suppress("detekt:FunctionSignature") // For whatever reason ktlint is having a very hard time here??
 	inline fun <T : RichContent> registerPlaintextType(
-	    id: String,
-	    clazz: KClass<T>,
-	    crossinline factory: PlaintextFactory<T>,
+		id: String,
+		clazz: KClass<T>,
+		crossinline factory: PlaintextFactory<T>,
 	) = registerContentType(id, clazz) {
 		require(it is JsonPrimitive && it.isString) {
 			"Expected a JSON string, got " +

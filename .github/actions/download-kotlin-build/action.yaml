@@ -15,6 +15,7 @@ runs:
         tar -xf kotlin-build-result.tar
         tar -xf build-logic.tzst build-logic/build
         tar -xf metamodel.tzst metamodel/build
-        tar -xf commons.tzst commons/build
+        tar -xf commons-core.tzst commons/core/build
+        tar -xf commons-spring.tzst commons/spring/build
         tar -xf server.tzst server/build
         tar -xf root.tzst build
