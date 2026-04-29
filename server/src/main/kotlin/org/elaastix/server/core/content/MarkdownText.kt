@@ -19,6 +19,8 @@
 
 package org.elaastix.server.core.content
 
+import org.elaastix.commons.utils.requireJsonString
+import org.elaastix.mm.content.ContentTypesRegistry
 import org.elaastix.mm.content.FormattedText
 
 /**
@@ -30,9 +32,14 @@ class MarkdownText(
 	/** The Markdown text. */
 	val content: String,
 ) : FormattedText {
-	override fun toString() = content
-
-	companion object : FormattedText.Factory {
-		override fun fromString(string: String) = MarkdownText(string)
+	companion object {
+		init {
+			ContentTypesRegistry.registerContentType {
+				requireJsonString(it)
+				MarkdownContent(it.content)
+			}
+		}
 	}
+
+	override fun asString() = content
 }

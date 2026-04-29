@@ -19,9 +19,9 @@
 
 package org.elaastix.server.core.content
 
-import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonPrimitive
 import org.elaastix.commons.utils.requireJsonString
+import org.elaastix.mm.content.ContentTypesRegistry
 import org.elaastix.mm.content.FormattedContent
 
 /**
@@ -31,10 +31,14 @@ class MarkdownContent(
 	/** The Markdown content. */
 	val content: String,
 ) : FormattedContent {
-	override fun toJson() = JsonPrimitive(content)
-
-	companion object : FormattedContent.Factory {
-		override fun fromJson(json: JsonElement): FormattedContent =
-			requireJsonString(json).let { MarkdownContent(json.content) }
+	companion object {
+		init {
+			ContentTypesRegistry.registerContentType {
+				requireJsonString(it)
+				MarkdownContent(it.content)
+			}
+		}
 	}
+
+	override fun toJson() = JsonPrimitive(content)
 }

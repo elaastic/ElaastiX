@@ -19,6 +19,7 @@
 
 package org.elaastix.server.core.content
 
+import org.elaastix.mm.content.ContentTypesRegistry
 import org.elaastix.mm.content.FormattedText
 
 /**
@@ -28,9 +29,11 @@ class Plaintext(
 	/** The text content. */
 	val content: String,
 ) : FormattedText {
-	override fun toString() = content
-
-	companion object : FormattedText.Factory {
-		override fun fromString(string: String) = Plaintext(string)
+	companion object {
+		init {
+			ContentTypesRegistry.registerPlaintextType { Plaintext(it) }
+		}
 	}
+
+	override fun asString() = content
 }

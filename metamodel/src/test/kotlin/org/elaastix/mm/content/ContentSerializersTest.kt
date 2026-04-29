@@ -19,79 +19,162 @@
 
 package org.elaastix.mm.content
 
-import io.mockk.bdd.given
 import io.mockk.bdd.then
-import io.mockk.mockkObject
+import io.mockk.clearMocks
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.spyk
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import org.assertj.core.api.Assertions.assertThat
+import org.elaastix.commons.utils.requireJsonString
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.api.parallel.Execution
+import org.junit.jupiter.api.parallel.ExecutionMode
+import org.junit.jupiter.api.parallel.Isolated
 
+// We could use fine-grained concurrency locking with ResourceLocks, but that's not as foolproof.
+@Isolated("Registry is a globally-visible singleton")
 class ContentSerializersTest {
+	typealias Factory<T> = ContentTypesRegistry.ContentFactory<T>
+	typealias FactoryText<T> = ContentTypesRegistry.PlaintextFactory<T>
+
 	companion object {
-		class TestRichContent(val data: Map<String, JsonElement>) : RichContent {
+		val testRichContentFactory: Factory<TestRichContent>
+		val testFormattedContentFactory: Factory<TestFormattedContent>
+		val testFormattedContentCustomIdFactory: Factory<TestFormattedContentCustomId>
+		val testFormattedTextFactory: FactoryText<TestFormattedText>
+
+		open class TestRichContent(val data: Map<String, JsonElement>) : RichContent {
 			override fun toJson(): JsonElement = JsonObject(data)
-
-			companion object : RichContent.Factory {
-				override fun fromJson(json: JsonElement): RichContent {
-					require(json is JsonObject) {
-						"Invalid JsonElement (expected JsonObject got ${json::class.simpleName})"
-					}
-
-					return TestRichContent(json)
-				}
-			}
 		}
 
 		class TestFormattedContent(val data: String) : FormattedContent {
 			override fun toJson(): JsonElement = JsonPrimitive(data)
+		}
 
-			companion object : FormattedContent.Factory {
-				override fun fromJson(json: JsonElement): FormattedContent {
-					require(json is JsonPrimitive) {
-						"Invalid JsonElement (expected JsonPrimitive got ${json::class.simpleName})"
-					}
-
-					require(json.isString) {
-						"Invalid JsonText (expected a String got: $json)"
-					}
-
-					return TestFormattedContent(json.content)
-				}
-			}
+		class TestFormattedContentCustomId(val data: String) : FormattedContent {
+			override fun toJson(): JsonElement = JsonPrimitive(data)
 		}
 
 		class TestFormattedText(val text: String) : FormattedText {
-			override fun toString(): String = text
+			override fun asString(): String = text
+		}
 
-			companion object : FormattedText.Factory {
-				override fun fromString(string: String): FormattedText = TestFormattedText(string)
+		class BadNotRegistered(val data: Map<String, JsonElement>) : RichContent {
+			override fun toJson(): JsonElement = JsonObject(data)
+		}
+
+		// These types need to already exist and be stable across tests.
+		typealias FakeFactory1 = ContentTypesRegistry.ContentFactory<FakeContentType1>
+		typealias FakeFactory2 = ContentTypesRegistry.ContentFactory<FakeContentType2>
+
+		class FakeContentType1 : TestRichContent(emptyMap())
+		class FakeContentType2 : TestRichContent(emptyMap())
+
+		const val FAKE_CONTENT_ID_1 = "A"
+		const val FAKE_CONTENT_ID_2 = "B"
+		const val FAKE_CONTENT_ID_3 = "C"
+		const val CONTENT_ALIAS_ID = "Alias"
+
+		@JvmStatic
+		@AfterAll
+		fun `clear registrations`() {
+			ContentTypesRegistry.idToClazz.remove(FAKE_CONTENT_ID_1)
+			ContentTypesRegistry.idToClazz.remove(FAKE_CONTENT_ID_2)
+			ContentTypesRegistry.idToClazz.remove(FAKE_CONTENT_ID_3)
+			ContentTypesRegistry.idToClazz.remove(CONTENT_ALIAS_ID)
+			ContentTypesRegistry.idToClazz.remove(FakeContentType1::class.java.simpleName)
+			ContentTypesRegistry.idToClazz.remove(FakeContentType2::class.java.simpleName)
+
+			ContentTypesRegistry.clazzToId.remove(FakeContentType1::class)
+			ContentTypesRegistry.clazzToId.remove(FakeContentType2::class)
+
+			ContentTypesRegistry.clazzToFactory.remove(FakeContentType1::class)
+			ContentTypesRegistry.clazzToFactory.remove(FakeContentType2::class)
+		}
+
+		@JvmStatic
+		@AfterAll
+		fun `clear static registrations`() {
+			ContentTypesRegistry.idToClazz.remove(TestRichContent::class.java.simpleName)
+			ContentTypesRegistry.idToClazz.remove(TestFormattedContent::class.java.simpleName)
+			ContentTypesRegistry.idToClazz.remove(TestFormattedContentCustomId::class.java.simpleName)
+			ContentTypesRegistry.idToClazz.remove(TestFormattedText::class.java.simpleName)
+
+			ContentTypesRegistry.clazzToId.remove(TestRichContent::class)
+			ContentTypesRegistry.clazzToId.remove(TestFormattedContent::class)
+			ContentTypesRegistry.clazzToId.remove(TestFormattedContentCustomId::class)
+			ContentTypesRegistry.clazzToId.remove(TestFormattedText::class)
+
+			ContentTypesRegistry.clazzToFactory.remove(TestRichContent::class)
+			ContentTypesRegistry.clazzToFactory.remove(TestFormattedContent::class)
+			ContentTypesRegistry.clazzToFactory.remove(TestFormattedContentCustomId::class)
+			ContentTypesRegistry.clazzToFactory.remove(TestFormattedText::class)
+		}
+
+		private inline fun <reified T : RichContent> mockFactory(crossinline lambda: (JsonElement) -> T) =
+			mockk<(JsonElement) -> T> {
+				val arg = slot<JsonElement>()
+				every { this@mockk.invoke(capture(arg)) } answers { lambda(arg.captured) }
 			}
-		}
 
-		@Suppress("unused") // Used via reflection
-		class BadNoCompanion(val data: Map<String, JsonElement>) : RichContent {
-			override fun toJson(): JsonElement = JsonObject(data)
-		}
-
-		@Suppress("unused") // Used via reflection
-		class BadNoFactory(val data: Map<String, JsonElement>) : RichContent {
-			override fun toJson(): JsonElement = JsonObject(data)
-		}
-
-		@Suppress("unused") // Used via reflection
-		class BadFactoryImpl(val data: Map<String, JsonElement>) : RichContent {
-			override fun toJson(): JsonElement = JsonObject(data)
-
-			companion object {
-
-				fun fromJson(json: JsonElement): RichContent = BadFactoryImpl(emptyMap())
+		private inline fun <reified T : RichContent> mockTextFactory(crossinline lambda: (String) -> T) =
+			mockk<(String) -> T> {
+				val arg = slot<String>()
+				every { this@mockk.invoke(capture(arg)) } answers { lambda(arg.captured) }
 			}
+
+		init {
+			ContentTypesRegistry.registerContentType(
+				mockFactory {
+					require(it is JsonObject) {
+						"Invalid JsonElement (expected JsonObject got ${it::class.simpleName})"
+					}
+
+					TestRichContent(it)
+				}.also { testRichContentFactory = it },
+			)
+
+			ContentTypesRegistry.registerContentType(
+				mockFactory {
+					requireJsonString(it)
+					TestFormattedContent(it.content)
+				}.also { testFormattedContentFactory = it },
+			)
+
+			ContentTypesRegistry.registerContentType(
+				"AwesomeContent",
+				mockFactory {
+					requireJsonString(it)
+					TestFormattedContentCustomId(it.content)
+				}.also { testFormattedContentCustomIdFactory = it },
+			)
+
+			ContentTypesRegistry.registerPlaintextType(
+				mockTextFactory { TestFormattedText(it) }
+					.also { testFormattedTextFactory = it },
+			)
 		}
+	}
+
+	@BeforeEach
+	fun `reset spies`() {
+		clearMocks(
+			testRichContentFactory,
+			testFormattedContentFactory,
+			testFormattedContentCustomIdFactory,
+			testFormattedTextFactory,
+			answers = false,
+		)
 	}
 
 	@Test
@@ -106,8 +189,7 @@ class ContentSerializersTest {
 
 		then(exactly = 1) { content.toJson() }
 		assertThat(result).isEqualTo(
-			$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$TestRichContent",""" +
-				""""d":{"some":"data"}}""",
+			"""{"c":"TestRichContent","d":{"some":"data"}}""",
 		)
 	}
 
@@ -121,8 +203,7 @@ class ContentSerializersTest {
 
 		then(exactly = 1) { content.toJson() }
 		assertThat(result).isEqualTo(
-			$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$TestFormattedContent",""" +
-				""""d":"some text"}""",
+			"""{"c":"TestFormattedContent","d":"some text"}""",
 		)
 	}
 
@@ -134,30 +215,49 @@ class ContentSerializersTest {
 			),
 		)
 
-		// MockK's spy interferes with toString... :/
-		given { content.toString() } answers { "some plaintext" }
-
 		val result = Json.encodeToString(content)
 
 		then(exactly = 1) { content.toJson() }
-		then(exactly = 1) { content.toString() }
+		then(exactly = 1) { content.asString() }
 		assertThat(result).isEqualTo(
-			$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$TestFormattedText",""" +
-				""""d":"some plaintext"}""",
+			"""{"c":"TestFormattedText","d":"some plaintext"}""",
 		)
 	}
 
 	@Test
-	fun `deserialises rich content from a plain JSON object`() {
-		mockkObject(TestRichContent.Companion)
-		given { TestRichContent.fromJson(any()) } answers { callOriginal() }
-
-		val result: RichContent = Json.decodeFromString(
-			$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$TestRichContent",""" +
-				""""d":{"some":"data"}}""",
+	fun `serialises content with the correct custom identifier`() {
+		val content: FormattedContent = spyk(
+			TestFormattedContentCustomId("some text"),
 		)
 
-		then(exactly = 1) { TestRichContent.fromJson(any()) }
+		val result = Json.encodeToString(content)
+
+		then(exactly = 1) { content.toJson() }
+		assertThat(result).isEqualTo(
+			"""{"c":"AwesomeContent","d":"some text"}""",
+		)
+	}
+
+	@Test
+	fun `does not serialises unregistered content type`() {
+		val content: RichContent = spyk(
+			BadNotRegistered(emptyMap()),
+		)
+
+		assertThrows<IllegalStateException> {
+			Json.encodeToString(content)
+		}
+
+		then(exactly = 0) { content.toJson() }
+	}
+
+	@Test
+	fun `deserialises rich content from a plain JSON object`() {
+		val result: RichContent = Json.decodeFromString(
+			"""{"c":"TestRichContent","d":{"some":"data"}}""",
+		)
+
+		then(exactly = 1) { testRichContentFactory(any()) }
 
 		assertThat(result).isInstanceOf(TestRichContent::class.java)
 		val content = result as TestRichContent
@@ -167,15 +267,11 @@ class ContentSerializersTest {
 
 	@Test
 	fun `deserialises formatted content from a plain JSON object`() {
-		mockkObject(TestFormattedContent.Companion)
-		given { TestFormattedContent.fromJson(any()) } answers { callOriginal() }
-
 		val result: FormattedContent = Json.decodeFromString(
-			$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$TestFormattedContent",""" +
-				""""d":"some text"}""",
+			"""{"c":"TestFormattedContent","d":"some text"}""",
 		)
 
-		then(exactly = 1) { TestFormattedContent.fromJson(any()) }
+		then(exactly = 1) { testFormattedContentFactory(any()) }
 
 		assertThat(result).isInstanceOf(TestFormattedContent::class.java)
 		val content = result as TestFormattedContent
@@ -185,15 +281,11 @@ class ContentSerializersTest {
 
 	@Test
 	fun `deserialises formatted text from a plain JSON object`() {
-		mockkObject(TestFormattedText.Companion)
-		given { TestFormattedText.fromJson(any()) } answers { callOriginal() }
-
 		val result: FormattedText = Json.decodeFromString(
-			$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$TestFormattedText",""" +
-				""""d":"some plaintext"}""",
+			"""{"c":"TestFormattedText","d":"some plaintext"}""",
 		)
 
-		then(exactly = 1) { TestFormattedText.fromJson(any()) }
+		then(exactly = 1) { testFormattedTextFactory.invoke(any()) }
 
 		assertThat(result).isInstanceOf(TestFormattedText::class.java)
 		val content = result as TestFormattedText
@@ -202,31 +294,10 @@ class ContentSerializersTest {
 	}
 
 	@Test
-	fun `does not deserialises objects without a companion object`() {
+	fun `does not deserialises objects with an unregistered content type`() {
 		assertThrows<IllegalStateException> {
 			Json.decodeFromString<RichContent>(
-				$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadNoCompanion",""" +
-					""""d":"some plaintext"}""",
-			)
-		}
-	}
-
-	@Test
-	fun `does not deserialises objects with an empty companion object`() {
-		assertThrows<IllegalStateException> {
-			Json.decodeFromString<RichContent>(
-				$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadNoFactory",""" +
-					""""d":"some plaintext"}""",
-			)
-		}
-	}
-
-	@Test
-	fun `does not deserialises objects with a companion that does not extend the factory interface`() {
-		assertThrows<IllegalStateException> {
-			Json.decodeFromString<RichContent>(
-				$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$BadFactoryImpl",""" +
-					""""d":"some plaintext"}""",
+				"""{"c":"BadNotRegistered","d":"some plaintext"}""",
 			)
 		}
 	}
@@ -235,8 +306,7 @@ class ContentSerializersTest {
 	fun `does not deserialises formatted text from a complex JSON object`() {
 		assertThrows<IllegalArgumentException> {
 			Json.decodeFromString<FormattedText>(
-				$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$TestFormattedText",""" +
-					""""d":{"wow":"meow"}}""",
+				"""{"c":"TestFormattedText","d":{"wow":"meow"}}""",
 			)
 		}
 	}
@@ -245,9 +315,151 @@ class ContentSerializersTest {
 	fun `does not deserialises formatted text from a non-string primitive JSON element`() {
 		assertThrows<IllegalArgumentException> {
 			Json.decodeFromString<FormattedText>(
-				$$"""{"c":"org.elaastix.mm.content.ContentSerializersTest$Companion$TestFormattedText",""" +
-					""""d":false}""",
+				"""{"c":"TestFormattedText","d":false}""",
 			)
+		}
+	}
+
+	@Nested
+	@Execution(ExecutionMode.SAME_THREAD, reason = "Write access to the global registry")
+	inner class WithExtraContentTypes {
+		@BeforeEach
+		fun `clear registrations`() = Companion.`clear registrations`()
+
+		@Test
+		fun `serialises content with its primary type name when an alias exists`() {
+			ContentTypesRegistry.registerContentTypeAlias(FAKE_CONTENT_ID_1, TestFormattedText::class)
+
+			val content: FormattedContent = TestFormattedContent("some text")
+			val json = Json.encodeToString(content)
+			assertThat(json).isEqualTo(
+				"""{"c":"TestFormattedContent","d":"some text"}""",
+			)
+		}
+
+		@Test
+		fun `deserialises content with an alias specified in the payload`() {
+			ContentTypesRegistry.registerContentTypeAlias(CONTENT_ALIAS_ID, TestFormattedText::class)
+
+			val result: FormattedText = Json.decodeFromString(
+				"""{"c":"Alias","d":"some plaintext"}""",
+			)
+
+			assertThat(result).isInstanceOf(TestFormattedText::class.java)
+			assertThat((result as TestFormattedText).text).isEqualTo("some plaintext")
+		}
+
+		@Test
+		fun `does not accept registering conflicting IDs (primary + primary)`() {
+			assertDoesNotThrow {
+				ContentTypesRegistry.registerContentType(
+					FAKE_CONTENT_ID_1,
+					FakeContentType1::class,
+					mockk<FakeFactory1>(),
+				)
+			}
+			assertThrows<IllegalArgumentException> {
+				ContentTypesRegistry.registerContentType(
+					FAKE_CONTENT_ID_1,
+					FakeContentType2::class,
+					mockk<FakeFactory2>(),
+				)
+			}
+		}
+
+		@Test
+		fun `does not accept registering conflicting IDs (primary + secondary)`() {
+			assertDoesNotThrow {
+				ContentTypesRegistry.registerContentType(
+					FAKE_CONTENT_ID_1,
+					FakeContentType1::class,
+					mockk<FakeFactory1>(),
+				)
+			}
+			assertDoesNotThrow {
+				ContentTypesRegistry.registerContentType(
+					FAKE_CONTENT_ID_2,
+					FakeContentType2::class,
+					mockk<FakeFactory2>(),
+				)
+			}
+			assertThrows<IllegalArgumentException> {
+				ContentTypesRegistry.registerContentTypeAlias(FAKE_CONTENT_ID_1, FakeContentType2::class)
+			}
+		}
+
+		@Test
+		fun `does not accept registering conflicting IDs (secondary + primary)`() {
+			assertDoesNotThrow {
+				ContentTypesRegistry.registerContentType(
+					FAKE_CONTENT_ID_1,
+					FakeContentType1::class,
+					mockk<FakeFactory1>(),
+				)
+			}
+			assertDoesNotThrow {
+				ContentTypesRegistry.registerContentTypeAlias(FAKE_CONTENT_ID_2, FakeContentType1::class)
+			}
+			assertThrows<IllegalArgumentException> {
+				ContentTypesRegistry.registerContentType(
+					FAKE_CONTENT_ID_2,
+					FakeContentType2::class,
+					mockk<FakeFactory2>(),
+				)
+			}
+		}
+
+		@Test
+		fun `does not accept registering conflicting IDs (secondary + secondary)`() {
+			assertDoesNotThrow {
+				ContentTypesRegistry.registerContentType(
+					FAKE_CONTENT_ID_1,
+					FakeContentType1::class,
+					mockk<FakeFactory1>(),
+				)
+			}
+			assertDoesNotThrow {
+				ContentTypesRegistry.registerContentType(
+					FAKE_CONTENT_ID_2,
+					FakeContentType2::class,
+					mockk<FakeFactory2>(),
+				)
+			}
+			assertDoesNotThrow {
+				ContentTypesRegistry.registerContentTypeAlias(FAKE_CONTENT_ID_3, FakeContentType1::class)
+			}
+			assertThrows<IllegalArgumentException> {
+				ContentTypesRegistry.registerContentType(
+					FAKE_CONTENT_ID_3,
+					FakeContentType2::class,
+					mockk<FakeFactory2>(),
+				)
+			}
+		}
+
+		@Test
+		fun `does not accept registering the same class twice`() {
+			assertDoesNotThrow {
+				ContentTypesRegistry.registerContentType(
+					FAKE_CONTENT_ID_1,
+					FakeContentType1::class,
+					mockk<FakeFactory1>(),
+				)
+			}
+			assertThrows<IllegalArgumentException> {
+				ContentTypesRegistry.registerContentType(
+					FAKE_CONTENT_ID_2,
+					FakeContentType1::class,
+					mockk<FakeFactory1>(),
+				)
+			}
+		}
+
+		@Test
+		fun `does not accept aliasing an unregistered class`() {
+			assertThrows<IllegalArgumentException> {
+				ContentTypesRegistry.registerContentTypeAlias(FAKE_CONTENT_ID_2, FakeContentType1::class)
+			}
 		}
 	}
 }

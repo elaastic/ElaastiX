@@ -26,44 +26,154 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonElement
-import kotlin.reflect.full.companionObject
-import kotlin.reflect.jvm.jvmName
+import kotlinx.serialization.json.JsonPrimitive
+import org.elaastix.mm.content.ContentTypesRegistry.registerContentType
+import org.elaastix.mm.content.ContentTypesRegistry.registerContentTypeAlias
+import kotlin.reflect.KClass
+
+/** Registry for all types of [RichContent], [FormattedContent], and [FormattedText]. */
+object ContentTypesRegistry {
+	internal typealias ContentFactory<T> = (JsonElement) -> T
+	internal typealias PlaintextFactory<T> = (String) -> T
+
+	internal val idToClazz = mutableMapOf<String, KClass<*>>()
+	internal val clazzToId = mutableMapOf<KClass<*>, String>()
+	internal val clazzToFactory = mutableMapOf<KClass<*>, ContentFactory<RichContent>>()
+
+	/**
+	 * Registers a type of content.
+	 *
+	 * Beware, [id] **is an ABI contract** and changing it **will break compatibility with data from prior versions**.
+	 * This means that changing it carelessly can render large pans of data in the database **unreadable**.
+	 *
+	 * When changing the ID, make sure to register it as a secondary alias via [registerContentTypeAlias], so existing
+	 * records and old clients can still communicate with the server.
+	 *
+	 * @param T The class to register.
+	 * @param id The ID to use as discriminator for this class type.
+	 * @param factory The factory used to get an instance of [T] from a (**potentially unsafe**) [JsonElement].
+	 * @throws IllegalArgumentException if the ID is already in use.
+	 * @throws IllegalArgumentException if the class is already registered.
+	 */
+	inline fun <reified T : RichContent> registerContentType(id: String, noinline factory: ContentFactory<T>) =
+		registerContentType(id, T::class, factory)
+
+	/**
+	 * Registers a type of content that is plaintext specifically.
+	 *
+	 * Similar to [registerContentType], with a different type of factory.
+	 *
+	 * @param T The class to register.
+	 * @param id The ID to use as discriminator for this class type. **API/ABI contract**.
+	 * @param factory The factory used to get an instance of [T] from a (**potentially unsafe**) [JsonElement].
+	 * @throws IllegalArgumentException if the ID is already in use.
+	 * @throws IllegalArgumentException if the class is already registered.
+	 */
+	inline fun <reified T : FormattedText> registerPlaintextType(id: String, crossinline factory: PlaintextFactory<T>) =
+		registerPlaintextType(id, T::class, factory)
+
+	/**
+	 * Registers an alias for a given type of content. Useful for legacy aliases that still need to be resolved.
+	 *
+	 * @param T The class to register.
+	 * @param id The ID to use as discriminator for this class type. **API/ABI contract**.
+	 * @throws IllegalArgumentException if the ID is already in use.
+	 * @throws IllegalArgumentException if the class does not have a primary registration.
+	 * @see registerContentType
+	 */
+	inline fun <reified T : RichContent> registerContentTypeAlias(id: String) = registerContentTypeAlias(id, T::class)
+
+	/** Shortcut for registering content types with the ID predefined as the class's simple name. */
+	inline fun <reified T : RichContent> registerContentType(noinline factory: ContentFactory<T>) =
+		registerContentType(T::class.java.simpleName, T::class, factory)
+
+	/** Shortcut for registering content types with the ID predefined as the class's simple name. */
+	inline fun <reified T : FormattedText> registerPlaintextType(noinline factory: PlaintextFactory<T>) =
+		registerPlaintextType(T::class.java.simpleName, T::class, factory)
+
+	/** Non-reified version of registerContentType. */
+	fun <T : RichContent> registerContentType(id: String, clazz: KClass<T>, factory: ContentFactory<T>) {
+		require(!idToClazz.containsKey(id)) {
+			"Tried to register class $clazz with id '$id', which conflicts with ${idToClazz[id]!!}"
+		}
+
+		require(!clazzToId.containsKey(clazz)) {
+			"Class $clazz is already registered. Use registerContentTypeAlias instead."
+		}
+
+		idToClazz[id] = clazz
+		clazzToId[clazz] = id
+		clazzToFactory[clazz] = factory
+	}
+
+	/** Non-reified version of registerContentTypeAlias. */
+	fun <T : RichContent> registerContentTypeAlias(id: String, clazz: KClass<T>) {
+		require(!idToClazz.containsKey(id)) {
+			"Tried to register class $clazz with secondary alias '$id', which conflicts with ${idToClazz[id]!!}"
+		}
+
+		require(clazzToId.containsKey(clazz)) {
+			"No primary registration exists for $clazz. Use registerContentType first."
+		}
+
+		idToClazz[id] = clazz
+	}
+
+	/** Non-reified version of registerPlaintextType. */
+	inline fun <T : FormattedText> registerPlaintextType(
+	    id: String,
+	    clazz: KClass<T>,
+	    crossinline factory: PlaintextFactory<T>,
+	) = registerContentType(id, clazz) {
+			// FIXME: requireJsonString()
+			require(it is JsonPrimitive && it.isString) {
+				"Expected a JSON string, got " +
+					when (it) {
+						is JsonPrimitive -> it.content
+						else -> it::class.simpleName
+					}
+			}
+
+			factory.invoke(it.content)
+		}
+}
 
 /**
  * Kotlinx serializer for all types of content. Currently only compatible with JSON.
  *
- * TODO: Add support for CBOR serialization
+ * TODO: Add support for CBOR serialization. Currently not supported due to the use of [JsonElement].
  */
 abstract class AbstractContentSerializer<T : RichContent> internal constructor() : KSerializer<T> {
 	internal val delegate = ContentWrapper.serializer()
 
-	// TODO: Detect public vs private serde contexts, use SerializableContent.identifier for public use.
-	override fun serialize(encoder: Encoder, value: T) =
-		encoder.encodeSerializableValue(
+	override fun serialize(encoder: Encoder, value: T) = encoder.encodeSerializableValue(
 			delegate,
 			ContentWrapper(
-				clazz = value::class.jvmName,
+				clazz = value.getContentClassId(),
 				data = value.toJson(),
 			),
 		)
 
 	override fun deserialize(decoder: Decoder): T {
 		val wrapper: ContentWrapper = decoder.decodeSerializableValue(delegate)
-		val clazz = Class.forName(wrapper.clazz).kotlin
 
-		val factoryClazz = clazz.companionObject
-		checkNotNull(factoryClazz) {
-			"Target content class ${clazz.qualifiedName} does not have a companion object"
-		}
-
-		val factory = factoryClazz.objectInstance as? RichContent.Factory
-		checkNotNull(factory) {
-			"Target content class ${clazz.qualifiedName}'s companion does not implement the expected factory interface"
-		}
-
-		@Suppress("UNCHECKED_CAST")
-		return factory.fromJson(wrapper.data) as T
+		@Suppress("UNCHECKED_CAST") // We don't really have much of a choice.
+		return wrapper.clazz.buildContent(wrapper.data) as T
 	}
+
+	private fun <T : RichContent> T.getContentClassId(): String =
+		ContentTypesRegistry.clazzToId[this::class] ?: error("Unregistered content type ${this::class}")
+
+	private fun String.getContentClass(): KClass<*> =
+		ContentTypesRegistry.idToClazz[this] ?: error("Unregistered content type id $this")
+
+	// COVERAGE: error branch is unreachable
+	private fun <T : KClass<*>> T.getFactory(): ContentTypesRegistry.ContentFactory<RichContent> =
+		ContentTypesRegistry.clazzToFactory[this] ?: error("Unregistered content type $this")
+
+	private fun <T : KClass<*>> T.buildContent(json: JsonElement): RichContent = getFactory().invoke(json)
+
+	private fun String.buildContent(json: JsonElement): RichContent = getContentClass().buildContent(json)
 
 	@Serializable
 	internal data class ContentWrapper(
