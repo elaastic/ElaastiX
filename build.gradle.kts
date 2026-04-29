@@ -130,6 +130,7 @@ kover {
 		filters {
 			excludes {
 				annotatedBy("org.elaastix.commons.platform.ExcludeFromCoverage")
+				annotatedBy("org.elaastix.server.infrastructure.seed.Seeder")
 			}
 		}
 	}

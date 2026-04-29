@@ -67,16 +67,15 @@ abstract class AbstractEntity {
 	 */
 	@NotNull
 	var updatedAt: Instant = createdAt
-		@JpaImmutable internal set
+		@JpaImmutable set
 
+	/**
+	 * The version of the database record.
+	 */
 	@Version
 	@NotNull
-	// Actually used by JPA.
-	// Spec allows use of any visibility for backing field, and we're using field access,
-	// meaning there is no concern related to getter/setter visibility that's applicable.
-	// https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a19
-	@Suppress("UnusedPrivateMember")
-	private var version: Long? = null
+	var version: Long? = null
+		@JpaImmutable set // Exposed to allow forceful entity re-sync
 
 	/**
 	 * Checks if the entity is equal to [other].

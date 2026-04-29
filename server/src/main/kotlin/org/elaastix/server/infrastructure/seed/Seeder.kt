@@ -17,11 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+package org.elaastix.server.infrastructure.seed
 
-import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.entities.UserEntity
-import org.springframework.stereotype.Repository
+import org.springframework.context.annotation.Profile
+import org.springframework.stereotype.Component
 
-@Repository
-interface UserRepository : ElaastixRepository<UserEntity>
+/**
+ * Custom stereotype for database seeders.
+ */
+@Component
+@Profile("develop & !testing")
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Seeder

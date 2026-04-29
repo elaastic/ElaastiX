@@ -17,11 +17,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+package org.elaastix.server.infrastructure.seed
 
-import org.elaastix.commons.jpa.ElaastixRepository
+import jakarta.persistence.EntityManager
 import org.elaastix.server.users.entities.UserEntity
-import org.springframework.stereotype.Repository
+import org.springframework.boot.ApplicationArguments
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 
-@Repository
-interface UserRepository : ElaastixRepository<UserEntity>
+@Seeder
+@Order(Ordered.HIGHEST_PRECEDENCE)
+class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
+	lateinit var franck: UserEntity
+		protected set
+
+	lateinit var john: UserEntity
+		protected set
+
+	lateinit var cynthia: UserEntity
+		protected set
+
+	override fun run(args: ApplicationArguments) {
+		franck = createEntity(
+			UserEntity(
+				isWriterModeEnabled = true,
+				isAdministrator = true,
+			),
+		)
+
+		john = createEntity(
+			UserEntity(
+				isWriterModeEnabled = true,
+			),
+		)
+
+		cynthia = createEntity(
+			UserEntity(),
+		)
+	}
+}
