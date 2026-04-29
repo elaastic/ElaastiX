@@ -17,20 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.spring-lib")
-	id("conventions.hibernate-lib")
-	id("conventions.test")
-}
+package org.elaastix.commons.openapi
 
-dependencies {
-	implementation(libs.springdoc)
-	implementation(libs.spring.boot.jpa)
-	implementation(libs.spring.boot.validation)
-	implementation(libs.hypersistence.utils)
+import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.context.annotation.Import
 
-	testImplementation(libs.spring.boot.jpa.test)
-	testImplementation(libs.spring.boot.validation.test)
-}
+/**
+ * Autoconfiguration class importing SpringDoc components.
+ */
+@AutoConfiguration
+@Import(PropertyCustomiser::class)
+class SpringdocAutoConfiguration
