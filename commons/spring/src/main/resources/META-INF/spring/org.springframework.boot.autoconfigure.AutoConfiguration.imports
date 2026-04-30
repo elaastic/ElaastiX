@@ -1,2 +1,3 @@
 org.elaastix.commons.jpa.ElaastixHibernateAutoConfiguration
+org.elaastix.commons.conversion.SpringConvertersAutoConfiguration
 org.elaastix.commons.openapi.SpringdocAutoConfiguration

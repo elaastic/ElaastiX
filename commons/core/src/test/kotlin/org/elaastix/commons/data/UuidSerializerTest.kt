@@ -35,6 +35,11 @@ class UuidSerializerTest {
 		data class TestObj(val value: Uuid)
 
 		val TEST_UUID = Uuid.parseHexDash(TEST_UUID_V7)
+		val TEST_UUID_1 = Uuid.parseHexDash(TEST_UUID_1_V7)
+
+		const val TEST_UUID_1_V7 = "00000000-0000-0000-0000-000000000001"
+		const val TEST_UUID_1_B36 = "0000000000000000000000001"
+		val TEST_UUID_1_BYTES = byteArrayOf(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1)
 
 		const val TEST_UUID_V7 = "01513edc-8c60-7bb2-9f74-ebc6ee214673"
 		const val TEST_UUID_B36 = "02t2razan0q9kzr7gr55oi54j"
@@ -47,9 +52,9 @@ class UuidSerializerTest {
 			).asByteArray()
 
 		val TEST_OBJ = TestObj(TEST_UUID)
+		val TEST_OBJ_1 = TestObj(TEST_UUID_1)
 
 		val CBOR_ENCODED =
-			@Suppress("Indentation") // On purpose, for readability.
 			@OptIn(ExperimentalUnsignedTypes::class)
 			ubyteArrayOf(
 				// @formatter:off
@@ -61,7 +66,20 @@ class UuidSerializerTest {
 				// @formatter:on
 			).asByteArray()
 
+		val CBOR_ENCODED_1 =
+			@OptIn(ExperimentalUnsignedTypes::class)
+			ubyteArrayOf(
+				// @formatter:off
+				(0xA0 or 1).toUByte(), // map(1)
+				(0x60 or 5).toUByte(), // text(5)
+				0x76u, 0x61u, 0x6Cu, 0x75u, 0x65u, // "value"
+				(0x40 or 16).toUByte(), // bytes(16)
+				*TEST_UUID_1_BYTES.asUByteArray(), // ...
+				// @formatter:on
+			).asByteArray()
+
 		const val JSON_ENCODED = """{"value":"$TEST_UUID_B36"}"""
+		const val JSON_ENCODED_1 = """{"value":"$TEST_UUID_1_B36"}"""
 	}
 
 	@Nested
@@ -77,6 +95,18 @@ class UuidSerializerTest {
 			val obj: TestObj = Json.decodeFromString(JSON_ENCODED)
 			assertThat(obj).isEqualTo(TEST_OBJ)
 		}
+
+		@Test
+		fun `serialises the Uuid 1 as a Base36 string in JSON format`() {
+			val json = Json.encodeToString(TEST_OBJ_1)
+			assertThat(json).isEqualTo(JSON_ENCODED_1)
+		}
+
+		@Test
+		fun `deserialises the Uuid 1 from a Base36 string in JSON format`() {
+			val obj: TestObj = Json.decodeFromString(JSON_ENCODED_1)
+			assertThat(obj).isEqualTo(TEST_OBJ_1)
+		}
 	}
 
 	@Nested
@@ -91,15 +121,27 @@ class UuidSerializerTest {
 		}
 
 		@Test
-		fun `serialises Uuid as a Base36 string in CBOR format`() {
+		fun `serialises Uuid in CBOR format`() {
 			val cbor = Cbor.encodeToByteArray(TEST_OBJ)
 			assertThat(cbor).isEqualTo(CBOR_ENCODED)
 		}
 
 		@Test
-		fun `deserialises Uuid from a Base36 string in CBOR format`() {
+		fun `deserialises Uuid in CBOR format`() {
 			val obj: TestObj = Cbor.decodeFromByteArray(CBOR_ENCODED)
 			assertThat(obj).isEqualTo(TEST_OBJ)
+		}
+
+		@Test
+		fun `serialises the Uuid 1 in CBOR format`() {
+			val cbor = Cbor.encodeToByteArray(TEST_OBJ_1)
+			assertThat(cbor).isEqualTo(CBOR_ENCODED_1)
+		}
+
+		@Test
+		fun `deserialises the Uuid 1 in CBOR format`() {
+			val obj: TestObj = Cbor.decodeFromByteArray(CBOR_ENCODED_1)
+			assertThat(obj).isEqualTo(TEST_OBJ_1)
 		}
 	}
 }
