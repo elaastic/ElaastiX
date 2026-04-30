@@ -64,9 +64,8 @@ class ContentSerializerDatabaseIntegrationTest {
 		@JvmStatic
 		@AfterAll
 		fun `clean registry`() {
-			ContentTypesRegistry.idToClazz.remove(TestRichContent::class.java.simpleName)
-			ContentTypesRegistry.clazzToId.remove(TestRichContent::class)
-			ContentTypesRegistry.clazzToFactory.remove(TestRichContent::class)
+			ContentTypesRegistry.byId.remove(TestRichContent::class.java.simpleName)
+			ContentTypesRegistry.byClass.remove(TestRichContent::class)
 		}
 
 		class TestRichContent(val data: Map<String, JsonElement>) : RichContent {

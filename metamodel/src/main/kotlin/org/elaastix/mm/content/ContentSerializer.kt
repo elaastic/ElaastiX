@@ -39,9 +39,8 @@ object ContentTypesRegistry {
 	internal typealias ContentFactory<T> = (JsonElement) -> T
 	internal typealias PlaintextFactory<T> = (String) -> T
 
-	internal val idToClazz = mutableMapOf<String, KClass<*>>()
-	internal val clazzToId = mutableMapOf<KClass<*>, String>()
-	internal val clazzToFactory = mutableMapOf<KClass<*>, ContentFactory<RichContent>>()
+	internal val byId = mutableMapOf<String, Descriptor<*>>()
+	internal val byClass = mutableMapOf<KClass<*>, Descriptor<*>>()
 
 	/**
 	 * Registers a type of content.
@@ -96,30 +95,30 @@ object ContentTypesRegistry {
 
 	/** Non-reified version of registerContentType. */
 	fun <T : RichContent> registerContentType(id: String, clazz: KClass<T>, factory: ContentFactory<T>) {
-		require(!idToClazz.containsKey(id)) {
-			"Tried to register class $clazz with id '$id', which conflicts with ${idToClazz[id]!!}"
+		require(!byId.containsKey(id)) {
+			"Tried to register class $clazz with id '$id', which conflicts with ${byId[id]!!.clazz}"
 		}
 
-		require(!clazzToId.containsKey(clazz)) {
+		require(!byClass.containsKey(clazz)) {
 			"Class $clazz is already registered. Use registerContentTypeAlias instead."
 		}
 
-		idToClazz[id] = clazz
-		clazzToId[clazz] = id
-		clazzToFactory[clazz] = factory
+		val desc = Descriptor(id, clazz, factory)
+		byId[id] = desc
+		byClass[clazz] = desc
 	}
 
 	/** Non-reified version of registerContentTypeAlias. */
 	fun <T : RichContent> registerContentTypeAlias(id: String, clazz: KClass<T>) {
-		require(!idToClazz.containsKey(id)) {
-			"Tried to register class $clazz with secondary alias '$id', which conflicts with ${idToClazz[id]!!}"
+		require(!byId.containsKey(id)) {
+			"Tried to register class $clazz with secondary alias '$id', which conflicts with ${byId[id]!!.clazz}"
 		}
 
-		require(clazzToId.containsKey(clazz)) {
+		require(byClass.containsKey(clazz)) {
 			"No primary registration exists for $clazz. Use registerContentType first."
 		}
 
-		idToClazz[id] = clazz
+		byId[id] = byClass[clazz]!!
 	}
 
 	/** Non-reified version of registerPlaintextType. */
@@ -139,6 +138,8 @@ object ContentTypesRegistry {
 
 		factory.invoke(it.content)
 	}
+
+	internal data class Descriptor<T : RichContent>(val id: String, val clazz: KClass<T>, val factory: ContentFactory<T>)
 }
 
 /**
@@ -166,14 +167,14 @@ abstract class AbstractContentSerializer<T : RichContent> internal constructor()
 	}
 
 	private fun <T : RichContent> T.getContentClassId(): String =
-		ContentTypesRegistry.clazzToId[this::class] ?: error("Unregistered content type ${this::class}")
+		ContentTypesRegistry.byClass[this::class]?.id ?: error("Unregistered content type ${this::class}")
 
 	private fun String.getContentClass(): KClass<*> =
-		ContentTypesRegistry.idToClazz[this] ?: error("Unregistered content type id $this")
+		ContentTypesRegistry.byId[this]?.clazz ?: error("Unregistered content type id $this")
 
 	// COVERAGE: error branch is unreachable
 	private fun <T : KClass<*>> T.getFactory(): ContentTypesRegistry.ContentFactory<RichContent> =
-		ContentTypesRegistry.clazzToFactory[this] ?: error("Unregistered content type $this")
+		ContentTypesRegistry.byClass[this]?.factory ?: error("Unregistered content type $this")
 
 	private fun <T : KClass<*>> T.buildContent(json: JsonElement): RichContent = getFactory().invoke(json)
 
