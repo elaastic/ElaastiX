@@ -20,9 +20,9 @@
 package org.elaastix.commons.jpa
 
 import io.hypersistence.utils.spring.repository.BaseJpaRepository
-import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.platform.ExcludeFromCoverage
 import org.springframework.data.repository.NoRepositoryBean
+import kotlin.uuid.Uuid
 
 /**
  * Specialised Repository type for use in all Elaastix projects.
@@ -37,4 +37,49 @@ interface ElaastixRepository<T : AbstractEntity> : BaseJpaRepository<T, Uuid> {
 	 */
 	@ExcludeFromCoverage("Trivial helper")
 	fun findByIdOrNull(id: Uuid): T? = findById(id).orElse(null)
+
+	/**
+	 * Helper to get the concrete class of an entity by its ID.
+	 * Useful to avoid fetching the entire entity when only interested in its type.
+	 */
+	fun findConcreteTypeById(id: Uuid): Class<T>?
+
+	/**
+	 * Helper to get an entity reference usable for creating entities with relations.
+	 *
+	 * The actual entity object will not be fetched (no query to the database will be made), unless a property other
+	 * than its `id` is read.
+	 *
+	 * **NOTE**: the output type will be **exactly** [T].
+	 *
+	 * @see getConcreteEntityReference
+	 * @see getEntityReferenceWithType
+	 */
+	fun getEntityReference(id: Uuid): T
+
+	/**
+	 * Helper to get an entity reference usable for creating entities with relations.
+	 *
+	 * The actual entity object will not be fetched, unless a property other than its `id` is read.
+	 * A request to the database will be made to query the entity's concrete type.
+	 *
+	 * The output will be the narrowest subclass of [T] (or [T] itself).
+	 * Returns `null` if the entity does not exist.
+	 *
+	 * @see getEntityReference
+	 * @see getEntityReferenceWithType
+	 */
+	fun getConcreteEntityReference(id: Uuid): T?
+
+	/**
+	 * Like [getEntityReference], but with the option to use a more narrow return type.
+	 *
+	 * @see getEntityReference
+	 * @see getConcreteEntityReference
+	 */
+	fun <U : T> getEntityReferenceWithType(id: Uuid, clazz: Class<U>): U
 }
+
+/** Reified helper method. */
+inline fun <T : AbstractEntity, reified U : T> ElaastixRepository<T>.getEntityReferenceWithType(id: Uuid) =
+	getEntityReferenceWithType(id, U::class.java)
