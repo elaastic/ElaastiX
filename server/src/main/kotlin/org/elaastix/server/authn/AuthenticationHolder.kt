@@ -23,7 +23,6 @@ import org.elaastix.mm.users.User
 import org.elaastix.server.users.entities.UserEntity
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.context.SecurityContextHolder
-import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
 
 /**
@@ -35,8 +34,7 @@ import org.springframework.web.client.HttpClientErrorException
  * A convenience helper [required] is provided to get a non-nullable user without having to deal with null checking
  * everytime.
  */
-@Component
-class AuthenticationHolder {
+object AuthenticationHolder {
 	/**
 	 * The [ElaastixAuthentication] for the current security context, if present.
 	 */
