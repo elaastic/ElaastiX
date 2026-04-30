@@ -45,10 +45,10 @@ class ElaastixAuthenticationFilter(
 	}
 
 	override fun successfulAuthentication(
-	    request: HttpServletRequest,
-	    response: HttpServletResponse,
-	    chain: FilterChain,
-	    authResult: Authentication,
+		request: HttpServletRequest,
+		response: HttpServletResponse,
+		chain: FilterChain,
+		authResult: Authentication,
 	) {
 		val context = SecurityContextHolder.createEmptyContext().apply { authentication = authResult }
 		SecurityContextHolder.setContext(context)
@@ -56,9 +56,9 @@ class ElaastixAuthenticationFilter(
 	}
 
 	override fun unsuccessfulAuthentication(
-	    request: HttpServletRequest,
-	    response: HttpServletResponse,
-	    failed: AuthenticationException,
+		request: HttpServletRequest,
+		response: HttpServletResponse,
+		failed: AuthenticationException,
 	) {
 		response.status = HttpServletResponse.SC_UNAUTHORIZED
 		val mediaTypes = contentNegotiationManager.resolveMediaTypes(ServletWebRequest(request))

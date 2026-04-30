@@ -20,8 +20,8 @@
 package org.elaastix.server.authn
 
 import jakarta.servlet.http.HttpServletRequest
+import org.elaastix.commons.data.Uuid
 import org.springframework.security.web.authentication.AuthenticationConverter
-import kotlin.uuid.Uuid
 
 /**
  * Converter responsible for handling the initial token handling routine.
