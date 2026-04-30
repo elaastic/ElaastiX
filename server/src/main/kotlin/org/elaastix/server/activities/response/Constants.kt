@@ -17,30 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.activities.response.dtos
+package org.elaastix.server.activities.response
 
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
-import org.elaastix.commons.data.Uuid
-import org.elaastix.mm.content.FormattedText
-import org.elaastix.mm.content.RichContent
-import org.elaastix.server.activities.response.CLOSED_QUESTION_DISCRIMINATOR
+/** Discriminator for open questions. **API contract**. */
+const val OPEN_QUESTION_DISCRIMINATOR = "OpenQuestion"
 
-/**
- * A closed question, without the answer.
- */
-@Serializable
-@SerialName(CLOSED_QUESTION_DISCRIMINATOR)
-data class ClosedQuestionStatementDto(
-	/** The question's unique identifier. */
-	val id: Uuid,
+/** Discriminator for open questions. **API contract**. */
+const val CLOSED_QUESTION_DISCRIMINATOR = "ClosedQuestion"
 
-	/** The question's statement. */
-	val statement: RichContent,
+/** Discriminator for open responses. **API contract**. */
+const val OPEN_RESPONSE_DISCRIMINATOR = "OpenResponse"
 
-	/** Whether the question accepts multiple answers, or only a single one. */
-	val multiple: Boolean,
-
-	/** List of choices the user can pick from. Ordered as authored by the author. */
-	val choices: List<FormattedText>,
-) : QuestionStatementDto
+/** Discriminator for open responses. **API contract**. */
+const val CLOSED_RESPONSE_DISCRIMINATOR = "ClosedResponse"

@@ -19,14 +19,17 @@
 
 package org.elaastix.server.activities.response.dtos
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.Uuid
 import org.elaastix.mm.content.RichContent
+import org.elaastix.server.activities.response.OPEN_QUESTION_DISCRIMINATOR
 
 /**
  * An open question, without the answer.
  */
 @Serializable
+@SerialName(OPEN_QUESTION_DISCRIMINATOR)
 data class OpenQuestionStatementDto(
 	/** The question's unique identifier. */
 	val id: Uuid,

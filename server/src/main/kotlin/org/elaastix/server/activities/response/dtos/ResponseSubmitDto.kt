@@ -19,28 +19,11 @@
 
 package org.elaastix.server.activities.response.dtos
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.elaastix.commons.data.Uuid
-import org.elaastix.mm.content.FormattedText
-import org.elaastix.mm.content.RichContent
-import org.elaastix.server.activities.response.CLOSED_QUESTION_DISCRIMINATOR
 
 /**
- * A closed question, without the answer.
+ * Marker for responses.
+ * Used to establish a polymorphic hierarchy for Kotlinx Serialization.
  */
 @Serializable
-@SerialName(CLOSED_QUESTION_DISCRIMINATOR)
-data class ClosedQuestionStatementDto(
-	/** The question's unique identifier. */
-	val id: Uuid,
-
-	/** The question's statement. */
-	val statement: RichContent,
-
-	/** Whether the question accepts multiple answers, or only a single one. */
-	val multiple: Boolean,
-
-	/** List of choices the user can pick from. Ordered as authored by the author. */
-	val choices: List<FormattedText>,
-) : QuestionStatementDto
+sealed interface ResponseSubmitDto

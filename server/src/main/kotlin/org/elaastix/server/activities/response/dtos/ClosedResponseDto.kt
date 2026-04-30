@@ -22,25 +22,26 @@ package org.elaastix.server.activities.response.dtos
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.Uuid
-import org.elaastix.mm.content.FormattedText
-import org.elaastix.mm.content.RichContent
-import org.elaastix.server.activities.response.CLOSED_QUESTION_DISCRIMINATOR
+import org.elaastix.mm.content.FormattedContent
+import org.elaastix.server.activities.response.CLOSED_RESPONSE_DISCRIMINATOR
+import org.elaastix.server.activities.response.ClosedAnswer
 
-/**
- * A closed question, without the answer.
- */
+/** A response to an open question. */
 @Serializable
-@SerialName(CLOSED_QUESTION_DISCRIMINATOR)
-data class ClosedQuestionStatementDto(
-	/** The question's unique identifier. */
+@SerialName(CLOSED_RESPONSE_DISCRIMINATOR)
+data class ClosedResponseDto(
+	/** Unique ID of the response. */
 	val id: Uuid,
-
-	/** The question's statement. */
-	val statement: RichContent,
-
-	/** Whether the question accepts multiple answers, or only a single one. */
-	val multiple: Boolean,
-
-	/** List of choices the user can pick from. Ordered as authored by the author. */
-	val choices: List<FormattedText>,
-) : QuestionStatementDto
+	/** ID of the user who authored the response. */
+	val authorId: Uuid,
+	/** ID of the question this answer is attached to. */
+	val questionId: Uuid,
+	/** ID of the response being amended, if any. */
+	val amendedResponse: Uuid?,
+	/** Response contents. */
+	val answer: ClosedAnswer,
+	/** The explanation of the user for their answer. Optional. */
+	val selfExplanation: FormattedContent?,
+	/** The confidence degree of the user for their answer. Optional. */
+	val confidenceDegree: UInt?,
+) : ResponseDto

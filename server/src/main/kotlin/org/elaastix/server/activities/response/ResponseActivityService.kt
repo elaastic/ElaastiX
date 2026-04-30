@@ -19,18 +19,37 @@
 
 package org.elaastix.server.activities.response
 
+import jakarta.transaction.Transactional
+import jakarta.validation.Valid
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.orNotFound
+import org.elaastix.commons.validate
 import org.elaastix.server.activities.response.dtos.ClosedQuestionStatementDto
+import org.elaastix.server.activities.response.dtos.ClosedResponseDto
+import org.elaastix.server.activities.response.dtos.ClosedResponseSubmitDto
 import org.elaastix.server.activities.response.dtos.OpenQuestionStatementDto
+import org.elaastix.server.activities.response.dtos.OpenResponseDto
+import org.elaastix.server.activities.response.dtos.OpenResponseSubmitDto
+import org.elaastix.server.activities.response.dtos.ResponseDto
+import org.elaastix.server.activities.response.dtos.ResponseSubmitDto
 import org.elaastix.server.activities.response.entities.ClosedQuestionEntity
+import org.elaastix.server.activities.response.entities.ClosedResponseEntity
 import org.elaastix.server.activities.response.entities.OpenQuestionEntity
+import org.elaastix.server.activities.response.entities.OpenResponseEntity
+import org.elaastix.server.activities.response.entities.ResponseEntity
 import org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection
 import org.elaastix.server.activities.response.repositories.QuestionRepository
+import org.elaastix.server.activities.response.repositories.ResponseRepository
+import org.elaastix.server.authn.AuthenticationHolder
+import org.elaastix.server.authn.required
 import org.springframework.stereotype.Service
 
 /** Service responsible for the response activity. */
 @Service
-class ResponseActivityService(private val questionRepository: QuestionRepository) {
+class ResponseActivityService(
+	private val questionRepository: QuestionRepository,
+	private val responseRepository: ResponseRepository,
+) {
 	companion object {
 		/** Transforms the DAO-level type into a Service-level type. */
 		fun QuestionStatementProjection.toDto() =
@@ -43,10 +62,78 @@ class ResponseActivityService(private val questionRepository: QuestionRepository
 
 				else -> error("Unknown polymorphic variant $type")
 			}
+
+		/** Transforms a [ResponseEntity] into a [ResponseDto]. */
+		fun ResponseEntity.toDto() =
+			when (this) {
+				is OpenResponseEntity ->
+					OpenResponseDto(
+						id,
+						author.id,
+						question.id,
+						amendedResponse?.id,
+						answer,
+						selfExplanation,
+						confidenceDegree,
+					)
+
+				is ClosedResponseEntity ->
+					ClosedResponseDto(
+						id,
+						author.id,
+						question.id,
+						amendedResponse?.id,
+						answer,
+						selfExplanation,
+						confidenceDegree,
+					)
+
+				else -> error("Unknown polymorphic variant ${this::class}")
+			}
 	}
 
 	/**
 	 * Finds a question's statement (and available choices if it's a closed question).
 	 */
 	fun findQuestionStatement(id: Uuid) = questionRepository.findQuestionStatementById(id)?.toDto()
+
+	/**
+	 * Validates and records an answer to a question.
+	 */
+	@Transactional
+	fun submitAnswer(
+		questionId: Uuid,
+		@Valid response: ResponseSubmitDto,
+	): ResponseDto {
+		val entity =
+			when (val questionRef = questionRepository.getConcreteEntityReference(questionId).orNotFound()) {
+				is OpenQuestionEntity -> {
+					validate(response is OpenResponseSubmitDto) { "Response type does not match the question's type." }
+					OpenResponseEntity(
+						author = AuthenticationHolder.authenticatedUserEntity.required(),
+						question = questionRef,
+						answer = response.answer,
+						selfExplanation = response.selfExplanation,
+						confidenceDegree = response.confidenceDegree,
+					)
+				}
+
+				is ClosedQuestionEntity -> {
+					validate(response is ClosedResponseSubmitDto) { "Response type does not match the question's type." }
+					ClosedResponseEntity(
+						author = AuthenticationHolder.authenticatedUserEntity.required(),
+						question = questionRef,
+						answer = response.answer,
+						selfExplanation = response.selfExplanation,
+						confidenceDegree = response.confidenceDegree,
+					)
+				}
+
+				// COVERAGE: Unreachable
+				else -> error("Unknown question type encountered: ${questionRef::class.java}")
+			}
+
+		val response = responseRepository.persist(entity)
+		return response.toDto()
+	}
 }
