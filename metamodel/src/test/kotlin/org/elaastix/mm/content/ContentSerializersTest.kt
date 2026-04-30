@@ -178,7 +178,7 @@ class ContentSerializersTest {
 
 		then(exactly = 1) { content.toJson() }
 		assertThat(result).isEqualTo(
-			"""{"c":"TestRichContent","d":{"some":"data"}}""",
+			$$"""{"$type":"TestRichContent","$data":{"some":"data"}}""",
 		)
 	}
 
@@ -192,7 +192,7 @@ class ContentSerializersTest {
 
 		then(exactly = 1) { content.toJson() }
 		assertThat(result).isEqualTo(
-			"""{"c":"TestFormattedContent","d":"some text"}""",
+			$$"""{"$type":"TestFormattedContent","$data":"some text"}""",
 		)
 	}
 
@@ -209,7 +209,7 @@ class ContentSerializersTest {
 		then(exactly = 1) { content.toJson() }
 		then(exactly = 1) { content.asString() }
 		assertThat(result).isEqualTo(
-			"""{"c":"TestFormattedText","d":"some plaintext"}""",
+			$$"""{"$type":"TestFormattedText","$data":"some plaintext"}""",
 		)
 	}
 
@@ -223,7 +223,7 @@ class ContentSerializersTest {
 
 		then(exactly = 1) { content.toJson() }
 		assertThat(result).isEqualTo(
-			"""{"c":"AwesomeContent","d":"some text"}""",
+			$$"""{"$type":"AwesomeContent","$data":"some text"}""",
 		)
 	}
 
@@ -243,7 +243,7 @@ class ContentSerializersTest {
 	@Test
 	fun `deserialises rich content from a plain JSON object`() {
 		val result: RichContent = Json.decodeFromString(
-			"""{"c":"TestRichContent","d":{"some":"data"}}""",
+			$$"""{"$type":"TestRichContent","$data":{"some":"data"}}""",
 		)
 
 		then(exactly = 1) { testRichContentFactory(any()) }
@@ -257,7 +257,7 @@ class ContentSerializersTest {
 	@Test
 	fun `deserialises formatted content from a plain JSON object`() {
 		val result: FormattedContent = Json.decodeFromString(
-			"""{"c":"TestFormattedContent","d":"some text"}""",
+			$$"""{"$type":"TestFormattedContent","$data":"some text"}""",
 		)
 
 		then(exactly = 1) { testFormattedContentFactory(any()) }
@@ -271,7 +271,7 @@ class ContentSerializersTest {
 	@Test
 	fun `deserialises formatted text from a plain JSON object`() {
 		val result: FormattedText = Json.decodeFromString(
-			"""{"c":"TestFormattedText","d":"some plaintext"}""",
+			$$"""{"$type":"TestFormattedText","$data":"some plaintext"}""",
 		)
 
 		then(exactly = 1) { testFormattedTextFactory.invoke(any()) }
@@ -286,7 +286,7 @@ class ContentSerializersTest {
 	fun `does not deserialises objects with an unregistered content type`() {
 		assertThrows<IllegalStateException> {
 			Json.decodeFromString<RichContent>(
-				"""{"c":"BadNotRegistered","d":"some plaintext"}""",
+				$$"""{"$type":"BadNotRegistered","$data":"some plaintext"}""",
 			)
 		}
 	}
@@ -295,7 +295,7 @@ class ContentSerializersTest {
 	fun `does not deserialises formatted text from a complex JSON object`() {
 		assertThrows<IllegalArgumentException> {
 			Json.decodeFromString<FormattedText>(
-				"""{"c":"TestFormattedText","d":{"wow":"meow"}}""",
+				$$"""{"$type":"TestFormattedText","$data":{"wow":"meow"}}""",
 			)
 		}
 	}
@@ -304,7 +304,7 @@ class ContentSerializersTest {
 	fun `does not deserialises formatted text from a non-string primitive JSON element`() {
 		assertThrows<IllegalArgumentException> {
 			Json.decodeFromString<FormattedText>(
-				"""{"c":"TestFormattedText","d":false}""",
+				$$"""{"$type":"TestFormattedText","$data":false}""",
 			)
 		}
 	}
@@ -322,7 +322,7 @@ class ContentSerializersTest {
 			val content: FormattedContent = TestFormattedContent("some text")
 			val json = Json.encodeToString(content)
 			assertThat(json).isEqualTo(
-				"""{"c":"TestFormattedContent","d":"some text"}""",
+				$$"""{"$type":"TestFormattedContent","$data":"some text"}""",
 			)
 		}
 
@@ -331,7 +331,7 @@ class ContentSerializersTest {
 			ContentTypesRegistry.registerContentTypeAlias(CONTENT_ALIAS_ID, TestFormattedText::class)
 
 			val result: FormattedText = Json.decodeFromString(
-				"""{"c":"Alias","d":"some plaintext"}""",
+				$$"""{"$type":"Alias","$data":"some plaintext"}""",
 			)
 
 			assertThat(result).isInstanceOf(TestFormattedText::class.java)

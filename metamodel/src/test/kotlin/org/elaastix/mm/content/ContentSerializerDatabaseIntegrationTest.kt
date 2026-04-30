@@ -142,7 +142,7 @@ class ContentSerializerDatabaseIntegrationTest {
 
 		val res = assertDoesNotThrow {
 			tu.runWithTransaction {
-				em.createNativeQuery("SELECT content->'d'->'obj'->>'wow' FROM test_entity WHERE id = :id")
+				em.createNativeQuery($$"SELECT content->'$data'->'obj'->>'wow' FROM test_entity WHERE id = :id")
 					.apply { setParameter("id", id) }
 					.singleResult
 			}

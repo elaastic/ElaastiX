@@ -146,6 +146,7 @@ object ContentTypesRegistry {
  * Kotlinx serializer for all types of content. Currently only compatible with JSON.
  *
  * TODO: Add support for CBOR serialization. Currently not supported due to the use of [JsonElement].
+ * TODO: refactor to use smth akin to [kotlinx.serialization.json.JsonContentPolymorphicSerializer] instead?
  */
 abstract class AbstractContentSerializer<T : RichContent> internal constructor() : KSerializer<T> {
 	internal val delegate = ContentWrapper.serializer()
@@ -182,9 +183,9 @@ abstract class AbstractContentSerializer<T : RichContent> internal constructor()
 
 	@Serializable
 	internal data class ContentWrapper(
-		@SerialName("c")
+		@SerialName($$"$type")
 		val clazz: String,
-		@SerialName("d")
+		@SerialName($$"$data")
 		val data: JsonElement,
 	)
 }
