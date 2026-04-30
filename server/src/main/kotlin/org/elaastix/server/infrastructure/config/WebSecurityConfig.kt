@@ -19,8 +19,8 @@
 
 package org.elaastix.server.infrastructure.config
 
-import org.elaastix.server.authn.tmp.AuthnTmpProcessingFilter
-import org.elaastix.server.authn.tmp.AuthnTmpProvider
+import org.elaastix.server.authn.ElaastixAuthenticationFilter
+import org.elaastix.server.authn.ElaastixAuthenticationProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpStatus
@@ -33,6 +33,7 @@ import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.util.matcher.AnyRequestMatcher
+import org.springframework.web.accept.ContentNegotiationManager
 
 /**
  * Configuration class for Spring Security.
@@ -41,8 +42,9 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig(
-	private val authProvider: AuthnTmpProvider,
+	private val authProvider: ElaastixAuthenticationProvider,
 	private val authConfig: AuthenticationConfiguration,
+	private val contentNegotiationManager: ContentNegotiationManager,
 ) {
 	@Bean
 	@Suppress("UndocumentedPublicFunction")
@@ -57,9 +59,10 @@ class WebSecurityConfig(
 			sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
 
 			addFilterBefore<AnonymousAuthenticationFilter>(
-				AuthnTmpProcessingFilter(
+				ElaastixAuthenticationFilter(
 					AnyRequestMatcher.INSTANCE,
 					authConfig.authenticationManager,
+					contentNegotiationManager,
 				),
 			)
 

@@ -38,10 +38,16 @@ import org.springframework.web.client.HttpClientErrorException
 @Component
 class AuthenticationHolder {
 	/**
+	 * The [ElaastixAuthentication] for the current security context, if present.
+	 */
+	val authentication: ElaastixAuthentication?
+		get() = SecurityContextHolder.getContext().authentication as? ElaastixAuthentication
+
+	/**
 	 * Whether the current context holds a valid authentication.
 	 */
 	val isAuthenticated: Boolean
-		get() = SecurityContextHolder.getContext().authentication?.isAuthenticated == true
+		get() = authentication?.isAuthenticated == true
 
 	/**
 	 * Authenticated user for the current context. `null` if unauthenticated.
@@ -53,7 +59,7 @@ class AuthenticationHolder {
 	 * Authenticated user entity for the current context. `null` if unauthenticated.
 	 */
 	val authenticatedUserEntity: UserEntity?
-		get() = SecurityContextHolder.getContext().authentication?.principal as? UserEntity
+		get() = authentication?.principal
 }
 
 /**
