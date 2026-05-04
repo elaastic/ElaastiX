@@ -23,7 +23,7 @@ import org.elaastix.mm.content.ContentTypesRegistry
 import org.elaastix.mm.content.FormattedText
 
 /**
- * Plaintext formatted in Markdown (inline syntax elements only).
+ * Plain text formatted in Markdown (inline syntax elements only).
  *
  * CommonMark (0.31.2) § 6 "Inlines" ONLY, excluding § 6.4 "Images", § 6.6 "Raw HTML", § 6.7 "Hard line breaks".
  */
@@ -33,7 +33,7 @@ class MarkdownText(
 ) : FormattedText {
 	companion object {
 		init {
-			ContentTypesRegistry.registerPlaintextType {
+			ContentTypesRegistry.registerPlainTextType {
 				MarkdownText(it)
 			}
 		}

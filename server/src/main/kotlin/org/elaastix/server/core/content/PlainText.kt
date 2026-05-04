@@ -23,15 +23,15 @@ import org.elaastix.mm.content.ContentTypesRegistry
 import org.elaastix.mm.content.FormattedText
 
 /**
- * Plaintext without any formatting.
+ * Plain text without any formatting.
  */
-class Plaintext(
+class PlainText(
 	/** The text content. */
 	val content: String,
 ) : FormattedText {
 	companion object {
 		init {
-			ContentTypesRegistry.registerPlaintextType { Plaintext(it) }
+			ContentTypesRegistry.registerPlainTextType { PlainText(it) }
 		}
 	}
 

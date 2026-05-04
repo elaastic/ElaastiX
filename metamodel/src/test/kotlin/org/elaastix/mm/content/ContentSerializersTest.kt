@@ -44,7 +44,7 @@ import org.junit.jupiter.api.parallel.Isolated
 @Isolated("Registry is a globally-visible singleton")
 class ContentSerializersTest {
 	typealias Factory<T> = ContentTypesRegistry.ContentFactory<T>
-	typealias FactoryText<T> = ContentTypesRegistry.PlaintextFactory<T>
+	typealias FactoryText<T> = ContentTypesRegistry.PlainTextFactory<T>
 
 	companion object {
 		val testRichContentFactory: Factory<TestRichContent>
@@ -127,20 +127,20 @@ class ContentSerializersTest {
 				}.also { testRichContentFactory = it },
 			)
 
-			ContentTypesRegistry.registerPlaintextType(
+			ContentTypesRegistry.registerPlainTextType(
 				mockTextFactory {
 					TestFormattedContent(it)
 				}.also { testFormattedContentFactory = it },
 			)
 
-			ContentTypesRegistry.registerPlaintextType(
+			ContentTypesRegistry.registerPlainTextType(
 				"AwesomeContent",
 				mockTextFactory {
 					TestFormattedContentCustomId(it)
 				}.also { testFormattedContentCustomIdFactory = it },
 			)
 
-			ContentTypesRegistry.registerPlaintextType(
+			ContentTypesRegistry.registerPlainTextType(
 				mockTextFactory { TestFormattedText(it) }
 					.also { testFormattedTextFactory = it },
 			)
@@ -192,7 +192,7 @@ class ContentSerializersTest {
 	fun `serialises formatted text as a plain JSON object`() {
 		val content: FormattedText = spyk(
 			TestFormattedText(
-				"some plaintext",
+				"some plain text",
 			),
 		)
 
@@ -201,7 +201,7 @@ class ContentSerializersTest {
 		then(exactly = 1) { content.toJson() }
 		then(exactly = 1) { content.asString() }
 		assertThat(result).isEqualTo(
-			$$"""{"$type":"TestFormattedText","$data":"some plaintext"}""",
+			$$"""{"$type":"TestFormattedText","$data":"some plain text"}""",
 		)
 	}
 
@@ -263,7 +263,7 @@ class ContentSerializersTest {
 	@Test
 	fun `deserialises formatted text from a plain JSON object`() {
 		val result: FormattedText = Json.decodeFromString(
-			$$"""{"$type":"TestFormattedText","$data":"some plaintext"}""",
+			$$"""{"$type":"TestFormattedText","$data":"some plain text"}""",
 		)
 
 		then(exactly = 1) { testFormattedTextFactory.invoke(any()) }
@@ -271,14 +271,14 @@ class ContentSerializersTest {
 		assertThat(result).isInstanceOf(TestFormattedText::class.java)
 		val content = result as TestFormattedText
 
-		assertThat(content.text).isEqualTo("some plaintext")
+		assertThat(content.text).isEqualTo("some plain text")
 	}
 
 	@Test
 	fun `does not deserialises objects with an unregistered content type`() {
 		assertThrows<IllegalStateException> {
 			Json.decodeFromString<RichContent>(
-				$$"""{"$type":"BadNotRegistered","$data":"some plaintext"}""",
+				$$"""{"$type":"BadNotRegistered","$data":"some plain text"}""",
 			)
 		}
 	}
@@ -323,11 +323,11 @@ class ContentSerializersTest {
 			ContentTypesRegistry.registerContentTypeAlias(CONTENT_ALIAS_ID, TestFormattedText::class)
 
 			val result: FormattedText = Json.decodeFromString(
-				$$"""{"$type":"Alias","$data":"some plaintext"}""",
+				$$"""{"$type":"Alias","$data":"some plain text"}""",
 			)
 
 			assertThat(result).isInstanceOf(TestFormattedText::class.java)
-			assertThat((result as TestFormattedText).text).isEqualTo("some plaintext")
+			assertThat((result as TestFormattedText).text).isEqualTo("some plain text")
 		}
 
 		@Test

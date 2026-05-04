@@ -37,7 +37,7 @@ object ContentTypesRegistry {
 	// See: https://github.com/Kotlin/kotlinx-kover/issues/753
 
 	internal typealias ContentFactory<T> = (JsonElement) -> T
-	internal typealias PlaintextFactory<T> = (String) -> T
+	internal typealias PlainTextFactory<T> = (String) -> T
 
 	internal data class Descriptor<T : RichContent>(val id: String, val clazz: KClass<T>, val factory: ContentFactory<T>)
 
@@ -63,7 +63,7 @@ object ContentTypesRegistry {
 		registerContentType(id, T::class, factory)
 
 	/**
-	 * Registers a type of content that is plaintext specifically.
+	 * Registers a type of content that is plain text specifically.
 	 *
 	 * Similar to [registerContentType], with a different type of factory.
 	 *
@@ -73,8 +73,8 @@ object ContentTypesRegistry {
 	 * @throws IllegalArgumentException if the ID is already in use.
 	 * @throws IllegalArgumentException if the class is already registered.
 	 */
-	inline fun <reified T : RichContent> registerPlaintextType(id: String, crossinline factory: PlaintextFactory<T>) =
-		registerPlaintextType(id, T::class, factory)
+	inline fun <reified T : RichContent> registerPlainTextType(id: String, crossinline factory: PlainTextFactory<T>) =
+		registerPlainTextType(id, T::class, factory)
 
 	/**
 	 * Registers an alias for a given type of content. Useful for legacy aliases that still need to be resolved.
@@ -92,8 +92,8 @@ object ContentTypesRegistry {
 		registerContentType(T::class.java.simpleName, T::class, factory)
 
 	/** Shortcut for registering content types with the ID predefined as the class's simple name. */
-	inline fun <reified T : RichContent> registerPlaintextType(noinline factory: PlaintextFactory<T>) =
-		registerPlaintextType(T::class.java.simpleName, T::class, factory)
+	inline fun <reified T : RichContent> registerPlainTextType(noinline factory: PlainTextFactory<T>) =
+		registerPlainTextType(T::class.java.simpleName, T::class, factory)
 
 	/** Non-reified version of registerContentType. */
 	fun <T : RichContent> registerContentType(id: String, clazz: KClass<T>, factory: ContentFactory<T>) {
@@ -123,12 +123,12 @@ object ContentTypesRegistry {
 		byId[id] = byClass[clazz]!!
 	}
 
-	/** Non-reified version of registerPlaintextType. */
+	/** Non-reified version of registerPlainTextType. */
 	@Suppress("detekt:FunctionSignature") // For whatever reason ktlint is having a very hard time here??
-	inline fun <T : RichContent> registerPlaintextType(
+	inline fun <T : RichContent> registerPlainTextType(
 		id: String,
 		clazz: KClass<T>,
-		crossinline factory: PlaintextFactory<T>,
+		crossinline factory: PlainTextFactory<T>,
 	) = registerContentType(id, clazz) {
 		require(it is JsonPrimitive && it.isString) {
 			"Expected a JSON string, got " +

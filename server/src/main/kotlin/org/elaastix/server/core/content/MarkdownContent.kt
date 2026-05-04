@@ -32,7 +32,7 @@ class MarkdownContent(
 ) : FormattedContent {
 	companion object {
 		init {
-			ContentTypesRegistry.registerPlaintextType {
+			ContentTypesRegistry.registerPlainTextType {
 				MarkdownContent(it)
 			}
 		}
