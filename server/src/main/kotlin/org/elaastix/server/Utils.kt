@@ -17,22 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn.tmp
+package org.elaastix.server
 
-import io.swagger.v3.oas.annotations.Hidden
-import org.elaastix.commons.platform.ExcludeFromCoverage
-import org.elaastix.server.authn.AuthenticationHolder
-import org.elaastix.server.authn.required
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.http.MediaType
 
-@Hidden
-@RestController
-@RequestMapping("/authn/tmp")
-@Suppress("UndocumentedPublicClass", "UndocumentedPublicProperty", "UndocumentedPublicFunction")
-@ExcludeFromCoverage("Temporary implementation", ref = "https://github.com/elaastic/ElaastiX/issues/9")
-class AuthnTmpController {
-	@GetMapping("/who-am-i", version = "1+")
-	fun whoAmI(): String? = AuthenticationHolder.authenticatedUser.required().id.toString()
+/** Returns whether a given set of media types favours CBOR over JSON. */
+fun List<MediaType>.prefersCbor(): Boolean {
+	val cbor = indexOf(MediaType.APPLICATION_CBOR)
+	val json = indexOf(MediaType.APPLICATION_JSON)
+
+	return when {
+		cbor == -1 -> false
+		json == -1 -> true
+		else -> cbor < json
+	}
 }

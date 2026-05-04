@@ -17,22 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn.tmp
+package org.elaastix.commons.conversion
 
-import io.swagger.v3.oas.annotations.Hidden
-import org.elaastix.commons.platform.ExcludeFromCoverage
-import org.elaastix.server.authn.AuthenticationHolder
-import org.elaastix.server.authn.required
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.context.annotation.Import
 
-@Hidden
-@RestController
-@RequestMapping("/authn/tmp")
-@Suppress("UndocumentedPublicClass", "UndocumentedPublicProperty", "UndocumentedPublicFunction")
-@ExcludeFromCoverage("Temporary implementation", ref = "https://github.com/elaastic/ElaastiX/issues/9")
-class AuthnTmpController {
-	@GetMapping("/who-am-i", version = "1+")
-	fun whoAmI(): String? = AuthenticationHolder.authenticatedUser.required().id.toString()
-}
+/**
+ * Autoconfiguration class registering the converters for use by Spring.
+ */
+@AutoConfiguration
+@Import(UuidConverter::class)
+class SpringConvertersAutoConfiguration

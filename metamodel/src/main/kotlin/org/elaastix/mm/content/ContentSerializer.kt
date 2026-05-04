@@ -124,7 +124,6 @@ object ContentTypesRegistry {
 	}
 
 	/** Non-reified version of registerPlainTextType. */
-	@Suppress("detekt:FunctionSignature") // For whatever reason ktlint is having a very hard time here??
 	inline fun <T : RichContent> registerPlainTextType(
 		id: String,
 		clazz: KClass<T>,

@@ -17,19 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn.tmp
+package org.elaastix.commons.conversion
 
-import org.elaastix.commons.platform.ExcludeFromCoverage
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
-import org.springframework.security.web.util.matcher.RequestMatcher
+import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.data.UuidSerializer.fromBase36
+import org.springframework.core.convert.converter.Converter
+import org.springframework.stereotype.Component
 
-@Suppress("UndocumentedPublicClass", "UndocumentedPublicProperty", "UndocumentedPublicFunction")
-@ExcludeFromCoverage("Temporary implementation", ref = "https://github.com/elaastic/ElaastiX/issues/9")
-class AuthnTmpProcessingFilter(requestMatcher: RequestMatcher, authenticationManager: AuthenticationManager) :
-	AbstractAuthenticationProcessingFilter(requestMatcher) {
-	init {
-		setAuthenticationManager(authenticationManager)
-		setAuthenticationConverter(TmpAuthnConverter())
-	}
+/**
+ * Converter to let Spring handle base36-encoded Uuids.
+ */
+@Component
+class UuidConverter : Converter<String, Uuid> {
+	override fun convert(source: String): Uuid = Uuid.fromBase36(source)
 }

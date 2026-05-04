@@ -34,6 +34,7 @@ ktlint:
   Indentation:
     indentStyle: tab
   FunctionSignature:  # Detekt overrides this with `default` instead of the (better) default of Ktlint
+    active: false  # https://github.com/detekt/detekt/issues/9295
     functionBodyExpressionWrapping: multiline
 
 performance:

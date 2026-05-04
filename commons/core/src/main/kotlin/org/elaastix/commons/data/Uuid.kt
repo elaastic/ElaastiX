@@ -23,7 +23,6 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ByteArraySerializer
 import kotlinx.serialization.cbor.CborDecoder
 import kotlinx.serialization.cbor.CborEncoder
@@ -35,6 +34,7 @@ import kotlinx.serialization.encoding.Encoder
 import java.math.BigInteger
 import kotlin.uuid.Uuid as KtUuid
 
+private const val UUID_BYTES = 16
 private const val BASE36_RADIX = 36
 
 typealias Uuid =
@@ -79,22 +79,24 @@ object UuidSerializer : KSerializer<KtUuid> {
 			),
 		)
 
-	private fun serializeAsString(encoder: Encoder, value: KtUuid) =
-		encoder.encodeString(
-			BigInteger(value.toByteArray()).toString(BASE36_RADIX).padStart(UUID_LEN_B36, '0'),
-		)
+	private fun serializeAsString(encoder: Encoder, value: KtUuid) = encoder.encodeString(value.toStringBase36())
 
-	private fun deserializeFromString(decoder: Decoder) =
-		KtUuid.fromByteArray(
-			BigInteger(
-				decoder.decodeString().also {
-					if (it.length != UUID_LEN_B36) {
-						throw SerializationException(
-							"Expected Uuid to be a string of length ${UUID_LEN_B36}, got ${it.length}",
-						)
-					}
-				},
-				BASE36_RADIX,
-			).toByteArray(),
-		)
+	private fun deserializeFromString(decoder: Decoder) = KtUuid.fromBase36(decoder.decodeString())
+
+	/** Returns the Uuid as a base-36 encoded string. */
+	fun KtUuid.toStringBase36(): String = BigInteger(toByteArray()).toString(BASE36_RADIX).padStart(UUID_LEN_B36, '0')
+
+	/** Parses a base-36 encoded string into a Uuid. */
+	fun KtUuid.Companion.fromBase36(str: String): KtUuid {
+		require(str.length == UUID_LEN_B36) {
+			"Expected Uuid to be a string of length $UUID_LEN_B36 (is: ${str.length})"
+		}
+
+		val bytes = ByteArray(UUID_BYTES)
+		BigInteger(str, BASE36_RADIX).toByteArray().also {
+			it.copyInto(bytes, destinationOffset = UUID_BYTES - it.size)
+		}
+
+		return fromByteArray(bytes)
+	}
 }
