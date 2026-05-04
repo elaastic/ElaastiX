@@ -17,19 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.spring-lib")
-	id("conventions.hibernate-lib")
-	id("conventions.test")
-}
+package org.elaastix.server.core.content
 
-dependencies {
-	implementation(libs.spring.boot.jpa)
-	implementation(libs.spring.boot.validation)
-	implementation(libs.hypersistence.utils)
+import kotlinx.serialization.json.JsonPrimitive
+import org.elaastix.mm.content.ContentTypesRegistry
+import org.elaastix.mm.content.FormattedContent
 
-	testImplementation(libs.spring.boot.jpa.test)
-	testImplementation(libs.spring.boot.validation.test)
+/**
+ * Contents formatted in Markdown (Obsidian Flavoured).
+ */
+class MarkdownContent(
+	/** The Markdown content. */
+	val content: String,
+) : FormattedContent {
+	companion object {
+		init {
+			ContentTypesRegistry.registerPlainTextType {
+				MarkdownContent(it)
+			}
+		}
+	}
+
+	override fun toJson() = JsonPrimitive(content)
 }

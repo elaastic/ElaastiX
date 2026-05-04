@@ -29,14 +29,14 @@ import kotlinx.serialization.json.JsonPrimitive
  * New lines are not necessarily forbidden, but renderers MUST normalise all whitespace as simple spaces.
  *
  * Implementations MUST losslessly convert from and to a plain [String]. This implies the following invariants:
- * - `FormattedText.fromString(fstr.toString()) == fstr`
- * - For two instances of a same subclass, `fstr1 == fstr2 <=> fstr1.toString() == fstr.toString()`
+ * - `FormattedText.fromString(fstr.asString()) == fstr`
+ * - For two instances of a same subclass, `fstr1 == fstr2 <=> fstr1.asString() == fstr.asString()`
  *
  * Examples of compliant formats are:
  * - CommonMark (0.31.2) § 6 "Inlines" ONLY, excluding § 6.4 "Images", § 6.6 "Raw HTML", § 6.7 "Hard line breaks".
  * - BBCode (from phpBB), excluding `img`, `list`, `code`, `quote`.
  *
- * **IMPORTANT**: All subclasses MUST have a companion object named `Factory` that inherits [FormattedText.Factory].
+ * **IMPORTANT**: All subclasses MUST register with [ContentTypesRegistry].
  */
 @Serializable(with = FormattedTextSerializer::class)
 interface FormattedText : FormattedContent {
@@ -46,25 +46,7 @@ interface FormattedText : FormattedContent {
 	 * Type information (the kind of formatted text) is not encoded; it is up to the callee to perform any tagging
 	 * deemed appropriate.
 	 */
-	override fun toString(): String
+	fun asString(): String
 
-	override fun toJson(): JsonElement = JsonPrimitive(toString())
-
-	/** Factory that'll be used by the JPA mapper. */
-	interface Factory : FormattedContent.Factory {
-		override fun fromJson(json: JsonElement): FormattedText {
-			require(json is JsonPrimitive && json.isString) {
-				"Expected a JSON string, got " +
-					when (json) {
-						is JsonPrimitive -> json.content
-						else -> json::class.simpleName
-					}
-			}
-
-			return fromString(json.content)
-		}
-
-		/** Constructs an instance of the content from the stored string. */
-		fun fromString(string: String): FormattedText
-	}
+	override fun toJson(): JsonElement = JsonPrimitive(asString())
 }

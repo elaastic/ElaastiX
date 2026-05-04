@@ -152,7 +152,16 @@ jobs:
       # This is a situation where the savings are so small it's not worth (and may in the end have a net negative impact).
       fail-fast: false
       matrix:
-        project: [server, commons, metamodel]
+        include:
+          - project: server
+            path: server
+            name: server
+          - project: commons:core
+            path: commons/core
+            name: commons-core
+          - project: metamodel
+            path: metamodel
+            name: metamodel
     steps:
       - uses: actions/checkout@v6
         with:
@@ -182,7 +191,7 @@ jobs:
         uses: mikepenz/action-junit-report@v6
         if: success() || failure() # always run even if the previous step fails
         with:
-          report_paths: ${{ matrix.project }}/build/test-results/test/TEST-*.xml
+          report_paths: ${{ matrix.path }}/build/test-results/test/TEST-*.xml
           truncate_stack_traces: false
           annotate_only: true
 
@@ -190,8 +199,8 @@ jobs:
         uses: actions/upload-artifact@v7
         if: success() || failure() # always run even if the previous step fails
         with:
-          name: kotlin-codecov-report-raw-${{ matrix.project }}
-          path: ${{ matrix.project }}/build/kover
+          name: kotlin-codecov-report-raw-${{ matrix.name }}
+          path: ${{ matrix.path }}/build/kover
           include-hidden-files: true
 
   kotlin-codecov-aggregate:
@@ -240,10 +249,10 @@ jobs:
 
       - name: Prepare coverage reports for Kover
         run: |
-          subprojects=(commons server metamodel)
-          for sp in "${subprojects[@]}"; do
-            mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-$sp" "$GITHUB_WORKSPACE/$sp/build/kover"
-          done
+          mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-commons-core" "$GITHUB_WORKSPACE/commons/core/build/kover"
+          #mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-commons-jpa" "$GITHUB_WORKSPACE/commons/jpa/build/kover"
+          mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-metamodel" "$GITHUB_WORKSPACE/metamodel/build/kover"
+          mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-server" "$GITHUB_WORKSPACE/server/build/kover"
         env:
           GHA_DEBUG: ${{ runner.debug == '1' && 'true' || 'false' }}
 

@@ -17,34 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
-
-rootProject.name = "ElaastiX"
-
-includeBuild("build-logic")
-include(
-	"commons:core",
-	"commons:spring",
-	"metamodel",
-	"server",
-	"frontend",
-)
-
-pluginManagement {
-	repositories {
-		gradlePluginPortal()
-	}
+plugins {
+	id("conventions.idea")
+	id("conventions.kotlin")
+	id("conventions.spring-lib")
+	id("conventions.hibernate-lib")
+	id("conventions.test")
 }
 
-dependencyResolutionManagement {
-	repositories {
-		mavenCentral()
+dependencies {
+	implementation(libs.springdoc)
+	implementation(libs.spring.boot.jpa)
+	implementation(libs.spring.boot.validation)
+	implementation(libs.hypersistence.utils)
 
-		maven {
-			url = uri("https://jitpack.io")
-			content {
-				includeGroupByRegex("com\\.github\\..*")
-			}
-		}
-	}
+	testImplementation(libs.spring.boot.jpa.test)
+	testImplementation(libs.spring.boot.validation.test)
 }

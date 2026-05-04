@@ -62,9 +62,12 @@ services:
       # server
       - ./server/build.gradle.kts:/work/server/build.gradle.kts:ro
       - ./server/src:/work/server/src:ro
-      # commons
-      - ./commons/build.gradle.kts:/work/commons/build.gradle.kts:ro
-      - ./commons/src:/work/commons/src:ro
+      # commons core
+      - ./commons/core/build.gradle.kts:/work/commons/core/build.gradle.kts:ro
+      - ./commons/core/src:/work/commons/core/src:ro
+      # commons spring
+      - ./commons/spring/build.gradle.kts:/work/commons/spring/build.gradle.kts:ro
+      - ./commons/spring/src:/work/commons/spring/src:ro
       # metamodel
       - ./metamodel/build.gradle.kts:/work/metamodel/build.gradle.kts:ro
       - ./metamodel/src:/work/metamodel/src:ro

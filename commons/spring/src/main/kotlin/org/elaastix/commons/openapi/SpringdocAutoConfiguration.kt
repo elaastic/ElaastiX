@@ -17,34 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
+package org.elaastix.commons.openapi
 
-rootProject.name = "ElaastiX"
+import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.context.annotation.Import
 
-includeBuild("build-logic")
-include(
-	"commons:core",
-	"commons:spring",
-	"metamodel",
-	"server",
-	"frontend",
-)
-
-pluginManagement {
-	repositories {
-		gradlePluginPortal()
-	}
-}
-
-dependencyResolutionManagement {
-	repositories {
-		mavenCentral()
-
-		maven {
-			url = uri("https://jitpack.io")
-			content {
-				includeGroupByRegex("com\\.github\\..*")
-			}
-		}
-	}
-}
+/**
+ * Autoconfiguration class importing SpringDoc components.
+ */
+@AutoConfiguration
+@Import(PropertyCustomiser::class)
+class SpringdocAutoConfiguration

@@ -17,34 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
+package org.elaastix.server.core.content
 
-rootProject.name = "ElaastiX"
+import org.elaastix.mm.content.ContentTypesRegistry
+import org.elaastix.mm.content.FormattedText
 
-includeBuild("build-logic")
-include(
-	"commons:core",
-	"commons:spring",
-	"metamodel",
-	"server",
-	"frontend",
-)
-
-pluginManagement {
-	repositories {
-		gradlePluginPortal()
-	}
-}
-
-dependencyResolutionManagement {
-	repositories {
-		mavenCentral()
-
-		maven {
-			url = uri("https://jitpack.io")
-			content {
-				includeGroupByRegex("com\\.github\\..*")
-			}
+/**
+ * Plain text without any formatting.
+ */
+class PlainText(
+	/** The text content. */
+	val content: String,
+) : FormattedText {
+	companion object {
+		init {
+			ContentTypesRegistry.registerPlainTextType { PlainText(it) }
 		}
 	}
+
+	override fun asString() = content
 }

@@ -32,8 +32,10 @@ import org.assertj.core.api.Assertions.assertThat
 import org.elaastix.commons.jpa.ElaastixHibernateAutoConfiguration
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
+import org.junit.jupiter.api.parallel.Isolated
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage
@@ -46,6 +48,8 @@ import org.springframework.transaction.annotation.Transactional
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.postgresql.PostgreSQLContainer
 
+// We could use fine-grained concurrency locking with ResourceLocks, but that's not as foolproof.
+@Isolated("Registry is a globally-visible singleton")
 @Suppress("JpaDataSourceORMInspection", "SqlResolve")
 @DataJpaTest(properties = ["spring.jpa.hibernate.ddl-auto=create"])
 @Import(ContentSerializerDatabaseIntegrationTest.TransactionUtil::class, ElaastixHibernateAutoConfiguration::class)
@@ -57,17 +61,23 @@ class ContentSerializerDatabaseIntegrationTest {
 		@ServiceConnection
 		val postgres = PostgreSQLContainer("postgres:18-alpine")
 
+		@JvmStatic
+		@AfterAll
+		fun `clean registry`() {
+			ContentTypesRegistry.unregister(TestRichContent::class)
+		}
+
 		class TestRichContent(val data: Map<String, JsonElement>) : RichContent {
 			override fun toJson(): JsonElement = JsonObject(data)
+		}
 
-			companion object Factory : RichContent.Factory {
-				override fun fromJson(json: JsonElement): RichContent {
-					require(json is JsonObject) {
-						"Invalid JsonElement (expected JsonObject got ${json::class.simpleName})"
-					}
-
-					return TestRichContent(json)
+		init {
+			ContentTypesRegistry.registerContentType {
+				require(it is JsonObject) {
+					"Invalid JsonElement (expected JsonObject got ${it::class.simpleName})"
 				}
+
+				TestRichContent(it)
 			}
 		}
 	}
@@ -131,7 +141,7 @@ class ContentSerializerDatabaseIntegrationTest {
 
 		val res = assertDoesNotThrow {
 			tu.runWithTransaction {
-				em.createNativeQuery("SELECT content->'d'->'obj'->>'wow' FROM test_entity WHERE id = :id")
+				em.createNativeQuery($$"SELECT content->'$data'->'obj'->>'wow' FROM test_entity WHERE id = :id")
 					.apply { setParameter("id", id) }
 					.singleResult
 			}

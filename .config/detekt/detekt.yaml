@@ -12,6 +12,7 @@ comments:
   UndocumentedPublicClass:
     active: true
     severity: warning
+    ignoreDefaultCompanionObject: true
     ignoreAnnotated:
       - org.springframework.stereotype.Repository  # Trivial semantic
   UndocumentedPublicFunction:

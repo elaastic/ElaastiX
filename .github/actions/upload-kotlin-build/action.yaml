@@ -9,10 +9,11 @@ runs:
       run: |
         tar -cf root.tzst build
         tar -cf server.tzst server/build
-        tar -cf commons.tzst commons/build
+        tar -cf commons-core.tzst commons/core/build
+        tar -cf commons-spring.tzst commons/spring/build
         tar -cf metamodel.tzst metamodel/build
         tar -cf build-logic.tzst build-logic/build
-        tar -cf kotlin-build-result.tar root.tzst server.tzst commons.tzst metamodel.tzst build-logic.tzst
+        tar -cf kotlin-build-result.tar root.tzst server.tzst commons-core.tzst commons-spring.tzst metamodel.tzst build-logic.tzst
 
     - name: Upload build results
       uses: actions/upload-artifact@v7

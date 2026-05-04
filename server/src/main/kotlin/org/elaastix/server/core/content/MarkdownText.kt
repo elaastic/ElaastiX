@@ -17,34 +17,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("UnstableApiUsage")
+package org.elaastix.server.core.content
 
-rootProject.name = "ElaastiX"
+import org.elaastix.mm.content.ContentTypesRegistry
+import org.elaastix.mm.content.FormattedText
 
-includeBuild("build-logic")
-include(
-	"commons:core",
-	"commons:spring",
-	"metamodel",
-	"server",
-	"frontend",
-)
-
-pluginManagement {
-	repositories {
-		gradlePluginPortal()
-	}
-}
-
-dependencyResolutionManagement {
-	repositories {
-		mavenCentral()
-
-		maven {
-			url = uri("https://jitpack.io")
-			content {
-				includeGroupByRegex("com\\.github\\..*")
+/**
+ * Plain text formatted in Markdown (inline syntax elements only).
+ *
+ * CommonMark (0.31.2) § 6 "Inlines" ONLY, excluding § 6.4 "Images", § 6.6 "Raw HTML", § 6.7 "Hard line breaks".
+ */
+class MarkdownText(
+	/** The Markdown text. */
+	val content: String,
+) : FormattedText {
+	companion object {
+		init {
+			ContentTypesRegistry.registerPlainTextType {
+				MarkdownText(it)
 			}
 		}
 	}
+
+	override fun asString() = content
 }
