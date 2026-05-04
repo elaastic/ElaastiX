@@ -38,28 +38,28 @@ import java.util.function.Predicate
  */
 @Configuration
 class ApiVersioningConfig : WebMvcConfigurer {
-    private companion object {
-        val pathVersioningPredicate: Predicate<RequestPath> = { !it.toString().startsWith("/documentation") }
+	private companion object {
+		val pathVersioningPredicate: Predicate<RequestPath> = { !it.toString().startsWith("/documentation") }
 
-        val handlerVersioningPredicate: Predicate<Class<*>> =
-            HandlerTypePredicate.forBasePackageClass(ElaastixServerApplication::class.java)
-                .and(HandlerTypePredicate.forAnnotation(RestController::class.java))
+		val handlerVersioningPredicate: Predicate<Class<*>> =
+			HandlerTypePredicate.forBasePackageClass(ElaastixServerApplication::class.java)
+				.and(HandlerTypePredicate.forAnnotation(RestController::class.java))
 
-        // Needed so Spring doesn't complain about missing API version.
-        object ScalarDummyVersionResolver : ApiVersionResolver {
-            override fun resolveVersion(request: HttpServletRequest): String? =
-                if (request.servletPath.startsWith("/documentation")) "v0" else null
-        }
-    }
+		// Needed so Spring doesn't complain about missing API version.
+		object ScalarDummyVersionResolver : ApiVersionResolver {
+			override fun resolveVersion(request: HttpServletRequest): String? =
+				if (request.servletPath.startsWith("/documentation")) "v0" else null
+		}
+	}
 
-    override fun configurePathMatch(configurer: PathMatchConfigurer) {
-        configurer.addPathPrefix("/v{apiVersion}", handlerVersioningPredicate)
-    }
+	override fun configurePathMatch(configurer: PathMatchConfigurer) {
+		configurer.addPathPrefix("/v{apiVersion}", handlerVersioningPredicate)
+	}
 
-    override fun configureApiVersioning(configurer: ApiVersionConfigurer) {
-        configurer
-            .usePathSegment(0, pathVersioningPredicate)
-            .useVersionResolver(ScalarDummyVersionResolver)
-            .setDeprecationHandler(StandardApiVersionDeprecationHandler())
-    }
+	override fun configureApiVersioning(configurer: ApiVersionConfigurer) {
+		configurer
+			.usePathSegment(0, pathVersioningPredicate)
+			.useVersionResolver(ScalarDummyVersionResolver)
+			.setDeprecationHandler(StandardApiVersionDeprecationHandler())
+	}
 }

@@ -40,8 +40,8 @@ package org.elaastix.commons.platform
  * Rustaceans should be familiar with this concept of unsafe function. ;)
  */
 @RequiresOptIn(
-    message = "This function is unsafe to use. " +
-        "Please read its documentation, and make sure your usage complies with safety requirements.",
+	message = "This function is unsafe to use. " +
+		"Please read its documentation, and make sure your usage complies with safety requirements.",
 )
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.FUNCTION)

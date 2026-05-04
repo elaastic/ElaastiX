@@ -35,22 +35,22 @@ import org.springframework.stereotype.Component
 @Component
 @Profile("develop & !testing")
 class DatabaseSeeder(private val userRepository: UserRepository) : ApplicationRunner {
-    override fun run(args: ApplicationArguments) {
-        doInitUsers()
-    }
+	override fun run(args: ApplicationArguments) {
+		doInitUsers()
+	}
 
-    private fun doInitUsers() {
-        if (userRepository.count() == 0L) {
-            userRepository.persist(UserEntity(isWriterModeEnabled = true, isAdministrator = true))
-            userRepository.persist(UserEntity(isWriterModeEnabled = true))
-            userRepository.persist(UserEntity())
-        }
+	private fun doInitUsers() {
+		if (userRepository.count() == 0L) {
+			userRepository.persist(UserEntity(isWriterModeEnabled = true, isAdministrator = true))
+			userRepository.persist(UserEntity(isWriterModeEnabled = true))
+			userRepository.persist(UserEntity())
+		}
 
-        // Gross workaround the lack of findAll.
-        userRepository.dangerouslyFindAll(
-            @Suppress("MagicNumber")
-            Pageable.ofSize(3),
-        )
-            .forEachIndexed { idx, user -> println("Test user ${idx + 1}: ${user.id}") }
-    }
+		// Gross workaround the lack of findAll.
+		userRepository.dangerouslyFindAll(
+			@Suppress("MagicNumber")
+			Pageable.ofSize(3),
+		)
+			.forEachIndexed { idx, user -> println("Test user ${idx + 1}: ${user.id}") }
+	}
 }

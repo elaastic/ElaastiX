@@ -27,9 +27,9 @@ import org.springframework.security.web.util.matcher.RequestMatcher
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicProperty", "UndocumentedPublicFunction")
 @ExcludeFromCoverage("Temporary implementation", ref = "https://github.com/elaastic/ElaastiX/issues/9")
 class AuthnTmpProcessingFilter(requestMatcher: RequestMatcher, authenticationManager: AuthenticationManager) :
-    AbstractAuthenticationProcessingFilter(requestMatcher) {
-    init {
-        setAuthenticationManager(authenticationManager)
-        setAuthenticationConverter(TmpAuthnConverter())
-    }
+	AbstractAuthenticationProcessingFilter(requestMatcher) {
+	init {
+		setAuthenticationManager(authenticationManager)
+		setAuthenticationConverter(TmpAuthnConverter())
+	}
 }

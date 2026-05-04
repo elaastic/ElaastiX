@@ -22,14 +22,14 @@ package conventions
 import org.gradle.plugins.ide.idea.model.Module.INHERITED
 
 plugins {
-    id("idea")
-    id("org.jetbrains.gradle.plugin.idea-ext")
+	id("idea")
+	id("org.jetbrains.gradle.plugin.idea-ext")
 }
 
 idea {
-    module {
-        isDownloadJavadoc = true
-        isDownloadSources = true
-        jdkName = INHERITED
-    }
+	module {
+		isDownloadJavadoc = true
+		isDownloadSources = true
+		jdkName = INHERITED
+	}
 }

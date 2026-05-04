@@ -33,6 +33,6 @@ import org.springframework.web.bind.annotation.RestController
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicProperty", "UndocumentedPublicFunction")
 @ExcludeFromCoverage("Temporary implementation", ref = "https://github.com/elaastic/ElaastiX/issues/9")
 class AuthnTmpController(val authenticationHolder: AuthenticationHolder) {
-    @GetMapping("/who-am-i", version = "1+")
-    fun whoAmI(): String? = authenticationHolder.authenticatedUser.required().id.toString()
+	@GetMapping("/who-am-i", version = "1+")
+	fun whoAmI(): String? = authenticationHolder.authenticatedUser.required().id.toString()
 }

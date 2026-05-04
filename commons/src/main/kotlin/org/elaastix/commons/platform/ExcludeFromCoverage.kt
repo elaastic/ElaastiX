@@ -28,8 +28,8 @@ package org.elaastix.commons.platform
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class ExcludeFromCoverage(
-    /** Explanation as to why the class or function is being excluded from code coverage calculations. */
-    val message: String,
-    /** A link to a relevant GitHub issue or comment that contains more information about the exclusion. */
-    val ref: String = "",
+	/** Explanation as to why the class or function is being excluded from code coverage calculations. */
+	val message: String,
+	/** A link to a relevant GitHub issue or comment that contains more information about the exclusion. */
+	val ref: String = "",
 )

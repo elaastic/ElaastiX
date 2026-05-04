@@ -38,15 +38,15 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/internal/nuxt", version = "0+")
 class NuxtConfigController {
-    /**
-     * Get client context information.
-     *
-     * @return Context and configuration information needed for the first-party Nuxt webapp.
-     */
-    @GetMapping("/context-v1")
-    fun getContextVersion1(): NuxtContextDto {
-        // TODO: pull user from the AuthenticationFacade, pull feature flags config, build a DTO out of it...
-        //       this is mostly just scaffolding for later
-        return NuxtContextDto(emptyList(), null)
-    }
+	/**
+	 * Get client context information.
+	 *
+	 * @return Context and configuration information needed for the first-party Nuxt webapp.
+	 */
+	@GetMapping("/context-v1")
+	fun getContextVersion1(): NuxtContextDto {
+		// TODO: pull user from the AuthenticationFacade, pull feature flags config, build a DTO out of it...
+		//       this is mostly just scaffolding for later
+		return NuxtContextDto(emptyList(), null)
+	}
 }

@@ -28,14 +28,14 @@ import javax.sql.DataSource
 @SpringBootTest
 class ExampleIntegrationTest {
 
-    @Autowired
-    lateinit var dataSource: DataSource
+	@Autowired
+	lateinit var dataSource: DataSource
 
-    @Test
-    fun `this is a testing of the test`() {
-        val result = dataSource.connection.createStatement().executeQuery("SELECT 1 + 1")
-        assertThat(result.next()).isTrue
-        assertThat(result.getInt(1)).isEqualTo(2)
-        result.close()
-    }
+	@Test
+	fun `this is a testing of the test`() {
+		val result = dataSource.connection.createStatement().executeQuery("SELECT 1 + 1")
+		assertThat(result.next()).isTrue
+		assertThat(result.getInt(1)).isEqualTo(2)
+		result.close()
+	}
 }

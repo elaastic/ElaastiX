@@ -33,18 +33,18 @@ import org.springframework.stereotype.Component
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicProperty", "UndocumentedPublicFunction")
 @ExcludeFromCoverage("Temporary implementation", ref = "https://github.com/elaastic/ElaastiX/issues/9")
 class AuthnTmpProvider(private val userRepository: UserRepository) : AuthenticationProvider {
-    override fun authenticate(authentication: Authentication) =
-        (authentication.principal as? Uuid)
-            ?.let { userRepository.findByIdOrNull(it) }
-            ?.let {
-                UsernamePasswordAuthenticationToken(
-                    it,
-                    null,
-                    emptyList(),
-                )
-            }
-            ?: throw BadCredentialsException("Bad credentials")
+	override fun authenticate(authentication: Authentication) =
+		(authentication.principal as? Uuid)
+			?.let { userRepository.findByIdOrNull(it) }
+			?.let {
+				UsernamePasswordAuthenticationToken(
+					it,
+					null,
+					emptyList(),
+				)
+			}
+			?: throw BadCredentialsException("Bad credentials")
 
-    override fun supports(authentication: Class<*>): Boolean =
-        PreAuthenticatedAuthenticationToken::class.java == authentication
+	override fun supports(authentication: Class<*>): Boolean =
+		PreAuthenticatedAuthenticationToken::class.java == authentication
 }

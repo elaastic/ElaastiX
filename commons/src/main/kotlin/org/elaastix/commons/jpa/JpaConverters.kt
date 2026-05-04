@@ -47,19 +47,19 @@ import java.time.Instant as JavaInstant
  * `META-INF/services/org.hibernate.boot.model.TypeContributor` file.
  */
 class HibernateTypeContributor : TypeContributor {
-    // Workaround for https://hibernate.atlassian.net/browse/HHH-20070
-    private var initialised = false
+	// Workaround for https://hibernate.atlassian.net/browse/HHH-20070
+	private var initialised = false
 
-    override fun contribute(typeContributions: TypeContributions, serviceRegistry: ServiceRegistry) {
-        if (!initialised) {
-            initialised = true
-            typeContributions.contributeAttributeConverter(UuidConverter::class.java)
-            typeContributions.contributeAttributeConverter(InstantConverter::class.java)
-            typeContributions.contributeAttributeConverter(UIntConverter::class.java)
-            typeContributions.contributeAttributeConverter(ULongConverter::class.java)
-            typeContributions.contributeJavaType(UuidJavaType)
-        }
-    }
+	override fun contribute(typeContributions: TypeContributions, serviceRegistry: ServiceRegistry) {
+		if (!initialised) {
+			initialised = true
+			typeContributions.contributeAttributeConverter(UuidConverter::class.java)
+			typeContributions.contributeAttributeConverter(InstantConverter::class.java)
+			typeContributions.contributeAttributeConverter(UIntConverter::class.java)
+			typeContributions.contributeAttributeConverter(ULongConverter::class.java)
+			typeContributions.contributeJavaType(UuidJavaType)
+		}
+	}
 }
 
 /**
@@ -71,9 +71,9 @@ class HibernateTypeContributor : TypeContributor {
  */
 @Converter(autoApply = true)
 class UuidConverter : AttributeConverter<Uuid, UUID> {
-    override fun convertToDatabaseColumn(attribute: Uuid?): UUID? = attribute?.toJavaUuid()
+	override fun convertToDatabaseColumn(attribute: Uuid?): UUID? = attribute?.toJavaUuid()
 
-    override fun convertToEntityAttribute(dbData: UUID?): Uuid? = dbData?.toKotlinUuid()
+	override fun convertToEntityAttribute(dbData: UUID?): Uuid? = dbData?.toKotlinUuid()
 }
 
 /**
@@ -86,9 +86,9 @@ class UuidConverter : AttributeConverter<Uuid, UUID> {
  */
 @Converter(autoApply = true)
 class InstantConverter : AttributeConverter<Instant, JavaInstant> {
-    override fun convertToDatabaseColumn(attribute: Instant?): JavaInstant? = attribute?.toJavaInstant()
+	override fun convertToDatabaseColumn(attribute: Instant?): JavaInstant? = attribute?.toJavaInstant()
 
-    override fun convertToEntityAttribute(dbData: JavaInstant?): Instant? = dbData?.toKotlinInstant()
+	override fun convertToEntityAttribute(dbData: JavaInstant?): Instant? = dbData?.toKotlinInstant()
 }
 
 /**
@@ -98,9 +98,9 @@ class InstantConverter : AttributeConverter<Instant, JavaInstant> {
 @Converter(autoApply = true)
 @ExcludeFromCoverage("Trivially equivalent to a no-op")
 class UIntConverter : AttributeConverter<UInt, Int> {
-    override fun convertToDatabaseColumn(attribute: UInt?): Int? = attribute?.toInt()
+	override fun convertToDatabaseColumn(attribute: UInt?): Int? = attribute?.toInt()
 
-    override fun convertToEntityAttribute(dbData: Int?): UInt? = dbData?.toUInt()
+	override fun convertToEntityAttribute(dbData: Int?): UInt? = dbData?.toUInt()
 }
 
 /**
@@ -110,7 +110,7 @@ class UIntConverter : AttributeConverter<UInt, Int> {
 @Converter(autoApply = true)
 @ExcludeFromCoverage("Trivially equivalent to a no-op")
 class ULongConverter : AttributeConverter<ULong, Long> {
-    override fun convertToDatabaseColumn(attribute: ULong?): Long? = attribute?.toLong()
+	override fun convertToDatabaseColumn(attribute: ULong?): Long? = attribute?.toLong()
 
-    override fun convertToEntityAttribute(dbData: Long?): ULong? = dbData?.toULong()
+	override fun convertToEntityAttribute(dbData: Long?): ULong? = dbData?.toULong()
 }

@@ -30,6 +30,8 @@ complexity:
 
 ktlint:
   code_style: ktlint_official
+  Indentation:
+    indentStyle: tab
   FunctionSignature:  # Detekt overrides this with `default` instead of the (better) default of Ktlint
     functionBodyExpressionWrapping: multiline
 

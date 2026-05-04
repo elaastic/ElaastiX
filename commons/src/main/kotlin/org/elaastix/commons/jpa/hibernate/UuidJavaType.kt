@@ -35,42 +35,42 @@ import kotlin.uuid.toKotlinUuid
  * Hibernate [JavaType] to convert to and from Kotlin-native [Uuid].
  */
 object UuidJavaType : AbstractClassJavaType<Uuid>(Uuid::class.java) {
-    override fun isInstance(value: Any) = value is Uuid
+	override fun isInstance(value: Any) = value is Uuid
 
-    override fun cast(value: Any?) = value as Uuid?
+	override fun cast(value: Any?) = value as Uuid?
 
-    override fun useObjectEqualsHashCode() = true
+	override fun useObjectEqualsHashCode() = true
 
-    override fun getRecommendedJdbcType(context: JdbcTypeIndicators): JdbcType =
-        UUIDJavaType.INSTANCE.getRecommendedJdbcType(context)
+	override fun getRecommendedJdbcType(context: JdbcTypeIndicators): JdbcType =
+		UUIDJavaType.INSTANCE.getRecommendedJdbcType(context)
 
-    override fun getDefaultSqlLength(dialect: Dialect, jdbcType: JdbcType): Long =
-        UUIDJavaType.INSTANCE.getDefaultSqlLength(dialect, jdbcType)
+	override fun getDefaultSqlLength(dialect: Dialect, jdbcType: JdbcType): Long =
+		UUIDJavaType.INSTANCE.getDefaultSqlLength(dialect, jdbcType)
 
-    override fun toString(value: Uuid): String = value.toHexDashString()
+	override fun toString(value: Uuid): String = value.toHexDashString()
 
-    override fun fromString(string: CharSequence): Uuid = Uuid.parse(string.toString())
+	override fun fromString(string: CharSequence): Uuid = Uuid.parse(string.toString())
 
-    override fun <X> unwrap(value: Uuid?, type: Class<X>, options: WrapperOptions): X? =
-        value?.let {
-            when {
-                UUID::class.java.isAssignableFrom(type) -> type.cast(it.toJavaUuid())
-                String::class.java.isAssignableFrom(type) -> type.cast(it.toHexDashString())
-                ByteArray::class.java.isAssignableFrom(type) -> type.cast(it.toByteArray())
-                else -> throw unknownUnwrap(type)
-            }
-        }
+	override fun <X> unwrap(value: Uuid?, type: Class<X>, options: WrapperOptions): X? =
+		value?.let {
+			when {
+				UUID::class.java.isAssignableFrom(type) -> type.cast(it.toJavaUuid())
+				String::class.java.isAssignableFrom(type) -> type.cast(it.toHexDashString())
+				ByteArray::class.java.isAssignableFrom(type) -> type.cast(it.toByteArray())
+				else -> throw unknownUnwrap(type)
+			}
+		}
 
-    override fun <X> wrap(value: X, options: WrapperOptions): Uuid? =
-        when (value) {
-            null -> null
-            is Uuid -> value
-            is UUID -> value.toKotlinUuid()
-            is String -> Uuid.parse(value)
-            is ByteArray -> Uuid.fromByteArray(value)
-            else -> throw unknownWrap(value::class.java)
-        }
+	override fun <X> wrap(value: X, options: WrapperOptions): Uuid? =
+		when (value) {
+			null -> null
+			is Uuid -> value
+			is UUID -> value.toKotlinUuid()
+			is String -> Uuid.parse(value)
+			is ByteArray -> Uuid.fromByteArray(value)
+			else -> throw unknownWrap(value::class.java)
+		}
 
-    @Suppress("unused") // https://jetbrains.com/help/inspectopedia/JavaIoSerializableObjectMustHaveReadResolve.html
-    private fun readResolve(): Any = UuidJavaType
+	@Suppress("unused") // https://jetbrains.com/help/inspectopedia/JavaIoSerializableObjectMustHaveReadResolve.html
+	private fun readResolve(): Any = UuidJavaType
 }

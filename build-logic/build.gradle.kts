@@ -22,50 +22,50 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 
 plugins {
-    id("idea")
-    `kotlin-dsl`
-    alias(libs.plugins.ideax)
+	id("idea")
+	`kotlin-dsl`
+	alias(libs.plugins.ideax)
 }
 
 idea {
-    module {
-        jdkName = INHERITED
-        excludeDirs.add(file(".kotlin"))
-    }
+	module {
+		jdkName = INHERITED
+		excludeDirs.add(file(".kotlin"))
+	}
 }
 
 kotlin {
-    compilerOptions {
-        val kotlinVersion = KotlinVersion.valueOf(
-            "KOTLIN_${libs.versions.kotlin.get().substringBeforeLast(".").replace(".", "_")}",
-        )
+	compilerOptions {
+		val kotlinVersion = KotlinVersion.valueOf(
+			"KOTLIN_${libs.versions.kotlin.get().substringBeforeLast(".").replace(".", "_")}",
+		)
 
-        jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.jdk.get()}"))
-        languageVersion.set(kotlinVersion)
-        apiVersion.set(kotlinVersion)
-        allWarningsAsErrors = true
-    }
+		jvmTarget.set(JvmTarget.valueOf("JVM_${libs.versions.jdk.get()}"))
+		languageVersion.set(kotlinVersion)
+		apiVersion.set(kotlinVersion)
+		allWarningsAsErrors = true
+	}
 }
 
 repositories {
-    gradlePluginPortal()
-    mavenCentral()
+	gradlePluginPortal()
+	mavenCentral()
 }
 
 dependencies {
-    implementation(libs.kotlin.gradle.plugin)
+	implementation(libs.kotlin.gradle.plugin)
 
-    implementation(plugin(libs.plugins.kotlin.jvm))
-    implementation(plugin(libs.plugins.kotlin.jpa))
-    implementation(plugin(libs.plugins.kotlin.spring))
-    implementation(plugin(libs.plugins.kotlin.serialization))
-    implementation(plugin(libs.plugins.kotlin.kover))
-    implementation(plugin(libs.plugins.kotlin.ksp))
-    implementation(plugin(libs.plugins.spring.boot))
-    implementation(plugin(libs.plugins.hibernate))
-    implementation(plugin(libs.plugins.ideax))
+	implementation(plugin(libs.plugins.kotlin.jvm))
+	implementation(plugin(libs.plugins.kotlin.jpa))
+	implementation(plugin(libs.plugins.kotlin.spring))
+	implementation(plugin(libs.plugins.kotlin.serialization))
+	implementation(plugin(libs.plugins.kotlin.kover))
+	implementation(plugin(libs.plugins.kotlin.ksp))
+	implementation(plugin(libs.plugins.spring.boot))
+	implementation(plugin(libs.plugins.hibernate))
+	implementation(plugin(libs.plugins.ideax))
 }
 
 /** Helper to transform plugin dependencies from the catalogue into a plain dependency specifier. */
 fun plugin(plugin: Provider<PluginDependency>): Provider<String> =
-    plugin.map { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" }
+	plugin.map { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" }

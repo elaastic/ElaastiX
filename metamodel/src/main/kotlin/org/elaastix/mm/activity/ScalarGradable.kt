@@ -27,22 +27,22 @@ package org.elaastix.mm.activity
  * @see ScalarGrade
  */
 interface ScalarGradable {
-    /** The scalar grade given to the object. */
-    val absoluteGrade: ScalarGrade
+	/** The scalar grade given to the object. */
+	val absoluteGrade: ScalarGrade
 
-    /**
-     * A linear grade, as an arbitrary number between zero and an upper bound.
-     */
-    interface ScalarGrade {
-        /** The given grade. MUST be less than or equal to [max]. */
-        val grade: Double
+	/**
+	 * A linear grade, as an arbitrary number between zero and an upper bound.
+	 */
+	interface ScalarGrade {
+		/** The given grade. MUST be less than or equal to [max]. */
+		val grade: Double
 
-        /** Maximum grade that can be obtained. MUST be non-zero. */
-        val max: Double
+		/** Maximum grade that can be obtained. MUST be non-zero. */
+		val max: Double
 
-        /**
-         * Returns the grade as a decimal value between 0 and 1.
-         */
-        fun asDouble(): Double = grade / max
-    }
+		/**
+		 * Returns the grade as a decimal value between 0 and 1.
+		 */
+		fun asDouble(): Double = grade / max
+	}
 }

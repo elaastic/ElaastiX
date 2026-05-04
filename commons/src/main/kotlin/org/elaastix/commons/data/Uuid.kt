@@ -38,8 +38,8 @@ import kotlin.uuid.Uuid as KtUuid
 private const val BASE36_RADIX = 36
 
 typealias Uuid =
-    @Serializable(with = UuidSerializer::class)
-    KtUuid
+	@Serializable(with = UuidSerializer::class)
+	KtUuid
 
 /**
  * Serializer for [KtUuid] values.
@@ -47,54 +47,54 @@ typealias Uuid =
  */
 @OptIn(ExperimentalSerializationApi::class) // Anything non-json is experimental atm
 object UuidSerializer : KSerializer<KtUuid> {
-    /** Length of a Uuid encoded as a Base36 string. */
-    const val UUID_LEN_B36 = 25
+	/** Length of a Uuid encoded as a Base36 string. */
+	const val UUID_LEN_B36 = 25
 
-    @OptIn(InternalSerializationApi::class) // We don't really have a choice anyway
-    override val descriptor: SerialDescriptor =
-        buildSerialDescriptor("org.elaastix.commons.data.Uuid", SerialKind.CONTEXTUAL)
+	@OptIn(InternalSerializationApi::class) // We don't really have a choice anyway
+	override val descriptor: SerialDescriptor =
+		buildSerialDescriptor("org.elaastix.commons.data.Uuid", SerialKind.CONTEXTUAL)
 
-    override fun serialize(encoder: Encoder, value: KtUuid) =
-        when {
-            encoder is CborEncoder -> serializeAsBytes(encoder, value)
-            else -> serializeAsString(encoder, value)
-        }
+	override fun serialize(encoder: Encoder, value: KtUuid) =
+		when {
+			encoder is CborEncoder -> serializeAsBytes(encoder, value)
+			else -> serializeAsString(encoder, value)
+		}
 
-    override fun deserialize(decoder: Decoder) =
-        when {
-            decoder is CborDecoder -> deserializeFromBytes(decoder)
-            else -> deserializeFromString(decoder)
-        }
+	override fun deserialize(decoder: Decoder) =
+		when {
+			decoder is CborDecoder -> deserializeFromBytes(decoder)
+			else -> deserializeFromString(decoder)
+		}
 
-    private fun serializeAsBytes(encoder: Encoder, value: KtUuid) =
-        encoder.encodeSerializableValue(
-            ByteArraySerializer(),
-            value.toByteArray(),
-        )
+	private fun serializeAsBytes(encoder: Encoder, value: KtUuid) =
+		encoder.encodeSerializableValue(
+			ByteArraySerializer(),
+			value.toByteArray(),
+		)
 
-    private fun deserializeFromBytes(decoder: Decoder) =
-        KtUuid.fromByteArray(
-            decoder.decodeSerializableValue(
-                ByteArraySerializer(),
-            ),
-        )
+	private fun deserializeFromBytes(decoder: Decoder) =
+		KtUuid.fromByteArray(
+			decoder.decodeSerializableValue(
+				ByteArraySerializer(),
+			),
+		)
 
-    private fun serializeAsString(encoder: Encoder, value: KtUuid) =
-        encoder.encodeString(
-            BigInteger(value.toByteArray()).toString(BASE36_RADIX).padStart(UUID_LEN_B36, '0'),
-        )
+	private fun serializeAsString(encoder: Encoder, value: KtUuid) =
+		encoder.encodeString(
+			BigInteger(value.toByteArray()).toString(BASE36_RADIX).padStart(UUID_LEN_B36, '0'),
+		)
 
-    private fun deserializeFromString(decoder: Decoder) =
-        KtUuid.fromByteArray(
-            BigInteger(
-                decoder.decodeString().also {
-                    if (it.length != UUID_LEN_B36) {
-                        throw SerializationException(
-                            "Expected Uuid to be a string of length ${UUID_LEN_B36}, got ${it.length}",
-                        )
-                    }
-                },
-                BASE36_RADIX,
-            ).toByteArray(),
-        )
+	private fun deserializeFromString(decoder: Decoder) =
+		KtUuid.fromByteArray(
+			BigInteger(
+				decoder.decodeString().also {
+					if (it.length != UUID_LEN_B36) {
+						throw SerializationException(
+							"Expected Uuid to be a string of length ${UUID_LEN_B36}, got ${it.length}",
+						)
+					}
+				},
+				BASE36_RADIX,
+			).toByteArray(),
+		)
 }

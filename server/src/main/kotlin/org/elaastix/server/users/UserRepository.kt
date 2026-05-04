@@ -27,7 +27,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface UserRepository : ElaastixRepository<UserEntity> {
-    @Suppress("UndocumentedPublicFunction")
-    @Query("FROM UserEntity")
-    fun dangerouslyFindAll(pageable: Pageable): List<UserEntity>
+	@Suppress("UndocumentedPublicFunction")
+	@Query("FROM UserEntity")
+	fun dangerouslyFindAll(pageable: Pageable): List<UserEntity>
 }

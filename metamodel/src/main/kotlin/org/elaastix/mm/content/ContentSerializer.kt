@@ -34,56 +34,56 @@ import kotlin.reflect.jvm.jvmName
  * TODO: Add support for CBOR serialization
  */
 abstract class AbstractContentSerializer<T : RichContent> internal constructor() : KSerializer<T> {
-    internal val delegate = ContentWrapper.serializer()
+	internal val delegate = ContentWrapper.serializer()
 
-    // TODO: Detect public vs private serde contexts, use SerializableContent.identifier for public use.
-    override fun serialize(encoder: Encoder, value: T) =
-        encoder.encodeSerializableValue(
-            delegate,
-            ContentWrapper(
-                clazz = value::class.jvmName,
-                data = value.toJson(),
-            ),
-        )
+	// TODO: Detect public vs private serde contexts, use SerializableContent.identifier for public use.
+	override fun serialize(encoder: Encoder, value: T) =
+		encoder.encodeSerializableValue(
+			delegate,
+			ContentWrapper(
+				clazz = value::class.jvmName,
+				data = value.toJson(),
+			),
+		)
 
-    override fun deserialize(decoder: Decoder): T {
-        val wrapper: ContentWrapper = decoder.decodeSerializableValue(delegate)
-        val clazz = Class.forName(wrapper.clazz).kotlin
+	override fun deserialize(decoder: Decoder): T {
+		val wrapper: ContentWrapper = decoder.decodeSerializableValue(delegate)
+		val clazz = Class.forName(wrapper.clazz).kotlin
 
-        val factoryClazz = clazz.nestedClasses.find { it.isCompanion && it.simpleName == "Factory" }
-        checkNotNull(factoryClazz) {
-            "Target content class ${clazz.qualifiedName} does not have a Factory companion"
-        }
+		val factoryClazz = clazz.nestedClasses.find { it.isCompanion && it.simpleName == "Factory" }
+		checkNotNull(factoryClazz) {
+			"Target content class ${clazz.qualifiedName} does not have a Factory companion"
+		}
 
-        val factory = factoryClazz.objectInstance as? RichContent.Factory
-        checkNotNull(factory) {
-            "Target content class ${clazz.qualifiedName}'s Factory does not implement the expected factory interface"
-        }
+		val factory = factoryClazz.objectInstance as? RichContent.Factory
+		checkNotNull(factory) {
+			"Target content class ${clazz.qualifiedName}'s Factory does not implement the expected factory interface"
+		}
 
-        @Suppress("UNCHECKED_CAST")
-        return factory.fromJson(wrapper.data) as T
-    }
+		@Suppress("UNCHECKED_CAST")
+		return factory.fromJson(wrapper.data) as T
+	}
 
-    @Serializable
-    internal data class ContentWrapper(
-        @SerialName("c")
-        val clazz: String,
-        @SerialName("d")
-        val data: JsonElement,
-    )
+	@Serializable
+	internal data class ContentWrapper(
+		@SerialName("c")
+		val clazz: String,
+		@SerialName("d")
+		val data: JsonElement,
+	)
 }
 
 /** Serializer for [RichContent]. */
 class RichContentSerializer : AbstractContentSerializer<RichContent>() {
-    override val descriptor = SerialDescriptor("org.elaastix.mm.RichContent", delegate.descriptor)
+	override val descriptor = SerialDescriptor("org.elaastix.mm.RichContent", delegate.descriptor)
 }
 
 /** Serializer for [FormattedContent]. */
 class FormattedContentSerializer : AbstractContentSerializer<FormattedContent>() {
-    override val descriptor = SerialDescriptor("org.elaastix.mm.FormattedContent", delegate.descriptor)
+	override val descriptor = SerialDescriptor("org.elaastix.mm.FormattedContent", delegate.descriptor)
 }
 
 /** Serializer for [FormattedText]. */
 class FormattedTextSerializer : AbstractContentSerializer<FormattedText>() {
-    override val descriptor = SerialDescriptor("org.elaastix.mm.FormattedText", delegate.descriptor)
+	override val descriptor = SerialDescriptor("org.elaastix.mm.FormattedText", delegate.descriptor)
 }

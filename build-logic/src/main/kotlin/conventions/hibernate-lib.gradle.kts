@@ -20,8 +20,8 @@
 package conventions
 
 plugins {
-    id("conventions.java")
-    id("org.hibernate.orm") // Plugin should automatically override Hibernate's version
+	id("conventions.java")
+	id("org.hibernate.orm") // Plugin should automatically override Hibernate's version
 
-    kotlin("plugin.jpa")
+	kotlin("plugin.jpa")
 }

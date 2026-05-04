@@ -24,53 +24,53 @@ package conventions
 val libs = the<VersionCatalogsExtension>().named("libs")
 
 plugins {
-    `jvm-test-suite`
-    id("conventions.java")
-    id("org.jetbrains.kotlinx.kover")
+	`jvm-test-suite`
+	id("conventions.java")
+	id("org.jetbrains.kotlinx.kover")
 }
 
 configurations.configureEach {
-    exclude(group = "org.mockito", module = "mockito-core")
-    exclude(group = "org.mockito", module = "mockito-junit-jupiter")
-    exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+	exclude(group = "org.mockito", module = "mockito-core")
+	exclude(group = "org.mockito", module = "mockito-junit-jupiter")
+	exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 }
 
 @Suppress("UnstableApiUsage")
 testing {
-    suites {
-        withType<JvmTestSuite>().configureEach {
-            useJUnitJupiter(libs.findVersion("junit").get().requiredVersion)
+	suites {
+		withType<JvmTestSuite>().configureEach {
+			useJUnitJupiter(libs.findVersion("junit").get().requiredVersion)
 
-            dependencies {
-                implementation(project())
-                implementation(libs.findLibrary("assertj").get())
-            }
-        }
+			dependencies {
+				implementation(project())
+				implementation(libs.findLibrary("assertj").get())
+			}
+		}
 
-        val test by existing(JvmTestSuite::class) {
-            dependencies {
-                implementation(libs.findLibrary("mockk").get())
-                implementation(libs.findLibrary("mockk.bdd").get())
-            }
-        }
-    }
+		val test by existing(JvmTestSuite::class) {
+			dependencies {
+				implementation(libs.findLibrary("mockk").get())
+				implementation(libs.findLibrary("mockk.bdd").get())
+			}
+		}
+	}
 }
 
 kover {
-    useJacoco() // https://github.com/Kotlin/kotlinx-kover/issues/720
-    // TODO: Separate reports for unit tests vs integration tests
+	useJacoco() // https://github.com/Kotlin/kotlinx-kover/issues/720
+	// TODO: Separate reports for unit tests vs integration tests
 
-    reports {
-        filters {
-            excludes {
-                annotatedBy("org.elaastix.commons.platform.ExcludeFromCoverage")
-            }
-        }
+	reports {
+		filters {
+			excludes {
+				annotatedBy("org.elaastix.commons.platform.ExcludeFromCoverage")
+			}
+		}
 
-        total {
-            xml {
-                onCheck.set(true)
-            }
-        }
-    }
+		total {
+			xml {
+				onCheck.set(true)
+			}
+		}
+	}
 }

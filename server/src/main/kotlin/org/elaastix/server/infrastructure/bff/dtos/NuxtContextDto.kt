@@ -27,8 +27,8 @@ import org.elaastix.server.users.dtos.UserAccountDto
  */
 @Serializable
 data class NuxtContextDto(
-    /** List of enabled feature flags for the frontend. */
-    val featureFlags: List<Unit>,
-    /** The currently authenticated user's account, if authenticated. */
-    val currentUser: UserAccountDto?,
+	/** List of enabled feature flags for the frontend. */
+	val featureFlags: List<Unit>,
+	/** The currently authenticated user's account, if authenticated. */
+	val currentUser: UserAccountDto?,
 )

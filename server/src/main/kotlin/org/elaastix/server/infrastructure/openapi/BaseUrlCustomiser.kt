@@ -32,15 +32,15 @@ import org.springframework.stereotype.Component
  */
 @Component
 class BaseUrlCustomiser(
-    @Value("#{environment.acceptsProfiles('develop')}")
-    private val isDevelop: Boolean,
-    @Value($$"${server.port:8080}")
-    private val serverPort: Int,
+	@Value("#{environment.acceptsProfiles('develop')}")
+	private val isDevelop: Boolean,
+	@Value($$"${server.port:8080}")
+	private val serverPort: Int,
 ) : ServerBaseUrlCustomizer {
-    override fun customize(serverBaseUrl: String, request: HttpRequest) =
-        if (isDevelop && request.uri.host == "localhost" && request.uri.port == serverPort) {
-            serverBaseUrl
-        } else {
-            "$serverBaseUrl/api"
-        }
+	override fun customize(serverBaseUrl: String, request: HttpRequest) =
+		if (isDevelop && request.uri.host == "localhost" && request.uri.port == serverPort) {
+			serverBaseUrl
+		} else {
+			"$serverBaseUrl/api"
+		}
 }

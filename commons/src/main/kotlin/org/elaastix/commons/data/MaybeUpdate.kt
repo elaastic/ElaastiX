@@ -40,43 +40,43 @@ import org.elaastix.commons.platform.ExcludeFromCoverage
  */
 @Serializable(with = MaybeUpdateSerializer::class)
 sealed class MaybeUpdate<out T> {
-    /** Represents a no-op state of [MaybeUpdate], i.e. no value was provided. */
-    object Keep : MaybeUpdate<Nothing>()
+	/** Represents a no-op state of [MaybeUpdate], i.e. no value was provided. */
+	object Keep : MaybeUpdate<Nothing>()
 
-    /** Represents an actual value, eventually nullable, that has been explicitly provided. */
-    class Update<T>(
-        /** The provided value. */
-        val value: T,
-    ) : MaybeUpdate<T>()
+	/** Represents an actual value, eventually nullable, that has been explicitly provided. */
+	class Update<T>(
+		/** The provided value. */
+		val value: T,
+	) : MaybeUpdate<T>()
 
-    override fun equals(other: Any?): Boolean =
-        when (other) {
-            is Keep -> this is Keep
-            is Update<*> -> this is Update && this.value == other.value
-            else -> false
-        }
+	override fun equals(other: Any?): Boolean =
+		when (other) {
+			is Keep -> this is Keep
+			is Update<*> -> this is Update && this.value == other.value
+			else -> false
+		}
 
-    override fun hashCode(): Int =
-        when (this) {
-            is Keep -> this::class.java.hashCode()
+	override fun hashCode(): Int =
+		when (this) {
+			is Keep -> this::class.java.hashCode()
 
-            is Update<*> ->
-                when (this.value) {
-                    null -> this::class.java.hashCode()
-                    else -> 31 * this::class.java.hashCode() + this.value.hashCode()
-                }
-        }
+			is Update<*> ->
+				when (this.value) {
+					null -> this::class.java.hashCode()
+					else -> 31 * this::class.java.hashCode() + this.value.hashCode()
+				}
+		}
 
-    override fun toString(): String =
-        when (this) {
-            is Keep -> "MaybeUpdate.Keep"
+	override fun toString(): String =
+		when (this) {
+			is Keep -> "MaybeUpdate.Keep"
 
-            is Update<*> ->
-                when (this.value) {
-                    null -> "MaybeUpdate.Update(null)"
-                    else -> "MaybeUpdate.Update(${this.value})"
-                }
-        }
+			is Update<*> ->
+				when (this.value) {
+					null -> "MaybeUpdate.Update(null)"
+					else -> "MaybeUpdate.Update(${this.value})"
+				}
+		}
 }
 
 /**
@@ -86,22 +86,22 @@ sealed class MaybeUpdate<out T> {
  * should be encoded or not, reliance on `encodeDefaults` as documented in [MaybeUpdate] is the only viable strategy.
  */
 class MaybeUpdateSerializer<T>(private val valueSerializer: KSerializer<T>) : KSerializer<MaybeUpdate<T>> {
-    override val descriptor = SerialDescriptor("org.elaastix.commons.data.MaybeUpdate", valueSerializer.descriptor)
+	override val descriptor = SerialDescriptor("org.elaastix.commons.data.MaybeUpdate", valueSerializer.descriptor)
 
-    override fun serialize(encoder: Encoder, value: MaybeUpdate<T>) =
-        when (value) {
-            is MaybeUpdate.Update -> encoder.encodeSerializableValue(valueSerializer, value.value)
+	override fun serialize(encoder: Encoder, value: MaybeUpdate<T>) =
+		when (value) {
+			is MaybeUpdate.Update -> encoder.encodeSerializableValue(valueSerializer, value.value)
 
-            is MaybeUpdate.Keep ->
-                throw SerializationException(
-                    "Unexpected value for MaybeUpdate! " +
-                        "Is the default value and default encoding strategy properly configured?",
-                )
-        }
+			is MaybeUpdate.Keep ->
+				throw SerializationException(
+					"Unexpected value for MaybeUpdate! " +
+						"Is the default value and default encoding strategy properly configured?",
+				)
+		}
 
-    override fun deserialize(decoder: Decoder): MaybeUpdate<T> =
-        // Decoder only calls deserialize if a value is present. If it's missing, it'll default to `Keep` (invariant)
-        MaybeUpdate.Update(decoder.decodeSerializableValue(valueSerializer))
+	override fun deserialize(decoder: Decoder): MaybeUpdate<T> =
+		// Decoder only calls deserialize if a value is present. If it's missing, it'll default to `Keep` (invariant)
+		MaybeUpdate.Update(decoder.decodeSerializableValue(valueSerializer))
 }
 
 /**

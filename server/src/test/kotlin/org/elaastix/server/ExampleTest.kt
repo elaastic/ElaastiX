@@ -23,8 +23,8 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class ExampleTest {
-    @Test
-    fun `this is a testing of the test`() {
-        assertThat(1 + 1).isEqualTo(2)
-    }
+	@Test
+	fun `this is a testing of the test`() {
+		assertThat(1 + 1).isEqualTo(2)
+	}
 }

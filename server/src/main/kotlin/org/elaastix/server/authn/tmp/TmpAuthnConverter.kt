@@ -28,8 +28,8 @@ import org.springframework.security.web.authentication.preauth.PreAuthenticatedA
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicProperty", "UndocumentedPublicFunction")
 @ExcludeFromCoverage("Temporary implementation", ref = "https://github.com/elaastic/ElaastiX/issues/9")
 class TmpAuthnConverter : AuthenticationConverter {
-    override fun convert(request: HttpServletRequest) =
-        request.getHeader("Authorization")
-            ?.let(Uuid::parseOrNull)
-            ?.let { PreAuthenticatedAuthenticationToken(it, null) }
+	override fun convert(request: HttpServletRequest) =
+		request.getHeader("Authorization")
+			?.let(Uuid::parseOrNull)
+			?.let { PreAuthenticatedAuthenticationToken(it, null) }
 }

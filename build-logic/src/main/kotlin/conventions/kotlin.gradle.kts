@@ -25,44 +25,44 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 val libs = the<VersionCatalogsExtension>().named("libs")
 
 plugins {
-    id("conventions.java")
+	id("conventions.java")
 
-    kotlin("jvm")
-    kotlin("plugin.serialization")
-    id("com.google.devtools.ksp")
+	kotlin("jvm")
+	kotlin("plugin.serialization")
+	id("com.google.devtools.ksp")
 }
 
 kotlin {
-    val jdkVersion = libs.findVersion("jdk").get().requiredVersion
-    val kotlinVersion = libs.findVersion("kotlin").get().requiredVersion
+	val jdkVersion = libs.findVersion("jdk").get().requiredVersion
+	val kotlinVersion = libs.findVersion("kotlin").get().requiredVersion
 
-    compilerOptions {
-        val kotlinVersion = KotlinVersion.valueOf(
-            "KOTLIN_${kotlinVersion.substringBeforeLast(".").replace(".", "_")}",
-        )
+	compilerOptions {
+		val kotlinVersion = KotlinVersion.valueOf(
+			"KOTLIN_${kotlinVersion.substringBeforeLast(".").replace(".", "_")}",
+		)
 
-        freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
-        jvmTarget = JvmTarget.valueOf("JVM_$jdkVersion")
-        languageVersion = kotlinVersion
-        apiVersion = kotlinVersion
+		freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
+		jvmTarget = JvmTarget.valueOf("JVM_$jdkVersion")
+		languageVersion = kotlinVersion
+		apiVersion = kotlinVersion
 
-        // We do things RIGHT in this house.
-        allWarningsAsErrors = true
+		// We do things RIGHT in this house.
+		allWarningsAsErrors = true
 
-        // We want to use Kotlin's Uuid, as it comes with built-in UUIDv7 generation,
-        // and is supported out of the box by kotlinx.serialization.
-        optIn.add("kotlin.uuid.ExperimentalUuidApi")
-    }
+		// We want to use Kotlin's Uuid, as it comes with built-in UUIDv7 generation,
+		// and is supported out of the box by kotlinx.serialization.
+		optIn.add("kotlin.uuid.ExperimentalUuidApi")
+	}
 }
 
 dependencies {
-    implementation(enforcedPlatform(libs.findLibrary("kotlin.bom").get()))
+	implementation(enforcedPlatform(libs.findLibrary("kotlin.bom").get()))
 
-    implementation(kotlin("stdlib"))
-    implementation(libs.findLibrary("kotlinx.serialization.core").get())
-    implementation(libs.findLibrary("kotlinx.serialization.json").get())
-    implementation(libs.findLibrary("kotlinx.serialization.cbor").get())
+	implementation(kotlin("stdlib"))
+	implementation(libs.findLibrary("kotlinx.serialization.core").get())
+	implementation(libs.findLibrary("kotlinx.serialization.json").get())
+	implementation(libs.findLibrary("kotlinx.serialization.cbor").get())
 
-    implementation(libs.findLibrary("springdoc.kdoc.rt").get())
-    ksp(libs.findLibrary("springdoc.kdoc.ksp").get())
+	implementation(libs.findLibrary("springdoc.kdoc.rt").get())
+	ksp(libs.findLibrary("springdoc.kdoc.ksp").get())
 }

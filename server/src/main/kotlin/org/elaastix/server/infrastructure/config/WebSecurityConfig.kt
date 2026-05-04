@@ -41,42 +41,42 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher
 @Configuration
 @EnableWebSecurity
 class WebSecurityConfig(
-    private val authProvider: AuthnTmpProvider,
-    private val authConfig: AuthenticationConfiguration,
+	private val authProvider: AuthnTmpProvider,
+	private val authConfig: AuthenticationConfiguration,
 ) {
-    @Bean
-    @Suppress("UndocumentedPublicFunction")
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http.authenticationProvider(authProvider)
-        http {
-            cors { }
-            csrf { disable() }
-            formLogin { disable() }
-            logout { disable() }
-            httpBasic { disable() }
-            sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
+	@Bean
+	@Suppress("UndocumentedPublicFunction")
+	fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+		http.authenticationProvider(authProvider)
+		http {
+			cors { }
+			csrf { disable() }
+			formLogin { disable() }
+			logout { disable() }
+			httpBasic { disable() }
+			sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
 
-            addFilterBefore<AnonymousAuthenticationFilter>(
-                AuthnTmpProcessingFilter(
-                    AnyRequestMatcher.INSTANCE,
-                    authConfig.authenticationManager,
-                ),
-            )
+			addFilterBefore<AnonymousAuthenticationFilter>(
+				AuthnTmpProcessingFilter(
+					AnyRequestMatcher.INSTANCE,
+					authConfig.authenticationManager,
+				),
+			)
 
-            authorizeHttpRequests {
-                authorize("/v*/internal/nuxt/context-v1", permitAll)
-                authorize("/actuator/**", permitAll)
-                authorize("/openapi.json", permitAll)
-                authorize("/documentation", permitAll)
-                authorize("/documentation/**", permitAll)
-                authorize(anyRequest, authenticated)
-            }
+			authorizeHttpRequests {
+				authorize("/v*/internal/nuxt/context-v1", permitAll)
+				authorize("/actuator/**", permitAll)
+				authorize("/openapi.json", permitAll)
+				authorize("/documentation", permitAll)
+				authorize("/documentation/**", permitAll)
+				authorize(anyRequest, authenticated)
+			}
 
-            exceptionHandling {
-                authenticationEntryPoint = HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
-            }
-        }
+			exceptionHandling {
+				authenticationEntryPoint = HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
+			}
+		}
 
-        return http.build()
-    }
+		return http.build()
+	}
 }

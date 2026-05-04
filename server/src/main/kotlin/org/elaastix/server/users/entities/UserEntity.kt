@@ -31,10 +31,10 @@ import org.elaastix.mm.users.User
 @Entity
 @Table(name = "users")
 class UserEntity(
-    @NotNull
-    override var isWriterModeEnabled: Boolean = false,
+	@NotNull
+	override var isWriterModeEnabled: Boolean = false,
 
-    @NotNull
-    override var isAdministrator: Boolean = false,
+	@NotNull
+	override var isAdministrator: Boolean = false,
 ) : AbstractEntity(),
-    User
+	User

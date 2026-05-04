@@ -26,19 +26,19 @@ import org.elaastix.mm.MmObject
  * For example, "2nd-year Computer Science undergraduates" (of a given University).
  */
 interface Cohort : MmObject {
-    /**
-     * Name of the cohort.
-     */
-    val name: String
+	/**
+	 * Name of the cohort.
+	 */
+	val name: String
 
-    /**
-     * Members of the cohort.
-     */
-    val members: Set<User>
+	/**
+	 * Members of the cohort.
+	 */
+	val members: Set<User>
 
-    /**
-     * Administrators of the cohort.
-     * They MAY also appear in [members], but otherwise they're not counted as members of the cohort.
-     */
-    val administrators: Set<User>
+	/**
+	 * Administrators of the cohort.
+	 * They MAY also appear in [members], but otherwise they're not counted as members of the cohort.
+	 */
+	val administrators: Set<User>
 }

@@ -31,15 +31,15 @@ import org.hibernate.type.format.FormatMapper
  */
 @Suppress("unused") // Used by hibernate.properties
 class HibernateKotlinxJsonMapper : FormatMapper {
-    override fun <T> fromString(charSequence: CharSequence, javaType: JavaType<T>, wrapperOptions: WrapperOptions): T {
-        val serializer = serializer(javaType.javaType)
-        @Suppress("UNCHECKED_CAST") // SAFETY: Kotlinx must've picked a suitable deserializer.
-        return Json.decodeFromString(serializer, charSequence.toString()) as T
-    }
+	override fun <T> fromString(charSequence: CharSequence, javaType: JavaType<T>, wrapperOptions: WrapperOptions): T {
+		val serializer = serializer(javaType.javaType)
+		@Suppress("UNCHECKED_CAST") // SAFETY: Kotlinx must've picked a suitable deserializer.
+		return Json.decodeFromString(serializer, charSequence.toString()) as T
+	}
 
-    override fun <T> toString(value: T, javaType: JavaType<T>, wrapperOptions: WrapperOptions): String? {
-        if (value == null) return null
-        val serializer = serializer(javaType.javaType)
-        return Json.encodeToString(serializer, value)
-    }
+	override fun <T> toString(value: T, javaType: JavaType<T>, wrapperOptions: WrapperOptions): String? {
+		if (value == null) return null
+		val serializer = serializer(javaType.javaType)
+		return Json.encodeToString(serializer, value)
+	}
 }

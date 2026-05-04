@@ -18,18 +18,18 @@
  */
 
 plugins {
-    id("conventions.idea")
-    id("conventions.kotlin")
-    id("conventions.spring-lib")
-    id("conventions.hibernate-lib")
-    id("conventions.test")
+	id("conventions.idea")
+	id("conventions.kotlin")
+	id("conventions.spring-lib")
+	id("conventions.hibernate-lib")
+	id("conventions.test")
 }
 
 dependencies {
-    implementation(libs.spring.boot.jpa)
-    implementation(libs.spring.boot.validation)
-    implementation(libs.hypersistence.utils)
+	implementation(libs.spring.boot.jpa)
+	implementation(libs.spring.boot.validation)
+	implementation(libs.hypersistence.utils)
 
-    testImplementation(libs.spring.boot.jpa.test)
-    testImplementation(libs.spring.boot.validation.test)
+	testImplementation(libs.spring.boot.jpa.test)
+	testImplementation(libs.spring.boot.validation.test)
 }

@@ -37,23 +37,23 @@ import org.springframework.web.client.HttpClientErrorException
  */
 @Component
 class AuthenticationHolder {
-    /**
-     * Whether the current context holds a valid authentication.
-     */
-    val isAuthenticated: Boolean
-        get() = SecurityContextHolder.getContext().authentication?.isAuthenticated == true
+	/**
+	 * Whether the current context holds a valid authentication.
+	 */
+	val isAuthenticated: Boolean
+		get() = SecurityContextHolder.getContext().authentication?.isAuthenticated == true
 
-    /**
-     * Authenticated user for the current context. `null` if unauthenticated.
-     */
-    val authenticatedUser: User?
-        get() = authenticatedUserEntity
+	/**
+	 * Authenticated user for the current context. `null` if unauthenticated.
+	 */
+	val authenticatedUser: User?
+		get() = authenticatedUserEntity
 
-    /**
-     * Authenticated user entity for the current context. `null` if unauthenticated.
-     */
-    val authenticatedUserEntity: UserEntity?
-        get() = SecurityContextHolder.getContext().authentication?.principal as? UserEntity
+	/**
+	 * Authenticated user entity for the current context. `null` if unauthenticated.
+	 */
+	val authenticatedUserEntity: UserEntity?
+		get() = SecurityContextHolder.getContext().authentication?.principal as? UserEntity
 }
 
 /**

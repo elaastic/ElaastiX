@@ -32,9 +32,9 @@ import org.springframework.data.repository.NoRepositoryBean
  */
 @NoRepositoryBean
 interface ElaastixRepository<T : AbstractEntity> : BaseJpaRepository<T, Uuid> {
-    /**
-     * Helper to use Kotlin nullability instead of Java's `Optional`, which is more idiomatic.
-     */
-    @ExcludeFromCoverage("Trivial helper")
-    fun findByIdOrNull(id: Uuid): T? = findById(id).orElse(null)
+	/**
+	 * Helper to use Kotlin nullability instead of Java's `Optional`, which is more idiomatic.
+	 */
+	@ExcludeFromCoverage("Trivial helper")
+	fun findByIdOrNull(id: Uuid): T? = findById(id).orElse(null)
 }
