@@ -17,11 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@file:ExcludeFromCoverage("Converters are doing trivial conversions that are barely more than no-op")
+
 package org.elaastix.commons.jpa
 
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.jpa.hibernate.UuidJavaType
+import org.elaastix.commons.platform.ExcludeFromCoverage
 import org.hibernate.boot.model.TypeContributions
 import org.hibernate.boot.model.TypeContributor
 import org.hibernate.service.ServiceRegistry
@@ -51,6 +55,9 @@ class HibernateTypeContributor : TypeContributor {
             initialised = true
             typeContributions.contributeAttributeConverter(UuidConverter::class.java)
             typeContributions.contributeAttributeConverter(InstantConverter::class.java)
+            typeContributions.contributeAttributeConverter(UIntConverter::class.java)
+            typeContributions.contributeAttributeConverter(ULongConverter::class.java)
+            typeContributions.contributeJavaType(UuidJavaType)
         }
     }
 }
@@ -61,9 +68,6 @@ class HibernateTypeContributor : TypeContributor {
  *
  * [UUID] is a [basic type](https://jakarta.ee/specifications/persistence/3.2/jakarta-persistence-spec-3.2#a486) that
  * JPA can deal with.
- *
- * **WARNING**: JPA [`@Id`][jakarta.persistence.Id] is **incompatible** with converters.
- * This incompatibility is dealt with by [AbstractEntity].
  */
 @Converter(autoApply = true)
 class UuidConverter : AttributeConverter<Uuid, UUID> {
@@ -85,4 +89,28 @@ class InstantConverter : AttributeConverter<Instant, JavaInstant> {
     override fun convertToDatabaseColumn(attribute: Instant?): JavaInstant? = attribute?.toJavaInstant()
 
     override fun convertToEntityAttribute(dbData: JavaInstant?): Instant? = dbData?.toKotlinInstant()
+}
+
+/**
+ * JPA Converter responsible for handling the conversion from [UInt] to [Int].
+ * Automatically applied, to allow seamless usage of [UInt] in entities.
+ */
+@Converter(autoApply = true)
+@ExcludeFromCoverage("Trivially equivalent to a no-op")
+class UIntConverter : AttributeConverter<UInt, Int> {
+    override fun convertToDatabaseColumn(attribute: UInt?): Int? = attribute?.toInt()
+
+    override fun convertToEntityAttribute(dbData: Int?): UInt? = dbData?.toUInt()
+}
+
+/**
+ * JPA Converter responsible for handling the conversion from [ULong] to [Long].
+ * Automatically applied, to allow seamless usage of [ULong] in entities.
+ */
+@Converter(autoApply = true)
+@ExcludeFromCoverage("Trivially equivalent to a no-op")
+class ULongConverter : AttributeConverter<ULong, Long> {
+    override fun convertToDatabaseColumn(attribute: ULong?): Long? = attribute?.toLong()
+
+    override fun convertToEntityAttribute(dbData: Long?): ULong? = dbData?.toULong()
 }

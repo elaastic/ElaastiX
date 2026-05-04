@@ -17,19 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.platform
+package org.elaastix.commons.jpa
 
-/**
- * Annotation excluding a class or a function from code coverage.
- * Requires an explicit message clarifying the reason behind the exclusion.
- * Can also include a link to an issue, if appropriate.
- */
-@Suppress("unused") // Used by humans ;)
-@Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
-annotation class ExcludeFromCoverage(
-    /** Explanation as to why the class or function is being excluded from code coverage calculations. */
-    val message: String,
-    /** A link to a relevant GitHub issue or comment that contains more information about the exclusion. */
-    val ref: String = "",
-)
+import jakarta.persistence.PrePersist
+import org.elaastix.commons.platform.JpaImmutable
+import kotlin.time.Clock
+
+internal class EntityListener {
+    @PrePersist
+    fun prePersist(entity: AbstractEntity) {
+        @OptIn(JpaImmutable::class)
+        entity.updatedAt = Clock.System.now()
+    }
+}

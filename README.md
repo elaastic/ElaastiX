@@ -44,6 +44,13 @@ The following commands automatically become available:
 - `garage`
 
 ### Editor
+> [!CAUTION]
+> 1. IntelliJ IDEA currently has some major regressions with WSL support as of 2026.1. See [KTIJ-38542].
+>    While the usual advice is to use the latest versions, **do not upgrade to the 2026 series yet**.
+> 2. There is currently a bug causing IntelliJ to saturate WSL's `/tmp` directory. See [IDEA-384441].
+>    You can run `just ij-wsl-clear` to prune files in `/tmp` and try again, restarting the IDE is not needed.
+>    As this is an aggressive workaround, you'll be prompted for confirmation.
+
 The project is configured for IntelliJ IDEA Ultimate. In other editions of IntelliJ IDEA, Spring support is limited
 and there is no support for JavaScript, TypeScript, and Vue (but support for these is available in WebStorm).
 
@@ -72,6 +79,9 @@ and there is no support for JavaScript, TypeScript, and Vue (but support for the
 > </details>
 
 If you're not using a JetBrains IDE, additional configuration might be required.
+
+[KTIJ-38542]: https://youtrack.jetbrains.com/issue/KTIJ-38542
+[IDEA-384441]: https://youtrack.jetbrains.com/issue/IDEA-384441
 
 ### Running the project
 You can run the project using `just start`, or via the run configurations available in IntelliJ (recommended).
