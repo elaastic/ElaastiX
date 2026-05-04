@@ -39,6 +39,8 @@ object ContentTypesRegistry {
 	internal typealias ContentFactory<T> = (JsonElement) -> T
 	internal typealias PlaintextFactory<T> = (String) -> T
 
+	internal data class Descriptor<T : RichContent>(val id: String, val clazz: KClass<T>, val factory: ContentFactory<T>)
+
 	internal val byId = mutableMapOf<String, Descriptor<*>>()
 	internal val byClass = mutableMapOf<KClass<*>, Descriptor<*>>()
 
@@ -139,7 +141,17 @@ object ContentTypesRegistry {
 		factory.invoke(it.content)
 	}
 
-	internal data class Descriptor<T : RichContent>(val id: String, val clazz: KClass<T>, val factory: ContentFactory<T>)
+	/** Unregisters a content type class and all its aliases. */
+	fun <T : RichContent> unregister(clazz: KClass<T>) {
+		byId.filter { it.value.clazz == clazz }.forEach { (key, _) -> byId.remove(key) }
+		byClass.remove(clazz)
+	}
+
+	/** Unregisters a content type alias. Does not permit removing primary registrations. */
+	fun unregisterAlias(alias: String) {
+		require(byId[alias]?.id != alias) { "Attempted to remove primary registration of content type $alias" }
+		byId.remove(alias)
+	}
 }
 
 /**

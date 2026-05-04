@@ -87,29 +87,21 @@ class ContentSerializersTest {
 		@JvmStatic
 		@AfterAll
 		fun `clear registrations`() {
-			ContentTypesRegistry.byId.remove(FAKE_CONTENT_ID_1)
-			ContentTypesRegistry.byId.remove(FAKE_CONTENT_ID_2)
-			ContentTypesRegistry.byId.remove(FAKE_CONTENT_ID_3)
-			ContentTypesRegistry.byId.remove(CONTENT_ALIAS_ID)
-			ContentTypesRegistry.byId.remove(FakeContentType1::class.java.simpleName)
-			ContentTypesRegistry.byId.remove(FakeContentType2::class.java.simpleName)
-
-			ContentTypesRegistry.byClass.remove(FakeContentType1::class)
-			ContentTypesRegistry.byClass.remove(FakeContentType2::class)
+			ContentTypesRegistry.unregister(FakeContentType1::class)
+			ContentTypesRegistry.unregister(FakeContentType2::class)
+			ContentTypesRegistry.unregisterAlias(FAKE_CONTENT_ID_1)
+			ContentTypesRegistry.unregisterAlias(FAKE_CONTENT_ID_2)
+			ContentTypesRegistry.unregisterAlias(FAKE_CONTENT_ID_3)
+			ContentTypesRegistry.unregisterAlias(CONTENT_ALIAS_ID)
 		}
 
 		@JvmStatic
 		@AfterAll
 		fun `clear static registrations`() {
-			ContentTypesRegistry.byId.remove(TestRichContent::class.java.simpleName)
-			ContentTypesRegistry.byId.remove(TestFormattedContent::class.java.simpleName)
-			ContentTypesRegistry.byId.remove(TestFormattedContentCustomId::class.java.simpleName)
-			ContentTypesRegistry.byId.remove(TestFormattedText::class.java.simpleName)
-
-			ContentTypesRegistry.byClass.remove(TestRichContent::class)
-			ContentTypesRegistry.byClass.remove(TestFormattedContent::class)
-			ContentTypesRegistry.byClass.remove(TestFormattedContentCustomId::class)
-			ContentTypesRegistry.byClass.remove(TestFormattedText::class)
+			ContentTypesRegistry.unregister(TestRichContent::class)
+			ContentTypesRegistry.unregister(TestFormattedContent::class)
+			ContentTypesRegistry.unregister(TestFormattedContentCustomId::class)
+			ContentTypesRegistry.unregister(TestFormattedText::class)
 		}
 
 		private inline fun <reified T : RichContent> mockFactory(crossinline lambda: (JsonElement) -> T) =
