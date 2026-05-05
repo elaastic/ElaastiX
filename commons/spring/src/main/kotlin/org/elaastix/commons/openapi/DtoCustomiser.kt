@@ -17,22 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.spring-lib")
-	id("conventions.hibernate-lib")
-	id("conventions.test")
-}
+package org.elaastix.commons.openapi
 
-dependencies {
-	implementation(libs.springdoc)
-	implementation(libs.spring.boot.jpa)
-	implementation(libs.spring.boot.validation)
-	implementation(libs.spring.boot.kotlinx.serialization.json)
-	implementation(libs.hypersistence.utils)
+import io.swagger.v3.oas.models.media.Schema
+import kotlin.reflect.KClass
 
-	testImplementation(libs.spring.boot.jpa.test)
-	testImplementation(libs.spring.boot.validation.test)
-	testImplementation(libs.spring.boot.kotlinx.serialization.json.test)
+/**
+ * Interface for customising data transfer object schemas.
+ * All implementors registered as beans will be automatically invoked during schema generation.
+ */
+@FunctionalInterface
+fun interface DtoCustomiser {
+	/** The customisation logic. Returns the transformed schema (or [schema]). */
+	fun customise(schema: Schema<*>, clazz: KClass<*>): Schema<*>
 }
