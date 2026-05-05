@@ -40,14 +40,14 @@ class ClosedQuestionEntity(
 	 * Whether they are shown in order depends on the specific configuration of the activity this question is used in.
 	 */
 	@JdbcTypeCode(SqlTypes.JSON)
-	val choices: List<FormattedText>,
+	var choices: List<FormattedText>,
 
 	/** Whether the question accepts multiple answers or not. */
-	val multiple: Boolean,
+	var multiple: Boolean,
 
 	/** The expected answer. */
 	@JdbcTypeCode(SqlTypes.JSON)
-	val expectedAnswer: ClosedAnswer,
+	var expectedAnswer: ClosedAnswer,
 
 	answerExplanation: RichContent?,
 	author: UserEntity,
@@ -63,6 +63,18 @@ class ClosedQuestionEntity(
 
 	@PrePersist
 	internal fun checkInvariants() {
-		check(multiple || !expectedAnswer.hasMultiple())
+		when (val e = expectedAnswer) {
+			is ClosedAnswer.Single -> {
+				check(!multiple)
+				e.value?.let {
+					check(it < choices.size.toUInt())
+				}
+			}
+
+			is ClosedAnswer.Multiple -> {
+				check(multiple)
+				check(e.value.all { it < choices.size.toUInt() })
+			}
+		}
 	}
 }

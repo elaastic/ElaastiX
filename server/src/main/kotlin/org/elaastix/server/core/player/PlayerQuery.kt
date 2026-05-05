@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod
  * Annotation for mapping RPC Query endpoints onto specific handlers.
  */
 @RequestMapping(method = [RequestMethod.GET])
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class PlayerQuery(
 	/** Namespaced identifier for the RPC query. The name segment should always start with `get`. */

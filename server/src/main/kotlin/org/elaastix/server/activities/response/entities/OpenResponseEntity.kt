@@ -21,35 +21,24 @@ package org.elaastix.server.activities.response.entities
 
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import org.elaastix.mm.activity.ScalarGradable
 import org.elaastix.mm.content.FormattedContent
 import org.elaastix.server.users.entities.UserEntity
-import org.hibernate.annotations.JdbcTypeCode
-import org.hibernate.type.SqlTypes
 
 /** Answer to a [OpenQuestionEntity]. */
 @Entity
 @DiscriminatorValue(OpenResponseEntity.DISCRIMINATOR)
 class OpenResponseEntity(
-	@ManyToOne
-	override val question: OpenQuestionEntity,
-
-	/** The answer provided by the learner. */
-	@JdbcTypeCode(SqlTypes.JSON)
-	val answer: FormattedContent,
-
+	question: OpenQuestionEntity,
+	answer: FormattedContent,
 	selfExplanation: FormattedContent?,
 	confidenceDegree: UInt?,
 	author: UserEntity,
-
-	@OneToOne
-	override val amendedResponse: OpenResponseEntity? = null,
-
+	amendedResponse: OpenResponseEntity? = null,
 	absoluteGrade: ScalarGradable.ScalarGrade? = null,
-) : ResponseEntity(
+) : ResponseEntity<OpenResponseEntity, OpenQuestionEntity, FormattedContent>(
 		question,
+		answer,
 		selfExplanation,
 		confidenceDegree,
 		author,

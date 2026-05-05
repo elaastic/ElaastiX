@@ -37,21 +37,25 @@ import org.hibernate.type.SqlTypes
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-abstract class ResponseEntity(
+abstract class ResponseEntity<TSelf : ResponseEntity<TSelf, TQuestion, TAnswer>, TQuestion : QuestionEntity, TAnswer>(
 	/** The question this response is attached to. */
-	@ManyToOne
-	val question: QuestionEntity,
+	@ManyToOne(targetEntity = QuestionEntity::class)
+	var question: TQuestion,
+
+	/** The answer given by the learner. May be empty, but is required. */
+	@JdbcTypeCode(SqlTypes.JSON)
+	var answer: TAnswer,
 
 	/** Self explanation provided by the learner. Optional. */
 	@JdbcTypeCode(SqlTypes.JSON)
-	val selfExplanation: FormattedContent?,
+	var selfExplanation: FormattedContent?,
 
 	/** Confidence degree provided by the learner. Optional. */
-	val confidenceDegree: UInt?,
+	var confidenceDegree: UInt?,
 
 	/** The author of this response. */
 	@ManyToOne
-	val author: UserEntity,
+	var author: UserEntity,
 
 	/**
 	 * The response being amended by this response.
@@ -62,10 +66,10 @@ abstract class ResponseEntity(
 	 * This allows tracking the revision history for a question, and when in the learning path have these responses
 	 * been created.
 	 */
-	@OneToOne
-	val amendedResponse: ResponseEntity? = null,
+	@OneToOne(targetEntity = ResponseEntity::class)
+	var amendedResponse: TSelf? = null,
 
 	@Embedded
-	override val absoluteGrade: ScalarGradable.ScalarGrade? = null,
+	override var absoluteGrade: ScalarGradable.ScalarGrade? = null,
 ) : AbstractEntity(),
 	ScalarGradable

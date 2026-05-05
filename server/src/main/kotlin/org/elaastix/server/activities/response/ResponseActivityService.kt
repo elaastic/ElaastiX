@@ -64,7 +64,7 @@ class ResponseActivityService(
 			}
 
 		/** Transforms a [ResponseEntity] into a [ResponseDto]. */
-		fun ResponseEntity.toDto() =
+		fun ResponseEntity<*, *, *>.toDto() =
 			when (this) {
 				is OpenResponseEntity ->
 					OpenResponseDto(
@@ -98,15 +98,17 @@ class ResponseActivityService(
 	fun findQuestionStatement(id: Uuid) = questionRepository.findQuestionStatementById(id)?.toDto()
 
 	/**
-	 * Validates and records an answer to a question.
+	 * Validates and records a response to a question.
 	 */
 	@Transactional
-	fun submitAnswer(
+	fun submitResponse(
 		questionId: Uuid,
 		@Valid response: ResponseSubmitDto,
 	): ResponseDto {
+		val statement = questionRepository.findQuestionStatementById(questionId).orNotFound()
+
 		val entity =
-			when (val questionRef = questionRepository.getConcreteEntityReference(questionId).orNotFound()) {
+			when (val questionRef = questionRepository.getEntityReferenceWithType(statement.id, statement.type)) {
 				is OpenQuestionEntity -> {
 					validate(response is OpenResponseSubmitDto) { "Response type does not match the question's type." }
 					OpenResponseEntity(
@@ -120,6 +122,7 @@ class ResponseActivityService(
 
 				is ClosedQuestionEntity -> {
 					validate(response is ClosedResponseSubmitDto) { "Response type does not match the question's type." }
+					validateClosedAnswer(response, statement)
 					ClosedResponseEntity(
 						author = AuthenticationHolder.authenticatedUserEntity.required(),
 						question = questionRef,
@@ -136,4 +139,19 @@ class ResponseActivityService(
 		val response = responseRepository.persist(entity)
 		return response.toDto()
 	}
+
+	private fun validateClosedAnswer(response: ClosedResponseSubmitDto, statement: QuestionStatementProjection) =
+		when (response.answer) {
+			is ClosedAnswer.Single -> {
+				validate(!statement.multiple!!) { "Question does not accept single answers." }
+				response.answer.value?.let {
+					validate(it < statement.choices!!.size.toUInt()) { "Invalid answer." }
+				}
+			}
+
+			is ClosedAnswer.Multiple -> {
+				validate(statement.multiple!!) { "Question does not accept multiple answers." }
+				validate(response.answer.value.all { it < statement.choices!!.size.toUInt() }) { "Invalid answer." }
+			}
+		}
 }

@@ -21,36 +21,25 @@ package org.elaastix.server.activities.response.entities
 
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.OneToOne
 import org.elaastix.mm.activity.ScalarGradable
 import org.elaastix.mm.content.FormattedContent
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.users.entities.UserEntity
-import org.hibernate.annotations.JdbcTypeCode
-import org.hibernate.type.SqlTypes
 
 /** Answer to a [ClosedQuestionEntity]. */
 @Entity
 @DiscriminatorValue(ClosedResponseEntity.DISCRIMINATOR)
 class ClosedResponseEntity(
-	@ManyToOne
-	override val question: ClosedQuestionEntity,
-
-	/** The answer provided by the learner. */
-	@JdbcTypeCode(SqlTypes.JSON)
-	val answer: ClosedAnswer,
-
+	question: ClosedQuestionEntity,
+	answer: ClosedAnswer,
 	selfExplanation: FormattedContent?,
 	confidenceDegree: UInt?,
 	author: UserEntity,
-
-	@OneToOne
-	override val amendedResponse: ClosedResponseEntity? = null,
-
+	amendedResponse: ClosedResponseEntity? = null,
 	absoluteGrade: ScalarGradable.ScalarGrade? = null,
-) : ResponseEntity(
+) : ResponseEntity<ClosedResponseEntity, ClosedQuestionEntity, ClosedAnswer>(
 		question,
+		answer,
 		selfExplanation,
 		confidenceDegree,
 		author,

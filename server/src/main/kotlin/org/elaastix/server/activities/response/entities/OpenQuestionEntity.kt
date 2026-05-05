@@ -43,7 +43,7 @@ class OpenQuestionEntity(
 	 * question author to put themselves in the student's shoes while preparing the questions.
 	 */
 	@JdbcTypeCode(SqlTypes.JSON)
-	val expectedAnswer: FormattedContent,
+	var expectedAnswer: FormattedContent,
 
 	answerExplanation: RichContent?,
 	author: UserEntity,

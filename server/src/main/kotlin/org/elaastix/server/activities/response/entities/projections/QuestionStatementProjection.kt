@@ -42,7 +42,7 @@ data class QuestionStatementProjection(
 	 * @see ClosedQuestionEntity
 	 * @see OpenQuestionEntity
 	 */
-	val type: Class<*>,
+	val type: Class<out QuestionEntity>,
 
 	/** @see [QuestionEntity.id] */
 	val id: Uuid,

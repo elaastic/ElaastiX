@@ -46,6 +46,6 @@ sealed interface ClosedAnswer {
 	@SerialName("Multiple")
 	value class Multiple(
 		/** The underlying value; a list of indices into the question's choices list. */
-		val value: List<UInt>,
+		val value: Set<UInt>,
 	) : ClosedAnswer
 }

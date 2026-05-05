@@ -43,7 +43,7 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	 * This endpoint is suitable for retrieving a question to display to users.
 	 *
 	 * @param id The ID of the question.
-	 * @return The question statement (and relevant information depending on the type of question).
+	 * @return The question statement, and available choices for closed questions.
 	 */
 	@PlayerQuery("org.elaastix.response.getQuestion")
 	fun getQuestion(
@@ -53,16 +53,17 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	/**
 	 * Submit an answer to a question.
 	 *
-	 * @return The created response statement object, or an error if the operation failed.
+	 * @return The created response statement object.
+	 * @throws org.elaastix.commons.exceptions.BadRequestException if the data is invalid.
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
-	@PlayerAction("org.elaastix.response.submitAnswer")
-	fun submitAnswer(
+	@PlayerAction("org.elaastix.response.submitResponse")
+	fun submitResponse(
 		@RequestBody payload: SubmitAnswerDto,
 	) =
-		responseActivityService.submitAnswer(payload.questionId, payload.response)
+		responseActivityService.submitResponse(payload.questionId, payload.response)
 
-	/** Payload for the submitAnswer action. */
+	/** Payload for the submitResponse action. */
 	@Serializable
 	data class SubmitAnswerDto(
 		/** The question to send an answer for. */

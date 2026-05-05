@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestMethod
  * Annotation for mapping RPC Action endpoints onto specific handlers.
  */
 @RequestMapping(method = [RequestMethod.POST])
-@Target(AnnotationTarget.FUNCTION)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class PlayerAction(
 	/** Namespaced identifier for the RPC action. */

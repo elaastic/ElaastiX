@@ -51,7 +51,7 @@ class QuestionSeeder(entityManager: EntityManager, private val userSeeder: UserS
 					MarkdownText("TRUE. No one run Haskell software, and therefore no side-effect ever occurs."),
 					MarkdownText("FALSE. Haskell wraps \"impure\" logic using monadic structures."),
 				),
-				expectedAnswer = ClosedAnswer.Multiple(listOf(2U, 3U)),
+				expectedAnswer = ClosedAnswer.Multiple(setOf(2u, 3u)),
 				answerExplanation = MarkdownContent("https://xkcd.com/1312/"),
 			),
 		)

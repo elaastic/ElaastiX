@@ -25,7 +25,7 @@ import org.elaastix.mm.content.FormattedContent
 import org.elaastix.server.activities.response.CLOSED_RESPONSE_DISCRIMINATOR
 import org.elaastix.server.activities.response.ClosedAnswer
 
-/** A response to an open question. */
+/** A response to a closed question. */
 @Serializable
 @SerialName(CLOSED_RESPONSE_DISCRIMINATOR)
 data class ClosedResponseSubmitDto(

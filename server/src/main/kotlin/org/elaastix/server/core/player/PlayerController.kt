@@ -29,6 +29,6 @@ import org.springframework.web.bind.annotation.RestController
 // Note: endpoints inside the namespace may have their own versioning separate from the API version.
 // The version here only designates the RPC protocol version (which is 1).
 @RequestMapping("/player", version = "1+")
-@Target(AnnotationTarget.CLASS)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class PlayerController

@@ -38,13 +38,13 @@ import org.hibernate.type.SqlTypes
 abstract class QuestionEntity(
 	/** The question's statement. */
 	@JdbcTypeCode(SqlTypes.JSON)
-	val statement: RichContent,
+	var statement: RichContent,
 
 	/** The explanation of the expected answer. Optional. */
 	@JdbcTypeCode(SqlTypes.JSON)
-	val answerExplanation: RichContent?,
+	var answerExplanation: RichContent?,
 
 	@ManyToOne
-	override val author: UserEntity,
+	override var author: UserEntity,
 ) : AbstractEntity(),
 	Material
