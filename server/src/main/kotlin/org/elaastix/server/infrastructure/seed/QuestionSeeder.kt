@@ -70,11 +70,11 @@ class QuestionSeeder(entityManager: EntityManager, private val userSeeder: UserS
 				expectedAnswer = ClosedAnswer.Single(2U),
 				answerExplanation = MarkdownContent(
 					"""
-                    - Unmatched security by design and by default
-                    - Code correctness over features (i.e. not systemd 🤢)
-                    - Proactive protection & privacy defaults
-                      - OpenBSD pioneered and enables powerful exploit mitigation technologies like W^X
-                    - Proven track record: *Only two remote holes in the default install, in a heck of a long time!*
+					- Unmatched security by design and by default
+					- Code correctness over features (i.e. not systemd 🤢)
+					- Proactive protection & privacy defaults
+					  - OpenBSD pioneered and enables powerful exploit mitigation technologies like W^X
+					- Proven track record: *Only two remote holes in the default install, in a heck of a long time!*
 					""".trimIndent(),
 				),
 			),

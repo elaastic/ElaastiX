@@ -30,15 +30,15 @@ import org.springframework.stereotype.Repository
 interface QuestionRepository : ElaastixRepository<QuestionEntity> {
 	@Query( // Can't rely on automatic projection because of polymorphism.
 		"""
-            SELECT new org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection(
-                TYPE(e),
-                e.id,
-                e.statement,
-                TREAT(e AS ClosedQuestionEntity).choices,
-                TREAT(e AS ClosedQuestionEntity).multiple
-            )
-            FROM QuestionEntity e
-            WHERE e.id = ?1
+			SELECT new org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection(
+				TYPE(e),
+				e.id,
+				e.statement,
+				TREAT(e AS ClosedQuestionEntity).choices,
+				TREAT(e AS ClosedQuestionEntity).multiple
+			)
+			FROM QuestionEntity e
+			WHERE e.id = ?1
         """,
 	)
 	fun findQuestionStatementById(id: Uuid): QuestionStatementProjection?

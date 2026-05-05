@@ -26,7 +26,11 @@
             <sql-type>bigint</sql-type>
           </mapping-type>
           <mapping-type sql-type-parameter="Nothing">
-            <java-class>T</java-class>
+            <java-class>TQuestion</java-class>
+            <sql-type>uuid</sql-type>
+          </mapping-type>
+          <mapping-type sql-type-parameter="Nothing">
+            <java-class>TSelf</java-class>
             <sql-type>uuid</sql-type>
           </mapping-type>
         </mapping-types>
