@@ -51,7 +51,7 @@ class QuestionSeeder(entityManager: EntityManager, private val userSeeder: UserS
 					MarkdownText("TRUE. No one run Haskell software, and therefore no side-effect ever occurs."),
 					MarkdownText("FALSE. Haskell wraps \"impure\" logic using monadic structures."),
 				),
-				expectedAnswer = ClosedAnswer.multiple(listOf(2U, 3U)),
+				expectedAnswer = ClosedAnswer.Multiple(listOf(2U, 3U)),
 				answerExplanation = MarkdownContent("https://xkcd.com/1312/"),
 			),
 		)
@@ -67,7 +67,7 @@ class QuestionSeeder(entityManager: EntityManager, private val userSeeder: UserS
 					MarkdownText("OpenBSD"),
 					MarkdownText("macOS"),
 				),
-				expectedAnswer = ClosedAnswer.single(2U),
+				expectedAnswer = ClosedAnswer.Single(2U),
 				answerExplanation = MarkdownContent(
 					"""
                     - Unmatched security by design and by default

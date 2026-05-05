@@ -90,6 +90,8 @@ class BuiltinCustomisers(private val kotlinxSerializationJsonProperties: Kotlinx
 	 * Kotlin generates synthetic getters with a random suffix for value classes, which appear in the documentation.
 	 * Since Kotlin separates the name and the suffix with a dash and this character cannot be present elsewhere, the
 	 * converter detects these properties and strip the prefix.
+	 *
+	 * See the relevant [documentation](https://kotlinlang.org/docs/inline-classes.html#mangling).
 	 */
 	@Bean
 	fun valueClassInterop(): DtoCustomiser = { schema, _ ->
