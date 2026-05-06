@@ -1,12 +1,12 @@
-// @ts-expect-error -- TS support in ESLint is new and the ecosystem not entirely onboard.
 import storybook from 'eslint-plugin-storybook'
 import withNuxt from './.nuxt/eslint.config.mjs'
 
 export default withNuxt([
-	...storybook.configs['flat/recommended'],
+	...storybook.configs['flat/recommended'] as never, // as never needed, TypeScript mad otherwise :/
 	{
 		rules: {
 			'vue/no-multiple-template-root': 'off',
+			'import/first': 'off', // https://github.com/vuejs/eslint-plugin-vue/issues/1577
 		},
 	},
 ])

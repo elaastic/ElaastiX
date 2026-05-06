@@ -19,22 +19,41 @@
 
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
 
-import UserMenuComp from './UserMenu.vue'
+import Likert, { LikertScaleType } from './Likert.vue'
 
 const meta = {
-	title: 'Sidebar/UserMenu',
-	component: UserMenuComp,
+	title: 'Form/Likert',
+	component: Likert,
 	tags: ['autodocs'],
-	decorators: [
-		() => ({
-			template: `<div style="max-width: 280px"><story /></div>`,
-		}),
-	],
-} satisfies Meta<typeof UserMenuComp>
+	// Controls generation sucks in monorepos...
+	argTypes: {
+		type: {
+			control: 'select',
+			options: Object.values(LikertScaleType),
+		},
+		points: {
+			control: {
+				type: 'range',
+				min: 3,
+				max: 7,
+			},
+		},
+	},
+} satisfies Meta<typeof Likert>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const UserMenu: Story = {
-	args: {},
+export const AgreementLikert: Story = {
+	args: {
+		type: LikertScaleType.AGREEMENT,
+		points: 5,
+	},
+}
+
+export const ConfidenceLikert: Story = {
+	args: {
+		type: LikertScaleType.CONFIDENCE,
+		points: 4,
+	},
 }

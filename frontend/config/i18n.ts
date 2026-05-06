@@ -17,24 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import type { Meta, StoryObj } from '@nuxtjs/storybook'
+import type { Locale } from 'vue-i18n'
+import type { LocaleObject } from '@nuxtjs/i18n'
 
-import UserMenuComp from './UserMenu.vue'
+export const defaultLocale: Locale = 'en-GB'
 
-const meta = {
-	title: 'Sidebar/UserMenu',
-	component: UserMenuComp,
-	tags: ['autodocs'],
-	decorators: [
-		() => ({
-			template: `<div style="max-width: 280px"><story /></div>`,
-		}),
-	],
-} satisfies Meta<typeof UserMenuComp>
-
-export default meta
-type Story = StoryObj<typeof meta>
-
-export const UserMenu: Story = {
-	args: {},
-}
+export const locales: LocaleObject[] = [
+	{
+		code: 'en-GB',
+		file: 'en-GB.json',
+		name: 'English',
+	},
+	{
+		code: 'fr-FR',
+		file: 'fr-FR.json',
+		name: 'Français',
+	},
+]
