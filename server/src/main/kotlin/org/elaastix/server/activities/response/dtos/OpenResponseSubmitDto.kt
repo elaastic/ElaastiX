@@ -17,32 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.activity
+package org.elaastix.server.activities.response.dtos
 
-/**
- * Denotes objects that can be given a grade, on a linear scale between zero and an arbitrary upper bound.
- * Such grades can be represented as-is (e.g. 16/20), or as a percentage.
- * Usually implemented by classes representing a production of a learner.
- *
- * @see ScalarGrade
- */
-interface ScalarGradable {
-	/** The scalar grade given to the object. */
-	val absoluteGrade: ScalarGrade?
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.elaastix.mm.content.FormattedContent
+import org.elaastix.server.activities.response.OPEN_RESPONSE_DISCRIMINATOR
 
-	/**
-	 * A linear grade, as an arbitrary number between zero and an upper bound.
-	 */
-	interface ScalarGrade {
-		/** The given grade. MUST be less than or equal to [max]. */
-		val grade: Double
-
-		/** Maximum grade that can be obtained. MUST be non-zero. */
-		val max: Double
-
-		/**
-		 * Returns the grade as a decimal value between 0 and 1.
-		 */
-		fun asDouble(): Double = grade / max
-	}
-}
+/** A response to an open question. */
+@Serializable
+@SerialName(OPEN_RESPONSE_DISCRIMINATOR)
+data class OpenResponseSubmitDto(
+	/** Response contents. */
+	val answer: FormattedContent,
+	/** The explanation of the user for their answer. Optional. */
+	val selfExplanation: FormattedContent?,
+	/** The confidence degree of the user for their answer. Optional. */
+	val confidenceDegree: UInt?,
+) : ResponseSubmitDto

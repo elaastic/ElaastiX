@@ -29,8 +29,10 @@ dependencies {
 	implementation(libs.springdoc)
 	implementation(libs.spring.boot.jpa)
 	implementation(libs.spring.boot.validation)
+	implementation(libs.spring.boot.kotlinx.serialization.json)
 	implementation(libs.hypersistence.utils)
 
 	testImplementation(libs.spring.boot.jpa.test)
 	testImplementation(libs.spring.boot.validation.test)
+	testImplementation(libs.spring.boot.kotlinx.serialization.json.test)
 }

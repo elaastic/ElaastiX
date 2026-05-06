@@ -10,6 +10,7 @@ spring:
     serialization:
       json:
         encode-defaults: true
+        class-discriminator: $type
 
 scalar:
   enabled: true

@@ -41,7 +41,10 @@ kotlin {
 			"KOTLIN_${kotlinVersion.substringBeforeLast(".").replace(".", "_")}",
 		)
 
-		freeCompilerArgs.addAll("-Xjsr305=strict", "-Xannotation-default-target=param-property")
+		freeCompilerArgs.addAll(
+			"-Xjsr305=strict",
+			"-Xannotation-default-target=param-property",
+		)
 		jvmTarget = JvmTarget.valueOf("JVM_$jdkVersion")
 		languageVersion = kotlinVersion
 		apiVersion = kotlinVersion

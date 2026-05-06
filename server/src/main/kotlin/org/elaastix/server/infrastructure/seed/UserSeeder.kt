@@ -17,32 +17,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.activity
+package org.elaastix.server.infrastructure.seed
 
-/**
- * Denotes objects that can be given a grade, on a linear scale between zero and an arbitrary upper bound.
- * Such grades can be represented as-is (e.g. 16/20), or as a percentage.
- * Usually implemented by classes representing a production of a learner.
- *
- * @see ScalarGrade
- */
-interface ScalarGradable {
-	/** The scalar grade given to the object. */
-	val absoluteGrade: ScalarGrade?
+import jakarta.persistence.EntityManager
+import org.elaastix.server.users.entities.UserEntity
+import org.springframework.boot.ApplicationArguments
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 
-	/**
-	 * A linear grade, as an arbitrary number between zero and an upper bound.
-	 */
-	interface ScalarGrade {
-		/** The given grade. MUST be less than or equal to [max]. */
-		val grade: Double
+@Seeder
+@Order(Ordered.HIGHEST_PRECEDENCE)
+class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
+	lateinit var franck: UserEntity
+		protected set
 
-		/** Maximum grade that can be obtained. MUST be non-zero. */
-		val max: Double
+	lateinit var john: UserEntity
+		protected set
 
-		/**
-		 * Returns the grade as a decimal value between 0 and 1.
-		 */
-		fun asDouble(): Double = grade / max
+	lateinit var cynthia: UserEntity
+		protected set
+
+	override fun run(args: ApplicationArguments) {
+		franck = createEntity(
+			UserEntity(
+				isWriterModeEnabled = true,
+				isAdministrator = true,
+			),
+		)
+
+		john = createEntity(
+			UserEntity(
+				isWriterModeEnabled = true,
+			),
+		)
+
+		cynthia = createEntity(
+			UserEntity(),
+		)
 	}
 }

@@ -17,32 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.activity
+package org.elaastix.server.activities.response.dtos
+
+import kotlinx.serialization.Serializable
 
 /**
- * Denotes objects that can be given a grade, on a linear scale between zero and an arbitrary upper bound.
- * Such grades can be represented as-is (e.g. 16/20), or as a percentage.
- * Usually implemented by classes representing a production of a learner.
- *
- * @see ScalarGrade
+ * Marker for question statements.
+ * Used to establish a polymorphic hierarchy for Kotlinx Serialization.
  */
-interface ScalarGradable {
-	/** The scalar grade given to the object. */
-	val absoluteGrade: ScalarGrade?
-
-	/**
-	 * A linear grade, as an arbitrary number between zero and an upper bound.
-	 */
-	interface ScalarGrade {
-		/** The given grade. MUST be less than or equal to [max]. */
-		val grade: Double
-
-		/** Maximum grade that can be obtained. MUST be non-zero. */
-		val max: Double
-
-		/**
-		 * Returns the grade as a decimal value between 0 and 1.
-		 */
-		fun asDouble(): Double = grade / max
-	}
-}
+@Serializable
+sealed interface QuestionStatementDto

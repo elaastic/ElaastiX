@@ -17,32 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.activity
+package org.elaastix.server
 
-/**
- * Denotes objects that can be given a grade, on a linear scale between zero and an arbitrary upper bound.
- * Such grades can be represented as-is (e.g. 16/20), or as a percentage.
- * Usually implemented by classes representing a production of a learner.
- *
- * @see ScalarGrade
- */
-interface ScalarGradable {
-	/** The scalar grade given to the object. */
-	val absoluteGrade: ScalarGrade?
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.mockkObject
+import org.elaastix.commons.data.Uuid
+import org.elaastix.server.authn.AuthenticationHolder
+import org.elaastix.server.authn.ElaastixAuthentication
+import org.elaastix.server.users.entities.UserEntity
 
-	/**
-	 * A linear grade, as an arbitrary number between zero and an upper bound.
-	 */
-	interface ScalarGrade {
-		/** The given grade. MUST be less than or equal to [max]. */
-		val grade: Double
+abstract class AuthenticatedUnitTest {
+	fun mockAuthenticatedUser(): UserEntity {
+		val userId = Uuid.random()
+		val user: UserEntity = mockk {
+			every { id } returns userId
+		}
 
-		/** Maximum grade that can be obtained. MUST be non-zero. */
-		val max: Double
+		mockkObject(AuthenticationHolder)
+		every { AuthenticationHolder.authentication } returns ElaastixAuthentication(user, null, true)
 
-		/**
-		 * Returns the grade as a decimal value between 0 and 1.
-		 */
-		fun asDouble(): Double = grade / max
+		return user
 	}
 }

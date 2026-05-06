@@ -17,11 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+package org.elaastix.server.activities.response.repositories
 
+import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.jpa.ElaastixRepository
-import org.elaastix.server.users.entities.UserEntity
+import org.elaastix.server.activities.response.entities.QuestionEntity
+import org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection
+import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
-interface UserRepository : ElaastixRepository<UserEntity>
+interface QuestionRepository : ElaastixRepository<QuestionEntity> {
+	@Query( // Can't rely on automatic projection because of polymorphism.
+		"""
+			SELECT new org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection(
+				TYPE(e),
+				e.id,
+				e.statement,
+				TREAT(e AS ClosedQuestionEntity).choices,
+				TREAT(e AS ClosedQuestionEntity).multiple
+			)
+			FROM QuestionEntity e
+			WHERE e.id = ?1
+        """,
+	)
+	fun findQuestionStatementById(id: Uuid): QuestionStatementProjection?
+}

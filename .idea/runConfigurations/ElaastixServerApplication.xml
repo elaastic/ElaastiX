@@ -4,6 +4,7 @@
     <option name="envFilePaths">
       <option value="$PROJECT_DIR$/.config/garage/credentials.env" />
     </option>
+    <option name="HIDE_BANNER" value="true" />
     <module name="ElaastiX.server.main" />
     <target name="server" />
     <selectedOptions>

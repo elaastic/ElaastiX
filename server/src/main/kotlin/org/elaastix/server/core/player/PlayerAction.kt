@@ -17,32 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm.activity
+package org.elaastix.server.core.player
+
+import org.springframework.core.annotation.AliasFor
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestMethod
 
 /**
- * Denotes objects that can be given a grade, on a linear scale between zero and an arbitrary upper bound.
- * Such grades can be represented as-is (e.g. 16/20), or as a percentage.
- * Usually implemented by classes representing a production of a learner.
- *
- * @see ScalarGrade
+ * Annotation for mapping RPC Action endpoints onto specific handlers.
  */
-interface ScalarGradable {
-	/** The scalar grade given to the object. */
-	val absoluteGrade: ScalarGrade?
-
-	/**
-	 * A linear grade, as an arbitrary number between zero and an upper bound.
-	 */
-	interface ScalarGrade {
-		/** The given grade. MUST be less than or equal to [max]. */
-		val grade: Double
-
-		/** Maximum grade that can be obtained. MUST be non-zero. */
-		val max: Double
-
-		/**
-		 * Returns the grade as a decimal value between 0 and 1.
-		 */
-		fun asDouble(): Double = grade / max
-	}
-}
+@RequestMapping(method = [RequestMethod.POST])
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class PlayerAction(
+	/** Namespaced identifier for the RPC action. */
+	@get:AliasFor(annotation = RequestMapping::class, attribute = "path")
+	val nsid: String,
+)

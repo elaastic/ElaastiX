@@ -12,7 +12,7 @@ package activities.response {
 		}
 
 		class OpenQuestion extends Question {
-			+expectedAnswer: PlainContent
+			+expectedAnswer: FormattedContent
 		}
 
 		class ClosedQuestion extends Question {
@@ -23,16 +23,16 @@ package activities.response {
 
 		abstract class Response<T: Question> <<sealed>> implements metamodel.activity.Material, metamodel.activity.ScalarGradable {
 			{abstract} +amendedResponse: Response<T>?
-			{abstract} +question: T
 			{abstract} +answer: Any
-			+selfExplanation: PlainContent?
+			+question: T
+			+selfExplanation: FormattedContent?
 			+confidenceDegree: UInt?
 		}
 
 		class OpenResponse extends Response<OpenQuestion> {
 			+amendedResponse: OpenResponse?
 			+question: OpenQuestion
-			+answer: PlainContent
+			+answer: FormattedContent
 		}
 
 		class ClosedResponse extends Response<ClosedQuestion> implements metamodel.activity.AbsoluteGradable {

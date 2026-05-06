@@ -34,21 +34,28 @@ import org.springframework.security.web.authentication.AnonymousAuthenticationFi
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.util.matcher.AnyRequestMatcher
 import org.springframework.web.accept.ContentNegotiationManager
+import org.springframework.web.servlet.config.annotation.CorsRegistry
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 /**
- * Configuration class for Spring Security.
+ * Configuration class for the MVC Web configuration. Also enables and configures related Spring Security features.
  * See https://docs.spring.io/spring-security/reference/servlet/integrations/mvc.html
  */
 @Configuration
 @EnableWebSecurity
-class WebSecurityConfig(
-	private val authProvider: ElaastixAuthenticationProvider,
-	private val authConfig: AuthenticationConfiguration,
-	private val contentNegotiationManager: ContentNegotiationManager,
-) {
+class WebConfiguration : WebMvcConfigurer {
+	override fun addCorsMappings(registry: CorsRegistry) {
+		registry.addMapping("/openapi.json")
+	}
+
+	/** Spring Security configuration. */
 	@Bean
-	@Suppress("UndocumentedPublicFunction")
-	fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+	fun securityFilterChain(
+		http: HttpSecurity,
+		authProvider: ElaastixAuthenticationProvider,
+		authConfig: AuthenticationConfiguration,
+		contentNegotiationManager: ContentNegotiationManager,
+	): SecurityFilterChain {
 		http.authenticationProvider(authProvider)
 		http {
 			cors { }

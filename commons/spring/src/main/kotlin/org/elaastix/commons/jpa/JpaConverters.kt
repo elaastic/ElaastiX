@@ -70,6 +70,7 @@ class HibernateTypeContributor : TypeContributor {
  * JPA can deal with.
  */
 @Converter(autoApply = true)
+@ExcludeFromCoverage("Trivially equivalent to a no-op")
 class UuidConverter : AttributeConverter<Uuid, UUID> {
 	override fun convertToDatabaseColumn(attribute: Uuid?): UUID? = attribute?.toJavaUuid()
 
@@ -85,6 +86,7 @@ class UuidConverter : AttributeConverter<Uuid, UUID> {
  * conversion is required.
  */
 @Converter(autoApply = true)
+@ExcludeFromCoverage("Trivially equivalent to a no-op")
 class InstantConverter : AttributeConverter<Instant, JavaInstant> {
 	override fun convertToDatabaseColumn(attribute: Instant?): JavaInstant? = attribute?.toJavaInstant()
 

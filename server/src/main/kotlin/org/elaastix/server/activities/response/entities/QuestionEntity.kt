@@ -17,11 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.users
+package org.elaastix.server.activities.response.entities
 
-import org.elaastix.commons.jpa.ElaastixRepository
+import jakarta.persistence.Entity
+import jakarta.persistence.Inheritance
+import jakarta.persistence.InheritanceType
+import jakarta.persistence.ManyToOne
+import org.elaastix.commons.jpa.AbstractEntity
+import org.elaastix.mm.activity.Material
+import org.elaastix.mm.content.RichContent
 import org.elaastix.server.users.entities.UserEntity
-import org.springframework.stereotype.Repository
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
-@Repository
-interface UserRepository : ElaastixRepository<UserEntity>
+/**
+ * Generic question. Lacks important properties that are defined by subclasses.
+ */
+@Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+abstract class QuestionEntity(
+	/** The question's statement. */
+	@JdbcTypeCode(SqlTypes.JSON)
+	var statement: RichContent,
+
+	/** The explanation of the expected answer. Optional. */
+	@JdbcTypeCode(SqlTypes.JSON)
+	var answerExplanation: RichContent?,
+
+	@ManyToOne
+	override var author: UserEntity,
+) : AbstractEntity(),
+	Material
