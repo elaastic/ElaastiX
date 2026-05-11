@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.type.SimpleType
 import io.swagger.v3.core.converter.ModelConverter
 import io.swagger.v3.oas.models.Components
 import kotlinx.serialization.Serializable
+import org.springdoc.core.customizers.PropertyCustomizer
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
@@ -34,6 +35,20 @@ import kotlin.reflect.full.hasAnnotation
 @AutoConfiguration
 @Import(BuiltinCustomisers::class)
 class SpringdocAutoConfiguration(private val dtoCustomiserList: List<DtoCustomiser>) {
+	@Bean
+	fun abc(): PropertyCustomizer {
+		return c@{ schema, type ->
+			val clazz =
+				when (val type = type.type) {
+					is SimpleType -> type.rawClass.kotlin
+					is Class<*> -> type.kotlin
+					else -> return@c schema
+				}
+
+			schema
+		}
+	}
+
 	/**
 	 * Swagger [ModelConverter] applying all registered [DtoCustomiser] beans.
 	 *
@@ -62,7 +77,7 @@ class SpringdocAutoConfiguration(private val dtoCustomiserList: List<DtoCustomis
 					?: it
 
 				for (customiser in dtoCustomiserList) {
-					schema = customiser.customise(schema, clazz)
+					schema = customiser.customise(schema, clazz, context)
 				}
 			}
 		}

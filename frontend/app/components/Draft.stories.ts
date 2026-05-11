@@ -17,18 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.openapi
+import type { Meta, StoryObj } from '@nuxtjs/storybook'
 
-import io.swagger.v3.core.converter.ModelConverterContext
-import io.swagger.v3.oas.models.media.Schema
-import kotlin.reflect.KClass
+import DraftComp from './Draft.vue'
 
-/**
- * Interface for customising data transfer object schemas.
- * All implementors registered as beans will be automatically invoked during schema generation.
- */
-@FunctionalInterface
-fun interface DtoCustomiser {
-	/** The customisation logic. Returns the transformed schema (or [schema]). */
-	fun customise(schema: Schema<*>, clazz: KClass<*>, context: ModelConverterContext): Schema<*>
+const meta = {
+	title: 'Draft',
+	component: DraftComp,
+	tags: ['autodocs'],
+} satisfies Meta<typeof DraftComp>
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+export const Draft: Story = {
+	args: {},
 }

@@ -21,20 +21,29 @@ package org.elaastix.commons.openapi
 
 import com.fasterxml.jackson.databind.type.CollectionType
 import com.fasterxml.jackson.databind.type.SimpleType
+import io.swagger.v3.core.converter.AnnotatedType
+import io.swagger.v3.core.converter.ModelConverter
+import io.swagger.v3.oas.models.Components
+import io.swagger.v3.oas.models.media.ArbitrarySchema
 import io.swagger.v3.oas.models.media.ArraySchema
+import io.swagger.v3.oas.models.media.ComposedSchema
+import io.swagger.v3.oas.models.media.JsonSchema
 import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.media.StringSchema
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.elaastix.commons.data.MaybeUpdate
 import org.elaastix.commons.data.Uuid
 import org.springdoc.core.customizers.PropertyCustomizer
 import org.springframework.boot.kotlinx.serialization.json.autoconfigure.KotlinxSerializationJsonProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.annotation.Order
 import java.lang.reflect.Type
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotations
 import kotlin.reflect.full.hasAnnotation
+import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.superclasses
 import kotlin.reflect.jvm.jvmName
 
@@ -44,44 +53,63 @@ import kotlin.reflect.jvm.jvmName
 @Configuration
 class BuiltinCustomisers(private val kotlinxSerializationJsonProperties: KotlinxSerializationJsonProperties) {
 	/**
-	 * OpenAPI property customiser setting the schema of well-known types such as [org.elaastix.commons.data.Uuid].
+	 * OpenAPI model converter resolving well-known types such as [Uuid].
 	 */
 	@Bean
-	fun commonTypesCustomiser(): PropertyCustomizer {
-		fun customiser(schema: Schema<*>?, type: Type): Schema<*>? {
-			val type =
-				when (type) {
-					is CollectionType ->
-						return (schema ?: ArraySchema()).apply { items = customiser(items, type.contentType) }
-
-					is SimpleType -> type.rawClass
-
-					else -> type
+	fun commonTypesConverter(): ModelConverter {
+		fun resolve(type: Type): Schema<*>? =
+			when (type) {
+				Set::class.java -> {
+					println("=!!=!!=")
+					println(type)
+					println("=!!=!!=")
+					null
 				}
 
-			return when (type) {
+				is CollectionType -> {
+					println("===")
+					println(type.rawClass)
+					println(type.contentType)
+					println("===")
+					null
+				}
+				is SimpleType -> resolve(type.rawClass)
+
 				Uuid::class.java ->
 					StringSchema().apply {
 						pattern = "[a-zA-Z0-9]{25}"
-						example = schema?.example ?: "02t2razan0q9kzr7gr55oi54j"
-						description = schema?.description
 					}
 
-				// We should not send `(U)Long` over the wire because JavaScript does not deal with them properly.
-				// ULong::class.java ->
-
-				// Would be cool but isn't applied consistently because of Kotlin inlining shenanigans.
-				// We might need to use smth akin to the DtoCustomiser, but this is minor and will have to wait :)
-				// UInt::class.java ->
-				//     IntegerSchema().apply {
-				//         format = "uint32"
-				//     }
-
-				else -> schema
+				else -> null
 			}
-		}
 
-		return { schema, type -> customiser(schema, type.type) }
+		val stack = mutableListOf<AnnotatedType>()
+
+		return { aType, context, chain ->
+			when (val type = aType.type) {
+				Set::class.java -> {
+					// Jackson doesn't understand Set. So we need to do it the hard way.
+
+					println(context)
+					println(aType)
+					println(aType.name)
+					println(aType.propertyName)
+					// println((stack.last().type as SimpleType).rawClass.kotlin)
+					// println((stack.last().type as SimpleType).rawClass.kotlin.memberProperties.find { it.name == aType.propertyName })
+					// val colType = CollectionType(type)
+				}
+			}
+
+			stack.add(aType)
+
+			val res = resolve(aType.type) ?:
+				if (chain.hasNext()) chain.next().resolve(aType, context, chain)
+				else null
+
+			stack.removeLast()
+
+			res
+		}
 	}
 
 	/**
@@ -94,11 +122,24 @@ class BuiltinCustomisers(private val kotlinxSerializationJsonProperties: Kotlinx
 	 * See the relevant [documentation](https://kotlinlang.org/docs/inline-classes.html#mangling).
 	 */
 	@Bean
-	fun valueClassInterop(): DtoCustomiser = { schema, _ ->
+	fun valueClassInterop(): DtoCustomiser = { schema, _, _ ->
 		schema.apply {
 			properties = properties?.mapKeys { (k, _) ->
 				val idx = k.indexOf('-')
 				if (idx > 0) k.substring(0, idx) else k
+			}
+		}
+	}
+
+	/**
+	 * [DtoCustomiser] marking properties as required unless their type is [MaybeUpdate].
+	 */
+	@Bean
+	fun requiredProperties(): DtoCustomiser = { schema, clazz, _ ->
+		schema.apply {
+			properties?.forEach { (k, _) ->
+				if (clazz.memberProperties.find { it.name == k }?.returnType != MaybeUpdate::class)
+					addRequiredItem(k)
 			}
 		}
 	}
@@ -109,26 +150,31 @@ class BuiltinCustomisers(private val kotlinxSerializationJsonProperties: Kotlinx
 	 * Since these cannot be detected by simple reflection, we need to detect it ourselves.
 	 */
 	@Bean
-	fun kotlinxClosedPolymorphism(): DtoCustomiser = { schema, clazz ->
+	fun kotlinxClosedPolymorphism(): DtoCustomiser = { schema, clazz, _ ->
+		val discriminator = kotlinxSerializationJsonProperties.classDiscriminator
 		when {
 			clazz.isClosedPolymorphicSerdeRoot() -> {
 				val possibleTypes = clazz.sealedSubclasses
-					.filter { !it.isAbstract }
-					.map { it.serdeDiscriminator }
+				 	.filter { !it.isAbstract }
+					.map { JsonSchema().apply { `$ref` = Components.COMPONENTS_SCHEMAS_REF + it.jvmName } }
 
-				schema.addProperty(
-					kotlinxSerializationJsonProperties.classDiscriminator,
-					StringSchema().apply {
-						enum = possibleTypes
-						description = "Discriminator field of the union type"
-					},
-				)
+				ArbitrarySchema().apply {
+					allOf = listOf(
+						schema,
+						ArbitrarySchema().apply {
+							oneOf = possibleTypes
+						}
+					)
+				}
 			}
 
 			clazz.isMemberOfClosedPolymorphicSerde() -> {
+				schema.addRequiredItem(discriminator)
 				schema.addProperty(
-					kotlinxSerializationJsonProperties.classDiscriminator,
-					StringSchema().apply { setConst(clazz.serdeDiscriminator) },
+					discriminator,
+					StringSchema().apply {
+						setConst(clazz.serdeDiscriminator)
+					},
 				)
 			}
 

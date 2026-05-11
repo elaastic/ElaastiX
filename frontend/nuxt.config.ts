@@ -84,5 +84,8 @@ export default defineNuxtConfig({
 				schema: '../server/build/openapi.json',
 			},
 		},
+		openAPITS: {
+			// TODO: fix openapi gen
+		}
 	},
 })

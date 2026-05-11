@@ -19,6 +19,11 @@
 
 package org.elaastix.server.activities.response
 
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonSerializeAs
+import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+import io.swagger.v3.oas.annotations.media.Schema
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -30,10 +35,9 @@ sealed interface ClosedAnswer {
 	/**
 	 * Response to a single-choice closed question.
 	 */
-	@JvmInline
 	@Serializable
 	@SerialName("Single")
-	value class Single(
+	data class Single(
 		/** The underlying value; an index into the question's choices list. */
 		val value: UInt?,
 	) : ClosedAnswer
@@ -41,10 +45,9 @@ sealed interface ClosedAnswer {
 	/**
 	 * Response to a multiple-choice closed question.
 	 */
-	@JvmInline
 	@Serializable
 	@SerialName("Multiple")
-	value class Multiple(
+	data class Multiple(
 		/** The underlying value; a list of indices into the question's choices list. */
 		val value: Set<UInt>,
 	) : ClosedAnswer
