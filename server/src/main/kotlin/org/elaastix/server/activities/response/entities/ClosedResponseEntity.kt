@@ -25,21 +25,26 @@ import org.elaastix.mm.activity.ScalarGradable
 import org.elaastix.mm.content.FormattedContent
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.users.entities.UserEntity
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
 /** Answer to a [ClosedQuestionEntity]. */
 @Entity
 @DiscriminatorValue(ClosedResponseEntity.DISCRIMINATOR)
 class ClosedResponseEntity(
 	question: ClosedQuestionEntity,
-	answer: ClosedAnswer,
+
+	/** The answer given by the learner. May be empty, but is required. */
+	@JdbcTypeCode(SqlTypes.JSON)
+	var answer: ClosedAnswer,
+
 	selfExplanation: FormattedContent?,
 	confidenceDegree: UInt?,
 	author: UserEntity,
 	amendedResponse: ClosedResponseEntity? = null,
 	absoluteGrade: ScalarGradable.ScalarGrade? = null,
-) : ResponseEntity<ClosedResponseEntity, ClosedQuestionEntity, ClosedAnswer>(
+) : ResponseEntity<ClosedResponseEntity, ClosedQuestionEntity>(
 		question,
-		answer,
 		selfExplanation,
 		confidenceDegree,
 		author,

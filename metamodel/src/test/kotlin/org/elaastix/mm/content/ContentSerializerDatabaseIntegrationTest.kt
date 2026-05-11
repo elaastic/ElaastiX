@@ -29,7 +29,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
 import org.assertj.core.api.Assertions.assertThat
-import org.elaastix.commons.jpa.ElaastixHibernateAutoConfiguration
+import org.elaastix.commons.jpa.hibernate.ElaastixHibernateAutoConfiguration
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 import org.junit.jupiter.api.AfterAll

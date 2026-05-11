@@ -17,29 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.jpa
+package org.elaastix.commons.jpa.hibernate
 
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import org.hibernate.type.descriptor.WrapperOptions
 import org.hibernate.type.descriptor.java.JavaType
 import org.hibernate.type.format.FormatMapper
+import org.springframework.stereotype.Component
 
 /**
  * Alternative [FormatMapper] for Hibernate designed to work with Kotlinx.serialization.
  * Replaces the default one that relies on Jackson being present on the classpath.
  */
-@Suppress("unused") // Used by hibernate.properties
-class HibernateKotlinxJsonMapper : FormatMapper {
+class HibernateKotlinxJsonMapper(private val json: Json) : FormatMapper {
 	override fun <T> fromString(charSequence: CharSequence, javaType: JavaType<T>, wrapperOptions: WrapperOptions): T {
 		val serializer = serializer(javaType.javaType)
 		@Suppress("UNCHECKED_CAST") // SAFETY: Kotlinx must've picked a suitable deserializer.
-		return Json.decodeFromString(serializer, charSequence.toString()) as T
+		return json.decodeFromString(serializer, charSequence.toString()) as T
 	}
 
 	override fun <T> toString(value: T, javaType: JavaType<T>, wrapperOptions: WrapperOptions): String? {
 		if (value == null) return null
 		val serializer = serializer(javaType.javaType)
-		return Json.encodeToString(serializer, value)
+		return json.encodeToString(serializer, value)
 	}
 }

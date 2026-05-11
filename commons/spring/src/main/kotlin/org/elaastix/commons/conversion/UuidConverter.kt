@@ -25,7 +25,7 @@ import org.springframework.core.convert.converter.Converter
 import org.springframework.stereotype.Component
 
 /**
- * Converter to let Spring handle base36-encoded Uuids.
+ * Converter to let Spring handle Base36-encoded Uuids.
  */
 @Component
 class UuidConverter : Converter<String, Uuid> {

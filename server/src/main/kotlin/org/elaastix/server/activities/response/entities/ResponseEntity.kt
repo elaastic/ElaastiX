@@ -37,14 +37,13 @@ import org.hibernate.type.SqlTypes
  */
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-abstract class ResponseEntity<TSelf : ResponseEntity<TSelf, TQuestion, TAnswer>, TQuestion : QuestionEntity, TAnswer>(
+abstract class ResponseEntity<TSelf : ResponseEntity<TSelf, TQuestion>, TQuestion : QuestionEntity>(
 	/** The question this response is attached to. */
 	@ManyToOne(targetEntity = QuestionEntity::class)
 	var question: TQuestion,
 
-	/** The answer given by the learner. May be empty, but is required. */
-	@JdbcTypeCode(SqlTypes.JSON)
-	var answer: TAnswer,
+	// Cannot have answer here because of type erasure.
+	// But imagine it's there. :)
 
 	/** Self explanation provided by the learner. Optional. */
 	@JdbcTypeCode(SqlTypes.JSON)

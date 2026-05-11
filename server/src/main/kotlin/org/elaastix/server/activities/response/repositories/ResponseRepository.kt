@@ -24,4 +24,4 @@ import org.elaastix.server.activities.response.entities.ResponseEntity
 import org.springframework.stereotype.Repository
 
 @Repository
-interface ResponseRepository : ElaastixRepository<ResponseEntity<*, *, *>>
+interface ResponseRepository : ElaastixRepository<ResponseEntity<*, *>>

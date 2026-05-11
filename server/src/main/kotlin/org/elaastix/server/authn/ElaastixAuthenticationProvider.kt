@@ -19,7 +19,9 @@
 
 package org.elaastix.server.authn
 
-import org.elaastix.server.authn.DevelopAuthenticationToken
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
+import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.elaastix.server.users.UserRepository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.AuthenticationProvider
@@ -33,6 +35,13 @@ import javax.security.auth.login.AccountNotFoundException
  * Finalises the authentication of requests which had a token found by [ElaastixAuthenticationConverter]
  */
 @Component
+@SecurityScheme(
+	name = "auth-token",
+	type = SecuritySchemeType.APIKEY,
+	`in` = SecuritySchemeIn.HEADER,
+	paramName = "Authorization",
+	description = "Primary authentication method for the Elaastix platform.",
+)
 class ElaastixAuthenticationProvider(
 	@Value("#{environment.acceptsProfiles('develop')}")
 	private val isDevelop: Boolean,

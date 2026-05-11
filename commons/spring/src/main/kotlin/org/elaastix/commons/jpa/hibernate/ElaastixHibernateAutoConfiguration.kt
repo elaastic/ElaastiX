@@ -17,14 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.jpa
+package org.elaastix.commons.jpa.hibernate
 
+import kotlinx.serialization.json.Json
+import org.hibernate.cfg.AvailableSettings
+import org.hibernate.type.format.jackson.JacksonJsonFormatMapper
 import org.springframework.boot.autoconfigure.AutoConfiguration
-import org.springframework.context.annotation.PropertySource
+import org.springframework.boot.hibernate.autoconfigure.HibernatePropertiesCustomizer
+import org.springframework.context.annotation.Bean
+
 
 /**
  * Autoconfiguration class loading the library's Hibernate default settings.
  */
 @AutoConfiguration
-@PropertySource("classpath:hibernate.properties")
-class ElaastixHibernateAutoConfiguration
+class ElaastixHibernateAutoConfiguration {
+	@Bean
+	@Suppress("UndocumentedPublicFunction")
+	fun jsonFormatMapperCustomizer(json: Json): HibernatePropertiesCustomizer = {
+		it[AvailableSettings.JSON_FORMAT_MAPPER] = HibernateKotlinxJsonMapper(json)
+	}
+}
