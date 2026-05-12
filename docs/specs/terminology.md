@@ -2,6 +2,33 @@
 > [!WARNING]
 > This document is a working draft.
 
+## Elaastic
+The project as a whole, its identity. It is the ElaastiX platform **plus** all federated activities.
+
+### ElaastiX
+ElaastiX is the software platform upon which Elaastic is built. It is the core engine that powers pedagogical material
+authoring and orchestration of E
+
+### Usage recommendations in user-facing products
+In general, use the term **Elaastic**. Only use the term **ElaastiX** when referring to the **technical platform**.
+
+- *ElaastiX* is the software platform that powers *Elaastic*.
+- *Elaastic* is the *ElaastiX platform* **plus** all federated activity services.
+
+## ElaastiX Activity
+Most commonly abbreviated as **EXA**, or **Exa**. Software package that defines a [**pedagogical activity**](#activity)
+as a whole.
+
+An *Exa* is identified by a unique name, using established conventions of reverse domain name. Said domain name SHOULD
+be controlled by the *Exa*.
+
+### Remote EXA
+A *Remote ElaastiX Activity* is an ElaastiX Activity that is operated as a separate service, in contrast to builtin
+ElaastiX Activities which are part of ElaastiX itself. The application-level protocol used between ElaastiX and remote
+EXAs is nicknamed Rexa.
+
+Rexa will likely use a binary protocol encoded using Protobuf (and CBOR for opaque blobs of data) delivered over MQTT.
+
 ## Cohort
 A *predetermined* group of users. These groups are exclusively functional and determined strictly ahead of time.
 Critically, they do not have anything to do with randomised trials - hence the avoidance of the "group" term.
