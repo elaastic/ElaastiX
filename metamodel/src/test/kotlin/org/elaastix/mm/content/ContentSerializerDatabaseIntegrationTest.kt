@@ -40,6 +40,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.SpringBootConfiguration
 import org.springframework.boot.autoconfigure.AutoConfigurationPackage
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest
+import org.springframework.boot.kotlinx.serialization.json.autoconfigure.KotlinxSerializationJsonAutoConfiguration
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.context.annotation.Import
 import org.springframework.stereotype.Component
@@ -52,7 +53,11 @@ import org.testcontainers.postgresql.PostgreSQLContainer
 @Isolated("Registry is a globally-visible singleton")
 @Suppress("JpaDataSourceORMInspection", "SqlResolve")
 @DataJpaTest(properties = ["spring.jpa.hibernate.ddl-auto=create"])
-@Import(ContentSerializerDatabaseIntegrationTest.TransactionUtil::class, ElaastixHibernateAutoConfiguration::class)
+@Import(
+	ElaastixHibernateAutoConfiguration::class,
+	KotlinxSerializationJsonAutoConfiguration::class,
+	ContentSerializerDatabaseIntegrationTest.TransactionUtil::class,
+)
 @Transactional(propagation = Propagation.NEVER)
 class ContentSerializerDatabaseIntegrationTest {
 	companion object {

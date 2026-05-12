@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.infrastructure.bff.dtos
+package org.elaastix.server.core.infrastructure.bff.dtos
 
 import kotlinx.serialization.Serializable
 import org.elaastix.server.users.dtos.UserAccountDto

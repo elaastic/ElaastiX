@@ -24,7 +24,6 @@ import kotlinx.serialization.serializer
 import org.hibernate.type.descriptor.WrapperOptions
 import org.hibernate.type.descriptor.java.JavaType
 import org.hibernate.type.format.FormatMapper
-import org.springframework.stereotype.Component
 
 /**
  * Alternative [FormatMapper] for Hibernate designed to work with Kotlinx.serialization.

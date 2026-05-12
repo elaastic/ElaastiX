@@ -15,7 +15,7 @@ comments:
     ignoreDefaultCompanionObject: true
     ignoreAnnotated:
       - org.springframework.stereotype.Repository  # Trivial semantic
-      - org.elaastix.server.infrastructure.seed.Seeder  # Trivial semantic
+      - org.elaastix.server.core.infrastructure.seed.Seeder  # Trivial semantic
   UndocumentedPublicFunction:
     active: true
     severity: warning
@@ -25,7 +25,7 @@ comments:
     active: true
     severity: warning
     ignoreAnnotated:
-      - org.elaastix.server.infrastructure.seed.Seeder  # Is the test data to use
+      - org.elaastix.server.core.infrastructure.seed.Seeder  # Is the test data to use
 
 complexity:
   ReplaceSafeCallChainWithRun:

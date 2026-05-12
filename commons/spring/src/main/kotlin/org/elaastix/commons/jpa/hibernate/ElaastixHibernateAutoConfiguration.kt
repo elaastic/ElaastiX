@@ -21,11 +21,9 @@ package org.elaastix.commons.jpa.hibernate
 
 import kotlinx.serialization.json.Json
 import org.hibernate.cfg.AvailableSettings
-import org.hibernate.type.format.jackson.JacksonJsonFormatMapper
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.boot.hibernate.autoconfigure.HibernatePropertiesCustomizer
 import org.springframework.context.annotation.Bean
-
 
 /**
  * Autoconfiguration class loading the library's Hibernate default settings.

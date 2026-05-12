@@ -36,7 +36,7 @@ import javax.security.auth.login.AccountNotFoundException
  */
 @Component
 @SecurityScheme(
-	name = "auth-token",
+	name = "Token",
 	type = SecuritySchemeType.APIKEY,
 	`in` = SecuritySchemeIn.HEADER,
 	paramName = "Authorization",

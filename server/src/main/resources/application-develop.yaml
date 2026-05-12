@@ -16,7 +16,7 @@ management:
 
 scalar:
   authentication: # noinspection SpringBootApplicationYaml
-    preferred-security-scheme: auth-token
+    preferred-security-scheme: Token
     api-key: # noinspection SpringBootApplicationYaml
-      auth-token:
+      Token:
         value: Develop 00000000-0000-0000-0000-000000000001

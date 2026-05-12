@@ -19,6 +19,7 @@
 
 package org.elaastix.server.activity.responses
 
+import AuthenticatedUnitTest
 import io.mockk.bdd.given
 import io.mockk.bdd.then
 import io.mockk.called
@@ -26,7 +27,6 @@ import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.exceptions.BadRequestException
-import org.elaastix.server.AuthenticatedUnitTest
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.activities.response.ResponseActivityService
 import org.elaastix.server.activities.response.dtos.ClosedResponseDto

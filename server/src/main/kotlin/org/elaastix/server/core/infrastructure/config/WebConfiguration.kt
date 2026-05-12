@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.infrastructure.config
+package org.elaastix.server.core.infrastructure.config
 
 import org.elaastix.server.authn.ElaastixAuthenticationFilter
 import org.elaastix.server.authn.ElaastixAuthenticationProvider

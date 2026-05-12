@@ -17,9 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.infrastructure.bff
+package org.elaastix.server.core.infrastructure.bff
 
-import org.elaastix.server.infrastructure.bff.dtos.NuxtContextDto
+import org.elaastix.server.core.infrastructure.bff.dtos.NuxtContextDto
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
