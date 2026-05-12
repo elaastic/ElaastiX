@@ -4,6 +4,13 @@
 
 ## Cohort
 A *predetermined* group of users. These groups are exclusively functional and determined strictly ahead of time.
+Critically, they do not have anything to do with randomised trials - hence the avoidance of the "group" term.
+
+## Assignment
+> [!TODO]
+> A sequence → One or more sequences.
+
+An *instance* of a [**sequence**](#sequence) assigned to any number of [**cohorts**](#cohort) and **individuals**.
 
 ## Material
 Any type of content that has been produced by users. This includes *input material*, such as a question learners have
@@ -16,13 +23,16 @@ output of a given [**activity**](#activity) but can also be used as input of ano
 Any number of [**configured activities**](#configured-activity) orchestrated by a [**scenario**](#scenario).
 
 ## Scenario
-Semi-deterministic program that defines the [**pedagogical session**](#pedagogical-session).
+Semi-deterministic program that defines the behaviour of [**scenario sessions**](#scenario-session).
 
-### Pedagogical session
+### Scenario session
+> [!TODO]
+> Is term alright?
+
 An execution of a [**scenario**](#scenario). Every learner who takes part in an [**assignment**](#assignment) has
 their own. It is composed of [**activity sessions**](#activity-session).
 
-The *trace of the execution* of their pedagogical session is their **learning path**.
+The *trace of the execution* of their scenario session is their **learning path**.
 
 ## Activity
 A concrete pedagogical activity that learners engage with.
@@ -39,12 +49,14 @@ An activity has:
 An [**activity**](#activity) with its **input materials** and **parameters** specified.
 
 ### Activity session
-An *instance* of a [**configured activity**](#configured-activity) within a given [**pedagogical session**](#pedagogical-session).
+An *instance* of a [**configured activity**](#configured-activity) within a given [**scenario session**](#scenario-session).
 
 Multiple learners may share the same activity session.
 
-## Assignment
-> [!TODO]
-> A sequence → One or more sequences.
+## ☂️
+### Pedagogical session
+> [!NOTE]
+> Draft notes: originally used in place of *scenario session*. Useful term to refer to all types without introducing
+> ambiguity with e.g. an HTTP session
 
-An *instance* of a [**sequence**](#sequence) assigned to any number of [**cohorts**](#cohort) and **individuals**.
+Union term that refers to either a [**scenario session**](#scenario-session) or an [**activity session**](#activity-session)
