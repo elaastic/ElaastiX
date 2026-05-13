@@ -20,19 +20,16 @@
 plugins {
 	id("conventions.idea")
 	id("conventions.kotlin")
-	id("conventions.spring-lib")
-	id("conventions.hibernate-lib")
+	id("conventions.spring")
 	id("conventions.test")
 }
 
 dependencies {
-	implementation(libs.springdoc)
-	implementation(libs.spring.boot.jpa)
-	implementation(libs.spring.boot.validation)
-	implementation(libs.spring.boot.kotlinx.serialization.json)
+	implementation(spring.data("jpa"))
+	implementation(spring.boot("hibernate"))
 	implementation(libs.hypersistence.utils)
+	implementation(libs.springdoc)
 
-	testImplementation(libs.spring.boot.jpa.test)
-	testImplementation(libs.spring.boot.validation.test)
-	testImplementation(libs.spring.boot.kotlinx.serialization.json.test)
+	testSpringBootStarter("data-jpa")
+	testSpringBootStarter("validation")
 }

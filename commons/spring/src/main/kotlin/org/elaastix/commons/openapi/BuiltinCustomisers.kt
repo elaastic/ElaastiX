@@ -26,9 +26,9 @@ import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.media.StringSchema
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import org.elaastix.commons.data.Uuid
 import org.springdoc.core.customizers.PropertyCustomizer
-import org.springframework.boot.kotlinx.serialization.json.autoconfigure.KotlinxSerializationJsonProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import java.lang.reflect.Type
@@ -42,7 +42,7 @@ import kotlin.reflect.jvm.jvmName
  * Autoconfiguration class importing SpringDoc components.
  */
 @Configuration
-class BuiltinCustomisers(private val kotlinxSerializationJsonProperties: KotlinxSerializationJsonProperties) {
+class BuiltinCustomisers(private val json: Json) {
 	/**
 	 * OpenAPI property customiser setting the schema of well-known types such as [org.elaastix.commons.data.Uuid].
 	 */
@@ -117,7 +117,7 @@ class BuiltinCustomisers(private val kotlinxSerializationJsonProperties: Kotlinx
 					.map { it.serdeDiscriminator }
 
 				schema.addProperty(
-					kotlinxSerializationJsonProperties.classDiscriminator,
+					json.configuration.classDiscriminator,
 					StringSchema().apply {
 						enum = possibleTypes
 						description = "Discriminator field of the union type"
@@ -127,7 +127,7 @@ class BuiltinCustomisers(private val kotlinxSerializationJsonProperties: Kotlinx
 
 			clazz.isMemberOfClosedPolymorphicSerde() -> {
 				schema.addProperty(
-					kotlinxSerializationJsonProperties.classDiscriminator,
+					json.configuration.classDiscriminator,
 					StringSchema().apply { setConst(clazz.serdeDiscriminator) },
 				)
 			}

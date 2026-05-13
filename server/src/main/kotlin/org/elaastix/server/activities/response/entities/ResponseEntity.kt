@@ -27,6 +27,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
 import org.elaastix.commons.jpa.AbstractEntity
 import org.elaastix.mm.activity.ScalarGradable
+import org.elaastix.mm.activity.ScalarGrade
 import org.elaastix.mm.content.FormattedContent
 import org.elaastix.server.users.entities.UserEntity
 import org.hibernate.annotations.JdbcTypeCode
@@ -69,6 +70,6 @@ abstract class ResponseEntity<TSelf : ResponseEntity<TSelf, TQuestion>, TQuestio
 	var amendedResponse: TSelf? = null,
 
 	@Embedded
-	override var absoluteGrade: ScalarGradable.ScalarGrade? = null,
+	override var absoluteGrade: ScalarGrade? = null,
 ) : AbstractEntity(),
 	ScalarGradable
