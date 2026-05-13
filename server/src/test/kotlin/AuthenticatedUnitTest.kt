@@ -17,8 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server
-
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.mockkObject

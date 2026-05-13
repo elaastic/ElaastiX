@@ -39,10 +39,14 @@ object ContentTypesRegistry {
 	internal typealias ContentFactory<T> = (JsonElement) -> T
 	internal typealias PlainTextFactory<T> = (String) -> T
 
-	internal data class Descriptor<T : RichContent>(val id: String, val clazz: KClass<T>, val factory: ContentFactory<T>)
+	internal data class Descriptor<T : RichContent>(
+		val id: String,
+		val clazz: KClass<out T>,
+		val factory: ContentFactory<T>,
+	)
 
 	internal val byId = mutableMapOf<String, Descriptor<*>>()
-	internal val byClass = mutableMapOf<KClass<*>, Descriptor<*>>()
+	internal val byClass = mutableMapOf<KClass<out RichContent>, Descriptor<*>>()
 
 	/**
 	 * Registers a type of content.
@@ -178,19 +182,19 @@ abstract class AbstractContentSerializer<T : RichContent> internal constructor()
 		return wrapper.clazz.buildContent(wrapper.data) as T
 	}
 
-	private fun <T : RichContent> T.getContentClassId(): String =
+	private fun <T : RichContent> T.getContentClassId() =
 		ContentTypesRegistry.byClass[this::class]?.id ?: error("Unregistered content type ${this::class}")
 
-	private fun String.getContentClass(): KClass<*> =
+	private fun String.getContentClass() =
 		ContentTypesRegistry.byId[this]?.clazz ?: error("Unregistered content type id $this")
 
 	// COVERAGE: error branch is unreachable
-	private fun <T : KClass<*>> T.getFactory(): ContentTypesRegistry.ContentFactory<RichContent> =
+	private fun <T : KClass<out RichContent>> T.getFactory() =
 		ContentTypesRegistry.byClass[this]?.factory ?: error("Unregistered content type $this")
 
-	private fun <T : KClass<*>> T.buildContent(json: JsonElement): RichContent = getFactory().invoke(json)
+	private fun <T : KClass<out RichContent>> T.buildContent(json: JsonElement) = getFactory().invoke(json)
 
-	private fun String.buildContent(json: JsonElement): RichContent = getContentClass().buildContent(json)
+	private fun String.buildContent(json: JsonElement) = getContentClass().buildContent(json)
 
 	@Serializable
 	internal data class ContentWrapper(

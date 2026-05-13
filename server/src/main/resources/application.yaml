@@ -17,11 +17,11 @@ scalar:
   telemetry: false
   path: documentation
   url: ./openapi.json
-  document-download-type: direct
-  agent:
-    # IJ fails to detect the properties of `scalar.agent`
-    # noinspection SpringBootApplicationYaml
+  page-title: Elaastix Platform API Reference
+  agent: # noinspection SpringBootApplicationYaml
     disabled: true
+  authentication: # noinspection SpringBootApplicationYaml
+    preferred-security-scheme: auth-token
 
 springdoc:
   api-docs:

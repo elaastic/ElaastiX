@@ -64,7 +64,7 @@ class ResponseActivityService(
 			}
 
 		/** Transforms a [ResponseEntity] into a [ResponseDto]. */
-		fun ResponseEntity<*, *, *>.toDto() =
+		fun ResponseEntity<*, *>.toDto() =
 			when (this) {
 				is OpenResponseEntity ->
 					OpenResponseDto(

@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.infrastructure.seed
+package org.elaastix.server.core.infrastructure.seed
 
 import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional

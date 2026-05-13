@@ -17,18 +17,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.infrastructure.bff.dtos
+package org.elaastix.server.core.infrastructure.seed
 
-import kotlinx.serialization.Serializable
-import org.elaastix.server.users.dtos.UserAccountDto
+import jakarta.persistence.EntityManager
+import org.elaastix.server.users.entities.UserEntity
+import org.springframework.boot.ApplicationArguments
+import org.springframework.core.Ordered
+import org.springframework.core.annotation.Order
 
-/**
- * Context and configuration data used by the first-party Nuxt app on startup.
- */
-@Serializable
-data class NuxtContextDto(
-	/** List of enabled feature flags for the frontend. */
-	val featureFlags: List<Unit>,
-	/** The currently authenticated user's account, if authenticated. */
-	val currentUser: UserAccountDto?,
-)
+@Seeder
+@Order(Ordered.HIGHEST_PRECEDENCE)
+class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
+	lateinit var franck: UserEntity
+		protected set
+
+	lateinit var john: UserEntity
+		protected set
+
+	lateinit var cynthia: UserEntity
+		protected set
+
+	override fun run(args: ApplicationArguments) {
+		franck = createEntity(
+			UserEntity(
+				isWriterModeEnabled = true,
+				isAdministrator = true,
+			),
+		)
+
+		john = createEntity(
+			UserEntity(
+				isWriterModeEnabled = true,
+			),
+		)
+
+		cynthia = createEntity(
+			UserEntity(),
+		)
+	}
+}

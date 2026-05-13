@@ -17,14 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.jpa
+package org.elaastix.server.core.infrastructure.bff.dtos
 
-import org.springframework.boot.autoconfigure.AutoConfiguration
-import org.springframework.context.annotation.PropertySource
+import kotlinx.serialization.Serializable
+import org.elaastix.server.users.dtos.UserAccountDto
 
 /**
- * Autoconfiguration class loading the library's Hibernate default settings.
+ * Context and configuration data used by the first-party Nuxt app on startup.
  */
-@AutoConfiguration
-@PropertySource("classpath:hibernate.properties")
-class ElaastixHibernateAutoConfiguration
+@Serializable
+data class NuxtContextDto(
+	/** List of enabled feature flags for the frontend. */
+	val featureFlags: List<Unit>,
+	/** The currently authenticated user's account, if authenticated. */
+	val currentUser: UserAccountDto?,
+)

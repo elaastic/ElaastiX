@@ -17,17 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.conversion
+package org.elaastix.server.core.infrastructure.openapi
 
-import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.data.UuidSerializer.fromBase36
-import org.springframework.core.convert.converter.Converter
+import org.springdoc.core.customizers.ServerBaseUrlCustomizer
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.http.HttpRequest
 import org.springframework.stereotype.Component
 
 /**
- * Converter to let Spring handle Base36-encoded Uuids.
+ * Customiser adding `/api` prefix to the server base url.
+ *
+ * In development, when querying the Spring server directly the `/api` prefix is not added.
+ * This allows using the Scalar documentation via `localhost:8080` without issues.
  */
 @Component
-class UuidConverter : Converter<String, Uuid> {
-	override fun convert(source: String): Uuid = Uuid.fromBase36(source)
+class BaseUrlCustomiser(
+	@Value("#{environment.acceptsProfiles('develop')}")
+	private val isDevelop: Boolean,
+	@Value($$"${server.port:8080}")
+	private val serverPort: Int,
+) : ServerBaseUrlCustomizer {
+	override fun customize(serverBaseUrl: String, request: HttpRequest) =
+		if (isDevelop && request.uri.host == "localhost" && request.uri.port == serverPort) {
+			serverBaseUrl
+		} else {
+			"$serverBaseUrl/api"
+		}
 }

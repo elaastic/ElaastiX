@@ -17,16 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.infrastructure.seed
+package org.elaastix.commons.jpa.hibernate
 
-import org.springframework.context.annotation.Profile
-import org.springframework.stereotype.Component
+import kotlinx.serialization.json.Json
+import org.hibernate.cfg.AvailableSettings
+import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.boot.hibernate.autoconfigure.HibernatePropertiesCustomizer
+import org.springframework.context.annotation.Bean
 
 /**
- * Custom stereotype for database seeders.
+ * Autoconfiguration class loading the library's Hibernate default settings.
  */
-@Component
-@Profile("develop & !testing")
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Seeder
+@AutoConfiguration
+class ElaastixHibernateAutoConfiguration {
+	@Bean
+	@Suppress("UndocumentedPublicFunction")
+	fun jsonFormatMapperCustomizer(json: Json): HibernatePropertiesCustomizer = {
+		it[AvailableSettings.JSON_FORMAT_MAPPER] = HibernateKotlinxJsonMapper(json)
+	}
+}

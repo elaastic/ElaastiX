@@ -36,7 +36,7 @@ import org.elaastix.commons.platform.ExcludeFromCoverage
  * - The encoder's `encodeDefaults` MUST be `false` (the default), or [kotlinx.serialization.EncodeDefault] MUST be
  *   applied on the property with [kotlinx.serialization.EncodeDefault.Mode.ALWAYS].
  *
- *  See [MaybeUpdateSerializer] for the rationale behind these requirements.
+ * See [MaybeUpdateSerializer] for the rationale behind these requirements.
  */
 @Serializable(with = MaybeUpdateSerializer::class)
 sealed class MaybeUpdate<out T> {

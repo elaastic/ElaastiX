@@ -45,6 +45,7 @@ dependencies {
 
 	testImplementation(libs.spring.boot.jpa.test)
 	testImplementation(libs.spring.boot.validation.test)
+	testImplementation(libs.spring.boot.kotlinx.serialization.json.test)
 	testImplementation(libs.spring.boot.testcontainers)
 
 	testImplementation(project(":commons:spring"))

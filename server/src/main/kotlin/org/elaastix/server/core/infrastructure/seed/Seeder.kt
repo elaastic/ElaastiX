@@ -17,30 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.infrastructure.openapi
+package org.elaastix.server.core.infrastructure.seed
 
-import org.springdoc.core.customizers.ServerBaseUrlCustomizer
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpRequest
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 /**
- * Customiser adding `/api` prefix to the server base url.
- *
- * In development, when querying the Spring server directly the `/api` prefix is not added.
- * This allows using the Scalar documentation via `localhost:8080` without issues.
+ * Custom stereotype for database seeders.
  */
 @Component
-class BaseUrlCustomiser(
-	@Value("#{environment.acceptsProfiles('develop')}")
-	private val isDevelop: Boolean,
-	@Value($$"${server.port:8080}")
-	private val serverPort: Int,
-) : ServerBaseUrlCustomizer {
-	override fun customize(serverBaseUrl: String, request: HttpRequest) =
-		if (isDevelop && request.uri.host == "localhost" && request.uri.port == serverPort) {
-			serverBaseUrl
-		} else {
-			"$serverBaseUrl/api"
-		}
-}
+@Profile("develop & !testing")
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class Seeder

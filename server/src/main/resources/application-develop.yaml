@@ -13,3 +13,10 @@ management:
   otlp.metrics.export.enabled: false
   logging.export.otlp.enabled: false
   tracing.export.otlp.enabled: false
+
+scalar:
+  authentication: # noinspection SpringBootApplicationYaml
+    preferred-security-scheme: Token
+    api-key: # noinspection SpringBootApplicationYaml
+      Token:
+        value: Develop 00000000-0000-0000-0000-000000000001

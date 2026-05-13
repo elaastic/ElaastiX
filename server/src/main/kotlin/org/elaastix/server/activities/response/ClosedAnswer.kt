@@ -30,10 +30,9 @@ sealed interface ClosedAnswer {
 	/**
 	 * Response to a single-choice closed question.
 	 */
-	@JvmInline
 	@Serializable
 	@SerialName("Single")
-	value class Single(
+	data class Single(
 		/** The underlying value; an index into the question's choices list. */
 		val value: UInt?,
 	) : ClosedAnswer
@@ -41,10 +40,9 @@ sealed interface ClosedAnswer {
 	/**
 	 * Response to a multiple-choice closed question.
 	 */
-	@JvmInline
 	@Serializable
 	@SerialName("Multiple")
-	value class Multiple(
+	data class Multiple(
 		/** The underlying value; a list of indices into the question's choices list. */
 		val value: Set<UInt>,
 	) : ClosedAnswer

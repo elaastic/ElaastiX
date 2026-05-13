@@ -24,21 +24,26 @@ import jakarta.persistence.Entity
 import org.elaastix.mm.activity.ScalarGradable
 import org.elaastix.mm.content.FormattedContent
 import org.elaastix.server.users.entities.UserEntity
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
 /** Answer to a [OpenQuestionEntity]. */
 @Entity
 @DiscriminatorValue(OpenResponseEntity.DISCRIMINATOR)
 class OpenResponseEntity(
 	question: OpenQuestionEntity,
-	answer: FormattedContent,
+
+	/** The answer given by the learner. May be empty, but is required. */
+	@JdbcTypeCode(SqlTypes.JSON)
+	var answer: FormattedContent,
+
 	selfExplanation: FormattedContent?,
 	confidenceDegree: UInt?,
 	author: UserEntity,
 	amendedResponse: OpenResponseEntity? = null,
 	absoluteGrade: ScalarGradable.ScalarGrade? = null,
-) : ResponseEntity<OpenResponseEntity, OpenQuestionEntity, FormattedContent>(
+) : ResponseEntity<OpenResponseEntity, OpenQuestionEntity>(
 		question,
-		answer,
 		selfExplanation,
 		confidenceDegree,
 		author,

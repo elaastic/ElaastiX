@@ -2,19 +2,13 @@ packages:
   - frontend
 
 shamefullyHoist: true
-blockExoticSubdeps: true
 
-ignoredBuiltDependencies:
-  - sharp
-  - unrs-resolver
-  - vue-demi
-
-onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@tailwindcss/oxide'
-  - esbuild
-
-trustPolicy: no-downgrade
+allowBuilds:
+  '@parcel/watcher': true
+  esbuild: true
+  sharp: false
+  unrs-resolver: false
+  vue-demi: false
 
 trustPolicyExclude:
   - chokidar@4.0.3  # https://github.com/paulmillr/chokidar/issues/1440
