@@ -22,6 +22,7 @@
             <option value="$PROJECT_DIR$/build-logic" />
             <option value="$PROJECT_DIR$/commons" />
             <option value="$PROJECT_DIR$/commons/core" />
+            <option value="$PROJECT_DIR$/commons/security" />
             <option value="$PROJECT_DIR$/commons/spring" />
             <option value="$PROJECT_DIR$/frontend" />
             <option value="$PROJECT_DIR$/metamodel" />

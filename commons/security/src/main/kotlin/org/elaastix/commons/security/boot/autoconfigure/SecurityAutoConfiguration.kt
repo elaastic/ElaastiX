@@ -17,33 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.springboot")
-	id("conventions.test")
-}
+package org.elaastix.commons.security.boot.autoconfigure
 
-dependencies {
-	springBootStarter("actuator")
-	springBootStarter("data-jpa")
-	springBootStarter("flyway")
-	springBootStarter("mail")
-	springBootStarter("opentelemetry")
-	springBootStarter("security")
-	springBootStarter("security-oauth2-client")
-	springBootStarter("validation")
-	springBootStarter("webmvc")
-	springBootStarter("kotlinx-serialization-json")
+import org.elaastix.commons.security.RoleHierarchyConfiguration
+import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.context.annotation.Import
 
-	implementation(spring.security("data"))
-
-	implementation(libs.flyway.postgresql)
-	implementation(libs.hypersistence.utils)
-	runtimeOnly(libs.jdbc.postgresql)
-
-	implementation(project(":commons:security"))
-	implementation(project(":metamodel"))
-
-	testImplementation(libs.datafaker)
-}
+/**
+ * Autoconfiguration class for provided security modules here.
+ */
+@AutoConfiguration
+@Import(RoleHierarchyConfiguration::class)
+class SecurityAutoConfiguration

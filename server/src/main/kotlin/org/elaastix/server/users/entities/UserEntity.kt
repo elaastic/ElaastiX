@@ -19,11 +19,19 @@
 
 package org.elaastix.server.users.entities
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
+import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
+import jakarta.validation.constraints.Size
 import org.elaastix.commons.jpa.AbstractEntity
+import org.elaastix.commons.security.Role
 import org.elaastix.mm.users.User
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
 /**
  * @see [User]
@@ -31,10 +39,26 @@ import org.elaastix.mm.users.User
 @Entity
 @Table(name = "users")
 class UserEntity(
+	@NotBlank
 	@NotNull
-	override var isWriterModeEnabled: Boolean = false,
+	@Size(max = 256)
+	override var firstName: String,
 
+	@NotBlank
 	@NotNull
-	override var isAdministrator: Boolean = false,
+	@Size(max = 256)
+	override var lastName: String,
+
+	/**
+	 * Roles granted to the user.
+	 * An empty roles set is equivalent to the [Role.USER] role.
+	 */
+	@JdbcTypeCode(SqlTypes.ARRAY)
+	@Enumerated(EnumType.STRING)
+	// Unfortunately explicit, as IJ is a bit confused otherwise
+	@Column(columnDefinition = "text[]")
+	var roles: Set<Role> = emptySet(),
+
+	// TODO: `permissions`? `revoked: Set<Permission>`?
 ) : AbstractEntity(),
 	User

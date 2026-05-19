@@ -17,24 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkObject
-import org.elaastix.commons.data.Uuid
-import org.elaastix.server.authn.AuthenticationHolder
-import org.elaastix.server.authn.ElaastixAuthentication
-import org.elaastix.server.users.entities.UserEntity
+package org.elaastix.commons.security
 
-abstract class AuthenticatedUnitTest {
-	fun mockAuthenticatedUser(): UserEntity {
-		val userId = Uuid.random()
-		val user: UserEntity = mockk {
-			every { id } returns userId
-		}
+import org.springframework.security.access.prepost.PreAuthorize
 
-		mockkObject(AuthenticationHolder)
-		every { AuthenticationHolder.authentication } returns ElaastixAuthentication(user, null, true)
-
-		return user
-	}
-}
+/**
+ * Helper annotation to only allow users with a given role to perform a call.
+ * May be used as a meta-annotation.
+ *
+ * @see HasPermission
+ * @see PreAuthorize
+ */
+@PreAuthorize("hasAuthority('{role.authority}')")
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class HasRole(
+	/** The role to match. */
+	val role: Role,
+)

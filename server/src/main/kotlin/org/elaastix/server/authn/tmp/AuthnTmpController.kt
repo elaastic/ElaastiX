@@ -20,9 +20,10 @@
 package org.elaastix.server.authn.tmp
 
 import io.swagger.v3.oas.annotations.Hidden
+import org.elaastix.commons.data.UuidSerializer.toStringBase36
 import org.elaastix.commons.platform.ExcludeFromCoverage
-import org.elaastix.server.authn.AuthenticationHolder
-import org.elaastix.server.authn.required
+import org.elaastix.server.users.entities.UserEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -34,5 +35,7 @@ import org.springframework.web.bind.annotation.RestController
 @ExcludeFromCoverage("Temporary implementation", ref = "https://github.com/elaastic/ElaastiX/issues/9")
 class AuthnTmpController {
 	@GetMapping("/who-am-i", version = "1+")
-	fun whoAmI(): String? = AuthenticationHolder.authenticatedUser.required().id.toString()
+	fun whoAmI(
+		@AuthenticationPrincipal user: UserEntity,
+	): String = user.id.toStringBase36()
 }

@@ -17,33 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.springboot")
-	id("conventions.test")
-}
+package testutils
 
-dependencies {
-	springBootStarter("actuator")
-	springBootStarter("data-jpa")
-	springBootStarter("flyway")
-	springBootStarter("mail")
-	springBootStarter("opentelemetry")
-	springBootStarter("security")
-	springBootStarter("security-oauth2-client")
-	springBootStarter("validation")
-	springBootStarter("webmvc")
-	springBootStarter("kotlinx-serialization-json")
+import io.mockk.every
+import io.mockk.mockk
+import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.jpa.AbstractEntity
 
-	implementation(spring.security("data"))
-
-	implementation(libs.flyway.postgresql)
-	implementation(libs.hypersistence.utils)
-	runtimeOnly(libs.jdbc.postgresql)
-
-	implementation(project(":commons:security"))
-	implementation(project(":metamodel"))
-
-	testImplementation(libs.datafaker)
-}
+inline fun <reified T : AbstractEntity> mockkEntity(block: T.() -> Unit = {}): Pair<Uuid, T> =
+	Uuid.random().let {
+		it to mockk<T> {
+			every { id } returns it
+			block()
+		}
+	}

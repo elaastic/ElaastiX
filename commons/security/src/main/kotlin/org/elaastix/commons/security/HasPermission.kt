@@ -17,33 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.springboot")
-	id("conventions.test")
-}
+package org.elaastix.commons.security
 
-dependencies {
-	springBootStarter("actuator")
-	springBootStarter("data-jpa")
-	springBootStarter("flyway")
-	springBootStarter("mail")
-	springBootStarter("opentelemetry")
-	springBootStarter("security")
-	springBootStarter("security-oauth2-client")
-	springBootStarter("validation")
-	springBootStarter("webmvc")
-	springBootStarter("kotlinx-serialization-json")
+import org.springframework.security.access.prepost.PreAuthorize
 
-	implementation(spring.security("data"))
-
-	implementation(libs.flyway.postgresql)
-	implementation(libs.hypersistence.utils)
-	runtimeOnly(libs.jdbc.postgresql)
-
-	implementation(project(":commons:security"))
-	implementation(project(":metamodel"))
-
-	testImplementation(libs.datafaker)
-}
+/**
+ * Marks a function, or all functions of a class, as requiring [permission].
+ * May be used as a meta-annotation.
+ *
+ * @see HasRole
+ * @see PreAuthorize
+ */
+@PreAuthorize("hasAuthority('{permission.authority}')")
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class HasPermission(
+	/** The permission to match. */
+	val permission: Permission,
+)

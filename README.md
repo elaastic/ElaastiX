@@ -110,17 +110,23 @@ ElaastiX
 ├── .config/                    Repository and project config files. Loosely follows the XDG convention
 ├── .github/                    GitHub-specific configuration files
 ├── build-logic/                Convention plugins (Gradle)
-├── commons/                    Code shared throughout the Elaastix projects
+├── gradle/                     Gradle-related files
+│   └── libs.versions.toml      └── Version catalogue
+│
 ├── docs/                       Documentation of the project
 │   ├── specs/                  ├── Specifications of the project (the "what")
 │   └── technical/              └── Specifications of the technical implementation (the "how")
+│
+├── commons/                    Code shared throughout the ElaastiX projects
+│   ├── core/                   ├── Pure Kotlin (as in anything non specific to Spring) helpers
+│   ├── spring/                 ├── Spring, Spring Boot, Hibernate, and related helpers
+│   └── security/               └── Spring Security configuration and helpers
+├── metamodel/                  Metamodel library package
+├── server/                     Spring Boot application monolith
+│
 ├── frontend/                   Nuxt web application (see: https://nuxt.com/docs/4.x/directory-structure)
 │   └── layers/                 └── Nuxt layers (see: https://nuxt.com/docs/4.x/getting-started/layers)
 │       └── .../                    └── See `Nuxt.js webapp > Layers` for the list of layers in the Nuxt app
-├── gradle/                     Gradle-related files
-│   └── libs.versions.toml      └── Version catalogue
-└── metamodel/                  Metamodel library package
-└── server/                     Spring Boot application monolith
 ```
 
 ### Compose services

@@ -27,6 +27,7 @@ plugins {
 dependencies {
 	implementation(spring.data("jpa"))
 	implementation(spring.boot("hibernate"))
+	implementation(spring.boot("autoconfigure"))
 	implementation(libs.hypersistence.utils)
 	implementation(libs.springdoc)
 

@@ -17,33 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.springboot")
-	id("conventions.test")
-}
+package org.elaastix.commons.security
 
-dependencies {
-	springBootStarter("actuator")
-	springBootStarter("data-jpa")
-	springBootStarter("flyway")
-	springBootStarter("mail")
-	springBootStarter("opentelemetry")
-	springBootStarter("security")
-	springBootStarter("security-oauth2-client")
-	springBootStarter("validation")
-	springBootStarter("webmvc")
-	springBootStarter("kotlinx-serialization-json")
+/**
+ * Permissions that can be granted to users.
+ * An authority is roughly equivalent to a *permission*, a finer-grained primitive than roles.
+ *
+ * @see [Role]
+ */
+enum class Permission : Authority {
+	/** Create and manage Remote Activities registrations. */
+	REMOTE_ACTIVITY,
 
-	implementation(spring.security("data"))
+	/** Create materials (outside the context of an activity as a participant). */
+	CREATE_BASE_MATERIAL,
 
-	implementation(libs.flyway.postgresql)
-	implementation(libs.hypersistence.utils)
-	runtimeOnly(libs.jdbc.postgresql)
+	/** Publish materials to the public. */
+	PUBLISH_BASE_MATERIAL,
 
-	implementation(project(":commons:security"))
-	implementation(project(":metamodel"))
+	/** Create scenarios. */
+	CREATE_SCENARIOS,
 
-	testImplementation(libs.datafaker)
+	/** Create sequences. */
+	CREATE_SEQUENCES,
+
+	/** Create assignments. */
+	CREATE_ASSIGNMENTS,
+
+	/** Participate in assignments. */
+	PARTICIPATE_IN_ASSIGNMENTS,
 }

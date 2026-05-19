@@ -17,33 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.springboot")
-	id("conventions.test")
+@file:Suppress("FunctionNaming", "FunctionName")
+
+package org.elaastix.commons.security.ext
+
+import org.elaastix.commons.security.Authority
+import org.elaastix.commons.security.Role
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
+
+@Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "SpreadOperator")
+class RoleHierarchyDsl(private var builder: RoleHierarchyImpl.Builder) {
+	fun Role.implies(vararg authorities: Authority) {
+		builder = builder.role(authority).implies(*authorities.map { it.authority }.toTypedArray())
+	}
 }
 
-dependencies {
-	springBootStarter("actuator")
-	springBootStarter("data-jpa")
-	springBootStarter("flyway")
-	springBootStarter("mail")
-	springBootStarter("opentelemetry")
-	springBootStarter("security")
-	springBootStarter("security-oauth2-client")
-	springBootStarter("validation")
-	springBootStarter("webmvc")
-	springBootStarter("kotlinx-serialization-json")
-
-	implementation(spring.security("data"))
-
-	implementation(libs.flyway.postgresql)
-	implementation(libs.hypersistence.utils)
-	runtimeOnly(libs.jdbc.postgresql)
-
-	implementation(project(":commons:security"))
-	implementation(project(":metamodel"))
-
-	testImplementation(libs.datafaker)
-}
+/**
+ * DSL to create a role hierarchy with idiomatic Kotlin.
+ */
+fun RoleHierarchy(roleHierarchyConfiguration: RoleHierarchyDsl.() -> Unit): RoleHierarchyImpl =
+	RoleHierarchyImpl.withDefaultRolePrefix()
+		.also { RoleHierarchyDsl(it).apply(roleHierarchyConfiguration) }
+		.build()

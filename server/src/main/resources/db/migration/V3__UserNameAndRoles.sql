@@ -17,33 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.springboot")
-	id("conventions.test")
-}
+-- Acceptable at this stage, we'll likely squash migrations anyway.
+TRUNCATE TABLE users CASCADE;
 
-dependencies {
-	springBootStarter("actuator")
-	springBootStarter("data-jpa")
-	springBootStarter("flyway")
-	springBootStarter("mail")
-	springBootStarter("opentelemetry")
-	springBootStarter("security")
-	springBootStarter("security-oauth2-client")
-	springBootStarter("validation")
-	springBootStarter("webmvc")
-	springBootStarter("kotlinx-serialization-json")
+ALTER TABLE users
+	ADD first_name VARCHAR(256);
 
-	implementation(spring.security("data"))
+ALTER TABLE users
+	ADD last_name VARCHAR(256);
 
-	implementation(libs.flyway.postgresql)
-	implementation(libs.hypersistence.utils)
-	runtimeOnly(libs.jdbc.postgresql)
+ALTER TABLE users
+	ADD roles TEXT[];
 
-	implementation(project(":commons:security"))
-	implementation(project(":metamodel"))
+ALTER TABLE users
+	ALTER COLUMN first_name SET NOT NULL;
 
-	testImplementation(libs.datafaker)
-}
+ALTER TABLE users
+	ALTER COLUMN last_name SET NOT NULL;
+
+ALTER TABLE users
+	DROP COLUMN is_administrator;
+
+ALTER TABLE users
+	DROP COLUMN is_writer_mode_enabled;

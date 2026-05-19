@@ -17,33 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.springboot")
-	id("conventions.test")
-}
+package org.elaastix.commons.security
 
-dependencies {
-	springBootStarter("actuator")
-	springBootStarter("data-jpa")
-	springBootStarter("flyway")
-	springBootStarter("mail")
-	springBootStarter("opentelemetry")
-	springBootStarter("security")
-	springBootStarter("security-oauth2-client")
-	springBootStarter("validation")
-	springBootStarter("webmvc")
-	springBootStarter("kotlinx-serialization-json")
+/**
+ * Roles that may be granted to a user.
+ * Used to restrict access via the [HasRole] annotation.
+ */
+enum class Role : Authority {
+	/**
+	 * Users with unrestricted access to the platform.
+	 */
+	ADMIN,
 
-	implementation(spring.security("data"))
+	/**
+	 * Users that are permitted to create content on the platform.
+	 */
+	WRITER,
 
-	implementation(libs.flyway.postgresql)
-	implementation(libs.hypersistence.utils)
-	runtimeOnly(libs.jdbc.postgresql)
-
-	implementation(project(":commons:security"))
-	implementation(project(":metamodel"))
-
-	testImplementation(libs.datafaker)
+	/**
+	 * Any successfully authenticated user.
+	 */
+	USER,
 }

@@ -20,6 +20,7 @@
 package org.elaastix.server.core.infrastructure.seed
 
 import jakarta.persistence.EntityManager
+import org.elaastix.commons.security.Role
 import org.elaastix.server.users.entities.UserEntity
 import org.springframework.boot.ApplicationArguments
 import org.springframework.core.Ordered
@@ -40,19 +41,26 @@ class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
 	override fun run(args: ApplicationArguments) {
 		franck = createEntity(
 			UserEntity(
-				isWriterModeEnabled = true,
-				isAdministrator = true,
+				firstName = "Franck",
+				lastName = "Silvestre",
+				roles = setOf(Role.ADMIN),
 			),
 		)
 
 		john = createEntity(
 			UserEntity(
-				isWriterModeEnabled = true,
+				firstName = "John",
+				lastName = "Tranier",
+				roles = setOf(Role.WRITER),
 			),
 		)
 
 		cynthia = createEntity(
-			UserEntity(),
+			UserEntity(
+				firstName = "Cynthia",
+				lastName = "Rey",
+				roles = setOf(Role.USER),
+			),
 		)
 	}
 }

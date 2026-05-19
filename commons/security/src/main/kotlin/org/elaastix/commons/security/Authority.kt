@@ -17,34 +17,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn
+package org.elaastix.commons.security
 
-import org.elaastix.server.users.entities.UserEntity
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 
-/** Authentication object tailored to the Elaastix platform. */
-class ElaastixAuthentication(
-	private val user: UserEntity,
-	private val credentials: Any?,
-	private var authenticated: Boolean = false,
-	private var authorities: Collection<GrantedAuthority> = emptySet(),
-) : Authentication {
-
-	override fun getPrincipal(): UserEntity = user
-
-	override fun getCredentials() = credentials
-
-	override fun getName() = user.fullName
-
-	override fun getAuthorities() = authorities
-
-	// Unused
-	override fun getDetails() = null
-
-	override fun isAuthenticated(): Boolean = authenticated
-
-	override fun setAuthenticated(isAuthenticated: Boolean) {
-		authenticated = isAuthenticated
-	}
+/**
+ * Trait that defines the *authorities* concept of Spring Security.
+ *
+ * The terminology used by Spring Security is confusing, due to the liberal use of the term "authority".
+ * In the project's source code, we use the term "authority" to refer to *any access control primitive*.
+ *
+ * An authority is either:
+ * - A *role*, which may inherit any number of *authorities*.
+ * - A *permission*, which is an atomic RBAC primitive.
+ *
+ * It is helpful to visualise *authorities* as a trees, where *permissions* are always leaves and *roles* define the
+ * actual tree. (In practice it'd be more accurate to see it as a ✨directed acyclic graph✨).
+ *
+ * @see Role
+ * @see Authority
+ */
+sealed interface Authority : GrantedAuthority {
+	override fun getAuthority() =
+		when (this) {
+			is Role -> "ROLE_$name"
+			is Permission -> name
+		}
 }

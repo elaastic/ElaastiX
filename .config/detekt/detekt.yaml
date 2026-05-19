@@ -60,6 +60,9 @@ style:
         reason: Use org.elaastix.commons.data.Uuid instead
       - value: java.time.Instant
         reason: Use Kotlin's Instant type
+      # Ban Spring Security's helper as we have our own
+      - value: org.springframework.security.test.context.support.WithMockUser
+        reason: Use testutils.WithMockUser instead
     excludes:
       - "**/commons/jpa/**"     # Compat layer
       - "**/commons/data/Uuid.kt"  # Uuid type alias
