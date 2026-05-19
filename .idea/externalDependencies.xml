@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ExternalDependencies">
     <plugin id="JavaScript" />
+    <plugin id="com.github.l34130.mise" min-version="5.18.1" />
     <plugin id="com.haulmont.jpab" />
+    <plugin id="com.intellij.spring" />
     <plugin id="org.editorconfig.editorconfigjetbrains" />
     <plugin id="org.jetbrains.plugins.vue" />
   </component>

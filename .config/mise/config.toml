@@ -5,8 +5,6 @@ min_version = "2026.4.18" # Required: `mise prepare` renamed to `mise deps`
 experimental = true
 
 [tools]
-# Java and Node are also configured via .tool-versions, as IJ supports it natively.
-# This is not ideal as the config is duplicated, but it is better than being completely broken :)
 actionlint = "latest"
 hk = "latest"
 java = "temurin-25"
@@ -19,7 +17,6 @@ typos = "latest"
 zizmor = "latest"
 
 [deps.pnpm]
-auto = true
 sources = ["pnpm-workspace.yaml", "pnpm-lock.yaml", "frontend/package.json"]
 outputs = ["node_modules", "frontend/node_modules"]
 
@@ -31,8 +28,8 @@ run = "sh .config/garage/configure.sh"
 [deps.hk]
 sources = [".config/mise/config.toml", ".config/hk.pkl"]
 outputs = [".git/hooks/pre-commit", ".git/hooks/commit-msg"]
-# Appending `-l` makes `sh` read `.profile`, and mitigates IJ not running git with appropriate env vars...
-run = "hk install --mise && find '.git/hooks' -type f -exec sed -i 's/^#!\\/bin\\/sh$/\\0 -l/' {} ';'"
+# Even with the Mise plugin, IJ fails to locate `mise` because of bad PATH...
+run = "hk install --mise && find '.git/hooks' -type f -exec sed -i \"s|mise x|$(which mise) x|\" {} ';'"
 
 [shell_alias]
 eslint = "pnpm eslint"
@@ -42,4 +39,6 @@ typos = "typos --config {{config_root}}/.config/typos/config.toml"
 
 [env]
 NODE_ENV = "development"
+POSTGRES_PASSWORD = "elaastix"
+POSTGRES_USER = "elaastix"
 TAPLO_CONFIG = "{{config_root}}/.config/taplo.toml"

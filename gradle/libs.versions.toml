@@ -1,9 +1,9 @@
 [versions]
 jdk = "25"
 kotlin = "2.3.21"
-ksp = "2.3.7"
+ksp = "2.3.8"
 # ----
-assertj = "3.18.1"
+assertj = "3.27.7"
 detekt = "2.0.0-alpha.3"
 flyway = "12.6.1"
 hibernate = "7.3.4.Final"        # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
