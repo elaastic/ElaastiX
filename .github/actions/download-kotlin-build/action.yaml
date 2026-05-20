@@ -17,5 +17,6 @@ runs:
         tar -xf metamodel.tzst metamodel/build
         tar -xf commons-core.tzst commons/core/build
         tar -xf commons-spring.tzst commons/spring/build
+        tar -xf commons-security.tzst commons/security/build
         tar -xf server.tzst server/build
         tar -xf root.tzst build
