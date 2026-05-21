@@ -23,7 +23,6 @@ import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import org.elaastix.mm.activity.ScalarGrade
 import org.elaastix.mm.content.FormattedContent
-import org.elaastix.server.users.entities.UserEntity
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 
@@ -40,14 +39,12 @@ class OpenResponseEntity(
 
 	selfExplanation: FormattedContent?,
 	confidenceDegree: UInt?,
-	author: UserEntity,
 	amendedResponse: OpenResponseEntity? = null,
 	absoluteGrade: ScalarGrade? = null,
 ) : ResponseEntity<OpenResponseEntity, OpenQuestionEntity>(
 		question,
 		selfExplanation,
 		confidenceDegree,
-		author,
 		amendedResponse,
 		absoluteGrade,
 	) {

@@ -21,8 +21,10 @@ package org.elaastix.server.core.infrastructure.config
 
 import org.elaastix.server.authn.ElaastixAuthenticationFilter
 import org.elaastix.server.authn.ElaastixAuthenticationProvider
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.domain.AuditorAware
 import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
@@ -30,6 +32,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
@@ -38,6 +41,7 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher
 import org.springframework.web.accept.ContentNegotiationManager
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import java.util.Optional
 
 /**
  * Configuration for Spring Security features.
@@ -48,7 +52,19 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-class SecurityConfiguration : WebMvcConfigurer {
+class SecurityConfiguration :
+	WebMvcConfigurer,
+	AuditorAware<UserEntity> {
+	/**
+	 * See https://docs.spring.io/spring-data/jpa/reference/auditing.html#auditing.auditor-aware
+	 */
+	override fun getCurrentAuditor(): Optional<UserEntity> =
+		Optional.ofNullable(
+			SecurityContextHolder.getContext().authentication
+				?.takeIf { it.isAuthenticated }
+				?.let { it.principal as? UserEntity? },
+		)
+
 	override fun addCorsMappings(registry: CorsRegistry) {
 		registry.addMapping("/openapi.json")
 	}

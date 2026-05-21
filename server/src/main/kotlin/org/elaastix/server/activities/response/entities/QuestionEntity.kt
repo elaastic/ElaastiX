@@ -22,11 +22,9 @@ package org.elaastix.server.activities.response.entities
 import jakarta.persistence.Entity
 import jakarta.persistence.Inheritance
 import jakarta.persistence.InheritanceType
-import jakarta.persistence.ManyToOne
-import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.mm.activity.Material
 import org.elaastix.mm.content.RichContent
-import org.elaastix.server.users.entities.UserEntity
+import org.elaastix.server.core.AbstractEntityWithAuthorship
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 
@@ -45,8 +43,5 @@ abstract class QuestionEntity(
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Suppress("JpaAttributeTypeInspection") // https://youtrack.jetbrains.com/issue/IDEA-191568
 	var answerExplanation: RichContent?,
-
-	@ManyToOne
-	override var author: UserEntity,
-) : AbstractEntity(),
+) : AbstractEntityWithAuthorship(),
 	Material

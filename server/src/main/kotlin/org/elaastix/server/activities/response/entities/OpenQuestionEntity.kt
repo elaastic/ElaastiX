@@ -23,7 +23,6 @@ import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import org.elaastix.mm.content.FormattedContent
 import org.elaastix.mm.content.RichContent
-import org.elaastix.server.users.entities.UserEntity
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 
@@ -47,11 +46,9 @@ class OpenQuestionEntity(
 	var expectedAnswer: FormattedContent,
 
 	answerExplanation: RichContent?,
-	author: UserEntity,
 ) : QuestionEntity(
 		statement,
 		answerExplanation,
-		author,
 	) {
 	companion object {
 		/** Discriminator used within the database. Unique amongst other [QuestionEntity] subclasses. */

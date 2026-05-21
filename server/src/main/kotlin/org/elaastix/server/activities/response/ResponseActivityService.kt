@@ -40,7 +40,6 @@ import org.elaastix.server.activities.response.entities.ResponseEntity
 import org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection
 import org.elaastix.server.activities.response.repositories.QuestionRepository
 import org.elaastix.server.activities.response.repositories.ResponseRepository
-import org.elaastix.server.users.entities.UserEntity
 import org.springframework.stereotype.Service
 
 /** Service responsible for the response activity. */
@@ -101,7 +100,6 @@ class ResponseActivityService(
 	 */
 	@Transactional
 	fun submitResponse(
-		author: UserEntity,
 		questionId: Uuid,
 		@Valid response: ResponseSubmitDto,
 	): ResponseDto {
@@ -112,7 +110,6 @@ class ResponseActivityService(
 				is OpenQuestionEntity -> {
 					validate(response is OpenResponseSubmitDto) { "Response type does not match the question's type." }
 					OpenResponseEntity(
-						author = author,
 						question = questionRef,
 						answer = response.answer,
 						selfExplanation = response.selfExplanation,
@@ -124,7 +121,6 @@ class ResponseActivityService(
 					validate(response is ClosedResponseSubmitDto) { "Response type does not match the question's type." }
 					validateClosedAnswer(response, statement)
 					ClosedResponseEntity(
-						author = author,
 						question = questionRef,
 						answer = response.answer,
 						selfExplanation = response.selfExplanation,

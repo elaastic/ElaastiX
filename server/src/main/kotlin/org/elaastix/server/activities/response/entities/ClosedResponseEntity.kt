@@ -24,7 +24,6 @@ import jakarta.persistence.Entity
 import org.elaastix.mm.activity.ScalarGrade
 import org.elaastix.mm.content.FormattedContent
 import org.elaastix.server.activities.response.ClosedAnswer
-import org.elaastix.server.users.entities.UserEntity
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 
@@ -41,14 +40,12 @@ class ClosedResponseEntity(
 
 	selfExplanation: FormattedContent?,
 	confidenceDegree: UInt?,
-	author: UserEntity,
 	amendedResponse: ClosedResponseEntity? = null,
 	absoluteGrade: ScalarGrade? = null,
 ) : ResponseEntity<ClosedResponseEntity, ClosedQuestionEntity>(
 		question,
 		selfExplanation,
 		confidenceDegree,
-		author,
 		amendedResponse,
 		absoluteGrade,
 	) {

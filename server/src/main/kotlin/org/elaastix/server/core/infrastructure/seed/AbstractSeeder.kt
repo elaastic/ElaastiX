@@ -22,8 +22,10 @@ package org.elaastix.server.core.infrastructure.seed
 import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.jpa.AbstractEntity
+import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.JpaImmutable
+import org.elaastix.server.core.AbstractEntityWithAuthorship
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.boot.ApplicationRunner
 
 /** Abstract class holding useful logic for all database seeders. */
@@ -31,17 +33,28 @@ import org.springframework.boot.ApplicationRunner
 abstract class AbstractSeeder(private val entityManager: EntityManager) : ApplicationRunner {
 	private var allocatedIds = 0UL
 
-	protected fun <T : AbstractEntity> createEntity(entity: T): T =
+	protected fun <T : AbstractEntity> createEntity(entity: T): T = createEntity0(entity)
+
+	protected fun <T : AbstractEntityWithAuthorship> createEntityWithAuthor(author: UserEntity, entity: T): T =
+		createEntity0(entity) {
+			@OptIn(JpaImmutable::class)
+			this.author = author
+		}
+
+	private fun <T : AbstractEntity> createEntity0(entity: T, block: T.() -> Unit = {}): T =
 		entityManager.merge(
 			entity.apply {
 				@OptIn(JpaImmutable::class) // SAFETY: Test-only identifiers outside the normal allocation range
 				id = Uuid.fromULongs(0UL, ++allocatedIds)
 
-				@OptIn(JpaImmutable::class) // SAFETY: Pulled from the database, allows merge to work efficiently
-				entityManager.find(this::class.java, id)?.let {
-					version = it.version
-					updatedAt = it.updatedAt
-				}
+				block()
+
+				// TODO: avoid unnecessary UPDATE on startup. dev-only issue, so very low priority.
+// 				@OptIn(JpaImmutable::class) // SAFETY: Pulled from the database, allows merge to work efficiently
+// 				entityManager.find(this::class.java, id)?.let {
+// 					version = it.version
+// 					updatedAt = it.updatedAt
+// 				}
 			},
 		)
 }

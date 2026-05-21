@@ -26,9 +26,7 @@ import org.elaastix.server.activities.response.dtos.ResponseSubmitDto
 import org.elaastix.server.core.player.PlayerAction
 import org.elaastix.server.core.player.PlayerController
 import org.elaastix.server.core.player.PlayerQuery
-import org.elaastix.server.users.entities.UserEntity
 import org.springframework.http.HttpStatus
-import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -61,10 +59,8 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	@ResponseStatus(HttpStatus.CREATED)
 	@PlayerAction("org.elaastix.response.submitResponse")
 	fun submitResponse(
-		@AuthenticationPrincipal user: UserEntity,
 		@RequestBody payload: SubmitAnswerDto,
-	) =
-		responseActivityService.submitResponse(user, payload.questionId, payload.response)
+	) = responseActivityService.submitResponse(payload.questionId, payload.response)
 
 	/** Payload for the submitResponse action. */
 	@Serializable

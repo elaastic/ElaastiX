@@ -25,7 +25,6 @@ import jakarta.persistence.PrePersist
 import org.elaastix.mm.content.FormattedText
 import org.elaastix.mm.content.RichContent
 import org.elaastix.server.activities.response.ClosedAnswer
-import org.elaastix.server.users.entities.UserEntity
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 
@@ -51,11 +50,9 @@ class ClosedQuestionEntity(
 	var expectedAnswer: ClosedAnswer,
 
 	answerExplanation: RichContent?,
-	author: UserEntity,
 ) : QuestionEntity(
 		statement,
 		answerExplanation,
-		author,
 	) {
 	companion object {
 		/** Discriminator used within the database. Unique amongst other [QuestionEntity] subclasses. */
