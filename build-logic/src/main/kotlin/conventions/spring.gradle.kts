@@ -42,7 +42,7 @@ dependencies {
 	implementation(jakarta("persistence"))
 	implementation(jakarta("validation"))
 
-	if (project.path != ":commons:spring") {
-		implementation(project(":commons:spring"))
+	if (project.path != ":commons-spring") {
+		implementation(project(":commons-spring"))
 	}
 }

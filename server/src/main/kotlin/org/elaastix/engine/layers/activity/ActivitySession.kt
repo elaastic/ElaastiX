@@ -17,20 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core.player
+package org.elaastix.engine.layers.activity
 
-import org.springframework.core.annotation.AliasFor
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-
-/**
- * Annotation for mapping RPC Action endpoints onto specific handlers.
- */
-@RequestMapping(method = [RequestMethod.POST])
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class PlayerAction(
-	/** Namespaced identifier for the RPC action. */
-	@get:AliasFor(annotation = RequestMapping::class, attribute = "path")
-	val nsid: String,
-)
+class ActivitySession

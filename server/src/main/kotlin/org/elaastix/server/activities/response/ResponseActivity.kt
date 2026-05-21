@@ -20,22 +20,23 @@
 package org.elaastix.server.activities.response
 
 import kotlinx.serialization.Serializable
+import org.elaastix.activityframework.annotations.ElaastixActivity
+import org.elaastix.activityframework.annotations.PlayerProcedure
+import org.elaastix.activityframework.annotations.PlayerQuery
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.orNotFound
 import org.elaastix.server.activities.response.dtos.ResponseSubmitDto
-import org.elaastix.server.core.player.PlayerAction
-import org.elaastix.server.core.player.PlayerController
-import org.elaastix.server.core.player.PlayerQuery
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.ResponseStatus
 
 /**
- * RPC endpoints for the response activity.
+ * Activity "answer a question".
+ *
+ * ~Cynthia: I think "response" is a horrible name for it lmao
  */
-@PlayerController
-class ResponseActivityController(private val responseActivityService: ResponseActivityService) {
+@ElaastixActivity("org.elaastix.response")
+class ResponseActivity(private val responseActivityService: ResponseActivityService) {
 	/**
 	 * Retrieve a question statement.
 	 *
@@ -45,7 +46,7 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	 * @param id The ID of the question.
 	 * @return The question statement, and available choices for closed questions.
 	 */
-	@PlayerQuery("org.elaastix.response.getQuestion")
+	@PlayerQuery
 	fun getQuestion(
 		@RequestParam id: Uuid,
 	) = responseActivityService.findQuestionStatement(id).orNotFound()
@@ -56,8 +57,7 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	 * @return The created response statement object.
 	 * @throws org.elaastix.commons.exceptions.BadRequestException if the data is invalid.
 	 */
-	@ResponseStatus(HttpStatus.CREATED)
-	@PlayerAction("org.elaastix.response.submitResponse")
+	@PlayerProcedure(status = HttpStatus.CREATED)
 	fun submitResponse(
 		@RequestBody payload: SubmitAnswerDto,
 	) = responseActivityService.submitResponse(payload.questionId, payload.response)

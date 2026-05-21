@@ -22,14 +22,15 @@
 rootProject.name = "ElaastiX"
 
 includeBuild("build-logic")
-include(
-	"commons:core",
-	"commons:spring",
-	"commons:security",
-	"metamodel",
-	"server",
-	"frontend",
-)
+
+include(":commons-core").also { project(":commons-core").projectDir = file("commons/core") }
+include(":commons-spring").also { project(":commons-spring").projectDir = file("commons/spring") }
+include(":commons-security").also { project(":commons-security").projectDir = file("commons/security") }
+
+include(":metamodel")
+include(":server")
+
+include(":frontend")
 
 pluginManagement {
 	repositories {

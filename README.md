@@ -122,6 +122,8 @@ ElaastiX
 │   ├── spring/                 ├── Spring, Spring Boot, Hibernate, and related helpers
 │   └── security/               └── Spring Security configuration and helpers
 ├── metamodel/                  Metamodel library package
+├── engine/                     ElaastiX platform engine
+│   └── manager/                └── REST API for managing resources related to the engine
 ├── server/                     Spring Boot application monolith
 │
 ├── frontend/                   Nuxt web application (see: https://nuxt.com/docs/4.x/directory-structure)

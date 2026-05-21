@@ -17,33 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.springboot")
-	id("conventions.test")
-}
+package org.elaastix.engine
 
-dependencies {
-	springBootStarter("actuator")
-	springBootStarter("data-jpa")
-	springBootStarter("flyway")
-	springBootStarter("mail")
-	springBootStarter("opentelemetry")
-	springBootStarter("security")
-	springBootStarter("security-oauth2-client")
-	springBootStarter("validation")
-	springBootStarter("webmvc")
-	springBootStarter("kotlinx-serialization-json")
-
-	implementation(spring.security("data"))
-
-	implementation(libs.flyway.postgresql)
-	implementation(libs.hypersistence.utils)
-	runtimeOnly(libs.jdbc.postgresql)
-
-	implementation(project(":commons-security"))
-	implementation(project(":metamodel"))
-
-	testImplementation(libs.datafaker)
-}
+/** Path onto which RPC routes should be bound. */
+const val PLAYER_RPC_ENTRYPOINT = "/player"

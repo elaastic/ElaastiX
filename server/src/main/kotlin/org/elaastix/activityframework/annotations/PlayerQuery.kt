@@ -17,18 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core.player
-
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+package org.elaastix.activityframework.annotations
 
 /**
- * Annotation that conveniently applies the necessary ones for Spring to configure a player controller.
+ * Annotation for mapping data retrieval endpoints to a request handler, similar to a Spring `GetMapping`.
  */
-@RestController
-// Note: endpoints inside the namespace may have their own versioning separate from the API version.
-// The version here only designates the RPC protocol version (which is 1).
-@RequestMapping("/player", version = "1+")
-@Target(AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
+@Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class PlayerController
+annotation class PlayerQuery(
+	/**
+	 * The name of the query. MUST be alphanumeric and SHOULD start with `get`.
+	 * See [Namespaced Identifiers](https://atproto.com/specs/nsid).
+	 *
+	 * Defaults to the name of the handler function, and SHOULD NOT be changed.
+	 */
+	val name: String = "",
+)

@@ -22,8 +22,8 @@ package org.elaastix.server.activities.response
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.orNotFound
-import org.elaastix.commons.validate
+import org.elaastix.commons.spring.orNotFound
+import org.elaastix.commons.spring.validate
 import org.elaastix.server.activities.response.dtos.ClosedQuestionStatementDto
 import org.elaastix.server.activities.response.dtos.ClosedResponseDto
 import org.elaastix.server.activities.response.dtos.ClosedResponseSubmitDto

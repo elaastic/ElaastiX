@@ -36,7 +36,7 @@ plugins {
 }
 
 dependencies {
-	implementation(project(":commons:spring"))
+	implementation(project(":commons-spring"))
 	implementation(libs.findLibrary("springdoc").get())
 
 	developmentOnly(spring.boot("devtools"))

@@ -55,7 +55,11 @@ object SpringDependencyShortcuts {
 	operator fun invoke(module: String): Any = "org.springframework:spring-$module"
 	fun data(module: String): Any = "org.springframework.data:spring-data-$module"
 	fun security(module: String): Any = "org.springframework.security:spring-security-$module"
-	fun boot(module: String): Any = "org.springframework.boot:spring-boot-$module"
+	fun boot(module: String = ""): Any =
+		when (module) {
+			"" -> "org.springframework.boot:spring-boot"
+			else -> "org.springframework.boot:spring-boot-$module"
+		}
 	val starter = SpringStarterShortcut
 }
 

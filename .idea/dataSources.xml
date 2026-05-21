@@ -9,7 +9,9 @@
       <jdbc-url>jdbc:postgresql://127.0.0.1:5432/elaastix</jdbc-url>
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.host.port" />
+        <property name="password" value="POSTGRES_PASSWORD" />
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
+        <property name="username" value="POSTGRES_USER" />
         <property name="com.intellij.clouds.kubernetes.db.container.port" />
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>

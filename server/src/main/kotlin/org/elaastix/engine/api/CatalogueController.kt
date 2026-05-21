@@ -17,33 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.springboot")
-	id("conventions.test")
-}
+package org.elaastix.engine.api
 
-dependencies {
-	springBootStarter("actuator")
-	springBootStarter("data-jpa")
-	springBootStarter("flyway")
-	springBootStarter("mail")
-	springBootStarter("opentelemetry")
-	springBootStarter("security")
-	springBootStarter("security-oauth2-client")
-	springBootStarter("validation")
-	springBootStarter("webmvc")
-	springBootStarter("kotlinx-serialization-json")
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
-	implementation(spring.security("data"))
-
-	implementation(libs.flyway.postgresql)
-	implementation(libs.hypersistence.utils)
-	runtimeOnly(libs.jdbc.postgresql)
-
-	implementation(project(":commons-security"))
-	implementation(project(":metamodel"))
-
-	testImplementation(libs.datafaker)
+/**
+ * Retrieval of usable resources registered with the platform engine.
+ */
+@RestController
+@RequestMapping("/catalogue")
+class CatalogueController {
+	/**
+	 * Retrieves all registered activities usable in scenarios. Excludes deprecated activities.
+	 */
+	@GetMapping("/activities")
+	fun listActivities(): Nothing = TODO()
 }

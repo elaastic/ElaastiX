@@ -17,20 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core.player
+package org.elaastix.engine.manager.sequence
 
-import org.springframework.core.annotation.AliasFor
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
+import org.elaastix.commons.jpa.repository.ElaastixRepository
+import org.springframework.stereotype.Repository
 
-/**
- * Annotation for mapping RPC Query endpoints onto specific handlers.
- */
-@RequestMapping(method = [RequestMethod.GET])
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class PlayerQuery(
-	/** Namespaced identifier for the RPC query. The name segment should always start with `get`. */
-	@get:AliasFor(annotation = RequestMapping::class, attribute = "path")
-	val nsid: String,
-)
+@Repository
+interface SequenceRepository : ElaastixRepository<SequenceEntity> {
+}

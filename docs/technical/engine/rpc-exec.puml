@@ -1,0 +1,47 @@
+@startuml
+'https://plantuml.com/activity-diagram-beta
+
+start
+skinparam ConditionEndStyle diamond
+
+- Incoming RPC payload
+floating note left: Spring MVC
+
+- Associate active session chain
+floating note left: Session Binding Service
+
+if (has session?) then (Y)
+floating note: L0: Kernel layer
+
+if (sequence paused?) then (Y)
+floating note: L1: Sequence layer (everyone)
+	- Illegal state
+	kill
+else (N)
+
+if (scenario paused?) then (Y)
+floating note: L2: Scenario layer (exclusively me)
+	- Illegal state
+	kill
+else (N)
+
+-
+floating note right: L3: Activity session\nNot involved during RPC
+
+- Invoke Activity RPC
+floating note: L4: Transport
+
+- Process incoming RPC payload
+floating note: L5: Actual activity\nMay emit events. See events.md
+
+endif
+endif
+else (N)
+	- Illegal state
+	kill
+endif
+
+end
+floating note: Response climbs the chain back up
+
+@enduml

@@ -73,9 +73,9 @@ idea {
 dependencies {
 	detektPlugins(libs.detekt.ktlint)
 
-	kover(project(":commons:core"))
-	kover(project(":commons:spring"))
-	kover(project(":commons:security"))
+	kover(project(":commons-core"))
+	kover(project(":commons-spring"))
+	kover(project(":commons-security"))
 	kover(project(":metamodel"))
 	kover(project(":server"))
 }
