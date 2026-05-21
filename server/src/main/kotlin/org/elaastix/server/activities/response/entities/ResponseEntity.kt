@@ -25,7 +25,7 @@ import jakarta.persistence.Inheritance
 import jakarta.persistence.InheritanceType
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
-import org.elaastix.commons.jpa.AbstractEntity
+import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.mm.activity.ScalarGradable
 import org.elaastix.mm.activity.ScalarGrade
 import org.elaastix.mm.content.FormattedContent
@@ -51,6 +51,7 @@ abstract class ResponseEntity<TSelf : ResponseEntity<TSelf, TQuestion>, TQuestio
 	var selfExplanation: FormattedContent?,
 
 	/** Confidence degree provided by the learner. Optional. */
+	@Suppress("JpaAttributeTypeInspection") // https://youtrack.jetbrains.com/issue/IDEA-191568
 	var confidenceDegree: UInt?,
 
 	/** The author of this response. */

@@ -17,8 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.conversion
+package org.elaastix.commons.boot.autoconfigure
 
+import org.elaastix.commons.conversion.UuidConverter
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.context.annotation.Import
 

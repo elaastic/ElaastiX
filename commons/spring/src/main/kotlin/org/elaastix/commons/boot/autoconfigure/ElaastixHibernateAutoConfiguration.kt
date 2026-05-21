@@ -17,16 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.jpa
+package org.elaastix.commons.boot.autoconfigure
 
-import jakarta.persistence.PrePersist
-import org.elaastix.commons.platform.JpaImmutable
-import kotlin.time.Clock
+import kotlinx.serialization.json.Json
+import org.elaastix.commons.jpa.hibernate.HibernateKotlinxJsonMapper
+import org.hibernate.cfg.AvailableSettings
+import org.springframework.boot.autoconfigure.AutoConfiguration
+import org.springframework.boot.hibernate.autoconfigure.HibernatePropertiesCustomizer
+import org.springframework.context.annotation.Bean
 
-internal class EntityListener {
-	@PrePersist
-	fun prePersist(entity: AbstractEntity) {
-		@OptIn(JpaImmutable::class)
-		entity.updatedAt = Clock.System.now()
+/**
+ * Autoconfiguration class loading the library's Hibernate default settings.
+ */
+@AutoConfiguration
+class ElaastixHibernateAutoConfiguration {
+	@Bean
+	@Suppress("UndocumentedPublicFunction")
+	fun jsonFormatMapperCustomizer(json: Json): HibernatePropertiesCustomizer = {
+		it[AvailableSettings.JSON_FORMAT_MAPPER] = HibernateKotlinxJsonMapper(json)
 	}
 }

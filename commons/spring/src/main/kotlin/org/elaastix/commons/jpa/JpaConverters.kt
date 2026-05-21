@@ -24,11 +24,7 @@ package org.elaastix.commons.jpa
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.jpa.hibernate.UuidJavaType
 import org.elaastix.commons.platform.ExcludeFromCoverage
-import org.hibernate.boot.model.TypeContributions
-import org.hibernate.boot.model.TypeContributor
-import org.hibernate.service.ServiceRegistry
 import java.util.UUID
 import kotlin.time.Instant
 import kotlin.time.toJavaInstant
@@ -36,31 +32,6 @@ import kotlin.time.toKotlinInstant
 import kotlin.uuid.toJavaUuid
 import kotlin.uuid.toKotlinUuid
 import java.time.Instant as JavaInstant
-
-/**
- * Custom [TypeContributor] responsible for registering the package's converters to the Hibernate context.
- *
- * Implementation has to cope with Hibernate bug [HHH-20070](https://hibernate.atlassian.net/browse/HHH-20070);
- * the contributor is invoked twice, causing duplicate registration that leads to application start failure.
- *
- * The contributor will be automatically picked by Hibernate thanks to the
- * `META-INF/services/org.hibernate.boot.model.TypeContributor` file.
- */
-class HibernateTypeContributor : TypeContributor {
-	// Workaround for https://hibernate.atlassian.net/browse/HHH-20070
-	private var initialised = false
-
-	override fun contribute(typeContributions: TypeContributions, serviceRegistry: ServiceRegistry) {
-		if (!initialised) {
-			initialised = true
-			typeContributions.contributeAttributeConverter(UuidConverter::class.java)
-			typeContributions.contributeAttributeConverter(InstantConverter::class.java)
-			typeContributions.contributeAttributeConverter(UIntConverter::class.java)
-			typeContributions.contributeAttributeConverter(ULongConverter::class.java)
-			typeContributions.contributeJavaType(UuidJavaType)
-		}
-	}
-}
 
 /**
  * JPA Converter responsible for handling the conversion from [Uuid] to [UUID].

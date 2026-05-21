@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.jpa
+package org.elaastix.commons.jpa.entity
 
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.Id
@@ -75,7 +75,7 @@ abstract class AbstractEntity {
 	@Version
 	@NotNull
 	var version: Long? = null
-		@JpaImmutable set // Exposed to allow forceful entity re-sync
+		@JpaImmutable set
 
 	/**
 	 * Checks if the entity is equal to [other].

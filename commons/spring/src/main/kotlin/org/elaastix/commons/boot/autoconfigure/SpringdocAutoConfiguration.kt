@@ -17,12 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.openapi
+package org.elaastix.commons.boot.autoconfigure
 
 import com.fasterxml.jackson.databind.type.SimpleType
 import io.swagger.v3.core.converter.ModelConverter
 import io.swagger.v3.oas.models.Components
 import kotlinx.serialization.Serializable
+import org.elaastix.commons.openapi.BuiltinCustomisers
+import org.elaastix.commons.openapi.DtoCustomiser
 import org.springframework.boot.autoconfigure.AutoConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
@@ -35,7 +37,7 @@ import kotlin.reflect.full.hasAnnotation
 @Import(BuiltinCustomisers::class)
 class SpringdocAutoConfiguration(private val dtoCustomiserList: List<DtoCustomiser>) {
 	/**
-	 * Swagger [ModelConverter] applying all registered [DtoCustomiser] beans.
+	 * Swagger [io.swagger.v3.core.converter.ModelConverter] applying all registered [DtoCustomiser] beans.
 	 *
 	 * Kotlin generates synthetic getters with a random suffix for value classes, which appear in the documentation.
 	 * Since Kotlin separates the name and the suffix with a dash and this character cannot be present elsewhere, the

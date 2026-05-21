@@ -27,7 +27,7 @@ import jakarta.persistence.Table
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import org.elaastix.commons.jpa.AbstractEntity
+import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.security.Role
 import org.elaastix.mm.users.User
 import org.hibernate.annotations.JdbcTypeCode
@@ -55,8 +55,7 @@ class UserEntity(
 	 */
 	@JdbcTypeCode(SqlTypes.ARRAY)
 	@Enumerated(EnumType.STRING)
-	// Unfortunately explicit, as IJ is a bit confused otherwise
-	@Column(columnDefinition = "text[]")
+	@Column(columnDefinition = "text[]") // Unfortunately explicit, as IJ is a bit confused otherwise
 	var roles: Set<Role> = emptySet(),
 
 	// TODO: `permissions`? `revoked: Set<Permission>`?

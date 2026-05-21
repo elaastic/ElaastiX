@@ -22,7 +22,7 @@ package testutils
 import io.mockk.every
 import io.mockk.mockk
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.jpa.AbstractEntity
+import org.elaastix.commons.jpa.entity.AbstractEntity
 
 inline fun <reified T : AbstractEntity> mockkEntity(block: T.() -> Unit = {}): Pair<Uuid, T> =
 	Uuid.random().let {
