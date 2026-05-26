@@ -39,7 +39,7 @@ import java.util.function.Predicate
 @Configuration
 class ApiVersioningConfig : WebMvcConfigurer {
 	private companion object {
-		val pathVersioningPredicate: Predicate<RequestPath> = { !it.toString().startsWith("/documentation") }
+		val pathVersioningPredicate: Predicate<RequestPath> = { it.toString().startsWith("/v") }
 
 		val handlerVersioningPredicate: Predicate<Class<*>> =
 			HandlerTypePredicate.forBasePackageClass(ElaastixServerApplication::class.java)

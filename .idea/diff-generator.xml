@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DiffGenerationConfig">
+    <option name="snapshotDb" value="false" />
+    <option name="snapshotModelValue" value="ElaastiX.server.main:ElaastiX.server.main" />
+    <option name="sourceModelValue" value="ElaastiX.server.main:ElaastiX.server.main" />
+    <option name="targetDbValue" value="93fe94de-9822-494a-871f-3ded89a5ca94" />
+  </component>
+</project>
