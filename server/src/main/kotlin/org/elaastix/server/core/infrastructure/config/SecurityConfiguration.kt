@@ -21,14 +21,19 @@ package org.elaastix.server.core.infrastructure.config
 
 import org.elaastix.server.authn.ElaastixAuthenticationFilter
 import org.elaastix.server.authn.ElaastixAuthenticationProvider
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.data.domain.AuditorAware
 import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
 import org.springframework.security.web.authentication.HttpStatusEntryPoint
@@ -36,19 +41,39 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher
 import org.springframework.web.accept.ContentNegotiationManager
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import java.util.Optional
 
 /**
- * Configuration class for the MVC Web configuration. Also enables and configures related Spring Security features.
+ * Configuration for Spring Security features.
+ *
  * See https://docs.spring.io/spring-security/reference/servlet/integrations/mvc.html
+ * See https://docs.spring.io/spring-security/reference/servlet/authorization/method-security.html
  */
 @Configuration
 @EnableWebSecurity
-class WebConfiguration : WebMvcConfigurer {
+@EnableMethodSecurity
+class SecurityConfiguration :
+	WebMvcConfigurer,
+	AuditorAware<UserEntity> {
+	/**
+	 * See https://docs.spring.io/spring-data/jpa/reference/auditing.html#auditing.auditor-aware
+	 */
+	override fun getCurrentAuditor(): Optional<UserEntity> =
+		Optional.ofNullable(
+			SecurityContextHolder.getContext().authentication
+				?.takeIf { it.isAuthenticated }
+				?.let { it.principal as? UserEntity? },
+		)
+
 	override fun addCorsMappings(registry: CorsRegistry) {
 		registry.addMapping("/openapi.json")
 	}
 
-	/** Spring Security configuration. */
+	/**
+	 * Security filter chain configuration.
+	 *
+	 * See https://docs.spring.io/spring-security/reference/servlet/configuration/kotlin.html
+	 */
 	@Bean
 	fun securityFilterChain(
 		http: HttpSecurity,
@@ -58,7 +83,7 @@ class WebConfiguration : WebMvcConfigurer {
 	): SecurityFilterChain {
 		http.authenticationProvider(authProvider)
 		http {
-			cors { }
+			cors { /* no-op */ }
 			csrf { disable() }
 			formLogin { disable() }
 			logout { disable() }
@@ -89,4 +114,13 @@ class WebConfiguration : WebMvcConfigurer {
 
 		return http.build()
 	}
+
+	/**
+	 * Spring Security extension for Spring Data.
+	 * Gives access to `principal` in `@Query`, among other things.
+	 *
+	 * See https://docs.spring.io/spring-security/reference/servlet/integrations/data.html
+	 */
+	@Bean
+	fun securityEvaluationContextExtension() = SecurityEvaluationContextExtension()
 }

@@ -25,6 +25,7 @@ includeBuild("build-logic")
 include(
 	"commons:core",
 	"commons:spring",
+	"commons:security",
 	"metamodel",
 	"server",
 	"frontend",

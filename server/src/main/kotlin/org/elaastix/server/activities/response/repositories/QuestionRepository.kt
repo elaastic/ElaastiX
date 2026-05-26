@@ -20,7 +20,7 @@
 package org.elaastix.server.activities.response.repositories
 
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.jpa.ElaastixRepository
+import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.server.activities.response.entities.QuestionEntity
 import org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection
 import org.springframework.data.jpa.repository.Query

@@ -21,37 +21,18 @@ plugins {
 	id("conventions.idea")
 	id("conventions.kotlin")
 	id("conventions.test")
-	id("conventions.spring-lib")
-}
-
-val main by sourceSets.getting
-
-val impl by sourceSets.creating {
-	compileClasspath += main.compileClasspath + main.output
-	runtimeClasspath += main.runtimeClasspath + main.output
-}
-
-val test by sourceSets.getting {
-	compileClasspath += impl.compileClasspath + impl.output
-	runtimeClasspath += impl.runtimeClasspath + impl.output
+	id("conventions.spring")
 }
 
 dependencies {
-	val implImplementation by configurations
+	testSpringBootStarter("validation")
+	testSpringBootStarter("data-jpa")
+	testSpringBootStarter("kotlinx-serialization-json")
 
-	implImplementation(libs.spring.boot.jpa)
-	implImplementation(libs.spring.boot.validation)
-	implImplementation(libs.hypersistence.utils)
-
-	testImplementation(libs.spring.boot.jpa.test)
-	testImplementation(libs.spring.boot.validation.test)
-	testImplementation(libs.spring.boot.kotlinx.serialization.json.test)
-	testImplementation(libs.spring.boot.testcontainers)
-
-	testImplementation(project(":commons:spring"))
 	testImplementation(libs.testcontainers)
 	testImplementation(libs.testcontainers.junit)
 	testImplementation(libs.testcontainers.postgres)
+	testImplementation(spring.boot("testcontainers"))
 
 	testRuntimeOnly(libs.jdbc.postgresql)
 }

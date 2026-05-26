@@ -17,24 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkObject
-import org.elaastix.commons.data.Uuid
-import org.elaastix.server.authn.AuthenticationHolder
-import org.elaastix.server.authn.ElaastixAuthentication
-import org.elaastix.server.users.entities.UserEntity
+package org.elaastix.commons.jpa.entity
 
-abstract class AuthenticatedUnitTest {
-	fun mockAuthenticatedUser(): UserEntity {
-		val userId = Uuid.random()
-		val user: UserEntity = mockk {
-			every { id } returns userId
-		}
+import jakarta.persistence.PrePersist
+import org.elaastix.commons.platform.JpaImmutable
+import kotlin.time.Clock
 
-		mockkObject(AuthenticationHolder)
-		every { AuthenticationHolder.authentication } returns ElaastixAuthentication(user, null, true)
-
-		return user
+internal class EntityListener {
+	@PrePersist
+	fun prePersist(entity: AbstractEntity) {
+		@OptIn(JpaImmutable::class)
+		entity.updatedAt = Clock.System.now()
 	}
 }

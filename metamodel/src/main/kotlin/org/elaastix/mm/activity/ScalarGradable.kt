@@ -19,6 +19,8 @@
 
 package org.elaastix.mm.activity
 
+import jakarta.persistence.Embeddable
+
 /**
  * Denotes objects that can be given a grade, on a linear scale between zero and an arbitrary upper bound.
  * Such grades can be represented as-is (e.g. 16/20), or as a percentage.
@@ -29,20 +31,32 @@ package org.elaastix.mm.activity
 interface ScalarGradable {
 	/** The scalar grade given to the object. */
 	val absoluteGrade: ScalarGrade?
+}
+
+/**
+ * A linear grade, as an arbitrary number between zero and an upper bound.
+ */
+@JvmRecord
+@Embeddable
+@Suppress(
+	"RedundantModalityModifier", // https://youtrack.jetbrains.com/issue/KT-86286
+	"JpaEntityWithValAttributesInspection", // https://youtrack.jetbrains.com/issue/KTIJ-37754
+)
+final data class ScalarGrade(
+	/** The given grade. MUST be less than or equal to [max]. */
+	val grade: Double,
+
+	/** Maximum grade that can be obtained. MUST be non-zero. */
+	val max: Double,
+) {
+	init {
+		require(grade >= 0) { "Grade must be positive or zero" }
+		require(max > 0) { "Maximum value of the grade must be strictly positive" }
+		require(grade <= max) { "Grade must be less than or equal to the maximum grade" }
+	}
 
 	/**
-	 * A linear grade, as an arbitrary number between zero and an upper bound.
+	 * Returns the grade as a decimal value between 0 and 1.
 	 */
-	interface ScalarGrade {
-		/** The given grade. MUST be less than or equal to [max]. */
-		val grade: Double
-
-		/** Maximum grade that can be obtained. MUST be non-zero. */
-		val max: Double
-
-		/**
-		 * Returns the grade as a decimal value between 0 and 1.
-		 */
-		fun asDouble(): Double = grade / max
-	}
+	fun asDouble(): Double = grade / max
 }

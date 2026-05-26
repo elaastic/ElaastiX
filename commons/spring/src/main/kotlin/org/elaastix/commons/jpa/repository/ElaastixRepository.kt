@@ -17,9 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.jpa
+package org.elaastix.commons.jpa.repository
 
 import io.hypersistence.utils.spring.repository.BaseJpaRepository
+import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.ExcludeFromCoverage
 import org.springframework.data.repository.NoRepositoryBean
 import kotlin.uuid.Uuid

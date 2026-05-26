@@ -22,8 +22,10 @@ package org.elaastix.server.authn
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.security.SecurityScheme
+import org.elaastix.commons.security.Role
 import org.elaastix.server.users.UserRepository
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.InsufficientAuthenticationException
 import org.springframework.security.core.Authentication
@@ -46,6 +48,7 @@ class ElaastixAuthenticationProvider(
 	@Value("#{environment.acceptsProfiles('develop')}")
 	private val isDevelop: Boolean,
 	private val userRepository: UserRepository,
+	private val roleHierarchy: RoleHierarchy,
 ) : AuthenticationProvider {
 	override fun authenticate(authentication: Authentication) =
 		when (authentication) {
@@ -59,7 +62,15 @@ class ElaastixAuthenticationProvider(
 		val user = userRepository.findByIdOrNull(authentication.uuid)
 			?: throw AccountNotFoundException("User does not exist.")
 
-		return ElaastixAuthentication(user, authentication, true)
+		return ElaastixAuthentication(
+			user = user,
+			credentials = authentication,
+			authenticated = true,
+			authorities = when (user.roles.size) {
+				0 -> roleHierarchy.getReachableGrantedAuthorities(listOf(Role.USER))
+				else -> roleHierarchy.getReachableGrantedAuthorities(user.roles)
+			},
+		)
 	}
 
 	override fun supports(authentication: Class<*>) =

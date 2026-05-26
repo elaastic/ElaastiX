@@ -17,14 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.conversion
+package testutils
 
-import org.springframework.boot.autoconfigure.AutoConfiguration
-import org.springframework.context.annotation.Import
+import io.mockk.every
+import io.mockk.mockk
+import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.jpa.entity.AbstractEntity
 
-/**
- * Autoconfiguration class registering the converters for use by Spring.
- */
-@AutoConfiguration
-@Import(UuidConverter::class)
-class SpringConvertersAutoConfiguration
+inline fun <reified T : AbstractEntity> mockkEntity(block: T.() -> Unit = {}): Pair<Uuid, T> =
+	Uuid.random().let {
+		it to mockk<T> {
+			every { id } returns it
+			block()
+		}
+	}

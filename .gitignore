@@ -8,6 +8,7 @@
 !.idea/jpb-settings.xml
 !.idea/jsLinters
 !.idea/jsonSchemas.xml
+!.idea/mise.xml
 !.idea/remote-targets.xml
 !.idea/runConfigurations
 !.idea/sqldialects.xml

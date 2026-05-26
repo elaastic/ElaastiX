@@ -25,6 +25,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import testutils.WithMockUser
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -48,5 +49,13 @@ class AuthenticationIntegrationTest {
 				}
 			}
 			.andExpect { status { isUnauthorized() } }
+	}
+
+	@Test
+	@WithMockUser
+	fun `accessing an endpoint with appropriate authentication returns a 200`() {
+		// TODO: improve :)
+		mockMvc.get("/v1/authn/tmp/who-am-i")
+			.andExpect { status { isOk() } }
 	}
 }

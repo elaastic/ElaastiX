@@ -21,9 +21,8 @@ package org.elaastix.server.activities.response.entities
 
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
-import org.elaastix.mm.activity.ScalarGradable
+import org.elaastix.mm.activity.ScalarGrade
 import org.elaastix.mm.content.FormattedContent
-import org.elaastix.server.users.entities.UserEntity
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 
@@ -35,18 +34,17 @@ class OpenResponseEntity(
 
 	/** The answer given by the learner. May be empty, but is required. */
 	@JdbcTypeCode(SqlTypes.JSON)
+	@Suppress("JpaAttributeTypeInspection") // https://youtrack.jetbrains.com/issue/IDEA-191568
 	var answer: FormattedContent,
 
 	selfExplanation: FormattedContent?,
 	confidenceDegree: UInt?,
-	author: UserEntity,
 	amendedResponse: OpenResponseEntity? = null,
-	absoluteGrade: ScalarGradable.ScalarGrade? = null,
+	absoluteGrade: ScalarGrade? = null,
 ) : ResponseEntity<OpenResponseEntity, OpenQuestionEntity>(
 		question,
 		selfExplanation,
 		confidenceDegree,
-		author,
 		amendedResponse,
 		absoluteGrade,
 	) {

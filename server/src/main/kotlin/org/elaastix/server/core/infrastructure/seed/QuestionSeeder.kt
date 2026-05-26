@@ -38,9 +38,9 @@ class QuestionSeeder(entityManager: EntityManager, private val userSeeder: UserS
 		protected set
 
 	override fun run(args: ApplicationArguments) {
-		tmpQuestion1 = createEntity(
-			ClosedQuestionEntity(
-				author = userSeeder.cynthia, // Actually: Randall Munroe - https://xkcd.com/1312/.
+		tmpQuestion1 = createEntityWithAuthor(
+			author = userSeeder.cynthia, // Actually: Randall Munroe - https://xkcd.com/1312/.
+			entity = ClosedQuestionEntity(
 				statement = MarkdownContent(
 					"TRUE OR FALSE. Software written in Haskell is guaranteed to have no side-effects",
 				),
@@ -56,9 +56,9 @@ class QuestionSeeder(entityManager: EntityManager, private val userSeeder: UserS
 			),
 		)
 
-		tmpQuestion2 = createEntity(
-			ClosedQuestionEntity(
-				author = userSeeder.cynthia,
+		tmpQuestion2 = createEntityWithAuthor(
+			author = userSeeder.cynthia,
+			entity = ClosedQuestionEntity(
 				statement = MarkdownContent("What is the best multipurpose operating system?"),
 				multiple = false,
 				choices = listOf(

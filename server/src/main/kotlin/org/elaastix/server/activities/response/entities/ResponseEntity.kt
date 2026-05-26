@@ -25,10 +25,10 @@ import jakarta.persistence.Inheritance
 import jakarta.persistence.InheritanceType
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.OneToOne
-import org.elaastix.commons.jpa.AbstractEntity
 import org.elaastix.mm.activity.ScalarGradable
+import org.elaastix.mm.activity.ScalarGrade
 import org.elaastix.mm.content.FormattedContent
-import org.elaastix.server.users.entities.UserEntity
+import org.elaastix.server.core.AbstractEntityWithAuthorship
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
 
@@ -50,11 +50,8 @@ abstract class ResponseEntity<TSelf : ResponseEntity<TSelf, TQuestion>, TQuestio
 	var selfExplanation: FormattedContent?,
 
 	/** Confidence degree provided by the learner. Optional. */
+	@Suppress("JpaAttributeTypeInspection") // https://youtrack.jetbrains.com/issue/IDEA-191568
 	var confidenceDegree: UInt?,
-
-	/** The author of this response. */
-	@ManyToOne
-	var author: UserEntity,
 
 	/**
 	 * The response being amended by this response.
@@ -69,6 +66,6 @@ abstract class ResponseEntity<TSelf : ResponseEntity<TSelf, TQuestion>, TQuestio
 	var amendedResponse: TSelf? = null,
 
 	@Embedded
-	override var absoluteGrade: ScalarGradable.ScalarGrade? = null,
-) : AbstractEntity(),
+	override var absoluteGrade: ScalarGrade? = null,
+) : AbstractEntityWithAuthorship(),
 	ScalarGradable

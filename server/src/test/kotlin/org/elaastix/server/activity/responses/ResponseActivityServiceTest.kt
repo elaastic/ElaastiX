@@ -19,14 +19,15 @@
 
 package org.elaastix.server.activity.responses
 
-import AuthenticatedUnitTest
 import io.mockk.bdd.given
 import io.mockk.bdd.then
 import io.mockk.called
 import io.mockk.mockk
 import org.assertj.core.api.Assertions.assertThat
-import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.applyAs
+import org.elaastix.commons.cast
 import org.elaastix.commons.exceptions.BadRequestException
+import org.elaastix.commons.platform.JpaImmutable
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.activities.response.ResponseActivityService
 import org.elaastix.server.activities.response.dtos.ClosedResponseDto
@@ -39,12 +40,16 @@ import org.elaastix.server.activities.response.entities.QuestionEntity
 import org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection
 import org.elaastix.server.activities.response.repositories.QuestionRepository
 import org.elaastix.server.activities.response.repositories.ResponseRepository
+import org.elaastix.server.core.AbstractEntityWithAuthorship
 import org.elaastix.server.core.content.PlainText
+import org.elaastix.server.users.entities.UserEntity
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
+import testutils.mockkEntity
 
-class ResponseActivityServiceTest : AuthenticatedUnitTest() {
+class ResponseActivityServiceTest {
 	val questionRepo: QuestionRepository = mockk()
 	val responseRepo: ResponseRepository = mockk()
 
@@ -69,18 +74,23 @@ class ResponseActivityServiceTest : AuthenticatedUnitTest() {
 			}
 		}
 
+	@BeforeEach
+	@OptIn(JpaImmutable::class)
+	fun `mock test repository`() {
+		val (_, user) = mockkEntity<UserEntity>()
+		given { responseRepo.persist(any()) } answers {
+			it.invocation.args[0]
+				?.applyAs<AbstractEntityWithAuthorship> { author = user }
+				?.cast()
+		}
+	}
+
 	@Test
 	fun `persists open response to an open question`() {
-		val user = mockAuthenticatedUser()
+		val (questionId, question) = mockkEntity<OpenQuestionEntity>()
 
-		val questionId = Uuid.random()
-		val questionEntity: OpenQuestionEntity = mockk {
-			given { id } returns questionId
-		}
-
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns questionEntity
-		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(questionEntity)
-		given { responseRepo.persist(any()) } returnsArgument 0
+		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		val response = assertDoesNotThrow {
 			service.submitResponse(
@@ -97,7 +107,6 @@ class ResponseActivityServiceTest : AuthenticatedUnitTest() {
 		if (response !is OpenResponseDto) error("Impossible") // Required for type cast
 
 		assertThat(response.questionId).isEqualTo(questionId)
-		assertThat(response.authorId).isEqualTo(user.id)
 
 		then(exactly = 1) {
 			responseRepo.persist(any())
@@ -106,18 +115,13 @@ class ResponseActivityServiceTest : AuthenticatedUnitTest() {
 
 	@Test
 	fun `persists closed response (multiple) to a closed question (multiple)`() {
-		val user = mockAuthenticatedUser()
-
-		val questionId = Uuid.random()
-		val questionEntity: ClosedQuestionEntity = mockk {
-			given { id } returns questionId
+		val (questionId, question) = mockkEntity<ClosedQuestionEntity> {
 			given { multiple } returns true
 			given { choices } returns listOf(PlainText("1"), PlainText("2"))
 		}
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns questionEntity
-		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(questionEntity)
-		given { responseRepo.persist(any()) } returnsArgument 0
+		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		val response = assertDoesNotThrow {
 			service.submitResponse(
@@ -134,7 +138,6 @@ class ResponseActivityServiceTest : AuthenticatedUnitTest() {
 		if (response !is ClosedResponseDto) error("Impossible") // Required for type cast
 
 		assertThat(response.questionId).isEqualTo(questionId)
-		assertThat(response.authorId).isEqualTo(user.id)
 		assertThat(response.answer).isInstanceOf(ClosedAnswer.Multiple::class.java)
 
 		then(exactly = 1) {
@@ -144,16 +147,10 @@ class ResponseActivityServiceTest : AuthenticatedUnitTest() {
 
 	@Test
 	fun `rejects mismatched question and response types`() {
-		mockAuthenticatedUser()
+		val (questionId, question) = mockkEntity<ClosedQuestionEntity>()
 
-		val questionId = Uuid.random()
-		val questionEntity: ClosedQuestionEntity = mockk {
-			given { id } returns questionId
-		}
-
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns questionEntity
-		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(questionEntity)
-		given { responseRepo.persist(any()) } returnsArgument 0
+		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		assertThrows<BadRequestException> {
 			service.submitResponse(
@@ -173,18 +170,14 @@ class ResponseActivityServiceTest : AuthenticatedUnitTest() {
 
 	@Test
 	fun `rejects bad closed response type for a question`() {
-		mockAuthenticatedUser()
-
-		val questionId = Uuid.random()
-		val questionEntity: ClosedQuestionEntity = mockk {
-			given { id } returns questionId
+		val (_, user) = mockkEntity<UserEntity>()
+		val (questionId, question) = mockkEntity<ClosedQuestionEntity> {
 			given { multiple } returns true
 			given { choices } returns listOf(PlainText("1"), PlainText("2"))
 		}
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns questionEntity
-		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(questionEntity)
-		given { responseRepo.persist(any()) } returnsArgument 0
+		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		assertThrows<BadRequestException> {
 			service.submitResponse(
@@ -204,18 +197,14 @@ class ResponseActivityServiceTest : AuthenticatedUnitTest() {
 
 	@Test
 	fun `rejects closed responses with out of bounds answers`() {
-		mockAuthenticatedUser()
-
-		val questionId = Uuid.random()
-		val questionEntity: ClosedQuestionEntity = mockk {
-			given { id } returns questionId
+		val (_, user) = mockkEntity<UserEntity>()
+		val (questionId, question) = mockkEntity<ClosedQuestionEntity> {
 			given { multiple } returns true
 			given { choices } returns listOf(PlainText("1"), PlainText("2"))
 		}
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns questionEntity
-		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(questionEntity)
-		given { responseRepo.persist(any()) } returnsArgument 0
+		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		assertThrows<BadRequestException> {
 			service.submitResponse(

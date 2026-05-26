@@ -1,65 +1,35 @@
 [versions]
 jdk = "25"
 kotlin = "2.3.21"
-ksp = "2.3.7"
+ksp = "2.3.8"
 # ----
-assertj = "3.18.1"
+assertj = "3.27.7"
+datafaker = "2.5.4"
 detekt = "2.0.0-alpha.3"
-flyway = "12.3.0"
-hibernate = "7.2.10.Final"       # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
+flyway = "12.6.1"
+hibernate = "7.3.4.Final"        # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
 hypersistence-utils = "3.15.2"
 ideax = "1.4.1"
-jdbc-postgresql = "42.7.9"
+jdbc-postgresql = "42.7.11"
 junit = "6.0.3"
-kotlinx-datetime = "0.7.1"
 kotlinx-serialization = "1.10.0"
 kover = "0.9.8"
 mockk = "1.14.9"
-spring-boot = "4.0.5"
+spring-boot = "4.0.6"
 springdoc = "3.0.3"
-springdoc-kdoc = "1.0.10"
-testcontainers = "2.0.4"
+springdoc-kdoc = "1.1.0"
+testcontainers = "2.0.5"
 
 [libraries]
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+datafaker = { module = "net.datafaker:datafaker", version.ref = "datafaker" }
 detekt-ktlint = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
 flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 hypersistence-utils = { module = "io.hypersistence:hypersistence-utils-hibernate-71", version.ref = "hypersistence-utils" }
 jdbc-postgresql = { module = "org.postgresql:postgresql", version.ref = "jdbc-postgresql" }
-kotlin-bom = { module = "org.jetbrains.kotlin:kotlin-bom", version.ref = "kotlin" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
-kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinx-datetime" }
-kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
-kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
-kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-bdd = { module = "io.mockk:mockk-bdd", version.ref = "mockk" }
-spring-boot-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
-spring-boot-actuator-test = { module = "org.springframework.boot:spring-boot-starter-actuator-test", version.ref = "spring-boot" }
-spring-boot-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "spring-boot" }
-spring-boot-flyway = { module = "org.springframework.boot:spring-boot-starter-flyway", version.ref = "spring-boot" }
-spring-boot-flyway-test = { module = "org.springframework.boot:spring-boot-starter-flyway-test", version.ref = "spring-boot" }
-spring-boot-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
-spring-boot-jpa-test = { module = "org.springframework.boot:spring-boot-starter-data-jpa-test", version.ref = "spring-boot" }
-spring-boot-kotlinx-serialization-json = { module = "org.springframework.boot:spring-boot-starter-kotlinx-serialization-json", version.ref = "spring-boot" }
-spring-boot-kotlinx-serialization-json-test = { module = "org.springframework.boot:spring-boot-starter-kotlinx-serialization-json-test", version.ref = "spring-boot" }
-spring-boot-mail = { module = "org.springframework.boot:spring-boot-starter-mail", version.ref = "spring-boot" }
-spring-boot-mail-test = { module = "org.springframework.boot:spring-boot-starter-mail-test", version.ref = "spring-boot" }
-spring-boot-opentelemetry = { module = "org.springframework.boot:spring-boot-starter-opentelemetry", version.ref = "spring-boot" }
-spring-boot-opentelemetry-test = { module = "org.springframework.boot:spring-boot-starter-opentelemetry-test", version.ref = "spring-boot" }
-spring-boot-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
-spring-boot-security-oauth2 = { module = "org.springframework.boot:spring-boot-starter-security-oauth2-client", version.ref = "spring-boot" }
-spring-boot-security-oauth2-test = { module = "org.springframework.boot:spring-boot-starter-security-oauth2-client-test", version.ref = "spring-boot" }
-spring-boot-security-test = { module = "org.springframework.boot:spring-boot-starter-security-test", version.ref = "spring-boot" }
-spring-boot-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
-spring-boot-testcontainers = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "spring-boot" }
-spring-boot-thymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "spring-boot" }
-spring-boot-thymeleaf-test = { module = "org.springframework.boot:spring-boot-starter-thymeleaf-test", version.ref = "spring-boot" }
-spring-boot-validation = { module = "org.springframework.boot:spring-boot-starter-validation", version.ref = "spring-boot" }
-spring-boot-validation-test = { module = "org.springframework.boot:spring-boot-starter-validation-test", version.ref = "spring-boot" }
-spring-boot-webmvc = { module = "org.springframework.boot:spring-boot-starter-webmvc", version.ref = "spring-boot" }
-spring-boot-webmvc-test = { module = "org.springframework.boot:spring-boot-starter-webmvc-test", version.ref = "spring-boot" }
 springdoc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-scalar", version.ref = "springdoc" }
 springdoc-kdoc-ksp = { module = "com.github.cosmos-official.vingle-springdoc-kdoc-provider:kdoc-processor", version.ref = "springdoc-kdoc" }
 springdoc-kdoc-rt = { module = "com.github.cosmos-official.vingle-springdoc-kdoc-provider:kdoc-runtime", version.ref = "springdoc-kdoc" }

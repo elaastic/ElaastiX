@@ -28,16 +28,16 @@ class ElaastixAuthentication(
 	private val user: UserEntity,
 	private val credentials: Any?,
 	private var authenticated: Boolean = false,
+	private var authorities: Collection<GrantedAuthority> = emptySet(),
 ) : Authentication {
 
 	override fun getPrincipal(): UserEntity = user
 
 	override fun getCredentials() = credentials
 
-	override fun getName() = user.id.toString() // FIXME: user's actual name!!
+	override fun getName() = user.fullName
 
-	// Unused
-	override fun getAuthorities() = emptySet<GrantedAuthority>()
+	override fun getAuthorities() = authorities
 
 	// Unused
 	override fun getDetails() = null

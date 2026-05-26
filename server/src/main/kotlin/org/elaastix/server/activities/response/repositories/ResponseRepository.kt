@@ -19,7 +19,7 @@
 
 package org.elaastix.server.activities.response.repositories
 
-import org.elaastix.commons.jpa.ElaastixRepository
+import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.server.activities.response.entities.ResponseEntity
 import org.springframework.stereotype.Repository
 

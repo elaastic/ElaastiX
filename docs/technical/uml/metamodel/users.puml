@@ -4,8 +4,8 @@
 package metamodel.users {
 	interface User extends metamodel.MmObject {
 		'todo
-		+isWriterModeEnabled: Boolean
-		+isAdministrator: Boolean
+		+firstName: String
+		+lastName: String
 	}
 
 	package cohorts {

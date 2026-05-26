@@ -60,8 +60,7 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	@PlayerAction("org.elaastix.response.submitResponse")
 	fun submitResponse(
 		@RequestBody payload: SubmitAnswerDto,
-	) =
-		responseActivityService.submitResponse(payload.questionId, payload.response)
+	) = responseActivityService.submitResponse(payload.questionId, payload.response)
 
 	/** Payload for the submitResponse action. */
 	@Serializable

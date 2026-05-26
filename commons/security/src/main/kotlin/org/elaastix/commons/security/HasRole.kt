@@ -17,22 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.jpa.hibernate
+package org.elaastix.commons.security
 
-import kotlinx.serialization.json.Json
-import org.hibernate.cfg.AvailableSettings
-import org.springframework.boot.autoconfigure.AutoConfiguration
-import org.springframework.boot.hibernate.autoconfigure.HibernatePropertiesCustomizer
-import org.springframework.context.annotation.Bean
+import org.springframework.security.access.prepost.PreAuthorize
 
 /**
- * Autoconfiguration class loading the library's Hibernate default settings.
+ * Helper annotation to only allow users with a given role to perform a call.
+ * May be used as a meta-annotation.
+ *
+ * @see HasPermission
+ * @see PreAuthorize
  */
-@AutoConfiguration
-class ElaastixHibernateAutoConfiguration {
-	@Bean
-	@Suppress("UndocumentedPublicFunction")
-	fun jsonFormatMapperCustomizer(json: Json): HibernatePropertiesCustomizer = {
-		it[AvailableSettings.JSON_FORMAT_MAPPER] = HibernateKotlinxJsonMapper(json)
-	}
-}
+@PreAuthorize("hasAuthority('{role.authority}')")
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class HasRole(
+	/** The role to match. */
+	val role: Role,
+)

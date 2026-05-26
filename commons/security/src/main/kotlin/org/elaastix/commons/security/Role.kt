@@ -17,16 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.jpa
+package org.elaastix.commons.security
 
-import jakarta.persistence.PrePersist
-import org.elaastix.commons.platform.JpaImmutable
-import kotlin.time.Clock
+/**
+ * Roles that may be granted to a user.
+ * Used to restrict access via the [HasRole] annotation.
+ */
+enum class Role : Authority {
+	/**
+	 * Users with unrestricted access to the platform.
+	 */
+	ADMIN,
 
-internal class EntityListener {
-	@PrePersist
-	fun prePersist(entity: AbstractEntity) {
-		@OptIn(JpaImmutable::class)
-		entity.updatedAt = Clock.System.now()
-	}
+	/**
+	 * Users that are permitted to create content on the platform.
+	 */
+	WRITER,
+
+	/**
+	 * Any successfully authenticated user.
+	 */
+	USER,
 }

@@ -19,8 +19,11 @@
 
 package conventions
 
+import bom
+import kotlinx
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import version
 
 val libs = the<VersionCatalogsExtension>().named("libs")
 
@@ -59,12 +62,13 @@ kotlin {
 }
 
 dependencies {
-	implementation(enforcedPlatform(libs.findLibrary("kotlin.bom").get()))
+	bom(kotlin("bom", version = libs.version("kotlin")))
+	bom(kotlinx("serialization-bom", version = libs.version("kotlinx-serialization")))
 
 	implementation(kotlin("stdlib"))
-	implementation(libs.findLibrary("kotlinx.serialization.core").get())
-	implementation(libs.findLibrary("kotlinx.serialization.json").get())
-	implementation(libs.findLibrary("kotlinx.serialization.cbor").get())
+	implementation(kotlinx("serialization-core"))
+	implementation(kotlinx("serialization-json"))
+	implementation(kotlinx("serialization-cbor"))
 
 	implementation(libs.findLibrary("springdoc.kdoc.rt").get())
 	ksp(libs.findLibrary("springdoc.kdoc.ksp").get())

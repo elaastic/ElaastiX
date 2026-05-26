@@ -19,7 +19,7 @@
 
 package org.elaastix.server.users
 
-import org.elaastix.commons.jpa.ElaastixRepository
+import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.server.users.entities.UserEntity
 import org.springframework.stereotype.Repository
 

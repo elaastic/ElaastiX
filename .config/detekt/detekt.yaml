@@ -38,9 +38,11 @@ ktlint:
   code_style: ktlint_official
   Indentation:
     indentStyle: tab
-  FunctionSignature:  # Detekt overrides this with `default` instead of the (better) default of Ktlint
-    active: false  # https://github.com/detekt/detekt/issues/9295
+  FunctionSignature:  # Detekt overrides this with `default` instead of the (better) default of Ktlint.
+    active: false  # https://github.com/detekt/detekt/issues/9295 -- remove on 2.0.0-alpha.4+
     functionBodyExpressionWrapping: multiline
+  ValueParameterComment:
+    active: false  # Annoying when adding comments after annotations. Wouldn't pass code review anyway.
 
 performance:
   CouldBeSequence:
@@ -60,6 +62,9 @@ style:
         reason: Use org.elaastix.commons.data.Uuid instead
       - value: java.time.Instant
         reason: Use Kotlin's Instant type
+      # Ban Spring Security's helper as we have our own
+      - value: org.springframework.security.test.context.support.WithMockUser
+        reason: Use testutils.WithMockUser instead
     excludes:
       - "**/commons/jpa/**"     # Compat layer
       - "**/commons/data/Uuid.kt"  # Uuid type alias
