@@ -47,7 +47,7 @@ abstract class AbstractSeeder(private val entityManager: EntityManager) : Applic
 				this.id = Uuid.fromULongs(0UL, id)
 
 				@OptIn(JpaImmutable::class) // SAFETY: Manual reconciliation of version to make JPA happy
-				this.version = entityManager.find(this::class.java, id)?.version
+				this.version = entityManager.find(this::class.java, this.id)?.version
 
 				block()
 			},
