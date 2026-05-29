@@ -17,19 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.exceptions
+package testutils
 
-import org.springframework.http.HttpStatus
-import org.springframework.http.ProblemDetail
-import org.springframework.web.ErrorResponseException
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
-/**
- * Thrown when the request from the client is malformed or otherwise invalid.
- */
-// TODO: More detailed errors
-class BadRequestException(message: String? = null, cause: Throwable? = null) :
-	ErrorResponseException(
-		HttpStatus.BAD_REQUEST,
-		ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, message),
-		cause,
-	)
+@Autowired
+@Qualifier(WithMockUser.SEC_MOCK_USER)
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class MockUser

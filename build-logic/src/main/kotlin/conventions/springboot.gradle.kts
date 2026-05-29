@@ -84,7 +84,7 @@ testing {
 		val test by existing(JvmTestSuite::class) {
 			targets.configureEach {
 				testTask.configure {
-					jvmArgs = listOf("-Dspring.profiles.active=develop,testing")
+					jvmArgs = listOf("-Dspring.profiles.active=develop")
 				}
 			}
 		}

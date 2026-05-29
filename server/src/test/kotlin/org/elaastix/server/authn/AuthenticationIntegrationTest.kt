@@ -19,43 +19,77 @@
 
 package org.elaastix.server.authn
 
+import org.elaastix.commons.data.UuidSerializer.toStringBase36
+import org.elaastix.server.users.entities.UserEntity
 import org.junit.jupiter.api.Test
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
-import org.springframework.test.web.servlet.MockMvc
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.get
+import testutils.IntegrationTest
+import testutils.MockUser
 import testutils.WithMockUser
 
-@SpringBootTest
-@AutoConfigureMockMvc
-class AuthenticationIntegrationTest {
-	@Autowired
-	lateinit var mockMvc: MockMvc
-
+class AuthenticationIntegrationTest : IntegrationTest() {
 	@Test
 	fun `accessing an endpoint without authenticating yields 401`() {
 		// TODO: improve :)
-		mockMvc.get("/").andExpect { status { isUnauthorized() } }
+		mvc.get("/")
+			.andExpect { status { isUnauthorized() } }
+			.andExpect { content { contentType(MediaType.APPLICATION_PROBLEM_JSON) } }
 	}
 
 	@Test
 	fun `accessing an endpoint with an invalid authentication token yields 401`() {
 		// TODO: improve :)
-		mockMvc
-			.get("/") {
-				headers {
-					set("Authorization", "pls gib access trust")
-				}
+		mvc.get("/") {
+			headers {
+				set("Authorization", "pls gib access trust")
 			}
+		}
 			.andExpect { status { isUnauthorized() } }
+			.andExpect { content { contentType(MediaType.APPLICATION_PROBLEM_JSON) } }
 	}
 
 	@Test
-	@WithMockUser
-	fun `accessing an endpoint with appropriate authentication returns a 200`() {
-		// TODO: improve :)
-		mockMvc.get("/v1/authn/tmp/who-am-i")
+	@WithMockUser(persist = false) // This is more of a "test harness test" than a test on its own
+	fun `works when authenticated via Spring Security mock helper`(@MockUser user: UserEntity) {
+		mvc.get("/v1/authn/tmp/who-am-i")
 			.andExpect { status { isOk() } }
+			.andExpect { content { string(user.id.toStringBase36()) } }
+	}
+
+	@SpringBootTest(properties = ["elaastix.authn.develop=false"])
+	class NormalMode : IntegrationTest() {
+		@Test
+		fun `accessing an endpoint with develop authentication is permitted`() {
+			val user = UserEntity(
+				firstName = "Ada",
+				lastName = "Lovelace",
+			)
+
+			user.persist()
+			mvc.get("/v1/authn/tmp/who-am-i") {
+				headers { set("Authorization", "Develop ${user.id}") }
+			}
+				.andExpect { status { isUnauthorized() } }
+				.andExpect { content { contentType(MediaType.APPLICATION_PROBLEM_JSON) } }
+		}
+	}
+
+	@SpringBootTest(properties = ["elaastix.authn.develop=true"])
+	class DevelopMode : IntegrationTest() {
+		@Test
+		fun `accessing an endpoint with develop authentication is permitted`() {
+			val user = UserEntity(
+				firstName = "Ada",
+				lastName = "Lovelace",
+			)
+
+			user.persist()
+			mvc.get("/v1/authn/tmp/who-am-i") {
+				headers { set("Authorization", "Develop ${user.id}") }
+			}
+				.andExpect { status { isOk() } }
+		}
 	}
 }

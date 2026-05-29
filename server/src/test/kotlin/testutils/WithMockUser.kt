@@ -21,14 +21,16 @@
 
 package testutils
 
-import io.mockk.every
-import io.mockk.mockk
+import jakarta.persistence.EntityManager
 import net.datafaker.Faker
-import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.cast
 import org.elaastix.commons.security.Role
 import org.elaastix.server.authn.ElaastixAuthentication
 import org.elaastix.server.users.entities.UserEntity
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.support.BeanDefinitionRegistry
+import org.springframework.beans.factory.support.GenericBeanDefinition
+import org.springframework.context.ConfigurableApplicationContext
 import org.springframework.security.access.hierarchicalroles.NullRoleHierarchy
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy
 import org.springframework.security.core.context.SecurityContext
@@ -36,6 +38,8 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.context.SecurityContextHolderStrategy
 import org.springframework.security.test.context.support.WithSecurityContext
 import org.springframework.security.test.context.support.WithSecurityContextFactory
+import org.springframework.transaction.support.TransactionTemplate
+import java.util.concurrent.locks.ReentrantLock
 
 /**
  * Customised version of [org.springframework.security.test.context.support.WithMockUser] for use in ElaastiX.
@@ -47,26 +51,44 @@ import org.springframework.security.test.context.support.WithSecurityContextFact
 annotation class WithMockUser(
 	/** The roles to grant in the test context. */
 	val roles: Array<Role> = [],
+	/** Whether to persist the user to the database or not. */
+	val persist: Boolean = true,
 ) {
+	companion object {
+		const val SEC_MOCK_USER = "SEC_MOCK_USER"
+		const val SEC_MOCK_USER_HOLDER = "SEC_MOCK_USER_HOLDER"
+
+		val lock = ReentrantLock()
+	}
+
 	class SecurityContextFactory : WithSecurityContextFactory<WithMockUser> {
 		private val faker = Faker()
 
 		private var roleHierarchy: RoleHierarchy = NullRoleHierarchy()
 		private var securityContextHolderStrategy = SecurityContextHolder.getContextHolderStrategy()
 
+		private lateinit var configurableApplicationContext: ConfigurableApplicationContext
+		private lateinit var transactionTemplate: TransactionTemplate
+		private lateinit var entityManager: EntityManager
+
 		override fun createSecurityContext(annotation: WithMockUser): SecurityContext {
 			// Always add the USER role. This is most certainly what we want.
 			val rolesSet = annotation.roles.toMutableSet().apply { add(Role.USER) }
 
 			val name = faker.name()
-			val user: UserEntity = mockk {
-				every { id } returns Uuid.random()
-				every { firstName } returns name.firstName()
-				every { lastName } returns name.lastName()
-				every { fullName } answers { callOriginal() }
-				every { roles } returns annotation.roles.toSet()
+			val user = UserEntity(
+				firstName = name.firstName(),
+				lastName = name.lastName(),
+				roles = annotation.roles.toSet(),
+			)
+
+			if (annotation.persist) {
+				transactionTemplate.execute {
+					entityManager.persist(user)
+				}
 			}
 
+			getHolder().set(user)
 			return securityContextHolderStrategy.createEmptyContext().apply {
 				authentication = ElaastixAuthentication(
 					user = user,
@@ -75,6 +97,40 @@ annotation class WithMockUser(
 					authorities = roleHierarchy.getReachableGrantedAuthorities(rolesSet),
 				)
 			}
+		}
+
+		private fun getHolder(): ThreadLocal<UserEntity> {
+			val registry = configurableApplicationContext.beanFactory as BeanDefinitionRegistry
+			synchronized(lock) {
+				if (!registry.isBeanNameInUse(SEC_MOCK_USER_HOLDER)) {
+					val holder = ThreadLocal<UserEntity>()
+					registry.registerBeanDefinition(
+						SEC_MOCK_USER_HOLDER,
+						GenericBeanDefinition().apply {
+							setBeanClass(ThreadLocal::class.java)
+							instanceSupplier = { holder }
+						},
+					)
+				}
+			}
+
+			val holder = configurableApplicationContext
+				.autowireCapableBeanFactory
+				.getBean(SEC_MOCK_USER_HOLDER)
+				.cast<ThreadLocal<UserEntity>>()
+
+			if (!registry.isBeanNameInUse(SEC_MOCK_USER)) {
+				registry.registerBeanDefinition(
+					SEC_MOCK_USER,
+					GenericBeanDefinition().apply {
+						setBeanClass(UserEntity::class.java)
+						setDependsOn(SEC_MOCK_USER_HOLDER)
+						instanceSupplier = { holder.get() }
+					},
+				)
+			}
+
+			return holder
 		}
 
 		@Autowired(required = false)
@@ -87,6 +143,24 @@ annotation class WithMockUser(
 		@Suppress("SpringJavaInjectionPointsAutowiringInspection")
 		fun setRoleHierarchy(roleHierarchy: RoleHierarchy) {
 			this.roleHierarchy = roleHierarchy
+		}
+
+		@Autowired(required = false)
+		@Suppress("SpringJavaInjectionPointsAutowiringInspection")
+		fun setConfigurableApplicationContext(configurableApplicationContext: ConfigurableApplicationContext) {
+			this.configurableApplicationContext = configurableApplicationContext
+		}
+
+		@Autowired(required = false)
+		@Suppress("SpringJavaInjectionPointsAutowiringInspection")
+		fun setEntityManager(entityManager: EntityManager) {
+			this.entityManager = entityManager
+		}
+
+		@Autowired(required = false)
+		@Suppress("SpringJavaInjectionPointsAutowiringInspection")
+		fun setTransactionTemplate(transactionTemplate: TransactionTemplate) {
+			this.transactionTemplate = transactionTemplate
 		}
 	}
 }

@@ -22,6 +22,7 @@ package org.elaastix.server.activities.response
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.inherits
 import org.elaastix.commons.orNotFound
 import org.elaastix.commons.validate
 import org.elaastix.server.activities.response.dtos.ClosedQuestionStatementDto
@@ -52,10 +53,10 @@ class ResponseActivityService(
 		/** Transforms the DAO-level type into a Service-level type. */
 		fun QuestionStatementProjection.toDto() =
 			when {
-				OpenQuestionEntity::class.java.isAssignableFrom(type) ->
+				type inherits OpenQuestionEntity::class ->
 					OpenQuestionStatementDto(id, statement)
 
-				ClosedQuestionEntity::class.java.isAssignableFrom(type) ->
+				type inherits ClosedQuestionEntity::class ->
 					ClosedQuestionStatementDto(id, statement, multiple!!, choices!!)
 
 				else -> error("Unknown polymorphic variant $type")
@@ -99,10 +100,7 @@ class ResponseActivityService(
 	 * Validates and records a response to a question.
 	 */
 	@Transactional
-	fun submitResponse(
-		questionId: Uuid,
-		@Valid response: ResponseSubmitDto,
-	): ResponseDto {
+	fun submitResponse(questionId: Uuid, @Valid response: ResponseSubmitDto): ResponseDto {
 		val statement = questionRepository.findQuestionStatementById(questionId).orNotFound()
 
 		val entity =

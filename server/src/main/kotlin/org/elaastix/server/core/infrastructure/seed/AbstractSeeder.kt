@@ -50,11 +50,11 @@ abstract class AbstractSeeder(private val entityManager: EntityManager) : Applic
 				block()
 
 				// TODO: avoid unnecessary UPDATE on startup. dev-only issue, so very low priority.
-// 				@OptIn(JpaImmutable::class) // SAFETY: Pulled from the database, allows merge to work efficiently
-// 				entityManager.find(this::class.java, id)?.let {
-// 					version = it.version
-// 					updatedAt = it.updatedAt
-// 				}
+				@OptIn(JpaImmutable::class) // SAFETY: Pulled from the database, allows merge to work efficiently
+				entityManager.find(this::class.java, id)?.let {
+					version = it.version
+					updatedAt = it.updatedAt
+				}
 			},
 		)
 }

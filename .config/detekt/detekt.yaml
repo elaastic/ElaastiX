@@ -14,13 +14,18 @@ comments:
     severity: warning
     ignoreDefaultCompanionObject: true
     ignoreAnnotated:
-      - org.springframework.stereotype.Repository  # Trivial semantic
-      - org.elaastix.server.core.infrastructure.seed.Seeder  # Trivial semantic
+      # Classes with these annotations have a clear semantic attached to them by design.
+      # Accept them not being documented as a compromise to not cause "documentation fatigue"...
+      - org.springframework.stereotype.Service
+      - org.springframework.stereotype.Entity
+      - org.springframework.stereotype.Repository
+      - org.elaastix.server.core.infrastructure.seed.Seeder
   UndocumentedPublicFunction:
     active: true
     severity: warning
     ignoreAnnotated:
       - org.springframework.stereotype.Repository  # Functions must have very explicit names, or be annotated with @Query
+      - org.springframework.web.bind.annotation.ExceptionHandler  # One-liners most of the time
   UndocumentedPublicProperty:
     active: true
     severity: warning
@@ -35,7 +40,7 @@ complexity:
     active: false
 
 ktlint:
-  code_style: ktlint_official
+  code_style: intellij_idea
   Indentation:
     indentStyle: tab
   FunctionSignature:  # Detekt overrides this with `default` instead of the (better) default of Ktlint.
@@ -65,6 +70,11 @@ style:
       # Ban Spring Security's helper as we have our own
       - value: org.springframework.security.test.context.support.WithMockUser
         reason: Use testutils.WithMockUser instead
+      # Ban footguns incompatible with parallel test execution
+      - value: org.springframework.test.annotation.DirtiesContext
+        reason: Banned annotation. @DirtiesContext is incompatible with parallel test execution
+      - value: org.junit.jupiter.api.TestMethodOrder
+        reason: Banned annotation. Tests are run in a randomised order to help fuzzing against race conditions.
     excludes:
       - "**/commons/jpa/**"     # Compat layer
       - "**/commons/data/Uuid.kt"  # Uuid type alias

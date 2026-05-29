@@ -20,6 +20,7 @@
 package org.elaastix.commons.jpa.hibernate
 
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.inherits
 import org.hibernate.dialect.Dialect
 import org.hibernate.type.descriptor.WrapperOptions
 import org.hibernate.type.descriptor.java.AbstractClassJavaType
@@ -54,9 +55,9 @@ object UuidJavaType : AbstractClassJavaType<Uuid>(Uuid::class.java) {
 	override fun <X> unwrap(value: Uuid?, type: Class<X>, options: WrapperOptions): X? =
 		value?.let {
 			when {
-				UUID::class.java.isAssignableFrom(type) -> type.cast(it.toJavaUuid())
-				String::class.java.isAssignableFrom(type) -> type.cast(it.toHexDashString())
-				ByteArray::class.java.isAssignableFrom(type) -> type.cast(it.toByteArray())
+				type inherits UUID::class -> type.cast(it.toJavaUuid())
+				type inherits String::class -> type.cast(it.toHexDashString())
+				type inherits ByteArray::class -> type.cast(it.toByteArray())
 				else -> throw unknownUnwrap(type)
 			}
 		}

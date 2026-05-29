@@ -20,10 +20,18 @@
 package org.elaastix.commons.exceptions
 
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.http.ProblemDetail
+import org.springframework.web.ErrorResponseException
 
 /**
- * Thrown when a resource does not exist or cannot be seen.
+ * Thrown when a resource does not exist.
+ *
+ * May also be thrown in situations where the resource exists but the user cannot see it,
+ * to mitigate resource enumeration.
  */
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class ResourceNotFoundException : RuntimeException()
+class ResourceNotFoundException(message: String? = null, cause: Throwable? = null) :
+	ErrorResponseException(
+		HttpStatus.NOT_FOUND,
+		ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, message),
+		cause,
+	)

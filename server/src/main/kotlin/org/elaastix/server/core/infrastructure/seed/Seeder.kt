@@ -19,6 +19,7 @@
 
 package org.elaastix.server.core.infrastructure.seed
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
@@ -26,7 +27,8 @@ import org.springframework.stereotype.Component
  * Custom stereotype for database seeders.
  */
 @Component
-@Profile("develop & !testing")
+@Profile("develop")
+@ConditionalOnMissingClass("testutils.WithMockUser")
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Seeder
