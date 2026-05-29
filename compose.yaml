@@ -65,6 +65,9 @@ services:
       # commons core
       - ./commons/core/build.gradle.kts:/work/commons/core/build.gradle.kts:ro
       - ./commons/core/src:/work/commons/core/src:ro
+      # commons security
+      - ./commons/security/build.gradle.kts:/work/commons/security/build.gradle.kts:ro
+      - ./commons/security/src:/work/commons/security/src:ro
       # commons spring
       - ./commons/spring/build.gradle.kts:/work/commons/spring/build.gradle.kts:ro
       - ./commons/spring/src:/work/commons/spring/src:ro
