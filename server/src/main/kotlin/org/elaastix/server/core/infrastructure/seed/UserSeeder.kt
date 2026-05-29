@@ -39,24 +39,27 @@ class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
 		protected set
 
 	override fun run(args: ApplicationArguments) {
-		franck = createEntity(
-			UserEntity(
+		franck = upsert(
+			id = 1UL,
+			entity = UserEntity(
 				firstName = "Franck",
 				lastName = "Silvestre",
 				roles = setOf(Role.ADMIN),
 			),
 		)
 
-		john = createEntity(
-			UserEntity(
+		john = upsert(
+			id = 2UL,
+			entity = UserEntity(
 				firstName = "John",
 				lastName = "Tranier",
 				roles = setOf(Role.WRITER),
 			),
 		)
 
-		cynthia = createEntity(
-			UserEntity(
+		cynthia = upsert(
+			id = 3UL,
+			entity = UserEntity(
 				firstName = "Cynthia",
 				lastName = "Rey",
 				roles = setOf(Role.USER),
