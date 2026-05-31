@@ -1,4 +1,6 @@
-#!/usr/bin/env just --justfile
+#!/usr/bin/env -S just --justfile
+
+set guards
 
 _default:
 	just --list
@@ -49,9 +51,11 @@ stop:
 
 [group('build')]
 [doc('Generates the OpenAPI 3.1 configuration spec file.')]
-openapi: sidecar
-	just gradle :server:bootRun --args=\"--spring.profiles.active=develop --spring.flyway.enable=false --logging.level.root=WARN --debug=false --server.port=0 --generate-openapi='`pwd`/server/build/openapi.json'\"
-	@test -f server/build/openapi.json
+@openapi:
+	?[ "${SKIP_OPENAPI_GENERATION:-}" != "true" ]
+	-rm server/build/openapi.json 2>/dev/null
+	just sidecar gradle :server:bootRun --args=\"--spring.profiles.active=develop --spring.flyway.enable=false --logging.level.root=WARN --debug=false --server.port=0 --generate-openapi='`pwd`/server/build/openapi.json'\"
+	test -f server/build/openapi.json
 
 [group('dependencies')]
 [doc('Checks for Gradle dependency updates.')]

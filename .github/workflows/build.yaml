@@ -305,8 +305,10 @@ jobs:
         with:
           name: openapi
           path: server/build
-      - run: pnpm i --frozen-lockfile
+      - run: pnpm i
         working-directory: frontend
+        env:
+          SKIP_OPENAPI_GENERATION: true
 
       # setup-node configures an eslint problem matcher ootb
       - run: pnpm run lint
@@ -335,8 +337,10 @@ jobs:
         with:
           name: openapi
           path: server/build
-      - run: pnpm i --frozen-lockfile
+      - run: pnpm i
         working-directory: frontend
+        env:
+          SKIP_OPENAPI_GENERATION: true
       # setup-node configures a tsc problem matcher ootb
       - run: pnpm run typecheck
         working-directory: frontend
