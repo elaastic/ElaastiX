@@ -63,6 +63,7 @@ dependencies {
 	implementation(plugin(libs.plugins.kotlin.ksp))
 	implementation(plugin(libs.plugins.spring.boot))
 	implementation(plugin(libs.plugins.hibernate))
+	implementation(plugin(libs.plugins.detekt))
 	implementation(plugin(libs.plugins.ideax))
 }
 

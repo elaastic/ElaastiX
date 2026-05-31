@@ -19,9 +19,10 @@
 
 package conventions
 
+import version
+
 val libs = the<VersionCatalogsExtension>().named("libs")
 
-group = rootProject.group
 version = project.findProperty("VERSION") ?: "0.0.0-SNAPSHOT"
 val revision = project.findProperty("REVISION") ?: ""
 
@@ -30,7 +31,7 @@ plugins {
 }
 
 java {
-	val jdkVersion = libs.findVersion("jdk").get().requiredVersion
+	val jdkVersion = libs.version("jdk")
 
 	toolchain {
 		languageVersion.set(
@@ -46,9 +47,7 @@ tasks.withType<Jar> {
 	metaInf {
 		from("${rootProject.projectDir}/LICENSE")
 	}
-}
 
-tasks.jar {
 	manifest {
 		attributes(
 			mapOf(

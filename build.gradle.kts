@@ -18,18 +18,14 @@
  */
 
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
-import dev.detekt.gradle.Detekt
 import org.jetbrains.gradle.ext.copyright
 import org.jetbrains.gradle.ext.settings
 
-val nonKotlinProjects = listOf(":frontend")
-val isKotlinProject = { p: Project -> p.path !in nonKotlinProjects }
-
 plugins {
 	id("conventions.idea")
+	id("conventions.kover")
 
 	alias(libs.plugins.detekt)
-	alias(libs.plugins.kotlin.kover)
 	alias(libs.plugins.versions)
 }
 
@@ -85,45 +81,21 @@ dependencies {
 detekt {
 	parallel = true
 	buildUponDefaultConfig = true
-	config.setFrom("./.config/detekt/detekt.yaml")
+	config.setFrom(file(".config/detekt/detekt.yaml"))
 
 	source.from(
 		file("build.gradle.kts"),
 		file("settings.gradle.kts"),
-		file("build-logic/src"),
 		file("build-logic/build.gradle.kts"),
 		file("build-logic/settings.gradle.kts"),
-		subprojects
-			.filter(isKotlinProject)
-			.flatMap { listOf(it.file("src"), it.file("build.gradle.kts"), it.file("settings.gradle.kts")) },
+
+		// Sources are manually listed to better comply with Gradle's Isolated Projects
+		file("commons/core/build.gradle.kts"),
+		file("commons/spring/build.gradle.kts"),
+		file("commons/security/build.gradle.kts"),
+		file("metamodel/build.gradle.kts"),
+		file("server/build.gradle.kts"),
 	)
-}
-
-tasks.withType<Detekt>().configureEach {
-	jvmTarget = libs.versions.jdk
-	autoCorrect = project.hasProperty("detekt.fix")
-
-	if (project.hasProperty("detekt.only")) {
-		setSource(
-			project.property("detekt.only").toString()
-				.split(";;")
-				.map { file(it) },
-		)
-
-		// From Detekt's documentation
-		val typeResolutionEnabled = !classpath.isEmpty
-		if (typeResolutionEnabled && project.hasProperty("precommit")) {
-			// We must exclude kts files from pre-commit hook to prevent detekt from crashing
-			// This is a workaround for the https://github.com/detekt/detekt/issues/5501
-			exclude("*.gradle.kts")
-		}
-	}
-
-	exclude("**/resources/**", "**/build/**", "**/generated/**")
-
-	reports {
-		sarif.required = true
-	}
 }
 
 tasks.withType<DependencyUpdatesTask>().configureEach {
@@ -136,18 +108,5 @@ tasks.withType<DependencyUpdatesTask>().configureEach {
 
 	rejectVersionIf {
 		isNonStable(candidate.version) && !isNonStable(currentVersion)
-	}
-}
-
-kover {
-	useJacoco() // https://github.com/Kotlin/kotlinx-kover/issues/720
-
-	reports {
-		filters {
-			excludes {
-				annotatedBy("org.elaastix.commons.platform.ExcludeFromCoverage")
-				annotatedBy("org.elaastix.server.core.infrastructure.seed.Seeder")
-			}
-		}
 	}
 }

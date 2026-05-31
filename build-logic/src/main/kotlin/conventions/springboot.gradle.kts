@@ -24,6 +24,7 @@ package conventions
 import org.springframework.boot.gradle.tasks.bundling.BootJar
 import org.springframework.boot.gradle.tasks.run.BootRun
 import spring
+import version
 
 val libs = the<VersionCatalogsExtension>().named("libs")
 
@@ -39,7 +40,7 @@ dependencies {
 	implementation(project(":commons:spring"))
 	implementation(libs.findLibrary("springdoc").get())
 
-	developmentOnly(spring.boot("devtools"))
+	developmentOnly(spring.boot("devtools", version = libs.version("spring-boot")))
 }
 
 hibernate {
@@ -53,7 +54,11 @@ springBoot {
 }
 
 tasks.named<BootJar>("bootJar") {
-	archiveClassifier = "boot"
+	archiveClassifier = ""
+}
+
+tasks.named<Jar>("jar") {
+	enabled = false
 }
 
 tasks.register<BootRun>("bootRunDebug") {
@@ -80,7 +85,7 @@ tasks.register<BootRun>("bootRunDebug") {
 testing {
 	suites {
 		// TODO: Separate unit tests and integration tests (for Kover reporting)
-		// val integrationTest by registering(JvmTestSuite::class) {
+		// val integrationTest by existing(JvmTestSuite::class) {
 		val test by existing(JvmTestSuite::class) {
 			targets.configureEach {
 				testTask.configure {

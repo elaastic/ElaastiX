@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+group = "org.elaastix.commons"
+
 plugins {
 	id("conventions.idea")
 	id("conventions.kotlin")
@@ -30,6 +32,8 @@ dependencies {
 	implementation(spring.boot("autoconfigure"))
 	implementation(libs.hypersistence.utils)
 	implementation(libs.springdoc)
+
+	implementation(project(":commons:core"))
 
 	testSpringBootStarter("data-jpa")
 	testSpringBootStarter("validation")

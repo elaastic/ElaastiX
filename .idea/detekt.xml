@@ -4,6 +4,7 @@
     <option name="configurationFiles">
       <list>
         <option value="$PROJECT_DIR$/.config/detekt/detekt.yaml" />
+        <option value="$PROJECT_DIR$/.config/detekt/detekt.idea.yaml" />
       </list>
     </option>
     <option name="enableDetekt" value="true" />

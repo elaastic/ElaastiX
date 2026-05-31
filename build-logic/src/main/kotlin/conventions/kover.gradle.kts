@@ -20,8 +20,19 @@
 package conventions
 
 plugins {
-	id("conventions.java")
-	id("org.hibernate.orm") // Plugin should automatically override Hibernate's version
+	id("org.jetbrains.kotlinx.kover")
+}
 
-	kotlin("plugin.jpa")
+kover {
+	useJacoco() // https://github.com/Kotlin/kotlinx-kover/issues/720
+	// TODO: Separate reports for unit tests vs integration tests
+
+	reports {
+		filters {
+			excludes {
+				annotatedBy("org.elaastix.commons.platform.ExcludeFromCoverage")
+				packages("org.elaastix.server.core.infrastructure.seed")
+			}
+		}
+	}
 }

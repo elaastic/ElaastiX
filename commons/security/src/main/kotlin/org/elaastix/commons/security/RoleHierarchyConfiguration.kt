@@ -19,6 +19,7 @@
 
 package org.elaastix.commons.security
 
+import org.elaastix.commons.platform.ExcludeFromCoverage
 import org.elaastix.commons.security.ext.RoleHierarchy
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean
@@ -34,7 +35,6 @@ import org.springframework.security.access.hierarchicalroles.RoleHierarchy
  * container class to hold the [Configuration] stereotype.
  */
 @Configuration
-@Suppress("UndocumentedPublicFunction", "UtilityClassWithPublicConstructor")
 class RoleHierarchyConfiguration {
 	companion object {
 		@Bean
@@ -46,9 +46,10 @@ class RoleHierarchyConfiguration {
 			}
 	}
 
-	// This is needed for IntellIJ to actually detect the role hierarchy.
+	// This is needed for IntelliJ to actually detect the role hierarchy.
 	// Should never be invoked, as the bean should be registered very early in the boot process.
 	@Bean
 	@ConditionalOnMissingBean(RoleHierarchy::class)
+	@ExcludeFromCoverage("Unreachable unless something went seriously wrong")
 	fun defaultRoleHierarchy(): RoleHierarchy = error("Missing RoleHierarchy bean?!")
 }

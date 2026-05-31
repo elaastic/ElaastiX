@@ -20,6 +20,7 @@
 package conventions
 
 import bom
+import dev.detekt.gradle.Detekt
 import kotlinx
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
@@ -33,11 +34,13 @@ plugins {
 	kotlin("jvm")
 	kotlin("plugin.serialization")
 	id("com.google.devtools.ksp")
+
+	id("dev.detekt")
 }
 
 kotlin {
-	val jdkVersion = libs.findVersion("jdk").get().requiredVersion
-	val kotlinVersion = libs.findVersion("kotlin").get().requiredVersion
+	val jdkVersion = libs.version("jdk")
+	val kotlinVersion = libs.version("kotlin")
 
 	compilerOptions {
 		val kotlinVersion = KotlinVersion.valueOf(
@@ -61,6 +64,19 @@ kotlin {
 	}
 }
 
+detekt {
+	parallel = true
+	buildUponDefaultConfig = true
+
+	val projectConfig = rootProject.file(".config/detekt/detekt.yaml")
+	val subprojectConfig = file("detekt.yaml")
+
+	config.setFrom(projectConfig)
+	if (subprojectConfig.exists()) {
+		config.setFrom(subprojectConfig)
+	}
+}
+
 dependencies {
 	bom(kotlin("bom", version = libs.version("kotlin")))
 	bom(kotlinx("serialization-bom", version = libs.version("kotlinx-serialization")))
@@ -73,7 +89,16 @@ dependencies {
 	implementation(libs.findLibrary("springdoc.kdoc.rt").get())
 	ksp(libs.findLibrary("springdoc.kdoc.ksp").get())
 
-	if (project.path != ":commons:core") {
-		implementation(project(":commons:core"))
+	detektPlugins(libs.findLibrary("detekt.ktlint").get())
+}
+
+tasks.withType<Detekt>().configureEach {
+	jvmTarget = libs.version("jdk")
+	autoCorrect = project.hasProperty("detekt.fix")
+
+	exclude("**/resources/**", "**/build/**", "**/generated/**")
+
+	reports {
+		sarif.required = true
 	}
 }

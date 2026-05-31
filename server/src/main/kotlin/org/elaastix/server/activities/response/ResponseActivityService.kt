@@ -57,6 +57,7 @@ class ResponseActivityService(
 					OpenQuestionStatementDto(id, statement)
 
 				type inherits ClosedQuestionEntity::class ->
+					@Suppress("UnsafeCallOnNullableType") // Needed to deal with projection shenanigans
 					ClosedQuestionStatementDto(id, statement, multiple!!, choices!!)
 
 				else -> error("Unknown polymorphic variant $type")
@@ -130,10 +131,11 @@ class ResponseActivityService(
 				else -> error("Unknown question type encountered: ${questionRef::class.java}")
 			}
 
-		val response = responseRepository.persist(entity)
-		return response.toDto()
+		val responseEntity = responseRepository.persist(entity)
+		return responseEntity.toDto()
 	}
 
+	@Suppress("UnsafeCallOnNullableType") // SAFETY: We can safely assume [statement] is a closed question projection.
 	private fun validateClosedAnswer(response: ClosedResponseSubmitDto, statement: QuestionStatementProjection) =
 		when (response.answer) {
 			is ClosedAnswer.Single -> {

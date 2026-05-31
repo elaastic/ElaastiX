@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+group = "org.elaastix.metamodel"
+
 plugins {
 	id("conventions.idea")
 	id("conventions.kotlin")
@@ -25,6 +27,8 @@ plugins {
 }
 
 dependencies {
+	implementation(project(":commons:core"))
+
 	testSpringBootStarter("validation")
 	testSpringBootStarter("data-jpa")
 	testSpringBootStarter("kotlinx-serialization-json")
@@ -33,6 +37,7 @@ dependencies {
 	testImplementation(libs.testcontainers.junit)
 	testImplementation(libs.testcontainers.postgres)
 	testImplementation(spring.boot("testcontainers"))
+	testImplementation(project(":commons:spring"))
 
 	testRuntimeOnly(libs.jdbc.postgresql)
 }

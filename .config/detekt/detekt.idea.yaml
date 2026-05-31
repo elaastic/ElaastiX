@@ -1,0 +1,4 @@
+style:
+  MagicNumber: # https://github.com/detekt/detekt/issues/9152 -- IDEA plugin is outdated, need to apply explicitly
+    ignorePropertyDeclaration: true
+    ignoreLocalVariableDeclaration: true

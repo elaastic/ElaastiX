@@ -47,9 +47,9 @@ class OpenQuestionEntity(
 
 	answerExplanation: RichContent?,
 ) : QuestionEntity(
-		statement,
-		answerExplanation,
-	) {
+	statement,
+	answerExplanation,
+) {
 	companion object {
 		/** Discriminator used within the database. Unique amongst other [QuestionEntity] subclasses. */
 		const val DISCRIMINATOR: String = "O"

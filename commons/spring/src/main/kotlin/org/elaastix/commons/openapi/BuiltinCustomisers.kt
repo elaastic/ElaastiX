@@ -41,22 +41,22 @@ import kotlin.reflect.jvm.jvmName
 /**
  * Autoconfiguration class importing SpringDoc components.
  */
-@Configuration
+@Configuration(proxyBeanMethods = false)
 class BuiltinCustomisers(private val json: Json) {
 	/**
 	 * OpenAPI property customiser setting the schema of well-known types such as [org.elaastix.commons.data.Uuid].
 	 */
 	@Bean
 	fun commonTypesCustomiser(): PropertyCustomizer {
-		fun customiser(schema: Schema<*>?, type: Type): Schema<*>? {
+		fun customiser(schema: Schema<*>?, baseType: Type): Schema<*>? {
 			val type =
-				when (type) {
+				when (baseType) {
 					is CollectionType ->
-						return (schema ?: ArraySchema()).apply { items = customiser(items, type.contentType) }
+						return (schema ?: ArraySchema()).apply { items = customiser(items, baseType.contentType) }
 
-					is SimpleType -> type.rawClass
+					is SimpleType -> baseType.rawClass
 
-					else -> type
+					else -> baseType
 				}
 
 			return when (type) {

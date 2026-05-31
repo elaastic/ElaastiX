@@ -102,7 +102,7 @@ object ContentTypesRegistry {
 	/** Non-reified version of registerContentType. */
 	fun <T : RichContent> registerContentType(id: String, clazz: KClass<T>, factory: ContentFactory<T>) {
 		require(!byId.containsKey(id)) {
-			"Tried to register class $clazz with id '$id', which conflicts with ${byId[id]!!.clazz}"
+			"Tried to register class $clazz with id '$id', which conflicts with ${byId.getValue(id).clazz}"
 		}
 
 		require(!byClass.containsKey(clazz)) {
@@ -117,14 +117,12 @@ object ContentTypesRegistry {
 	/** Non-reified version of registerContentTypeAlias. */
 	fun <T : RichContent> registerContentTypeAlias(id: String, clazz: KClass<T>) {
 		require(!byId.containsKey(id)) {
-			"Tried to register class $clazz with secondary alias '$id', which conflicts with ${byId[id]!!.clazz}"
+			"Tried to register class $clazz with secondary alias '$id', which conflicts with ${byId.getValue(id).clazz}"
 		}
 
-		require(byClass.containsKey(clazz)) {
+		byId[id] = requireNotNull(byClass[clazz]) {
 			"No primary registration exists for $clazz. Use registerContentType first."
 		}
-
-		byId[id] = byClass[clazz]!!
 	}
 
 	/** Non-reified version of registerPlainTextType. */
