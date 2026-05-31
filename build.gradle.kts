@@ -17,6 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import dev.detekt.gradle.Detekt
 import org.jetbrains.gradle.ext.copyright
 import org.jetbrains.gradle.ext.settings
@@ -29,6 +30,7 @@ plugins {
 
 	alias(libs.plugins.detekt)
 	alias(libs.plugins.kotlin.kover)
+	alias(libs.plugins.versions)
 }
 
 idea {
@@ -45,22 +47,22 @@ idea {
 					create("ElaasticAGPL") {
 						@Suppress("HttpUrlsUsage")
 						notice = """
-                            Elaastic / ElaastiX - formative assessment system
-                            Copyright (C) 2019  Université de Toulouse and Université Toulouse Capitole.
-                            SPDX-License-Identifier: AGPL-3.0-or-later
+							Elaastic / ElaastiX - formative assessment system
+							Copyright (C) 2019  Université de Toulouse and Université Toulouse Capitole.
+							SPDX-License-Identifier: AGPL-3.0-or-later
 
-                            This program is free software: you can redistribute it and/or modify
-                            it under the terms of the GNU Affero General Public License as published by
-                            the Free Software Foundation, either version 3 of the License, or
-                            (at your option) any later version.
+							This program is free software: you can redistribute it and/or modify
+							it under the terms of the GNU Affero General Public License as published by
+							the Free Software Foundation, either version 3 of the License, or
+							(at your option) any later version.
 
-                            This program is distributed in the hope that it will be useful,
-                            but WITHOUT ANY WARRANTY; without even the implied warranty of
-                            MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-                            GNU Affero General Public License for more details.
+							This program is distributed in the hope that it will be useful,
+							but WITHOUT ANY WARRANTY; without even the implied warranty of
+							MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+							GNU Affero General Public License for more details.
 
-                            You should have received a copy of the GNU Affero General Public License
-                            along with this program.  If not, see <http://www.gnu.org/licenses/>.
+							You should have received a copy of the GNU Affero General Public License
+							along with this program.  If not, see <http://www.gnu.org/licenses/>.
 						""".trimIndent()
 						keyword = "SPDX-License-Identifier"
 					}
@@ -121,6 +123,19 @@ tasks.withType<Detekt>().configureEach {
 
 	reports {
 		sarif.required = true
+	}
+}
+
+tasks.withType<DependencyUpdatesTask>().configureEach {
+	fun isNonStable(version: String): Boolean {
+		val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
+		val regex = "^[0-9,.v-]+(-r[^c])?$".toRegex()
+		val isStable = stableKeyword || regex.matches(version)
+		return isStable.not()
+	}
+
+	rejectVersionIf {
+		isNonStable(candidate.version) && !isNonStable(currentVersion)
 	}
 }
 

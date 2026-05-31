@@ -25,7 +25,7 @@ export default defineNuxtConfig({
 		'@nuxt/image',
 		'@nuxt/icon',
 		'@nuxt/fonts',
-		// '@nuxt/hints',
+		'@nuxt/hints',
 		'@nuxt/a11y',
 		'@nuxtjs/i18n',
 		// '@nuxtjs/storybook',

@@ -53,6 +53,10 @@ openapi: sidecar
 	just gradle :server:bootRun --args=\"--spring.profiles.active=develop --spring.flyway.enable=false --logging.level.root=WARN --debug=false --server.port=0 --generate-openapi='`pwd`/server/build/openapi.json'\"
 	@test -f server/build/openapi.json
 
+[group('dependencies')]
+[doc('Checks for Gradle dependency updates.')]
+gradle-check-updates *ARGS: && (gradle "dependencyUpdates" "--no-configuration-cache" "--no-parallel" ARGS)
+
 [group('misc')]
 [doc('Cleans the repository to its original state. Will erase local configuration (e.g. mise.local.toml), but preserve the IJ shelf.')]
 [confirm('This action WILL ERASE ALL LOCAL CONFIGS AND UNTRACKED FILES. IJ shelves will be preserved. Continue? [y/N]')]
