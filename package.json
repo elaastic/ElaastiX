@@ -2,9 +2,6 @@
 	"name": "elaastix",
 	"private": true,
 	"type": "module",
-	"scripts": {
-		"preinstall": "just openapi"
-	},
 	"devEngines": {
 		"runtime": {
 			"name": "node",
