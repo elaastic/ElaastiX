@@ -54,11 +54,7 @@ springBoot {
 }
 
 tasks.named<BootJar>("bootJar") {
-	archiveClassifier = ""
-}
-
-tasks.named<Jar>("jar") {
-	enabled = false
+	archiveClassifier = "boot"
 }
 
 tasks.register<BootRun>("bootRunDebug") {
