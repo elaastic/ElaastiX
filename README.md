@@ -10,7 +10,7 @@ ElaastiX (this repository) is the software platform that powers Elaastic and its
 ## Getting started
 TL;DR:
 - Install Docker
-- Install [Mise](https://mise.jdx.dev)
+- Install [Mise](https://mise.en.dev)
 - Clone the repository and `cd` into it
 - Run `mise trust && mise install && mise deps`
 - Open in IntelliJ IDEA Ultimate
@@ -23,8 +23,17 @@ TL;DR:
 Docker with the Compose plugin is also required to run the project.
 Please see the [Docker Documentation](https://docs.docker.com/engine/install/) for how to install it.
 
+#### Podman
+For advanced users, it is possible to use [Podman](https://podman.io) and podman-compose instead of Docker.
+Make sure to configure `DOCKER_HOST` and the `docker` command alias appropriately.
+
+> [!WARNING]
+> In podman-compose 1.5.0, --wait is [unsupported](https://github.com/containers/podman-compose/issues/710).
+> The `just sidecar` recipe (and its dependants) will not work. Future versions of podman-compose will ship with
+> proper support.
+
 ### Mise
-The project uses [Mise](https://mise.jdx.dev) for managing all the tools required to work with the project. Make sure to trust
+The project uses [Mise](https://mise.en.dev) for managing all the tools required to work with the project. Make sure to trust
 the project with `mise trust`, and then run `mise install`.
 
 > [!CAUTION]

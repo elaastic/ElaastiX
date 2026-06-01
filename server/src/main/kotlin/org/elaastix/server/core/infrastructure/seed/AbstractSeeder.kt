@@ -31,30 +31,25 @@ import org.springframework.boot.ApplicationRunner
 /** Abstract class holding useful logic for all database seeders. */
 @Transactional
 abstract class AbstractSeeder(private val entityManager: EntityManager) : ApplicationRunner {
-	private var allocatedIds = 0UL
+	protected fun <T : AbstractEntity> upsert(id: ULong, entity: T): T = upsert0(id, entity)
 
-	protected fun <T : AbstractEntity> createEntity(entity: T): T = createEntity0(entity)
-
-	protected fun <T : AbstractEntityWithAuthorship> createEntityWithAuthor(author: UserEntity, entity: T): T =
-		createEntity0(entity) {
+	protected fun <T : AbstractEntityWithAuthorship> upsert(id: ULong, author: UserEntity, entity: T): T =
+		upsert0(id, entity) {
 			@OptIn(JpaImmutable::class)
 			this.author = author
 		}
 
-	private fun <T : AbstractEntity> createEntity0(entity: T, block: T.() -> Unit = {}): T =
+	// TODO: avoid unnecessary UPDATE on startup. dev-only issue, so very low priority.
+	private fun <T : AbstractEntity> upsert0(id: ULong, entity: T, block: T.() -> Unit = {}): T =
 		entityManager.merge(
 			entity.apply {
 				@OptIn(JpaImmutable::class) // SAFETY: Test-only identifiers outside the normal allocation range
-				id = Uuid.fromULongs(0UL, ++allocatedIds)
+				this.id = Uuid.fromULongs(0UL, id)
+
+				@OptIn(JpaImmutable::class) // SAFETY: Manual reconciliation of version to make JPA happy
+				this.version = entityManager.find(this::class.java, this.id)?.version
 
 				block()
-
-				// TODO: avoid unnecessary UPDATE on startup. dev-only issue, so very low priority.
-// 				@OptIn(JpaImmutable::class) // SAFETY: Pulled from the database, allows merge to work efficiently
-// 				entityManager.find(this::class.java, id)?.let {
-// 					version = it.version
-// 					updatedAt = it.updatedAt
-// 				}
 			},
 		)
 }

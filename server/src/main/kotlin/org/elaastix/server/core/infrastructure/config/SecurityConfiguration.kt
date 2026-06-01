@@ -25,7 +25,6 @@ import org.elaastix.server.users.entities.UserEntity
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.domain.AuditorAware
-import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
@@ -36,9 +35,8 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
-import org.springframework.security.web.authentication.HttpStatusEntryPoint
 import org.springframework.security.web.util.matcher.AnyRequestMatcher
-import org.springframework.web.accept.ContentNegotiationManager
+import org.springframework.web.servlet.HandlerExceptionResolver
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 import java.util.Optional
@@ -79,7 +77,7 @@ class SecurityConfiguration :
 		http: HttpSecurity,
 		authProvider: ElaastixAuthenticationProvider,
 		authConfig: AuthenticationConfiguration,
-		contentNegotiationManager: ContentNegotiationManager,
+		handlerExceptionResolver: HandlerExceptionResolver,
 	): SecurityFilterChain {
 		http.authenticationProvider(authProvider)
 		http {
@@ -94,7 +92,7 @@ class SecurityConfiguration :
 				ElaastixAuthenticationFilter(
 					AnyRequestMatcher.INSTANCE,
 					authConfig.authenticationManager,
-					contentNegotiationManager,
+					handlerExceptionResolver,
 				),
 			)
 
@@ -108,7 +106,9 @@ class SecurityConfiguration :
 			}
 
 			exceptionHandling {
-				authenticationEntryPoint = HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)
+				authenticationEntryPoint = { req, res, ex ->
+					handlerExceptionResolver.resolveException(req, res, null, ex)
+				}
 			}
 		}
 

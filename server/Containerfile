@@ -1,4 +1,4 @@
-FROM eclipse-temurin:25-jdk-alpine AS base
+FROM docker.io/eclipse-temurin:25-jdk-alpine AS base
 
 WORKDIR /work
 COPY gradle.properties gradlew ./
@@ -31,12 +31,7 @@ COPY *.gradle.kts *.gradle ./
 
 # Make Gradle download dependencies (and build `build-logic`) prior to copying sources.
 RUN --mount=type=cache,target=/root/.gradle \
-    ./gradlew --no-daemon \
-      :commons:core:resolveDependencies \
-      :commons:spring:resolveDependencies \
-      :metamodel:resolveDependencies \
-      :server:resolveDependencies \
-      :server:classes
+    ./gradlew --no-daemon resolveDependencies :server:classes
 
 COPY metamodel/ ./metamodel/
 COPY commons/ ./commons/

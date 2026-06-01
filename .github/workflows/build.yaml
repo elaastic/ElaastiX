@@ -130,7 +130,7 @@ jobs:
           cache-disabled: ${{ startsWith(github.ref, 'refs/tags/') }}
           cache-read-only: false
 
-      - run: ./gradlew detekt
+      - run: ./gradlew :detekt detektMain detektTest detektIntegrationTest
         # GitHub recommends only failing on exec errors for jobs integrating with Code Scanning
         continue-on-error: true
 
@@ -247,7 +247,7 @@ jobs:
         with:
           name: kotlin-codecov-report-raw
 
-      - name: Prepare coverage reports for Kover
+      - name: Prepare coverage reports for Koverreport
         run: |
           mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-commons-core" "$GITHUB_WORKSPACE/commons/core/build/kover"
           #mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-commons-jpa" "$GITHUB_WORKSPACE/commons/jpa/build/kover"
@@ -305,8 +305,10 @@ jobs:
         with:
           name: openapi
           path: server/build
-      - run: pnpm i --frozen-lockfile
+      - run: pnpm i
         working-directory: frontend
+        env:
+          SKIP_OPENAPI_GENERATION: true
 
       # setup-node configures an eslint problem matcher ootb
       - run: pnpm run lint
@@ -335,8 +337,10 @@ jobs:
         with:
           name: openapi
           path: server/build
-      - run: pnpm i --frozen-lockfile
+      - run: pnpm i
         working-directory: frontend
+        env:
+          SKIP_OPENAPI_GENERATION: true
       # setup-node configures a tsc problem matcher ootb
       - run: pnpm run typecheck
         working-directory: frontend

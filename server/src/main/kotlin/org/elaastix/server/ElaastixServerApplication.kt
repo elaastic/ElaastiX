@@ -50,7 +50,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 // TODO: Find a more elegant solution to automatically configure it within Elaastix Commons
 // Not fond of having this here, but let's avoid another time sink for now.
 @EnableJpaRepositories(repositoryBaseClass = ElaastixRepositoryImpl::class)
-@Suppress("UndocumentedPublicClass")
 class ElaastixServerApplication
 
 @Suppress("UndocumentedPublicFunction", "SpreadOperator")

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+group = "org.elaastix.commons"
+
 plugins {
 	id("conventions.idea")
 	id("conventions.kotlin")
@@ -26,4 +28,6 @@ plugins {
 
 dependencies {
 	springBootStarter("security")
+	implementation(project(":commons:core"))
+	implementation(project(":commons:spring"))
 }

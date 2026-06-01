@@ -1,4 +1,6 @@
-#!/usr/bin/env just --justfile
+#!/usr/bin/env -S just --justfile
+
+set guards
 
 _default:
 	just --list
@@ -49,16 +51,28 @@ stop:
 
 [group('build')]
 [doc('Generates the OpenAPI 3.1 configuration spec file.')]
-openapi: sidecar
-	just gradle :server:bootRun --args=\"--spring.profiles.active=develop --spring.flyway.enable=false --logging.level.root=WARN --debug=false --server.port=0 --generate-openapi='`pwd`/server/build/openapi.json'\"
-	@test -f server/build/openapi.json
+@openapi:
+	?[ "${SKIP_OPENAPI_GENERATION:-}" != "true" ]
+	-rm server/build/openapi.json 2>/dev/null
+	just sidecar gradle :server:bootRun --args=\"--spring.profiles.active=develop --spring.flyway.enable=false --logging.level.root=WARN --debug=false --server.port=0 --generate-openapi='`pwd`/server/build/openapi.json'\"
+	test -f server/build/openapi.json
+
+[group('dependencies')]
+[doc('Checks for Gradle dependency updates.')]
+gradle-check-updates *ARGS: && (gradle "dependencyUpdates" "--no-configuration-cache" "--no-parallel" ARGS)
 
 [group('misc')]
 [doc('Cleans the repository to its original state. Will erase local configuration (e.g. mise.local.toml), but preserve the IJ shelf.')]
-[confirm('This action WILL ERASE ALL LOCAL CONFIGS AND UNTRACKED FILES. IJ shelves will be preserved. Continue?')]
+[confirm('This action WILL ERASE ALL LOCAL CONFIGS AND UNTRACKED FILES. IJ shelves will be preserved. Continue? [y/N]')]
 clean:
-	docker compose down
+	docker compose down --remove-orphans -v
 	git clean -xdf --exclude .idea/shelf
+
+[group('misc')]
+[doc('Removes the PostgreSQL database and the files stored in Garage.')]
+[confirm('The database contents and the files stored in S3 will be permanently removed. Continue? [y/N]')]
+purge-db:
+	docker compose down postgres storage -v
 
 [group('misc')]
 [doc('Lists all files that would be cleaned by the clean task.')]

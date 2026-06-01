@@ -46,9 +46,8 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	 * @return The question statement, and available choices for closed questions.
 	 */
 	@PlayerQuery("org.elaastix.response.getQuestion")
-	fun getQuestion(
-		@RequestParam id: Uuid,
-	) = responseActivityService.findQuestionStatement(id).orNotFound()
+	fun getQuestion(@RequestParam id: Uuid) =
+		responseActivityService.findQuestionStatement(id).orNotFound()
 
 	/**
 	 * Submit an answer to a question.
@@ -58,9 +57,8 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
 	@PlayerAction("org.elaastix.response.submitResponse")
-	fun submitResponse(
-		@RequestBody payload: SubmitAnswerDto,
-	) = responseActivityService.submitResponse(payload.questionId, payload.response)
+	fun submitResponse(@RequestBody payload: SubmitAnswerDto) =
+		responseActivityService.submitResponse(payload.questionId, payload.response)
 
 	/** Payload for the submitResponse action. */
 	@Serializable

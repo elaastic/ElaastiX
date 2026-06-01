@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+group = "org.elaastix.server"
+
 plugins {
 	id("conventions.idea")
 	id("conventions.kotlin")
@@ -42,6 +44,8 @@ dependencies {
 	implementation(libs.hypersistence.utils)
 	runtimeOnly(libs.jdbc.postgresql)
 
+	implementation(project(":commons:core"))
+	implementation(project(":commons:spring"))
 	implementation(project(":commons:security"))
 	implementation(project(":metamodel"))
 

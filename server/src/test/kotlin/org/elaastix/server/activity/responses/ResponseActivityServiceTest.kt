@@ -170,7 +170,6 @@ class ResponseActivityServiceTest {
 
 	@Test
 	fun `rejects bad closed response type for a question`() {
-		val (_, user) = mockkEntity<UserEntity>()
 		val (questionId, question) = mockkEntity<ClosedQuestionEntity> {
 			given { multiple } returns true
 			given { choices } returns listOf(PlainText("1"), PlainText("2"))
@@ -197,7 +196,6 @@ class ResponseActivityServiceTest {
 
 	@Test
 	fun `rejects closed responses with out of bounds answers`() {
-		val (_, user) = mockkEntity<UserEntity>()
 		val (questionId, question) = mockkEntity<ClosedQuestionEntity> {
 			given { multiple } returns true
 			given { choices } returns listOf(PlainText("1"), PlainText("2"))

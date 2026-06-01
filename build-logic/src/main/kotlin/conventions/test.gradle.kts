@@ -21,12 +21,14 @@
 
 package conventions
 
+import version
+
 val libs = the<VersionCatalogsExtension>().named("libs")
 
 plugins {
 	`jvm-test-suite`
 	id("conventions.java")
-	id("org.jetbrains.kotlinx.kover")
+	id("conventions.kover")
 }
 
 configurations.configureEach {
@@ -39,7 +41,7 @@ configurations.configureEach {
 testing {
 	suites {
 		withType<JvmTestSuite>().configureEach {
-			useJUnitJupiter(libs.findVersion("junit").get().requiredVersion)
+			useJUnitJupiter(libs.version("junit"))
 
 			dependencies {
 				implementation(project())
@@ -53,24 +55,7 @@ testing {
 				implementation(libs.findLibrary("mockk.bdd").get())
 			}
 		}
-	}
-}
 
-kover {
-	useJacoco() // https://github.com/Kotlin/kotlinx-kover/issues/720
-	// TODO: Separate reports for unit tests vs integration tests
-
-	reports {
-		filters {
-			excludes {
-				annotatedBy("org.elaastix.commons.platform.ExcludeFromCoverage")
-			}
-		}
-
-		total {
-			xml {
-				onCheck.set(true)
-			}
-		}
+		val integrationTest by registering(JvmTestSuite::class)
 	}
 }

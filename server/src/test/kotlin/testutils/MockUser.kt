@@ -17,11 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package conventions
+package testutils
 
-plugins {
-	id("conventions.java")
-	id("org.hibernate.orm") // Plugin should automatically override Hibernate's version
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
 
-	kotlin("plugin.jpa")
-}
+@Autowired
+@Qualifier(WithMockUser.SEC_MOCK_USER)
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class MockUser

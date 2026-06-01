@@ -35,7 +35,5 @@ import org.springframework.web.bind.annotation.RestController
 @ExcludeFromCoverage("Temporary implementation", ref = "https://github.com/elaastic/ElaastiX/issues/9")
 class AuthnTmpController {
 	@GetMapping("/who-am-i", version = "1+")
-	fun whoAmI(
-		@AuthenticationPrincipal user: UserEntity,
-	): String = user.id.toStringBase36()
+	fun whoAmI(@AuthenticationPrincipal user: UserEntity): String = user.id.toStringBase36()
 }

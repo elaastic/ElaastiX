@@ -43,12 +43,12 @@ class ClosedResponseEntity(
 	amendedResponse: ClosedResponseEntity? = null,
 	absoluteGrade: ScalarGrade? = null,
 ) : ResponseEntity<ClosedResponseEntity, ClosedQuestionEntity>(
-		question,
-		selfExplanation,
-		confidenceDegree,
-		amendedResponse,
-		absoluteGrade,
-	) {
+	question,
+	selfExplanation,
+	confidenceDegree,
+	amendedResponse,
+	absoluteGrade,
+) {
 	companion object {
 		/** Discriminator used within the database. Unique amongst other [ResponseEntity] subclasses. */
 		const val DISCRIMINATOR: String = "C"

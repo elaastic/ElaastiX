@@ -22,6 +22,7 @@ package org.elaastix.server.activities.response
 import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.inherits
 import org.elaastix.commons.orNotFound
 import org.elaastix.commons.validate
 import org.elaastix.server.activities.response.dtos.ClosedQuestionStatementDto
@@ -52,10 +53,11 @@ class ResponseActivityService(
 		/** Transforms the DAO-level type into a Service-level type. */
 		fun QuestionStatementProjection.toDto() =
 			when {
-				OpenQuestionEntity::class.java.isAssignableFrom(type) ->
+				type inherits OpenQuestionEntity::class ->
 					OpenQuestionStatementDto(id, statement)
 
-				ClosedQuestionEntity::class.java.isAssignableFrom(type) ->
+				type inherits ClosedQuestionEntity::class ->
+					@Suppress("UnsafeCallOnNullableType") // Needed to deal with projection shenanigans
 					ClosedQuestionStatementDto(id, statement, multiple!!, choices!!)
 
 				else -> error("Unknown polymorphic variant $type")
@@ -99,10 +101,7 @@ class ResponseActivityService(
 	 * Validates and records a response to a question.
 	 */
 	@Transactional
-	fun submitResponse(
-		questionId: Uuid,
-		@Valid response: ResponseSubmitDto,
-	): ResponseDto {
+	fun submitResponse(questionId: Uuid, @Valid response: ResponseSubmitDto): ResponseDto {
 		val statement = questionRepository.findQuestionStatementById(questionId).orNotFound()
 
 		val entity =
@@ -132,10 +131,11 @@ class ResponseActivityService(
 				else -> error("Unknown question type encountered: ${questionRef::class.java}")
 			}
 
-		val response = responseRepository.persist(entity)
-		return response.toDto()
+		val responseEntity = responseRepository.persist(entity)
+		return responseEntity.toDto()
 	}
 
+	@Suppress("UnsafeCallOnNullableType") // SAFETY: We can safely assume [statement] is a closed question projection.
 	private fun validateClosedAnswer(response: ClosedResponseSubmitDto, statement: QuestionStatementProjection) =
 		when (response.answer) {
 			is ClosedAnswer.Single -> {

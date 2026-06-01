@@ -5,6 +5,7 @@ exclude = List(
 	"gradlew",
 	"gradlew.bat",
 	"pnpm-lock.yaml",
+	".idea/**",
 )
 
 local frontend = new Mapping<String, Step> {
@@ -20,8 +21,12 @@ local backend = new Mapping<String, Step> {
 	// If we decide this is too slow, consider using only Ktlint (via Mise)?
 	["detekt"] {
 		glob = List("**/*.kt", "**/*.kts")
-		check = "./gradlew detekt -Pdetekt.only=\"{{ files_list | join(sep=';;') }}\""
-		fix = "./gradlew detekt -Pdetekt.only=\"{{ files_list | join(sep=';;') }}\" -Pdetekt.fix"
+		check = "just gradle :detekt detektMain detektTest detektIntegrationTest"
+		check_first = false  // Gradle's too slow for that
+
+		// Detekt is weird and needs multiple passes to fix things
+		local _fix = check + " -Pdetekt.fix"
+		fix = _fix + " && " + _fix
 	}
 }
 

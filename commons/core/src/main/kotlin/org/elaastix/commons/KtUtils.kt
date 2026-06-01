@@ -24,7 +24,6 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 /** Casts a type to another type. */
-@OptIn(ExperimentalContracts::class)
 inline fun <reified T> Any.cast(): T = T::class.java.cast(this as T)
 
 /** Same as [let], with a type cast. */

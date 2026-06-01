@@ -3,7 +3,10 @@
 !.idea/dataSources.xml
 !.idea/detekt.xml
 !.idea/dictionaries/project.xml
+!.idea/diff-generator.xml
 !.idea/externalDependencies.xml
+!.idea/file.template.settings.xml
+!.idea/fileTemplates
 !.idea/gradle.xml
 !.idea/jpb-settings.xml
 !.idea/jsLinters

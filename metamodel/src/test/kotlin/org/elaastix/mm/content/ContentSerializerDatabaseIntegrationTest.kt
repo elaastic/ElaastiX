@@ -48,6 +48,7 @@ import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.postgresql.PostgreSQLContainer
+import org.testcontainers.utility.DockerImageName
 
 // We could use fine-grained concurrency locking with ResourceLocks, but that's not as foolproof.
 @Isolated("Registry is a globally-visible singleton")
@@ -64,7 +65,10 @@ class ContentSerializerDatabaseIntegrationTest {
 		@JvmField
 		@Container
 		@ServiceConnection
-		val postgres = PostgreSQLContainer("postgres:18-alpine")
+		val postgres = PostgreSQLContainer(
+			// https://github.com/testcontainers/testcontainers-java/issues/9958
+			DockerImageName.parse("docker.io/postgres:18-alpine").asCompatibleSubstituteFor("postgres"),
+		)
 
 		@JvmStatic
 		@AfterAll

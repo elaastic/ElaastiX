@@ -21,6 +21,7 @@
 
 package conventions
 
+import bom
 import jakarta
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
@@ -36,13 +37,9 @@ plugins {
 }
 
 dependencies {
-	implementation(platform(SpringBootPlugin.BOM_COORDINATES))
+	bom(SpringBootPlugin.BOM_COORDINATES)
 	implementation(kotlin("reflect"))
 
 	implementation(jakarta("persistence"))
 	implementation(jakarta("validation"))
-
-	if (project.path != ":commons:spring") {
-		implementation(project(":commons:spring"))
-	}
 }

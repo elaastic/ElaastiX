@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExportableFileTemplateSettings">
+    <default_templates>
+      <template name="Domain Module.kt" file-name="${package}/${class_name}Controller" reformat="true" live-template-enabled="false">
+        <template name="Domain Module.kt.child.0.kt" file-name="${package}/${class_name}Service" reformat="true" live-template-enabled="false" />
+        <template name="Domain Module.kt.child.1.kt" file-name="${package}/${class_name}Dto" reformat="true" live-template-enabled="false" />
+        <template name="Domain Module.kt.child.2.kt" file-name="${package}/${class_name}Repository" reformat="true" live-template-enabled="false" />
+        <template name="Domain Module.kt.child.3.kt" file-name="${package}/${class_name}Entity" reformat="true" live-template-enabled="false" />
+      </template>
+      <template name="Domain Module.kt.child.0.kt" file-name="${package}/${class_name}Service" reformat="true" live-template-enabled="false" />
+      <template name="Domain Module.kt.child.1.kt" file-name="${package}/${class_name}Dto" reformat="true" live-template-enabled="false" />
+      <template name="Domain Module.kt.child.2.kt" file-name="${package}/${class_name}Repository" reformat="true" live-template-enabled="false" />
+      <template name="Domain Module.kt.child.3.kt" file-name="${package}/${class_name}Entity" reformat="true" live-template-enabled="false" />
+    </default_templates>
+  </component>
+</project>

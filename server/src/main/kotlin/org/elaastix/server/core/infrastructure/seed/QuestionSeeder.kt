@@ -38,7 +38,8 @@ class QuestionSeeder(entityManager: EntityManager, private val userSeeder: UserS
 		protected set
 
 	override fun run(args: ApplicationArguments) {
-		tmpQuestion1 = createEntityWithAuthor(
+		tmpQuestion1 = upsert(
+			id = 1UL,
 			author = userSeeder.cynthia, // Actually: Randall Munroe - https://xkcd.com/1312/.
 			entity = ClosedQuestionEntity(
 				statement = MarkdownContent(
@@ -56,7 +57,8 @@ class QuestionSeeder(entityManager: EntityManager, private val userSeeder: UserS
 			),
 		)
 
-		tmpQuestion2 = createEntityWithAuthor(
+		tmpQuestion2 = upsert(
+			id = 2UL,
 			author = userSeeder.cynthia,
 			entity = ClosedQuestionEntity(
 				statement = MarkdownContent("What is the best multipurpose operating system?"),

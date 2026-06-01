@@ -47,11 +47,11 @@ class SpringdocAutoConfiguration(private val dtoCustomiserList: List<DtoCustomis
 	 */
 	@Bean
 	fun dtoCustomiserConverter(): ModelConverter {
-		return c@{ type, context, chain ->
+		return c@{ aType, context, chain ->
 			if (!chain.hasNext()) return@c null
-			chain.next().resolve(type, context, chain)?.also {
+			chain.next().resolve(aType, context, chain)?.also {
 				val clazz =
-					when (val type = type.type) {
+					when (val type = aType.type) {
 						is SimpleType -> type.rawClass.kotlin
 						is Class<*> -> type.kotlin
 						else -> return@also

@@ -17,18 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server
+package conventions
 
-import org.springframework.http.MediaType
+plugins {
+	id("org.jetbrains.kotlinx.kover")
+}
 
-/** Returns whether a given set of media types favours CBOR over JSON. */
-fun List<MediaType>.prefersCbor(): Boolean {
-	val cbor = indexOf(MediaType.APPLICATION_CBOR)
-	val json = indexOf(MediaType.APPLICATION_JSON)
+kover {
+	useJacoco() // https://github.com/Kotlin/kotlinx-kover/issues/720
+	// TODO: Separate reports for unit tests vs integration tests
 
-	return when {
-		cbor == -1 -> false
-		json == -1 -> true
-		else -> cbor < json
+	reports {
+		filters {
+			excludes {
+				annotatedBy("org.elaastix.commons.platform.ExcludeFromCoverage")
+				packages("org.elaastix.server.core.infrastructure.seed")
+			}
+		}
 	}
 }

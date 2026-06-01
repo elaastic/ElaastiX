@@ -32,7 +32,6 @@ import org.springframework.context.annotation.Bean
 @AutoConfiguration
 class ElaastixHibernateAutoConfiguration {
 	@Bean
-	@Suppress("UndocumentedPublicFunction")
 	fun jsonFormatMapperCustomizer(json: Json): HibernatePropertiesCustomizer = {
 		it[AvailableSettings.JSON_FORMAT_MAPPER] = HibernateKotlinxJsonMapper(json)
 	}

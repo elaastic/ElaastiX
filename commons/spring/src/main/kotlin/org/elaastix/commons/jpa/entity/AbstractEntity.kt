@@ -38,7 +38,6 @@ import kotlin.time.Instant
  */
 @MappedSuperclass
 @EntityListeners(EntityListener::class)
-@Suppress("AbstractClassCanBeConcreteClass") // Don't want the class to be constructible.
 abstract class AbstractEntity {
 	/**
 	 * ID of the entity. The ID is a UUID v7 as specified by [RFC 9562](https://www.rfc-editor.org/rfc/rfc9562.html).
@@ -56,7 +55,6 @@ abstract class AbstractEntity {
 	 */
 	@delegate:Transient
 	val createdAt by lazy {
-		@Suppress("MagicNumber")
 		val timestamp = (id.toLongs { msb, _ -> msb ushr 16 }) and 0xFFFFFFFFFFFFL
 		Instant.fromEpochMilliseconds(timestamp)
 	}

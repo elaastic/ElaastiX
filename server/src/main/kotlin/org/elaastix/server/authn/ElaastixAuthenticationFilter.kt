@@ -22,15 +22,13 @@ package org.elaastix.server.authn
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
-import org.elaastix.server.prefersCbor
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
 import org.springframework.security.web.util.matcher.RequestMatcher
-import org.springframework.web.accept.ContentNegotiationManager
-import org.springframework.web.context.request.ServletWebRequest
+import org.springframework.web.servlet.HandlerExceptionResolver
 
 /**
  * Request filter responsible for the authentication of users using the `Authorization` header.
@@ -38,7 +36,7 @@ import org.springframework.web.context.request.ServletWebRequest
 class ElaastixAuthenticationFilter(
 	requestMatcher: RequestMatcher,
 	authnManager: AuthenticationManager,
-	private val contentNegotiationManager: ContentNegotiationManager,
+	private val handlerExceptionResolver: HandlerExceptionResolver,
 ) : AbstractAuthenticationProcessingFilter(requestMatcher, authnManager) {
 	init {
 		setAuthenticationConverter(ElaastixAuthenticationConverter)
@@ -56,19 +54,10 @@ class ElaastixAuthenticationFilter(
 	}
 
 	override fun unsuccessfulAuthentication(
-		request: HttpServletRequest,
-		response: HttpServletResponse,
-		failed: AuthenticationException,
+		req: HttpServletRequest,
+		res: HttpServletResponse,
+		ex: AuthenticationException,
 	) {
-		response.status = HttpServletResponse.SC_UNAUTHORIZED
-		val mediaTypes = contentNegotiationManager.resolveMediaTypes(ServletWebRequest(request))
-
-		if (mediaTypes.prefersCbor()) {
-			response.contentType = "application/cbor"
-			TODO("CBOR support not implemented")
-		} else {
-			response.contentType = "application/json"
-			response.writer.write(("{\"error\": \"Authentication required\", \"message\": \"" + failed.message) + "\"}")
-		}
+		handlerExceptionResolver.resolveException(req, res, null, ex)
 	}
 }

@@ -33,6 +33,15 @@ import org.gradle.kotlin.dsl.DependencyHandlerScope
 private fun depWithVersion(dep: String, version: String?): Any =
 	"$dep${version?.let { ":$version" } ?: ""}"
 
+private fun depWithModule(prefix: String, module: String, version: String? = null): Any =
+	depWithVersion(
+		when (module) {
+			"" -> prefix
+			else -> "$prefix-$module"
+		},
+		version,
+	)
+
 // Extra "well-known" shortcuts for common sources
 
 fun DependencyHandler.kotlinx(module: String, version: String? = null) =
@@ -43,19 +52,22 @@ fun DependencyHandler.jakarta(module: String, version: String? = null) =
 
 object SpringDependencyShortcuts {
 	object SpringStarterShortcut {
-		operator fun invoke(module: String = ""): Any =
-			when (module) {
-				"" -> "org.springframework.boot:spring-boot-starter"
-				else -> "org.springframework.boot:spring-boot-starter-$module"
-			}
+		operator fun invoke(module: String = "", version: String? = null): Any =
+			depWithModule("org.springframework.boot:spring-boot-starter", module, version)
 
-		fun test(module: String = ""): Any = "${invoke(module)}-test"
+		fun test(module: String = "", version: String? = null): Any =
+			depWithVersion("${invoke(module)}-test", version)
 	}
 
-	operator fun invoke(module: String): Any = "org.springframework:spring-$module"
-	fun data(module: String): Any = "org.springframework.data:spring-data-$module"
-	fun security(module: String): Any = "org.springframework.security:spring-security-$module"
-	fun boot(module: String): Any = "org.springframework.boot:spring-boot-$module"
+	operator fun invoke(module: String, version: String? = null): Any =
+		depWithModule("org.springframework:spring", module, version)
+	fun data(module: String, version: String? = null): Any =
+		depWithModule("org.springframework.data:spring-data", module, version)
+	fun security(module: String, version: String? = null): Any =
+		depWithModule("org.springframework.security:spring-security", module, version)
+	fun boot(module: String = "", version: String? = null): Any =
+		depWithModule("org.springframework.boot:spring-boot", module, version)
+
 	val starter = SpringStarterShortcut
 }
 

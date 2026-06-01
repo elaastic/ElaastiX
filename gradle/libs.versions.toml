@@ -1,20 +1,20 @@
 [versions]
 jdk = "25"
 kotlin = "2.3.21"
-ksp = "2.3.8"
+ksp = "2.3.9"
 # ----
 assertj = "3.27.7"
 datafaker = "2.5.4"
 detekt = "2.0.0-alpha.3"
-flyway = "12.6.1"
+flyway = "12.7.0"
 hibernate = "7.3.4.Final"        # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
 hypersistence-utils = "3.15.2"
 ideax = "1.4.1"
 jdbc-postgresql = "42.7.11"
-junit = "6.0.3"
-kotlinx-serialization = "1.10.0"
+junit = "6.1.0"
+kotlinx-serialization = "1.11.0"
 kover = "0.9.8"
-mockk = "1.14.9"
+mockk = "1.14.11"
 spring-boot = "4.0.6"
 springdoc = "3.0.3"
 springdoc-kdoc = "1.1.0"
@@ -48,3 +48,4 @@ kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+versions = { id = "com.github.ben-manes.versions", version = "0.54.0" }

@@ -20,11 +20,16 @@
 package org.elaastix.commons.exceptions
 
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.http.ProblemDetail
+import org.springframework.web.ErrorResponseException
 
 /**
  * Thrown when the request from the client is malformed or otherwise invalid.
  */
-// TODO: Have a proper machine-readable error output format, also applied to errors from Jakarta Validation
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class BadRequestException(message: String? = null) : RuntimeException(message)
+// TODO: More detailed errors
+class BadRequestException(message: String? = null, cause: Throwable? = null) :
+	ErrorResponseException(
+		HttpStatus.BAD_REQUEST,
+		ProblemDetail.forStatusAndDetail(HttpStatus.BAD_REQUEST, message),
+		cause,
+	)
