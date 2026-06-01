@@ -21,7 +21,7 @@ package org.elaastix.commons.security
 
 /**
  * Roles that may be granted to a user.
- * Used to restrict access via the [HasRole] annotation.
+ * Used to restrict access via the [RequiresRole] annotation.
  */
 enum class Role : Authority {
 	/**

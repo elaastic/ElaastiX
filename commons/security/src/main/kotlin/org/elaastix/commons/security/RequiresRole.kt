@@ -22,16 +22,16 @@ package org.elaastix.commons.security
 import org.springframework.security.access.prepost.PreAuthorize
 
 /**
- * Marks a function, or all functions of a class, as requiring [permission].
+ * Helper annotation to only allow users with a given role to perform a call.
  * May be used as a meta-annotation.
  *
- * @see HasRole
+ * @see RequiresPermission
  * @see PreAuthorize
  */
-@PreAuthorize("hasAuthority('{permission.authority}')")
+@PreAuthorize("hasAuthority('{role.authority}')")
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class HasPermission(
-	/** The permission to match. */
-	val permission: Permission,
+annotation class RequiresRole(
+	/** The role to match. */
+	val role: Role,
 )
