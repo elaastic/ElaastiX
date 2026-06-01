@@ -105,7 +105,7 @@ class ResponseActivityService(
 		val statement = questionRepository.findQuestionStatementById(questionId).orNotFound()
 
 		val entity =
-			when (val questionRef = questionRepository.getEntityReferenceWithType(statement.id, statement.type)) {
+			when (val questionRef = questionRepository.getTypedReferenceById(statement.type, statement.id)) {
 				is OpenQuestionEntity -> {
 					validate(response is OpenResponseSubmitDto) { "Response type does not match the question's type." }
 					OpenResponseEntity(

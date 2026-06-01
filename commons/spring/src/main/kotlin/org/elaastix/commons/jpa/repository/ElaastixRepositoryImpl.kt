@@ -24,6 +24,7 @@ import jakarta.persistence.EntityManager
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.springframework.data.jpa.repository.support.JpaEntityInformation
+import org.springframework.transaction.annotation.Transactional
 
 /**
  * Concrete repository implementation of [ElaastixRepository].
@@ -48,13 +49,15 @@ class ElaastixRepositoryImpl<T : AbstractEntity>(
 		return entityManager.createQuery(cq).singleResultOrNull as Class<T>?
 	}
 
-	override fun getEntityReference(id: Uuid): T = entityManager.getReference(entityInformation.javaType, id)
-
-	override fun getConcreteEntityReference(id: Uuid): T? {
+	override fun getConcreteReferenceById(id: Uuid): T? {
 		val clazz = findConcreteTypeById(id)
 		return clazz?.let { entityManager.getReference(it, id) }
 	}
 
-	override fun <U : T> getEntityReferenceWithType(id: Uuid, clazz: Class<U>): U =
+	override fun <U : T> getTypedReferenceById(clazz: Class<U>, id: Uuid): U =
 		entityManager.getReference(clazz, id)
+
+	@Transactional
+	override fun findByIdAndUpdate(id: Uuid, block: T.() -> Unit): T? =
+		findByIdOrNull(id)?.let { update(it.apply(block)) }
 }

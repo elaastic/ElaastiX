@@ -89,7 +89,7 @@ class ResponseActivityServiceTest {
 	fun `persists open response to an open question`() {
 		val (questionId, question) = mockkEntity<OpenQuestionEntity>()
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.getTypedReferenceById<QuestionEntity>(any(), questionId) } returns question
 		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		val response = assertDoesNotThrow {
@@ -120,7 +120,7 @@ class ResponseActivityServiceTest {
 			given { choices } returns listOf(PlainText("1"), PlainText("2"))
 		}
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.getTypedReferenceById<QuestionEntity>(any(), questionId) } returns question
 		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		val response = assertDoesNotThrow {
@@ -149,7 +149,7 @@ class ResponseActivityServiceTest {
 	fun `rejects mismatched question and response types`() {
 		val (questionId, question) = mockkEntity<ClosedQuestionEntity>()
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.getTypedReferenceById<QuestionEntity>(any(), questionId) } returns question
 		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		assertThrows<BadRequestException> {
@@ -175,7 +175,7 @@ class ResponseActivityServiceTest {
 			given { choices } returns listOf(PlainText("1"), PlainText("2"))
 		}
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.getTypedReferenceById<QuestionEntity>(any(), questionId) } returns question
 		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		assertThrows<BadRequestException> {
@@ -201,7 +201,7 @@ class ResponseActivityServiceTest {
 			given { choices } returns listOf(PlainText("1"), PlainText("2"))
 		}
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.getTypedReferenceById<QuestionEntity>(any(), questionId) } returns question
 		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		assertThrows<BadRequestException> {
