@@ -27,8 +27,8 @@ package ${PACKAGE_NAME}.${class_name_plural.toLowerCase()}.dto
 import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.Uuid
 
+/**
+ * Request payload for updating ${a_or_an} ${resource_name}.
+ */
 @Serializable
-data class ${class_name}Dto(
-	/** The ${resource_name}'s unique identifier. */
-	val id: Uuid,
-)
+data class Update${class_name}Dto()

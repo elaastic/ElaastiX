@@ -64,6 +64,10 @@ kotlin {
 	}
 }
 
+ksp {
+	arg("kdoc.all-files", "true")
+}
+
 detekt {
 	parallel = true
 	buildUponDefaultConfig = true

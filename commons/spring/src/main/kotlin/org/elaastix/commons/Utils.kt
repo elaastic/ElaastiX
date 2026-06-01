@@ -21,6 +21,7 @@ package org.elaastix.commons
 
 import org.elaastix.commons.exceptions.BadRequestException
 import org.elaastix.commons.exceptions.ResourceNotFoundException
+import java.util.Optional
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
 
@@ -37,7 +38,8 @@ fun validate(value: Boolean, lazyMessage: () -> Any) {
 	}
 }
 
-/**
- * Throws a [ResourceNotFoundException] if null.
- */
+/** Throws a [ResourceNotFoundException] if null. */
 fun <T> T?.orNotFound(): T = this ?: throw ResourceNotFoundException()
+
+/** Throws a [ResourceNotFoundException] if empty. */
+fun <T> Optional<T>.orNotFound(): T = orElseThrow { throw ResourceNotFoundException() }

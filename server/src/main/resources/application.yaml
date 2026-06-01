@@ -1,4 +1,9 @@
 spring:
+  data:
+    web:
+      pageable:
+        max-page-size: 50
+
   jpa:
     open-in-view: false
     properties.hibernate:
