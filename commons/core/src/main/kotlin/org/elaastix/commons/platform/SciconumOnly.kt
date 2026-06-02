@@ -17,30 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core
-
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.MappedSuperclass
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.JpaImmutable
-import org.elaastix.commons.platform.UnclearAuthorshipOwnership
-import org.elaastix.server.users.entities.UserEntity
-import org.springframework.data.annotation.CreatedBy
+package org.elaastix.commons.platform
 
 /**
- * Trait for entities that keep track of authorship.
- * Leverages Spring Data's auditing infrastructure and Spring Security to receive the current user.
- *
- * TODO: Improve and implement authorship tracking via an audit trail
+ * Annotation flagging code that MUST NOT be preserved beyond the SCICONUM experiments.
  */
-@MappedSuperclass
-abstract class AbstractEntityWithAuthorship : AbstractEntity() {
-	/**
-	 * The original author.
-	 */
-	@property:UnclearAuthorshipOwnership
-	@CreatedBy
-	@ManyToOne
-	lateinit var author: UserEntity
-		@JpaImmutable set
-}
+@RequiresOptIn(message = "SCICONUM-only code.")
+@Retention(AnnotationRetention.BINARY)
+annotation class SciconumOnly

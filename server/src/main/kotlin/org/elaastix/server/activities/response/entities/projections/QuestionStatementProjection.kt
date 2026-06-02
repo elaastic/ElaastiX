@@ -20,6 +20,7 @@
 package org.elaastix.server.activities.response.entities.projections
 
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.platform.SciconumOnly
 import org.elaastix.mm.content.FormattedText
 import org.elaastix.mm.content.RichContent
 import org.elaastix.server.activities.response.entities.ClosedQuestionEntity
@@ -67,4 +68,31 @@ data class QuestionStatementProjection(
 	 * @see [ClosedQuestionEntity.multiple]
 	 */
 	val multiple: Boolean?,
-)
+) {
+	companion object {
+		/**
+		 * Helper factory to convert an entity to a projection.
+		 */
+		@SciconumOnly
+		fun from(entity: QuestionEntity) =
+			when (entity) {
+				is ClosedQuestionEntity ->
+					QuestionStatementProjection(
+						type = ClosedQuestionEntity::class.java,
+						id = entity.id,
+						statement = entity.statement,
+						choices = entity.choices,
+						multiple = entity.multiple,
+					)
+
+				else ->
+					QuestionStatementProjection(
+						type = OpenQuestionEntity::class.java,
+						id = entity.id,
+						statement = entity.statement,
+						choices = null,
+						multiple = null,
+					)
+			}
+	}
+}

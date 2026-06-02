@@ -17,30 +17,53 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core
+package org.elaastix.server.sequences
 
+import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
+import jakarta.persistence.FetchType
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.MappedSuperclass
+import jakarta.validation.constraints.Size
 import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.JpaImmutable
+import org.elaastix.commons.platform.SciconumOnly
 import org.elaastix.commons.platform.UnclearAuthorshipOwnership
+import org.elaastix.server.activities.response.entities.QuestionEntity
+import org.elaastix.server.scenario.SciconumScenario
 import org.elaastix.server.users.entities.UserEntity
 import org.springframework.data.annotation.CreatedBy
 
 /**
- * Trait for entities that keep track of authorship.
- * Leverages Spring Data's auditing infrastructure and Spring Security to receive the current user.
- *
- * TODO: Improve and implement authorship tracking via an audit trail
+ * A pedagogical sequence.
+ * TODO: Extensive description of the concept.
  */
-@MappedSuperclass
-abstract class AbstractEntityWithAuthorship : AbstractEntity() {
+@Entity
+class SequenceEntity @SciconumOnly constructor(
 	/**
-	 * The original author.
+	 * Display name of the sequence.
+	 */
+	@Size(min = 2, max = 64)
+	var name: String,
+
+	/**
+	 * SCICONUM scenario of the sequence.
+	 */
+	@property:SciconumOnly
+	@Enumerated(EnumType.STRING)
+	var sciconumScenario: SciconumScenario,
+
+	/**
+	 * Question for the SCICONUM sequence.
+	 */
+	@property:SciconumOnly
+	@ManyToOne(fetch = FetchType.EAGER)
+	var sciconumQuestion: QuestionEntity,
+) : AbstractEntity() {
+	/**
+	 * Owner of the resource, but not necessarily its author per se.
 	 */
 	@property:UnclearAuthorshipOwnership
+	@ManyToOne(fetch = FetchType.LAZY)
 	@CreatedBy
-	@ManyToOne
-	lateinit var author: UserEntity
-		@JpaImmutable set
+	lateinit var owner: UserEntity
 }

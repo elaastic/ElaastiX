@@ -26,6 +26,9 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import org.elaastix.commons.platform.ExcludeFromCoverage
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 /**
  * Wrapper class that materialises both the absence of data and a null value as two distinct concepts.
@@ -77,6 +80,32 @@ sealed class MaybeUpdate<out T> {
 					else -> "MaybeUpdate.Update(${this.value})"
 				}
 		}
+
+	/**
+	 * Calls the specified function [block] with the update value and returns its result if `this` is an [Update],
+	 * returns null otherwise.
+	 *
+	 * @see take
+	 */
+	@OptIn(ExperimentalContracts::class)
+	fun <R> map(block: (T) -> R): R? {
+		contract { callsInPlace(block, InvocationKind.AT_MOST_ONCE) }
+		return when (this) {
+			is Update<T> -> block(this.value)
+			else -> null
+		}
+	}
+
+	/**
+	 * Calls the specified function [block] with the update value if `this` is an [Update]. Does not return anything.
+	 *
+	 * @see map
+	 */
+	@OptIn(ExperimentalContracts::class)
+	fun take(block: (T) -> Unit) {
+		contract { callsInPlace(block, InvocationKind.AT_MOST_ONCE) }
+		if (this is Update<T>) block(this.value)
+	}
 }
 
 /**

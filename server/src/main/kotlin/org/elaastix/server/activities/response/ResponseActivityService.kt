@@ -24,6 +24,7 @@ import jakarta.validation.Valid
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.inherits
 import org.elaastix.commons.orNotFound
+import org.elaastix.commons.platform.UnclearAuthorshipOwnership
 import org.elaastix.commons.validate
 import org.elaastix.server.activities.response.dtos.ClosedQuestionStatementDto
 import org.elaastix.server.activities.response.dtos.ClosedResponseDto
@@ -64,6 +65,7 @@ class ResponseActivityService(
 			}
 
 		/** Transforms a [ResponseEntity] into a [ResponseDto]. */
+		@OptIn(UnclearAuthorshipOwnership::class)
 		fun ResponseEntity<*, *>.toDto() =
 			when (this) {
 				is OpenResponseEntity ->

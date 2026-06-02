@@ -17,30 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core
+package org.elaastix.server.sequences.dto
 
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.MappedSuperclass
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.JpaImmutable
+import kotlinx.serialization.Serializable
+import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.platform.SciconumOnly
 import org.elaastix.commons.platform.UnclearAuthorshipOwnership
-import org.elaastix.server.users.entities.UserEntity
-import org.springframework.data.annotation.CreatedBy
+import org.elaastix.server.activities.response.dtos.QuestionStatementDto
+import org.elaastix.server.scenario.SciconumScenario
 
-/**
- * Trait for entities that keep track of authorship.
- * Leverages Spring Data's auditing infrastructure and Spring Security to receive the current user.
- *
- * TODO: Improve and implement authorship tracking via an audit trail
- */
-@MappedSuperclass
-abstract class AbstractEntityWithAuthorship : AbstractEntity() {
-	/**
-	 * The original author.
-	 */
+@Serializable
+@Suppress("UndocumentedPublicClass") // TODO
+data class SequenceDto @SciconumOnly constructor(
+	/** The sequence's unique identifier. */
+	val id: Uuid,
+
+	/** Display name of the sequence. */
+	val name: String,
+
+	/** SCICONUM scenario of the sequence. */
+	@property:SciconumOnly
+	val sciconumScenario: SciconumScenario,
+
+	/** Question for the SCICONUM sequence. */
+	@property:SciconumOnly
+	val sciconumQuestion: QuestionStatementDto,
+
+	/** Identifier of the scenario owner. */
 	@property:UnclearAuthorshipOwnership
-	@CreatedBy
-	@ManyToOne
-	lateinit var author: UserEntity
-		@JpaImmutable set
-}
+	val ownerId: Uuid,
+)

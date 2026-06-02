@@ -28,6 +28,7 @@ import org.elaastix.commons.applyAs
 import org.elaastix.commons.cast
 import org.elaastix.commons.exceptions.BadRequestException
 import org.elaastix.commons.platform.JpaImmutable
+import org.elaastix.commons.platform.UnclearAuthorshipOwnership
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.activities.response.ResponseActivityService
 import org.elaastix.server.activities.response.dtos.ClosedResponseDto
@@ -75,7 +76,7 @@ class ResponseActivityServiceTest {
 		}
 
 	@BeforeEach
-	@OptIn(JpaImmutable::class)
+	@OptIn(JpaImmutable::class, UnclearAuthorshipOwnership::class)
 	fun `mock test repository`() {
 		val (_, user) = mockkEntity<UserEntity>()
 		given { responseRepo.persist(any()) } answers {

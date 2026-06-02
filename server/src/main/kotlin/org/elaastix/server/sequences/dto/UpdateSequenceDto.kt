@@ -17,30 +17,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core
+package org.elaastix.server.sequences.dto
 
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.MappedSuperclass
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.JpaImmutable
-import org.elaastix.commons.platform.UnclearAuthorshipOwnership
-import org.elaastix.server.users.entities.UserEntity
-import org.springframework.data.annotation.CreatedBy
+import jakarta.validation.constraints.Size
+import kotlinx.serialization.Serializable
+import org.elaastix.commons.data.MaybeUpdate
+import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.platform.SciconumOnly
+import org.elaastix.server.scenario.SciconumScenario
 
 /**
- * Trait for entities that keep track of authorship.
- * Leverages Spring Data's auditing infrastructure and Spring Security to receive the current user.
- *
- * TODO: Improve and implement authorship tracking via an audit trail
+ * Request payload for updating a sequence.
  */
-@MappedSuperclass
-abstract class AbstractEntityWithAuthorship : AbstractEntity() {
-	/**
-	 * The original author.
-	 */
-	@property:UnclearAuthorshipOwnership
-	@CreatedBy
-	@ManyToOne
-	lateinit var author: UserEntity
-		@JpaImmutable set
-}
+@Serializable
+@Suppress("UndocumentedPublicProperty") // TODO
+data class UpdateSequenceDto @SciconumOnly constructor(
+	val name: MaybeUpdate<
+		@Size(min = 2, max = 64)
+		String,
+		>,
+
+	@property:SciconumOnly
+	val sciconumScenario: MaybeUpdate<SciconumScenario>,
+
+	@property:SciconumOnly
+	val sciconumQuestionId: MaybeUpdate<Uuid>,
+)

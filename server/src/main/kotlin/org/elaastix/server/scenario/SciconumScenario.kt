@@ -17,30 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core
+package org.elaastix.server.scenario
 
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.MappedSuperclass
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.JpaImmutable
-import org.elaastix.commons.platform.UnclearAuthorshipOwnership
-import org.elaastix.server.users.entities.UserEntity
-import org.springframework.data.annotation.CreatedBy
+import org.elaastix.commons.platform.SciconumOnly
 
 /**
- * Trait for entities that keep track of authorship.
- * Leverages Spring Data's auditing infrastructure and Spring Security to receive the current user.
- *
- * TODO: Improve and implement authorship tracking via an audit trail
+ * Hard-coded scenarios for SCICONUM experiments.
  */
-@MappedSuperclass
-abstract class AbstractEntityWithAuthorship : AbstractEntity() {
-	/**
-	 * The original author.
-	 */
-	@property:UnclearAuthorshipOwnership
-	@CreatedBy
-	@ManyToOne
-	lateinit var author: UserEntity
-		@JpaImmutable set
+@SciconumOnly
+enum class SciconumScenario {
+	/** Control scenario. Answer a question, and wait for the results. */
+	CONTROL,
+
+	/** Peer assessment scenario. Answer a question, then judge answers from peers, and wait for results. */
+	PEER_ASSESSMENT,
+
+	/** Peer discussion scenario. Answer a question, discuss via instant chat, and wait for results. */
+	PEER_DEBATE,
 }
