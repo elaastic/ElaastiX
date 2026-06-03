@@ -21,6 +21,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/build-logic" />
             <option value="$PROJECT_DIR$/commons" />
+            <option value="$PROJECT_DIR$/commons/codegen-annotations" />
+            <option value="$PROJECT_DIR$/commons/codegen-ksp" />
             <option value="$PROJECT_DIR$/commons/core" />
             <option value="$PROJECT_DIR$/commons/security" />
             <option value="$PROJECT_DIR$/commons/spring" />

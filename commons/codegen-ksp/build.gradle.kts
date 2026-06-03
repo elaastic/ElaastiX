@@ -17,38 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-group = "org.elaastix.server"
+group = "org.elaastix.commons.codegen"
 
 plugins {
 	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.springboot")
-	id("conventions.test")
+	id("conventions.kotlin-minimal")
+}
+
+kotlin {
+	compilerOptions {
+		freeCompilerArgs.addAll(
+			"-Xcontext-parameters"
+		)
+	}
 }
 
 dependencies {
-	springBootStarter("actuator")
-	springBootStarter("data-jpa")
-	springBootStarter("flyway")
-	springBootStarter("mail")
-	springBootStarter("opentelemetry")
-	springBootStarter("security")
-	springBootStarter("security-oauth2-client")
-	springBootStarter("validation")
-	springBootStarter("webmvc")
-	springBootStarter("kotlinx-serialization-json")
-
-	implementation(spring.security("data"))
-
-	implementation(libs.flyway.postgresql)
-	implementation(libs.hypersistence.utils)
-	runtimeOnly(libs.jdbc.postgresql)
-
+	implementation(project(":commons:codegen-annotations"))
 	implementation(project(":commons:core"))
-	implementation(project(":commons:spring"))
-	implementation(project(":commons:security"))
-	implementation(project(":metamodel"))
-	commonsCodegen()
 
-	testImplementation(libs.datafaker)
+	implementation(kotlin("reflect"))
+	implementation(libs.ksp)
+
+	implementation(libs.kotlinpoet)
+	implementation(libs.kotlinpoet.ksp)
+
+	implementation(kotlinx("serialization-core"))
+	implementation(jakarta("persistence"))
+	implementation(jakarta("validation"))
 }

@@ -92,5 +92,11 @@ fun DependencyHandlerScope.springBootStarter(
 
 fun DependencyHandlerScope.testSpringBootStarter(starter: String) = springBootStarter(starter, mainTarget = null)
 
+/** Helper to add codegen packages from Elaastix Commons. */
+fun DependencyHandlerScope.commonsCodegen() {
+	add("ksp", project(":commons:codegen-ksp"))
+	add("implementation", project(":commons:codegen-annotations"))
+}
+
 internal fun VersionCatalog.version(id: String) = findVersion(id).get().toString()
 internal fun DependencyHandlerScope.bom(specifier: Any) = add("implementation", enforcedPlatform(specifier))

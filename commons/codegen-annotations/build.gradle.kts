@@ -17,38 +17,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-group = "org.elaastix.server"
+group = "org.elaastix.commons.codegen"
 
 plugins {
 	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.springboot")
-	id("conventions.test")
-}
-
-dependencies {
-	springBootStarter("actuator")
-	springBootStarter("data-jpa")
-	springBootStarter("flyway")
-	springBootStarter("mail")
-	springBootStarter("opentelemetry")
-	springBootStarter("security")
-	springBootStarter("security-oauth2-client")
-	springBootStarter("validation")
-	springBootStarter("webmvc")
-	springBootStarter("kotlinx-serialization-json")
-
-	implementation(spring.security("data"))
-
-	implementation(libs.flyway.postgresql)
-	implementation(libs.hypersistence.utils)
-	runtimeOnly(libs.jdbc.postgresql)
-
-	implementation(project(":commons:core"))
-	implementation(project(":commons:spring"))
-	implementation(project(":commons:security"))
-	implementation(project(":metamodel"))
-	commonsCodegen()
-
-	testImplementation(libs.datafaker)
+	id("conventions.kotlin-minimal")
 }

@@ -20,89 +20,29 @@
 package conventions
 
 import bom
-import dev.detekt.gradle.Detekt
 import kotlinx
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
 import version
 
 val libs = the<VersionCatalogsExtension>().named("libs")
 
 plugins {
 	id("conventions.java")
+	id("conventions.kotlin-minimal")
 
-	kotlin("jvm")
 	kotlin("plugin.serialization")
 	id("com.google.devtools.ksp")
-
-	id("dev.detekt")
-}
-
-kotlin {
-	val jdkVersion = libs.version("jdk")
-	val kotlinVersion = libs.version("kotlin")
-
-	compilerOptions {
-		val kotlinVersion = KotlinVersion.valueOf(
-			"KOTLIN_${kotlinVersion.substringBeforeLast(".").replace(".", "_")}",
-		)
-
-		freeCompilerArgs.addAll(
-			"-Xjsr305=strict",
-			"-Xannotation-default-target=param-property",
-		)
-		jvmTarget = JvmTarget.valueOf("JVM_$jdkVersion")
-		languageVersion = kotlinVersion
-		apiVersion = kotlinVersion
-
-		// We do things RIGHT in this house.
-		allWarningsAsErrors = true
-
-		// We want to use Kotlin's Uuid, as it comes with built-in UUIDv7 generation,
-		// and is supported out of the box by kotlinx.serialization.
-		optIn.add("kotlin.uuid.ExperimentalUuidApi")
-	}
 }
 
 ksp {
 	arg("kdoc.all-files", "true")
 }
 
-detekt {
-	parallel = true
-	buildUponDefaultConfig = true
-
-	val projectConfig = rootProject.file(".config/detekt/detekt.yaml")
-	val subprojectConfig = file("detekt.yaml")
-
-	config.setFrom(projectConfig)
-	if (subprojectConfig.exists()) {
-		config.setFrom(subprojectConfig)
-	}
-}
-
 dependencies {
-	bom(kotlin("bom", version = libs.version("kotlin")))
 	bom(kotlinx("serialization-bom", version = libs.version("kotlinx-serialization")))
-
-	implementation(kotlin("stdlib"))
 	implementation(kotlinx("serialization-core"))
 	implementation(kotlinx("serialization-json"))
 	implementation(kotlinx("serialization-cbor"))
 
 	implementation(libs.findLibrary("springdoc.kdoc.rt").get())
 	ksp(libs.findLibrary("springdoc.kdoc.ksp").get())
-
-	detektPlugins(libs.findLibrary("detekt.ktlint").get())
-}
-
-tasks.withType<Detekt>().configureEach {
-	jvmTarget = libs.version("jdk")
-	autoCorrect = project.hasProperty("detekt.fix")
-
-	exclude("**/resources/**", "**/build/**", "**/generated/**")
-
-	reports {
-		sarif.required = true
-	}
 }
