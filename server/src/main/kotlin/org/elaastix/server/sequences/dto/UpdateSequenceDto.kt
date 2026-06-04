@@ -32,10 +32,8 @@ import org.elaastix.server.scenario.SciconumScenario
 @Serializable
 @Suppress("UndocumentedPublicProperty") // TODO
 data class UpdateSequenceDto @SciconumOnly constructor(
-	val name: MaybeUpdate<
-		@Size(min = 2, max = 64)
-		String,
-		>,
+	@Size(min = 2, max = 64)
+	val name: MaybeUpdate<String>,
 
 	@property:SciconumOnly
 	val sciconumScenario: MaybeUpdate<SciconumScenario>,
