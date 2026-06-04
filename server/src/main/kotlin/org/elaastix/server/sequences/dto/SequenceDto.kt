@@ -41,7 +41,7 @@ data class SequenceDto @SciconumTechDebt constructor(
 
 	/** Questions for the SCICONUM sequence. */
 	@property:SciconumTechDebt
-	val sciconumQuestions: Iterable<QuestionStatementDto>,
+	val sciconumQuestions: Set<QuestionStatementDto>,
 
 	/** Identifier of the scenario owner. */
 	@property:UnclearAuthorshipOwnership

@@ -53,7 +53,7 @@ class SequenceService(
 				id = id,
 				name = name,
 				sciconumScenario = sciconumScenario,
-				sciconumQuestions = sciconumQuestions.map { it.toDto() },
+				sciconumQuestions = sciconumQuestions.map { it.toDto() }.toSet(),
 				ownerId = owner.id,
 			)
 

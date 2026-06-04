@@ -33,11 +33,11 @@ import org.elaastix.server.scenario.SciconumScenario
 @Suppress("UndocumentedPublicProperty") // TODO
 data class UpdateSequenceDto @SciconumTechDebt constructor(
 	@Size(min = 2, max = 64)
-	val name: MaybeUpdate<String>,
+	val name: MaybeUpdate<String> = MaybeUpdate.Keep,
 
 	@property:SciconumTechDebt
-	val sciconumScenario: MaybeUpdate<SciconumScenario>,
+	val sciconumScenario: MaybeUpdate<SciconumScenario> = MaybeUpdate.Keep,
 
 	@property:SciconumTechDebt
-	val sciconumQuestionId: MaybeUpdate<List<Uuid>>,
+	val sciconumQuestionId: MaybeUpdate<Set<Uuid>> = MaybeUpdate.Keep,
 )
