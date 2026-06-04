@@ -18,6 +18,18 @@
           <option name="issueRegexp" value="([^/\n\s]+/[^#\n\s]+)#(\d+)" />
           <option name="linkRegexp" value="https://github.com/$1/issues/$2" />
         </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="KSP-(\d+)" />
+          <option name="linkRegexp" value="https://github.com/google/ksp/issues/$1" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="HHH-\d+" />
+          <option name="linkRegexp" value="https://hibernate.atlassian.net/browse/$0" />
+        </IssueNavigationLink>
+        <IssueNavigationLink>
+          <option name="issueRegexp" value="(IDEA|IJPL|KT(IJ)?|JPAB|WEB)-\d+" />
+          <option name="linkRegexp" value="https://youtrack.jetbrains.com/issues/$0" />
+        </IssueNavigationLink>
       </list>
     </option>
   </component>

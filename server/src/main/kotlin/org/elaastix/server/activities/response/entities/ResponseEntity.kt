@@ -50,7 +50,7 @@ abstract class ResponseEntity<TSelf : ResponseEntity<TSelf, TQuestion>, TQuestio
 	var selfExplanation: FormattedContent?,
 
 	/** Confidence degree provided by the learner. Optional. */
-	@Suppress("JpaAttributeTypeInspection") // https://youtrack.jetbrains.com/issue/IDEA-191568
+	@Suppress("JpaAttributeTypeInspection") // IDEA-191568
 	var confidenceDegree: UInt?,
 
 	/**

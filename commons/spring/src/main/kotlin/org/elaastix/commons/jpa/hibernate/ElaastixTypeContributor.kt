@@ -30,14 +30,14 @@ import org.hibernate.service.ServiceRegistry
 /**
  * Custom [TypeContributor] responsible for registering the package's converters to the Hibernate context.
  *
- * Implementation has to cope with Hibernate bug [HHH-20070](https://hibernate.atlassian.net/browse/HHH-20070);
- * the contributor is invoked twice, causing duplicate registration that leads to application start failure.
+ * Implementation has to cope with HHH-20070:  the contributor is invoked twice, causing duplicate registration that
+ * leads to application start failure.
  *
  * The contributor will be automatically picked by Hibernate thanks to the
  * `META-INF/services/org.hibernate.boot.model.TypeContributor` file.
  */
 class ElaastixTypeContributor : TypeContributor {
-	// Workaround for https://hibernate.atlassian.net/browse/HHH-20070
+	// Workaround for HHH-20070
 	private var initialised = false
 
 	override fun contribute(typeContributions: TypeContributions, serviceRegistry: ServiceRegistry) {

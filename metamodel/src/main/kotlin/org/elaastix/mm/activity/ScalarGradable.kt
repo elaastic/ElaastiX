@@ -39,8 +39,8 @@ interface ScalarGradable {
 @JvmRecord
 @Embeddable
 @Suppress(
-	"RedundantModalityModifier", // https://youtrack.jetbrains.com/issue/KT-86286
-	"JpaEntityWithValAttributesInspection", // https://youtrack.jetbrains.com/issue/KTIJ-37754
+	"RedundantModalityModifier", // KT-86286
+	"JpaEntityWithValAttributesInspection", // KTIJ-37754
 )
 final data class ScalarGrade(
 	/** The given grade. MUST be less than or equal to [max]. */

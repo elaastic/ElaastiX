@@ -34,7 +34,7 @@ class OpenResponseEntity(
 
 	/** The answer given by the learner. May be empty, but is required. */
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Suppress("JpaAttributeTypeInspection") // https://youtrack.jetbrains.com/issue/IDEA-191568
+	@Suppress("JpaAttributeTypeInspection") // IDEA-191568
 	var answer: FormattedContent,
 
 	selfExplanation: FormattedContent?,
