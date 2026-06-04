@@ -27,8 +27,8 @@ import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.validation.constraints.Size
 import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.SciconumOnly
-import org.elaastix.commons.platform.UnclearAuthorshipOwnership
+import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.activities.response.entities.QuestionEntity
 import org.elaastix.server.scenario.SciconumScenario
 import org.elaastix.server.users.entities.UserEntity
@@ -39,7 +39,7 @@ import org.springframework.data.annotation.CreatedBy
  * TODO: Extensive description of the concept.
  */
 @Entity
-class SequenceEntity @SciconumOnly constructor(
+class SequenceEntity @SciconumTechDebt constructor(
 	/**
 	 * Display name of the sequence.
 	 */
@@ -49,14 +49,14 @@ class SequenceEntity @SciconumOnly constructor(
 	/**
 	 * SCICONUM scenario of the sequence.
 	 */
-	@property:SciconumOnly
+	@property:SciconumTechDebt
 	@Enumerated(EnumType.STRING)
 	var sciconumScenario: SciconumScenario,
 
 	/**
 	 * Question for the SCICONUM sequence.
 	 */
-	@property:SciconumOnly
+	@property:SciconumTechDebt
 	@ManyToMany(fetch = FetchType.EAGER)
 	var sciconumQuestions: MutableSet<QuestionEntity>,
 ) : AbstractEntity() {

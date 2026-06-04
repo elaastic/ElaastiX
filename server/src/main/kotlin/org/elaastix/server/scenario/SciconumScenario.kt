@@ -19,12 +19,12 @@
 
 package org.elaastix.server.scenario
 
-import org.elaastix.commons.platform.SciconumOnly
+import org.elaastix.commons.platform.debt.SciconumTechDebt
 
 /**
  * Hard-coded scenarios for SCICONUM experiments.
  */
-@SciconumOnly
+@SciconumTechDebt
 enum class SciconumScenario {
 	/** Control scenario. Answer a question, and wait for the results. */
 	CONTROL,

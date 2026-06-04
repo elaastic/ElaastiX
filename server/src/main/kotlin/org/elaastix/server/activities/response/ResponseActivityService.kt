@@ -24,7 +24,7 @@ import jakarta.validation.Valid
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.inherits
 import org.elaastix.commons.orNotFound
-import org.elaastix.commons.platform.UnclearAuthorshipOwnership
+import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.commons.validate
 import org.elaastix.server.activities.response.dtos.ClosedQuestionStatementDto
 import org.elaastix.server.activities.response.dtos.ClosedResponseDto

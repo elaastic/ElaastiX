@@ -28,11 +28,10 @@ import org.springframework.security.core.GrantedAuthority
  *
  * The authentication provider may fail with [InsufficientAuthenticationException] if it deems the token unsuitable,
  * such as when not running in development.
+ *
+ * @property uuid The UUID to identify as.
  */
-class DevelopAuthenticationToken(
-	/** The UUID to identify as. */
-	val uuid: Uuid,
-) : AuthToken() {
+class DevelopAuthenticationToken(val uuid: Uuid) : AuthToken() {
 	override fun getAuthorities() = emptySet<GrantedAuthority>()
 
 	// There's never credentials in develop, it just lets you in w/o checks

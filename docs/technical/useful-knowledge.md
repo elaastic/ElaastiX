@@ -142,22 +142,25 @@ It'll prompt you many times whether to add files to Git or not, say yes to all (
 Whenever rushing out regrettable bits of code to meet a deadline, Kotlin's `OptIn` mechanism can be used to flag
 technical debt. This ensures traceability so we don't leave temporary workarounds permanently.
 
-1. Create a new annotation in Elaastix Commons Core, in `org.elaastix.commons.platform`. Give it a descriptive name.
-	- If relevant, require a text parameter that specifies additional context like `ExcludeFromCoverage` does.
+1. Create a new annotation in Elaastix Commons Core, in `org.elaastix.commons.platform.debt`. Give it a descriptive name.
+    - If relevant, declare one or more text parameters to require providing additional context like `ExcludeFromCoverage` does.
     - Put `@Retention(AnnotationRetention.BINARY)`, but don't specify `@Target`. The defaults for the latter are fine.
 2. Flag any class, function, property, variable, or otherwise that is to be considered tech debt.
-	- Adding an extra argument to a function to bypass complexity of a more robust approach? Flag the function[^kt-arg].
+    - Adding an extra argument to a function to bypass complexity of a more robust approach? Flag the function[^kt-arg].
     - Implementing a quick and dirty function for purposes related to the experiment? Flag the function.
     - Adding an interface to bypass cross-package isolation? Flag the interface.
     - Shoving some code in a package to avoid package isolation conceptual complexity overhead? Flag all the **top-level** elements.
       - i.e., flag classes but not their methods individually; they will already be flagged.
 3. The Kotlin compiler will annoy you every time you'll use something marked as temporary. This is desired, as every
-   use of temporary code is effectively *tainted*. You have two options:
-   - Also flag the use site with the annotation. This propagates the contamination, which is a good default choice.
-   - Use `@OptIn`. This stops the propagation of the contamination, meaning code that calls into a function that has
-     `OptIn` will not be considered tainted. **Only** do that if the exposed interfaces are **stable**, i.e. there are
-     no hacky workarounds/shortcuts/temporary logic any more.
-     - If unsure, prefer to over-propagate than under-propagate; that is, flag the use-site instead of opting-in.
+   use of temporary code is effectively *tainting* the use site. You have two options:
+   - Also flag the use site with the annotation. This propagates the taint, which is a good default choice.
+   - Use `@OptIn`. This stops the propagation of the taint, meaning code that calls into a function that has `OptIn`'d
+     will not be considered tainted. The function itself is tainted, but calling it doesn't introduce further tainting.
+     - Make sure to only apply it when it doesn't make sense to consider calls or usage tainted. If a property is
+       defined using a tainted type, then the property must not be `OptIn`'d as usages of such a property will need to
+       be reworked down the line. If a function interacts with tainted code but the ABI surface is stable, it makes
+       sense to `OptIn` it.
+	 - If unsure, prefer to over-propagate than under-propagate; that is, flag the use-site instead of opting-in.
 
 [^kt-arg]: Kotlin does not permit annotating value parameters (i.e., arguments).
 

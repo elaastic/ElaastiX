@@ -21,14 +21,14 @@ package org.elaastix.server.sequences.dto
 
 import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.platform.SciconumOnly
-import org.elaastix.commons.platform.UnclearAuthorshipOwnership
+import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.activities.response.dtos.QuestionStatementDto
 import org.elaastix.server.scenario.SciconumScenario
 
 @Serializable
 @Suppress("UndocumentedPublicClass") // TODO
-data class SequenceDto @SciconumOnly constructor(
+data class SequenceDto @SciconumTechDebt constructor(
 	/** The sequence's unique identifier. */
 	val id: Uuid,
 
@@ -36,11 +36,11 @@ data class SequenceDto @SciconumOnly constructor(
 	val name: String,
 
 	/** SCICONUM scenario of the sequence. */
-	@property:SciconumOnly
+	@property:SciconumTechDebt
 	val sciconumScenario: SciconumScenario,
 
 	/** Questions for the SCICONUM sequence. */
-	@property:SciconumOnly
+	@property:SciconumTechDebt
 	val sciconumQuestions: Iterable<QuestionStatementDto>,
 
 	/** Identifier of the scenario owner. */

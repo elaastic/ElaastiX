@@ -22,7 +22,7 @@ package org.elaastix.server.sequences.dto
 import jakarta.validation.constraints.Size
 import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.platform.SciconumOnly
+import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.scenario.SciconumScenario
 
 /**
@@ -30,13 +30,13 @@ import org.elaastix.server.scenario.SciconumScenario
  */
 @Serializable
 @Suppress("UndocumentedPublicProperty") // TODO
-data class CreateSequenceDto @SciconumOnly constructor(
+data class CreateSequenceDto @SciconumTechDebt constructor(
 	@Size(min = 2, max = 64)
 	val name: String,
 
-	@property:SciconumOnly
+	@property:SciconumTechDebt
 	val sciconumScenario: SciconumScenario,
 
-	@property:SciconumOnly
+	@property:SciconumTechDebt
 	val sciconumQuestionIds: Set<Uuid>,
 )

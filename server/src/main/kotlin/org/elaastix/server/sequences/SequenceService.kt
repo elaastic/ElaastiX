@@ -24,8 +24,8 @@ import jakarta.validation.ValidationException
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.exceptions.ResourceNotFoundException
 import org.elaastix.commons.orNotFound
-import org.elaastix.commons.platform.SciconumOnly
-import org.elaastix.commons.platform.UnclearAuthorshipOwnership
+import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.commons.toRefSet
 import org.elaastix.server.activities.response.ResponseActivityService.Companion.toDto
 import org.elaastix.server.activities.response.entities.QuestionEntity
@@ -43,11 +43,11 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class SequenceService(
 	private val sequenceRepository: SequenceRepository,
-	@property:SciconumOnly private val questionRepository: QuestionRepository,
+	@property:SciconumTechDebt private val questionRepository: QuestionRepository,
 ) {
 	companion object {
 		/** Maps a [SequenceEntity] to a [SequenceDto]. */
-		@OptIn(SciconumOnly::class, UnclearAuthorshipOwnership::class)
+		@OptIn(SciconumTechDebt::class, UnclearAuthorshipOwnership::class)
 		fun SequenceEntity.toDto(): SequenceDto =
 			SequenceDto(
 				id = id,
@@ -57,7 +57,7 @@ class SequenceService(
 				ownerId = owner.id,
 			)
 
-		@SciconumOnly
+		@SciconumTechDebt
 		fun QuestionEntity.toDto() =
 			QuestionStatementProjection.from(this).toDto()
 	}
@@ -95,7 +95,7 @@ class SequenceService(
 	@Transactional
 	fun createSequence(@Valid dto: CreateSequenceDto): SequenceDto {
 		val entity = sequenceRepository.persist(
-			@OptIn(SciconumOnly::class)
+			@OptIn(SciconumTechDebt::class)
 			SequenceEntity(
 				name = dto.name,
 				sciconumScenario = dto.sciconumScenario,
@@ -120,10 +120,10 @@ class SequenceService(
 		val entity = sequenceRepository.findByIdAndUpdate(id) {
 			dto.name.takeIfUpdated { name = it }
 
-			@OptIn(SciconumOnly::class)
+			@OptIn(SciconumTechDebt::class)
 			dto.sciconumScenario.takeIfUpdated { sciconumScenario = it }
 
-			@OptIn(SciconumOnly::class)
+			@OptIn(SciconumTechDebt::class)
 			dto.sciconumQuestionId.takeIfUpdated { sciconumQuestions = it.toRefSet(questionRepository) }
 		}
 

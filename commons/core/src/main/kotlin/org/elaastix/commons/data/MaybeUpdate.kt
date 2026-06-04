@@ -40,17 +40,21 @@ import kotlin.contracts.contract
  *   applied on the property with [kotlinx.serialization.EncodeDefault.Mode.ALWAYS].
  *
  * See [MaybeUpdateSerializer] for the rationale behind these requirements.
+ *
+ * @param T The wrapped type. Must be [kotlinx.serialization.Serializable].
  */
 @Serializable(with = MaybeUpdateSerializer::class)
 sealed class MaybeUpdate<out T> {
 	/** Represents a no-op state of [MaybeUpdate], i.e. no value was provided. */
 	object Keep : MaybeUpdate<Nothing>()
 
-	/** Represents an actual value, eventually nullable, that has been explicitly provided. */
-	class Update<T>(
-		/** The provided value. */
-		val value: T,
-	) : MaybeUpdate<T>()
+	/**
+	 * Represents an actual value, eventually nullable, that has been explicitly provided.
+	 *
+	 * @param T Type wrapped by [MaybeUpdate].
+	 * @property value The actual provided value.
+	 */
+	class Update<T>(val value: T) : MaybeUpdate<T>()
 
 	override fun equals(other: Any?): Boolean =
 		when (other) {

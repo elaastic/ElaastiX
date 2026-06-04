@@ -29,21 +29,21 @@ import kotlinx.serialization.Serializable
 sealed interface ClosedAnswer {
 	/**
 	 * Response to a single-choice closed question.
+	 * May be null, which indicates a "non-answer" answer, if you will.
+	 * IOW, an explicit "answer" from a participant that is not any of the provided choices.
+	 *
+	 * @property value An index into the question's choices list, or `null`.
 	 */
 	@Serializable
 	@SerialName("Single")
-	data class Single(
-		/** The underlying value; an index into the question's choices list. */
-		val value: UInt?,
-	) : ClosedAnswer
+	data class Single(val value: UInt?) : ClosedAnswer
 
 	/**
 	 * Response to a multiple-choice closed question.
+	 *
+	 * @property value The selected set of indices into the question's choices.
 	 */
 	@Serializable
 	@SerialName("Multiple")
-	data class Multiple(
-		/** The underlying value; a list of indices into the question's choices list. */
-		val value: Set<UInt>,
-	) : ClosedAnswer
+	data class Multiple(val value: Set<UInt>) : ClosedAnswer
 }

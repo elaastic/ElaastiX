@@ -24,12 +24,11 @@ import org.elaastix.mm.content.ContentTypesRegistry
 import org.elaastix.mm.content.FormattedContent
 
 /**
- * Contents formatted in Markdown (Obsidian Flavoured).
+ * Contents formatted in Obsidian Flavoured Markdown (OFM).
+ *
+ * @property content The OFM-formatted content.
  */
-class MarkdownContent(
-	/** The Markdown content. */
-	val content: String,
-) : FormattedContent {
+class MarkdownContent(val content: String) : FormattedContent {
 	companion object {
 		init {
 			ContentTypesRegistry.registerPlainTextType {

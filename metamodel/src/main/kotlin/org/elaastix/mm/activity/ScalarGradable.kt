@@ -35,6 +35,9 @@ interface ScalarGradable {
 
 /**
  * A linear grade, as an arbitrary number between zero and an upper bound.
+ *
+ * @property grade The given grade. MUST be less than or equal to [max].
+ * @property max Maximum grade that can be obtained. MUST be non-zero.
  */
 @JvmRecord
 @Embeddable
@@ -42,13 +45,7 @@ interface ScalarGradable {
 	"RedundantModalityModifier", // KT-86286
 	"JpaEntityWithValAttributesInspection", // KTIJ-37754
 )
-final data class ScalarGrade(
-	/** The given grade. MUST be less than or equal to [max]. */
-	val grade: Double,
-
-	/** Maximum grade that can be obtained. MUST be non-zero. */
-	val max: Double,
-) {
+final data class ScalarGrade(val grade: Double, val max: Double) {
 	init {
 		require(grade >= 0) { "Grade must be positive or zero" }
 		require(max > 0) { "Maximum value of the grade must be strictly positive" }

@@ -17,11 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.platform
+package org.elaastix.commons.platform.debt
 
 /**
- * Annotation flagging code that MUST NOT be preserved beyond the SCICONUM experiments.
+ * Annotation flagging code that must not be preserved beyond the SCICONUM experiments.
+ *
+ * @property explainer An optional explanation regarding why the code is tech debt and its relevance.
  */
-@RequiresOptIn(message = "SCICONUM-only code.")
+@Suppress("unused") // Used by humans ;)
+@RequiresOptIn("This is a temporary workaround or implementation introduced for shipping SCICONUM deliverables.")
 @Retention(AnnotationRetention.BINARY)
-annotation class SciconumOnly
+annotation class SciconumTechDebt(val explainer: String = "")

@@ -23,7 +23,7 @@ import jakarta.validation.constraints.Size
 import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.MaybeUpdate
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.platform.SciconumOnly
+import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.scenario.SciconumScenario
 
 /**
@@ -31,13 +31,13 @@ import org.elaastix.server.scenario.SciconumScenario
  */
 @Serializable
 @Suppress("UndocumentedPublicProperty") // TODO
-data class UpdateSequenceDto @SciconumOnly constructor(
+data class UpdateSequenceDto @SciconumTechDebt constructor(
 	@Size(min = 2, max = 64)
 	val name: MaybeUpdate<String>,
 
-	@property:SciconumOnly
+	@property:SciconumTechDebt
 	val sciconumScenario: MaybeUpdate<SciconumScenario>,
 
-	@property:SciconumOnly
+	@property:SciconumTechDebt
 	val sciconumQuestionId: MaybeUpdate<List<Uuid>>,
 )

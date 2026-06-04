@@ -20,7 +20,7 @@
 package org.elaastix.server.core.infrastructure.seed
 
 import jakarta.persistence.EntityManager
-import org.elaastix.commons.platform.UnclearAuthorshipOwnership
+import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.activities.response.entities.ClosedQuestionEntity
 import org.elaastix.server.activities.response.entities.QuestionEntity

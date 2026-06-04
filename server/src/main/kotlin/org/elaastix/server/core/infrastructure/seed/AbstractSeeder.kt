@@ -24,7 +24,7 @@ import jakarta.transaction.Transactional
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.JpaImmutable
-import org.elaastix.commons.platform.UnclearAuthorshipOwnership
+import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.core.AbstractEntityWithAuthorship
 import org.elaastix.server.users.entities.UserEntity
 import org.springframework.boot.ApplicationRunner
