@@ -26,6 +26,7 @@ import org.elaastix.commons.exceptions.ResourceNotFoundException
 import org.elaastix.commons.orNotFound
 import org.elaastix.commons.platform.SciconumOnly
 import org.elaastix.commons.platform.UnclearAuthorshipOwnership
+import org.elaastix.commons.toRefSet
 import org.elaastix.server.activities.response.ResponseActivityService.Companion.toDto
 import org.elaastix.server.activities.response.entities.QuestionEntity
 import org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection
@@ -52,7 +53,7 @@ class SequenceService(
 				id = id,
 				name = name,
 				sciconumScenario = sciconumScenario,
-				sciconumQuestion = sciconumQuestion.toDto(),
+				sciconumQuestions = sciconumQuestions.map { it.toDto() },
 				ownerId = owner.id,
 			)
 
@@ -98,7 +99,7 @@ class SequenceService(
 			SequenceEntity(
 				name = dto.name,
 				sciconumScenario = dto.sciconumScenario,
-				sciconumQuestion = questionRepository.getReferenceById(dto.sciconumQuestionId),
+				sciconumQuestions = dto.sciconumQuestionIds.toRefSet(questionRepository),
 			),
 		)
 
@@ -117,13 +118,13 @@ class SequenceService(
 	@Transactional
 	fun updateSequence(id: Uuid, @Valid dto: UpdateSequenceDto): SequenceDto {
 		val entity = sequenceRepository.findByIdAndUpdate(id) {
-			dto.name.take { name = it }
+			dto.name.takeIfUpdated { name = it }
 
 			@OptIn(SciconumOnly::class)
-			dto.sciconumScenario.take { sciconumScenario = it }
+			dto.sciconumScenario.takeIfUpdated { sciconumScenario = it }
 
 			@OptIn(SciconumOnly::class)
-			dto.sciconumQuestionId.take { sciconumQuestion = questionRepository.getReferenceById(it) }
+			dto.sciconumQuestionId.takeIfUpdated { sciconumQuestions = it.toRefSet(questionRepository) }
 		}
 
 		return entity.orNotFound().toDto()

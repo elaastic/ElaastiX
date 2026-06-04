@@ -41,5 +41,5 @@ data class UpdateSequenceDto @SciconumOnly constructor(
 	val sciconumScenario: MaybeUpdate<SciconumScenario>,
 
 	@property:SciconumOnly
-	val sciconumQuestionId: MaybeUpdate<Uuid>,
+	val sciconumQuestionId: MaybeUpdate<List<Uuid>>,
 )

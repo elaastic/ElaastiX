@@ -39,9 +39,9 @@ data class SequenceDto @SciconumOnly constructor(
 	@property:SciconumOnly
 	val sciconumScenario: SciconumScenario,
 
-	/** Question for the SCICONUM sequence. */
+	/** Questions for the SCICONUM sequence. */
 	@property:SciconumOnly
-	val sciconumQuestion: QuestionStatementDto,
+	val sciconumQuestions: Iterable<QuestionStatementDto>,
 
 	/** Identifier of the scenario owner. */
 	@property:UnclearAuthorshipOwnership

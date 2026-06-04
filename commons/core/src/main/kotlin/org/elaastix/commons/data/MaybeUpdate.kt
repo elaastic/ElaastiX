@@ -82,27 +82,10 @@ sealed class MaybeUpdate<out T> {
 		}
 
 	/**
-	 * Calls the specified function [block] with the update value and returns its result if `this` is an [Update],
-	 * returns null otherwise.
-	 *
-	 * @see take
+	 * Calls [block] with the update value if `this` is an [Update].
 	 */
 	@OptIn(ExperimentalContracts::class)
-	fun <R> map(block: (T) -> R): R? {
-		contract { callsInPlace(block, InvocationKind.AT_MOST_ONCE) }
-		return when (this) {
-			is Update<T> -> block(this.value)
-			else -> null
-		}
-	}
-
-	/**
-	 * Calls the specified function [block] with the update value if `this` is an [Update]. Does not return anything.
-	 *
-	 * @see map
-	 */
-	@OptIn(ExperimentalContracts::class)
-	fun take(block: (T) -> Unit) {
+	fun takeIfUpdated(block: (T) -> Unit) {
 		contract { callsInPlace(block, InvocationKind.AT_MOST_ONCE) }
 		if (this is Update<T>) block(this.value)
 	}

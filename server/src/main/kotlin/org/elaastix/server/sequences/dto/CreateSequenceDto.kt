@@ -38,5 +38,5 @@ data class CreateSequenceDto @SciconumOnly constructor(
 	val sciconumScenario: SciconumScenario,
 
 	@property:SciconumOnly
-	val sciconumQuestionId: Uuid,
+	val sciconumQuestionIds: Set<Uuid>,
 )

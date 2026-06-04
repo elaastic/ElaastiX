@@ -23,6 +23,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
+import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.validation.constraints.Size
 import org.elaastix.commons.jpa.entity.AbstractEntity
@@ -56,8 +57,8 @@ class SequenceEntity @SciconumOnly constructor(
 	 * Question for the SCICONUM sequence.
 	 */
 	@property:SciconumOnly
-	@ManyToOne(fetch = FetchType.EAGER)
-	var sciconumQuestion: QuestionEntity,
+	@ManyToMany(fetch = FetchType.EAGER)
+	var sciconumQuestions: MutableSet<QuestionEntity>,
 ) : AbstractEntity() {
 	/**
 	 * Owner of the resource, but not necessarily its author per se.
