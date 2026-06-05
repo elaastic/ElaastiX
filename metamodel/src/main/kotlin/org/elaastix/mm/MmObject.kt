@@ -17,12 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("ForbiddenImport") // We don't have access to Elaastix Commons here
-
 package org.elaastix.mm
 
+import org.elaastix.commons.data.Uuid
 import kotlin.time.Instant
-import kotlin.uuid.Uuid
 
 /**
  * Base interface of all objects from the metamodel.
