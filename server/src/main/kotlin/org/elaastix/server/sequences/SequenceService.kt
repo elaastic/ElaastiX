@@ -124,7 +124,7 @@ class SequenceService(
 			dto.sciconumScenario.takeIfUpdated { sciconumScenario = it }
 
 			@OptIn(SciconumTechDebt::class)
-			dto.sciconumQuestionId.takeIfUpdated { sciconumQuestions = it.toRefSet(questionRepository) }
+			dto.sciconumQuestionIds.takeIfUpdated { sciconumQuestions = it.toRefSet(questionRepository) }
 		}
 
 		return entity.orNotFound().toDto()

@@ -30,7 +30,6 @@ import org.elaastix.server.scenario.SciconumScenario
  * Request payload for updating a sequence.
  */
 @Serializable
-@Suppress("UndocumentedPublicProperty") // TODO
 data class UpdateSequenceDto @SciconumTechDebt constructor(
 	@Size(min = 2, max = 64)
 	val name: MaybeUpdate<String> = MaybeUpdate.Keep,
@@ -39,5 +38,5 @@ data class UpdateSequenceDto @SciconumTechDebt constructor(
 	val sciconumScenario: MaybeUpdate<SciconumScenario> = MaybeUpdate.Keep,
 
 	@property:SciconumTechDebt
-	val sciconumQuestionId: MaybeUpdate<Set<Uuid>> = MaybeUpdate.Keep,
+	val sciconumQuestionIds: MaybeUpdate<Set<Uuid>> = MaybeUpdate.Keep,
 )

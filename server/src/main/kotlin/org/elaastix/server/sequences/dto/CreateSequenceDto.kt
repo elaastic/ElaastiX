@@ -29,7 +29,6 @@ import org.elaastix.server.scenario.SciconumScenario
  * Request payload for creating a sequence.
  */
 @Serializable
-@Suppress("UndocumentedPublicProperty") // TODO
 data class CreateSequenceDto @SciconumTechDebt constructor(
 	@Size(min = 2, max = 64)
 	val name: String,

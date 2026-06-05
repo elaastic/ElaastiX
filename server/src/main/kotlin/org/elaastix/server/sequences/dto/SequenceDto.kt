@@ -27,7 +27,6 @@ import org.elaastix.server.activities.response.dtos.QuestionStatementDto
 import org.elaastix.server.scenario.SciconumScenario
 
 @Serializable
-@Suppress("UndocumentedPublicClass") // TODO
 data class SequenceDto @SciconumTechDebt constructor(
 	/** The sequence's unique identifier. */
 	val id: Uuid,
