@@ -50,11 +50,11 @@ import kotlin.io.encoding.Base64
 @Service
 @SciconumTechDebt
 class LtiService(
-	@Value("elaastix.lti.consumer-key")
+	@Value($$"${elaastix.lti.consumer-key}")
 	private val consumerKey: String,
-	@Value("elaastix.lti.consumer-secret")
+	@Value($$"${elaastix.lti.consumer-secret}")
 	private val consumerSecret: String,
-	@Value("elaastix.cookie-secure")
+	@Value($$"${elaastix.cookie-secure:true}")
 	private val cookieSecure: Boolean,
 	private val userRepository: UserRepository,
 	private val lmsUserRepository: LmsUserRepository,

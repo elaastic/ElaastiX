@@ -112,6 +112,6 @@ class SecurityConfiguration : WebMvcConfigurer {
 	fun securityEvaluationContextExtension() = SecurityEvaluationContextExtension()
 
 	@Bean
-	fun encryptors(@Value("elaastix.security.encryption-key") key: String) =
+	fun encryptors(@Value($$"${elaastix.security.encryption-key}") key: String) =
 		Encryptors.stronger(key, KeyGenerators.secureRandom().generateKey().toHexString())
 }

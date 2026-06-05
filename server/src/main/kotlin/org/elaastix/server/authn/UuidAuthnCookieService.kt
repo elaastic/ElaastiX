@@ -33,7 +33,7 @@ import kotlin.time.DurationUnit
 @Service
 @SciconumTechDebt
 class UuidAuthnCookieService(
-	@Value("elaastix.cookie-secure")
+	@Value($$"${elaastix.cookie-secure:true}")
 	private val cookieSecure: Boolean,
 	private val encryptor: BytesEncryptor,
 ) {
