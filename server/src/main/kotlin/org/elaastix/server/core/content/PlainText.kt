@@ -24,11 +24,10 @@ import org.elaastix.mm.content.FormattedText
 
 /**
  * Plain text without any formatting.
+ *
+ * @property content The plain text content.
  */
-class PlainText(
-	/** The text content. */
-	val content: String,
-) : FormattedText {
+class PlainText(val content: String) : FormattedText {
 	companion object {
 		init {
 			ContentTypesRegistry.registerPlainTextType { PlainText(it) }

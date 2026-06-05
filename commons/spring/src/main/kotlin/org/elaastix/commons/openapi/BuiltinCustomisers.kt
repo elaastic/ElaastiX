@@ -44,7 +44,7 @@ import kotlin.reflect.jvm.jvmName
 @Configuration(proxyBeanMethods = false)
 class BuiltinCustomisers(private val json: Json) {
 	/**
-	 * OpenAPI property customiser setting the schema of well-known types such as [org.elaastix.commons.data.Uuid].
+	 * OpenAPI property customiser setting the schema of well-known types such as [Uuid].
 	 */
 	@Bean
 	fun commonTypesCustomiser(): PropertyCustomizer {

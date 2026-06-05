@@ -24,6 +24,7 @@ import jakarta.validation.Valid
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.inherits
 import org.elaastix.commons.orNotFound
+import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.commons.validate
 import org.elaastix.server.activities.response.dtos.ClosedQuestionStatementDto
 import org.elaastix.server.activities.response.dtos.ClosedResponseDto
@@ -64,6 +65,7 @@ class ResponseActivityService(
 			}
 
 		/** Transforms a [ResponseEntity] into a [ResponseDto]. */
+		@OptIn(UnclearAuthorshipOwnership::class)
 		fun ResponseEntity<*, *>.toDto() =
 			when (this) {
 				is OpenResponseEntity ->
@@ -105,7 +107,7 @@ class ResponseActivityService(
 		val statement = questionRepository.findQuestionStatementById(questionId).orNotFound()
 
 		val entity =
-			when (val questionRef = questionRepository.getEntityReferenceWithType(statement.id, statement.type)) {
+			when (val questionRef = questionRepository.getTypedReferenceById(statement.type, statement.id)) {
 				is OpenQuestionEntity -> {
 					validate(response is OpenResponseSubmitDto) { "Response type does not match the question's type." }
 					OpenResponseEntity(

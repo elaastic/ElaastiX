@@ -23,13 +23,11 @@ package org.elaastix.commons.platform
  * Annotation excluding a class or a function from code coverage.
  * Requires an explicit message clarifying the reason behind the exclusion.
  * Can also include a link to an issue, if appropriate.
+ *
+ * @property message Explanation as to why the class or function is being excluded from code coverage calculations.
+ * @property ref A link to a relevant GitHub issue or comment that contains more information about the exclusion.
  */
 @Suppress("unused") // Used by humans ;)
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
-annotation class ExcludeFromCoverage(
-	/** Explanation as to why the class or function is being excluded from code coverage calculations. */
-	val message: String,
-	/** A link to a relevant GitHub issue or comment that contains more information about the exclusion. */
-	val ref: String = "",
-)
+annotation class ExcludeFromCoverage(val message: String, val ref: String = "")

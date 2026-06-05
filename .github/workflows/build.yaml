@@ -159,6 +159,9 @@ jobs:
           - project: commons:core
             path: commons/core
             name: commons-core
+          - project: commons:spring
+            path: commons/spring
+            name: commons-spring
           - project: metamodel
             path: metamodel
             name: metamodel
@@ -250,7 +253,7 @@ jobs:
       - name: Prepare coverage reports for Koverreport
         run: |
           mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-commons-core" "$GITHUB_WORKSPACE/commons/core/build/kover"
-          #mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-commons-jpa" "$GITHUB_WORKSPACE/commons/jpa/build/kover"
+          mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-commons-spring" "$GITHUB_WORKSPACE/commons/spring/build/kover"
           mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-metamodel" "$GITHUB_WORKSPACE/metamodel/build/kover"
           mv "$GITHUB_WORKSPACE/kotlin-codecov-report-raw-server" "$GITHUB_WORKSPACE/server/build/kover"
         env:

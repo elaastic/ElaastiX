@@ -42,7 +42,7 @@ class OpenQuestionEntity(
 	 * question author to put themselves in the student's shoes while preparing the questions.
 	 */
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Suppress("JpaAttributeTypeInspection") // https://youtrack.jetbrains.com/issue/IDEA-191568
+	@Suppress("JpaAttributeTypeInspection") // IDEA-191568
 	var expectedAnswer: FormattedContent,
 
 	answerExplanation: RichContent?,

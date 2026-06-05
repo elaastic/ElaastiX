@@ -46,7 +46,7 @@ class ClosedQuestionEntity(
 
 	/** The expected answer. */
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Suppress("JpaAttributeTypeInspection") // https://youtrack.jetbrains.com/issue/IDEA-191568
+	@Suppress("JpaAttributeTypeInspection") // IDEA-191568
 	var expectedAnswer: ClosedAnswer,
 
 	answerExplanation: RichContent?,

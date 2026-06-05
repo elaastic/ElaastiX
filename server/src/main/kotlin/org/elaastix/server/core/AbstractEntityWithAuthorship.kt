@@ -23,6 +23,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.MappedSuperclass
 import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.JpaImmutable
+import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.users.entities.UserEntity
 import org.springframework.data.annotation.CreatedBy
 
@@ -37,6 +38,7 @@ abstract class AbstractEntityWithAuthorship : AbstractEntity() {
 	/**
 	 * The original author.
 	 */
+	@property:UnclearAuthorshipOwnership
 	@CreatedBy
 	@ManyToOne
 	lateinit var author: UserEntity

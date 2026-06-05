@@ -17,21 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.security
-
-import org.springframework.security.access.prepost.PreAuthorize
+package org.elaastix.commons.platform.wip
 
 /**
- * Marks a function, or all functions of a class, as requiring [permission].
- * May be used as a meta-annotation.
- *
- * @see HasRole
- * @see PreAuthorize
+ * Annotation flagging code relating to authorship and ownership.
+ * These concepts and their implementation have not been clearly defined, so they're considered highly experimental.
  */
-@PreAuthorize("hasAuthority('{permission.authority}')")
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class HasPermission(
-	/** The permission to match. */
-	val permission: Permission,
-)
+@RequiresOptIn(message = "Implementation of authorship and ownership of resources is currently unclear.")
+@Retention(AnnotationRetention.BINARY)
+annotation class UnclearAuthorshipOwnership

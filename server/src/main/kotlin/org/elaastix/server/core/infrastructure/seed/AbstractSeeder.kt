@@ -24,6 +24,7 @@ import jakarta.transaction.Transactional
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.JpaImmutable
+import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.core.AbstractEntityWithAuthorship
 import org.elaastix.server.users.entities.UserEntity
 import org.springframework.boot.ApplicationRunner
@@ -33,6 +34,7 @@ import org.springframework.boot.ApplicationRunner
 abstract class AbstractSeeder(private val entityManager: EntityManager) : ApplicationRunner {
 	protected fun <T : AbstractEntity> upsert(id: ULong, entity: T): T = upsert0(id, entity)
 
+	@UnclearAuthorshipOwnership
 	protected fun <T : AbstractEntityWithAuthorship> upsert(id: ULong, author: UserEntity, entity: T): T =
 		upsert0(id, entity) {
 			@OptIn(JpaImmutable::class)

@@ -20,11 +20,13 @@
 package org.elaastix.server.activities.response.entities.projections
 
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.mm.content.FormattedText
 import org.elaastix.mm.content.RichContent
 import org.elaastix.server.activities.response.entities.ClosedQuestionEntity
 import org.elaastix.server.activities.response.entities.OpenQuestionEntity
 import org.elaastix.server.activities.response.entities.QuestionEntity
+import org.elaastix.server.activities.response.repositories.QuestionRepository
 
 // One would think some of the documentation is tautologic, especially when it's just `@see [...]`.
 // But it's actually a nice way to see the identifiers match, which is actually important for the projection.
@@ -34,6 +36,8 @@ import org.elaastix.server.activities.response.entities.QuestionEntity
  *
  * This type is meant as a transition layer between the DAO and the service layer. As soon as this object is
  * received, you should transform it in a more suitable type.
+ *
+ * @see QuestionRepository.findQuestionStatementById
  */
 data class QuestionStatementProjection(
 	/**
@@ -67,4 +71,36 @@ data class QuestionStatementProjection(
 	 * @see [ClosedQuestionEntity.multiple]
 	 */
 	val multiple: Boolean?,
-)
+) {
+	companion object {
+		/**
+		 * Helper factory to convert an entity to a projection.
+		 */
+		@SciconumTechDebt(
+			explainer = "Projections are theoretically only to be constructed within the the persistence layer. " +
+				"They serve as glue code to encapsulate arbitrary data returned from the DB in a Java container. " +
+				"Converting an entity to a projection (which is in this case a worse type) is used as a shortcut " +
+				"to avoid writing the projection queries and just process the bag of questions fetched by Hibernate.",
+		)
+		fun from(entity: QuestionEntity) =
+			when (entity) {
+				is ClosedQuestionEntity ->
+					QuestionStatementProjection(
+						type = ClosedQuestionEntity::class.java,
+						id = entity.id,
+						statement = entity.statement,
+						choices = entity.choices,
+						multiple = entity.multiple,
+					)
+
+				else ->
+					QuestionStatementProjection(
+						type = OpenQuestionEntity::class.java,
+						id = entity.id,
+						statement = entity.statement,
+						choices = null,
+						multiple = null,
+					)
+			}
+	}
+}

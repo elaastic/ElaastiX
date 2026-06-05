@@ -26,6 +26,9 @@ import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import org.elaastix.commons.platform.ExcludeFromCoverage
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 /**
  * Wrapper class that materialises both the absence of data and a null value as two distinct concepts.
@@ -37,17 +40,21 @@ import org.elaastix.commons.platform.ExcludeFromCoverage
  *   applied on the property with [kotlinx.serialization.EncodeDefault.Mode.ALWAYS].
  *
  * See [MaybeUpdateSerializer] for the rationale behind these requirements.
+ *
+ * @param T The wrapped type. Must be [kotlinx.serialization.Serializable].
  */
 @Serializable(with = MaybeUpdateSerializer::class)
 sealed class MaybeUpdate<out T> {
 	/** Represents a no-op state of [MaybeUpdate], i.e. no value was provided. */
 	object Keep : MaybeUpdate<Nothing>()
 
-	/** Represents an actual value, eventually nullable, that has been explicitly provided. */
-	class Update<T>(
-		/** The provided value. */
-		val value: T,
-	) : MaybeUpdate<T>()
+	/**
+	 * Represents an actual value, eventually nullable, that has been explicitly provided.
+	 *
+	 * @param T Type wrapped by [MaybeUpdate].
+	 * @property value The actual provided value.
+	 */
+	class Update<T>(val value: T) : MaybeUpdate<T>()
 
 	override fun equals(other: Any?): Boolean =
 		when (other) {
@@ -77,6 +84,15 @@ sealed class MaybeUpdate<out T> {
 					else -> "MaybeUpdate.Update(${this.value})"
 				}
 		}
+
+	/**
+	 * Calls [block] with the update value if `this` is an [Update].
+	 */
+	@OptIn(ExperimentalContracts::class)
+	fun takeIfUpdated(block: (T) -> Unit) {
+		contract { callsInPlace(block, InvocationKind.AT_MOST_ONCE) }
+		if (this is Update<T>) block(this.value)
+	}
 }
 
 /**

@@ -26,11 +26,10 @@ import org.elaastix.mm.content.FormattedText
  * Plain text formatted in Markdown (inline syntax elements only).
  *
  * CommonMark (0.31.2) § 6 "Inlines" ONLY, excluding § 6.4 "Images", § 6.6 "Raw HTML", § 6.7 "Hard line breaks".
+ *
+ * @property content The Markdown-inline-formatted text.
  */
-class MarkdownText(
-	/** The Markdown text. */
-	val content: String,
-) : FormattedText {
+class MarkdownText(val content: String) : FormattedText {
 	companion object {
 		init {
 			ContentTypesRegistry.registerPlainTextType {

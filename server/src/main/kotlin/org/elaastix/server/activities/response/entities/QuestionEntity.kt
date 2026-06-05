@@ -36,12 +36,12 @@ import org.hibernate.type.SqlTypes
 abstract class QuestionEntity(
 	/** The question's statement. */
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Suppress("JpaAttributeTypeInspection") // https://youtrack.jetbrains.com/issue/IDEA-191568
+	@Suppress("JpaAttributeTypeInspection") // IDEA-191568
 	var statement: RichContent,
 
 	/** The explanation of the expected answer. Optional. */
 	@JdbcTypeCode(SqlTypes.JSON)
-	@Suppress("JpaAttributeTypeInspection") // https://youtrack.jetbrains.com/issue/IDEA-191568
+	@Suppress("JpaAttributeTypeInspection") // IDEA-191568
 	var answerExplanation: RichContent?,
 ) : AbstractEntityWithAuthorship(),
 	Material

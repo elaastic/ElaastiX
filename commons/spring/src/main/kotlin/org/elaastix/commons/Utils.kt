@@ -19,17 +19,25 @@
 
 package org.elaastix.commons
 
+import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.exceptions.BadRequestException
 import org.elaastix.commons.exceptions.ResourceNotFoundException
+import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.commons.jpa.repository.ElaastixRepository
+import java.util.Optional
 import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.ExperimentalExtendedContracts
 import kotlin.contracts.contract
 
 /**
  * Throws a [BadRequestException] if [value] is false.
  */
 fun validate(value: Boolean, lazyMessage: () -> Any) {
-	@OptIn(ExperimentalContracts::class)
-	contract { returns() implies value }
+	@OptIn(ExperimentalContracts::class, ExperimentalExtendedContracts::class)
+	contract {
+		returns() implies value
+		!value holdsIn lazyMessage
+	}
 
 	if (!value) {
 		val message = lazyMessage()
@@ -37,7 +45,15 @@ fun validate(value: Boolean, lazyMessage: () -> Any) {
 	}
 }
 
-/**
- * Throws a [ResourceNotFoundException] if null.
- */
+/** Throws a [ResourceNotFoundException] if null. */
 fun <T> T?.orNotFound(): T = this ?: throw ResourceNotFoundException()
+
+/** Throws a [ResourceNotFoundException] if empty. */
+fun <T> Optional<T>.orNotFound(): T = orElseThrow { throw ResourceNotFoundException() }
+
+/** Maps a collection of [Uuid] to a set of entities. */
+fun <T : AbstractEntity> Collection<Uuid>.toRefSet(repo: ElaastixRepository<T>): MutableSet<T> {
+	val set = LinkedHashSet<T>(this.size)
+	for (id in this) set.add(repo.getReferenceById(id))
+	return set
+}

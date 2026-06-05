@@ -28,6 +28,7 @@ import org.elaastix.commons.applyAs
 import org.elaastix.commons.cast
 import org.elaastix.commons.exceptions.BadRequestException
 import org.elaastix.commons.platform.JpaImmutable
+import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.activities.response.ResponseActivityService
 import org.elaastix.server.activities.response.dtos.ClosedResponseDto
@@ -75,7 +76,7 @@ class ResponseActivityServiceTest {
 		}
 
 	@BeforeEach
-	@OptIn(JpaImmutable::class)
+	@OptIn(JpaImmutable::class, UnclearAuthorshipOwnership::class)
 	fun `mock test repository`() {
 		val (_, user) = mockkEntity<UserEntity>()
 		given { responseRepo.persist(any()) } answers {
@@ -89,7 +90,7 @@ class ResponseActivityServiceTest {
 	fun `persists open response to an open question`() {
 		val (questionId, question) = mockkEntity<OpenQuestionEntity>()
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.getTypedReferenceById<QuestionEntity>(any(), questionId) } returns question
 		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		val response = assertDoesNotThrow {
@@ -120,7 +121,7 @@ class ResponseActivityServiceTest {
 			given { choices } returns listOf(PlainText("1"), PlainText("2"))
 		}
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.getTypedReferenceById<QuestionEntity>(any(), questionId) } returns question
 		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		val response = assertDoesNotThrow {
@@ -149,7 +150,7 @@ class ResponseActivityServiceTest {
 	fun `rejects mismatched question and response types`() {
 		val (questionId, question) = mockkEntity<ClosedQuestionEntity>()
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.getTypedReferenceById<QuestionEntity>(any(), questionId) } returns question
 		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		assertThrows<BadRequestException> {
@@ -175,7 +176,7 @@ class ResponseActivityServiceTest {
 			given { choices } returns listOf(PlainText("1"), PlainText("2"))
 		}
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.getTypedReferenceById<QuestionEntity>(any(), questionId) } returns question
 		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		assertThrows<BadRequestException> {
@@ -201,7 +202,7 @@ class ResponseActivityServiceTest {
 			given { choices } returns listOf(PlainText("1"), PlainText("2"))
 		}
 
-		given { questionRepo.getEntityReferenceWithType<QuestionEntity>(questionId, any()) } returns question
+		given { questionRepo.getTypedReferenceById<QuestionEntity>(any(), questionId) } returns question
 		given { questionRepo.findQuestionStatementById(questionId) } returns mockkStatementProjection(question)
 
 		assertThrows<BadRequestException> {

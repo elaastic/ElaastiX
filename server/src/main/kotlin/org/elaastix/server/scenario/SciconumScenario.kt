@@ -17,21 +17,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.security
+package org.elaastix.server.scenario
 
-import org.springframework.security.access.prepost.PreAuthorize
+import org.elaastix.commons.platform.debt.SciconumTechDebt
 
 /**
- * Helper annotation to only allow users with a given role to perform a call.
- * May be used as a meta-annotation.
- *
- * @see HasPermission
- * @see PreAuthorize
+ * Hard-coded scenarios for SCICONUM experiments.
  */
-@PreAuthorize("hasAuthority('{role.authority}')")
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class HasRole(
-	/** The role to match. */
-	val role: Role,
-)
+@SciconumTechDebt
+enum class SciconumScenario {
+	/** Control scenario. Answer a question, and wait for the results. */
+	CONTROL,
+
+	/** Peer assessment scenario. Answer a question, then judge answers from peers, and wait for results. */
+	PEER_ASSESSMENT,
+
+	/** Peer discussion scenario. Answer a question, discuss via instant chat, and wait for results. */
+	PEER_DEBATE,
+}
