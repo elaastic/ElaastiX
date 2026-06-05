@@ -19,33 +19,30 @@
 
 package org.elaastix.server.authn
 
+import jakarta.servlet.http.Cookie
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.data.UuidSerializer.toStringBase36
-import org.springframework.security.authentication.InsufficientAuthenticationException
 import org.springframework.security.core.GrantedAuthority
 
 /**
- * Authentication token for the `Develop` authentication method. Only usable in dev.
+ * Authentication token for cookie-based authentication.
  *
- * The authentication provider may fail with [InsufficientAuthenticationException] if it deems the token unsuitable,
- * such as when not running in development.
- *
- * @property uuid The UUID to identify as.
+ * @property cookie The cookie sent by the client
+ * @property userId The user ID contained in the cookie
  */
-class DevelopAuthenticationToken(val uuid: Uuid) : AuthToken() {
+class CookieAuthenticationToken(val cookie: Cookie, val userId: Uuid) : AuthToken() {
 	override fun getAuthorities() = emptySet<GrantedAuthority>()
 
-	// There's never credentials in develop, it just lets you in w/o checks
-	override fun getCredentials() = null
+	override fun getCredentials() = cookie
 
 	override fun getDetails() = null
 
-	override fun getPrincipal() = uuid
+	override fun getPrincipal() = userId
 
 	override fun isAuthenticated() = false
 
 	override fun setAuthenticated(authenticated: Boolean) =
 		throw UnsupportedOperationException("Cannot change the authentication status of a token")
 
-	override fun getName() = uuid.toStringBase36()
+	override fun getName() = userId.toStringBase36()
 }

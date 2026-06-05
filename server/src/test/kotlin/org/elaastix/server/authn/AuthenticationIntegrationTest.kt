@@ -65,6 +65,7 @@ class AuthenticationIntegrationTest : IntegrationTest() {
 			val user = UserEntity(
 				firstName = "Ada",
 				lastName = "Lovelace",
+				email = "ada.lovelace@elaastix.test",
 			)
 
 			user.persist()
@@ -83,6 +84,7 @@ class AuthenticationIntegrationTest : IntegrationTest() {
 			val user = UserEntity(
 				firstName = "Ada",
 				lastName = "Lovelace",
+				email = "ada.lovelace@elaastix.test",
 			)
 
 			user.persist()

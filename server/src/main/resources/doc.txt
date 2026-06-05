@@ -1,0 +1,6 @@
+LTI configuration:
+- elaastix.lti.consumer-key
+- elaastix.lti.consumer-secret
+
+Security keys
+- elaastix.security.encryption-key

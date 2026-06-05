@@ -48,3 +48,6 @@ management:
     web:
       exposure:
         include: health,scalar
+
+elaastix:
+  cookie-secure: true
