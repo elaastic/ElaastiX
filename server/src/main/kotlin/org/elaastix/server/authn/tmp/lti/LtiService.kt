@@ -48,13 +48,14 @@ import org.springframework.stereotype.Service
 import kotlin.io.encoding.Base64
 
 @Service
+@ConditionalOnLti
 @SciconumTechDebt
 class LtiService(
 	@Value($$"${elaastix.lti.consumer-key}")
 	private val consumerKey: String,
 	@Value($$"${elaastix.lti.consumer-secret}")
 	private val consumerSecret: String,
-	@Value($$"${elaastix.cookie-secure:true}")
+	@Value($$"${elaastix.security.cookie-secure:true}")
 	private val cookieSecure: Boolean,
 	private val userRepository: UserRepository,
 	private val lmsUserRepository: LmsUserRepository,
@@ -86,7 +87,7 @@ class LtiService(
 		return when (val user = lmsUserRepository.findByLtiUserId(dto.user_id)) {
 			null -> {
 				// Cannot save user yet, consent to process data not acquired.
-				// Save in an encrypted cookie for finalise.
+				// Save in an encrypted cookie for finalise. Safe because we use AEAD.
 				val data = json.encodeToString(dto).toByteArray()
 				val encrypted = Base64.encode(encryptor.encrypt(data))
 				val cookie = Cookie("lti-data", encrypted).apply {
@@ -110,6 +111,9 @@ class LtiService(
 	): ResponseEntity<Unit> {
 		val cookie = request.cookies.find { it.name == LTI_COOKIE }
 			?: throw BadRequestException()
+
+		// Delete cookie
+		response.addCookie(Cookie(LTI_COOKIE, "").apply { maxAge = 0 })
 
 		val plain = encryptor.decrypt(Base64.decode(cookie.value)).decodeToString()
 		val dto = json.decodeFromString<LtiLaunchDataDto>(plain)

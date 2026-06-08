@@ -17,16 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn.tmp.lti.lms
+package org.elaastix.server.authn.tmp.lti
 
-import org.elaastix.commons.jpa.repository.ElaastixRepository
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.authn.tmp.lti.ConditionalOnLti
-import org.springframework.stereotype.Repository
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 
-@SciconumTechDebt
-@Repository
-@ConditionalOnLti
-interface LmsUserRepository : ElaastixRepository<LmsUser> {
-	fun findByLtiUserId(id: String): LmsUser?
-}
+/**
+ * Disables the component if LTI is not configured.
+ */
+@ConditionalOnProperty(name = ["elaastix.lti.consumer-key", "elaastix.lti.consumer-secret"], matchIfMissing = false)
+annotation class ConditionalOnLti

@@ -50,4 +50,5 @@ management:
         include: health,scalar
 
 elaastix:
-  cookie-secure: true
+  security:
+    cookie-secure: true

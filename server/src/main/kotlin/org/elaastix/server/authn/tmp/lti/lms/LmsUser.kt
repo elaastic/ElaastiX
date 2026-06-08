@@ -22,6 +22,7 @@ package org.elaastix.server.authn.tmp.lti.lms
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.OneToOne
+import jakarta.validation.constraints.NotNull
 import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.users.entities.UserEntity
@@ -29,7 +30,10 @@ import org.elaastix.server.users.entities.UserEntity
 @SciconumTechDebt
 @Entity
 class LmsUser(
+	@NotNull
 	var ltiUserId: String,
+
+	@NotNull
 	@OneToOne(fetch = FetchType.EAGER)
-	val user: UserEntity,
+	var user: UserEntity,
 ) : AbstractEntity()

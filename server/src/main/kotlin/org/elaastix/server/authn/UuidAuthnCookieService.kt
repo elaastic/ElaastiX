@@ -33,7 +33,7 @@ import kotlin.time.DurationUnit
 @Service
 @SciconumTechDebt
 class UuidAuthnCookieService(
-	@Value($$"${elaastix.cookie-secure:true}")
+	@Value($$"${elaastix.security.cookie-secure:true}")
 	private val cookieSecure: Boolean,
 	private val encryptor: BytesEncryptor,
 ) {
@@ -49,7 +49,7 @@ class UuidAuthnCookieService(
 		}
 
 	fun readCookie(request: HttpServletRequest) =
-		request.cookies.find { it.name == COOKIE_UUID_NAME }
+		request.cookies?.find { it.name == COOKIE_UUID_NAME }
 			?.runCatching { this to Uuid.fromByteArray(encryptor.decrypt(Base64.decode(value))) }
 			?.getOrNull()
 }

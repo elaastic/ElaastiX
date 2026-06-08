@@ -22,6 +22,7 @@ package org.elaastix.server.core.infrastructure.config
 import org.elaastix.server.authn.ElaastixAuthenticationFilter
 import org.elaastix.server.authn.ElaastixAuthenticationProvider
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration
@@ -112,6 +113,9 @@ class SecurityConfiguration : WebMvcConfigurer {
 	fun securityEvaluationContextExtension() = SecurityEvaluationContextExtension()
 
 	@Bean
+	@ConditionalOnProperty(name = ["elaastix.security.encryption-key"], matchIfMissing = false)
 	fun encryptors(@Value($$"${elaastix.security.encryption-key}") key: String) =
+		// SAFETY: MUST be AEAD. `stronger` uses AES-GCM which is acceptable.
+		// https://bsky.app/profile/joncallas.bsky.social/post/3jz3qztg3du2y
 		Encryptors.stronger(key, KeyGenerators.secureRandom().generateKey().toHexString())
 }

@@ -17,16 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn.tmp.lti.lms
+CREATE TABLE lms_user
+(
+	id          UUID                        NOT NULL,
+	updated_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	version     BIGINT                      NOT NULL,
+	lti_user_id VARCHAR(255)                NOT NULL,
+	user_id     UUID                        NOT NULL,
+	CONSTRAINT pk_lmsuser PRIMARY KEY (id)
+);
 
-import org.elaastix.commons.jpa.repository.ElaastixRepository
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.authn.tmp.lti.ConditionalOnLti
-import org.springframework.stereotype.Repository
+ALTER TABLE users
+	ADD email VARCHAR(256);
 
-@SciconumTechDebt
-@Repository
-@ConditionalOnLti
-interface LmsUserRepository : ElaastixRepository<LmsUser> {
-	fun findByLtiUserId(id: String): LmsUser?
-}
+UPDATE users
+	SET email = 'unknown@email.invalid'
+	WHERE email IS NULL;
+
+ALTER TABLE users
+	ALTER COLUMN email SET NOT NULL;
+
+ALTER TABLE lms_user
+	ADD CONSTRAINT FK_LMSUSER_ON_USER FOREIGN KEY (user_id) REFERENCES users (id);

@@ -20,6 +20,7 @@
 package org.elaastix.server.core
 
 import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.get
@@ -29,6 +30,7 @@ import testutils.IntegrationTest
 import testutils.WithMockUser
 
 @WithMockUser
+@SpringBootTest
 @Import(WebExceptionHandlerIntegrationTest.TestController::class)
 class WebExceptionHandlerIntegrationTest : IntegrationTest() {
 	@Test

@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @SciconumTechDebt
 @RestController
+@ConditionalOnLti
 @RequestMapping("/authn/tmp/lti")
 class LtiLaunchController(private val ltiService: LtiService) {
 	@PostMapping("/launch", "/elaastic-questions/launch")

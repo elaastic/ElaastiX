@@ -17,16 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.authn.tmp.lti.lms
+package testutils
 
-import org.elaastix.commons.jpa.repository.ElaastixRepository
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.authn.tmp.lti.ConditionalOnLti
-import org.springframework.stereotype.Repository
+import org.springframework.boot.test.context.TestConfiguration
+import org.springframework.test.context.TestPropertySource
 
-@SciconumTechDebt
-@Repository
-@ConditionalOnLti
-interface LmsUserRepository : ElaastixRepository<LmsUser> {
-	fun findByLtiUserId(id: String): LmsUser?
-}
+@TestConfiguration
+@TestPropertySource(
+	properties = [
+		"elaastix.security.cookie-secure=false",
+		"elaastix.security.encryption-key=##insecure integration test key##",
+	],
+)
+class ElaastixTestConfig

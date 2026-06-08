@@ -29,6 +29,7 @@ import testutils.IntegrationTest
 import testutils.MockUser
 import testutils.WithMockUser
 
+@SpringBootTest
 class AuthenticationIntegrationTest : IntegrationTest() {
 	@Test
 	fun `accessing an endpoint without authenticating yields 401`() {
@@ -58,7 +59,7 @@ class AuthenticationIntegrationTest : IntegrationTest() {
 			.andExpect { content { string(user.id.toStringBase36()) } }
 	}
 
-	@SpringBootTest(properties = ["elaastix.authn.develop=false"])
+	@SpringBootTest(properties = ["elaastix.security.authn.develop=false"])
 	class NormalMode : IntegrationTest() {
 		@Test
 		fun `accessing an endpoint with develop authentication is permitted`() {
@@ -77,7 +78,7 @@ class AuthenticationIntegrationTest : IntegrationTest() {
 		}
 	}
 
-	@SpringBootTest(properties = ["elaastix.authn.develop=true"])
+	@SpringBootTest(properties = ["elaastix.security.authn.develop=true"])
 	class DevelopMode : IntegrationTest() {
 		@Test
 		fun `accessing an endpoint with develop authentication is permitted`() {

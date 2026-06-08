@@ -51,6 +51,7 @@ class UserEntity(
 	override var lastName: String,
 
 	@Email
+	@NotNull
 	@Size(max = 256)
 	var email: String?, // non unique for compat reasons atm
 

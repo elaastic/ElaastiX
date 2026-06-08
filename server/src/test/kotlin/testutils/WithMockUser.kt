@@ -80,7 +80,7 @@ annotation class WithMockUser(
 			val user = UserEntity(
 				firstName = name.firstName(),
 				lastName = name.lastName(),
-				email = "${Uuid.generateV4()}@elaastix.test",
+				email = "${Uuid.random()}@elaastix.test",
 				roles = annotation.roles.toSet(),
 			)
 

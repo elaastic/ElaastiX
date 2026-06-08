@@ -22,7 +22,8 @@ scalar:
         value: Develop 00000000-0000-0000-0000-000000000001
 
 elaastix:
-  cookie-secure: false
-  encryption-key: super duper strong password (it's very strong)
-  authn:
-    develop: true
+  security:
+    cookie-secure: false
+    encryption-key: super duper strong password (it's very strong)
+    authn:
+      develop: true

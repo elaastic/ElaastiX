@@ -24,9 +24,13 @@ import org.slf4j.LoggerFactory
 import org.springdoc.webmvc.api.OpenApiResource
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Fallback
 import org.springframework.context.annotation.Profile
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
+import org.springframework.security.crypto.encrypt.BytesEncryptor
 import org.springframework.stereotype.Component
 import java.io.File
 import java.util.Locale
@@ -71,5 +75,13 @@ class OpenApiCommandLineRunner(
 
 		val spec = getSpec.invoke(openApiResource, "", Locale.UK) as OpenAPI
 		return writeJsonValue.invoke(openApiResource, spec) as ByteArray
+	}
+
+	@Bean
+	@Fallback
+	@ConditionalOnMissingBean(BytesEncryptor::class)
+	fun noopEncryptor(): BytesEncryptor = object : BytesEncryptor {
+		override fun encrypt(byteArray: ByteArray) = ByteArray(0)
+		override fun decrypt(encryptedByteArray: ByteArray) = ByteArray(0)
 	}
 }
