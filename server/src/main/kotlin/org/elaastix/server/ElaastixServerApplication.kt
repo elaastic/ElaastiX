@@ -23,7 +23,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition
 import io.swagger.v3.oas.annotations.info.Contact
 import io.swagger.v3.oas.annotations.info.Info
 import io.swagger.v3.oas.annotations.info.License
-import org.elaastix.commons.jpa.repository.ElaastixRepositoryImpl
+import org.elaastix.commons.jpa.repository.ElaastixRepositoryImplFactoryBean
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
@@ -49,7 +49,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 @ConfigurationPropertiesScan
 // TODO: Find a more elegant solution to automatically configure it within Elaastix Commons
 // Not fond of having this here, but let's avoid another time sink for now.
-@EnableJpaRepositories(repositoryBaseClass = ElaastixRepositoryImpl::class)
+@EnableJpaRepositories(repositoryFactoryBeanClass = ElaastixRepositoryImplFactoryBean::class)
 class ElaastixServerApplication
 
 @Suppress("UndocumentedPublicFunction", "SpreadOperator")

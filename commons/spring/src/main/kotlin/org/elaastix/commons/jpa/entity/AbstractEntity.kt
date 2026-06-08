@@ -29,6 +29,7 @@ import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.platform.JpaImmutable
 import org.hibernate.proxy.HibernateProxy
 import kotlin.time.Instant
+import kotlin.uuid.ExperimentalUuidApi
 
 /**
  * Abstract class holding common properties shared by all entities.
@@ -43,6 +44,7 @@ abstract class AbstractEntity {
 	 * ID of the entity. The ID is a UUID v7 as specified by [RFC 9562](https://www.rfc-editor.org/rfc/rfc9562.html).
 	 */
 	@Id
+	@OptIn(ExperimentalUuidApi::class)
 	var id: Uuid = Uuid.generateV7()
 		@JpaImmutable set
 
