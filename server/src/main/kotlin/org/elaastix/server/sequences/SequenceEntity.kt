@@ -25,6 +25,7 @@ import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.debt.SciconumTechDebt
@@ -43,28 +44,31 @@ class SequenceEntity @SciconumTechDebt constructor(
 	/**
 	 * Display name of the sequence.
 	 */
+	@NotNull
 	@Size(min = 2, max = 64)
 	var name: String,
 
 	/**
 	 * SCICONUM scenario of the sequence.
 	 */
-	@property:SciconumTechDebt
+	@NotNull
 	@Enumerated(EnumType.STRING)
+	@property:SciconumTechDebt
 	var sciconumScenario: SciconumScenario,
 
 	/**
 	 * Question for the SCICONUM sequence.
 	 */
-	@property:SciconumTechDebt
 	@ManyToMany(fetch = FetchType.EAGER)
+	@property:SciconumTechDebt
 	var sciconumQuestions: MutableSet<QuestionEntity>,
 ) : AbstractEntity() {
 	/**
 	 * Owner of the resource, but not necessarily its author per se.
 	 */
-	@property:UnclearAuthorshipOwnership
-	@ManyToOne(fetch = FetchType.LAZY)
+	@NotNull
 	@CreatedBy
+	@ManyToOne(fetch = FetchType.LAZY)
+	@property:UnclearAuthorshipOwnership
 	lateinit var owner: UserEntity
 }

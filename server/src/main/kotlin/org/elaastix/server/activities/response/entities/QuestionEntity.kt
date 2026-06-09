@@ -27,6 +27,7 @@ import org.elaastix.mm.content.RichContent
 import org.elaastix.server.core.AbstractEntityWithAuthorship
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import org.jetbrains.annotations.NotNull
 
 /**
  * Generic question. Lacks important properties that are defined by subclasses.
@@ -35,6 +36,7 @@ import org.hibernate.type.SqlTypes
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 abstract class QuestionEntity(
 	/** The question's statement. */
+	@NotNull
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Suppress("JpaAttributeTypeInspection") // IDEA-191568
 	var statement: RichContent,

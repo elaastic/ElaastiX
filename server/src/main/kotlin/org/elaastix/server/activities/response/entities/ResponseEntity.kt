@@ -31,6 +31,7 @@ import org.elaastix.mm.content.FormattedContent
 import org.elaastix.server.core.AbstractEntityWithAuthorship
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import org.jetbrains.annotations.NotNull
 
 /**
  * Generic response. Lacks important properties that are defined by subclasses.
@@ -39,6 +40,7 @@ import org.hibernate.type.SqlTypes
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 abstract class ResponseEntity<TSelf : ResponseEntity<TSelf, TQuestion>, TQuestion : QuestionEntity>(
 	/** The question this response is attached to. */
+	@NotNull
 	@ManyToOne(targetEntity = QuestionEntity::class)
 	var question: TQuestion,
 

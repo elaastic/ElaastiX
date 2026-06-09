@@ -25,6 +25,7 @@ import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.JpaImmutable
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.users.entities.UserEntity
+import org.jetbrains.annotations.NotNull
 import org.springframework.data.annotation.CreatedBy
 
 /**
@@ -38,9 +39,10 @@ abstract class AbstractEntityWithAuthorship : AbstractEntity() {
 	/**
 	 * The original author.
 	 */
-	@property:UnclearAuthorshipOwnership
+	@NotNull
 	@CreatedBy
 	@ManyToOne
+	@property:UnclearAuthorshipOwnership
 	lateinit var author: UserEntity
 		@JpaImmutable set
 }
