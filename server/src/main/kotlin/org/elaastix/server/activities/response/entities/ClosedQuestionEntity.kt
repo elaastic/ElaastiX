@@ -27,6 +27,7 @@ import org.elaastix.mm.content.RichContent
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import org.jetbrains.annotations.NotNull
 
 /** A closed question. */
 @Entity
@@ -38,13 +39,16 @@ class ClosedQuestionEntity(
 	 * The available choices presented to the questionee.
 	 * Whether they are shown in order depends on the specific configuration of the activity this question is used in.
 	 */
+	@NotNull
 	@JdbcTypeCode(SqlTypes.JSON)
 	var choices: List<FormattedText>,
 
 	/** Whether the question accepts multiple answers or not. */
+	@NotNull
 	var multiple: Boolean,
 
 	/** The expected answer. */
+	@NotNull
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Suppress("JpaAttributeTypeInspection") // IDEA-191568
 	var expectedAnswer: ClosedAnswer,

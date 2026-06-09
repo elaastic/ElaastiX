@@ -25,6 +25,7 @@ import org.elaastix.mm.content.FormattedContent
 import org.elaastix.mm.content.RichContent
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import org.jetbrains.annotations.NotNull
 
 /** An open question. */
 @Entity
@@ -41,6 +42,7 @@ class OpenQuestionEntity(
 	 * It would be unfair to expect an answer with formatting that the learners are unable to use; it forces the
 	 * question author to put themselves in the student's shoes while preparing the questions.
 	 */
+	@NotNull
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Suppress("JpaAttributeTypeInspection") // IDEA-191568
 	var expectedAnswer: FormattedContent,

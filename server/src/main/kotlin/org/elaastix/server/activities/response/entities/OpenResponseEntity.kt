@@ -25,6 +25,7 @@ import org.elaastix.mm.activity.ScalarGrade
 import org.elaastix.mm.content.FormattedContent
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import org.jetbrains.annotations.NotNull
 
 /** Answer to a [OpenQuestionEntity]. */
 @Entity
@@ -33,6 +34,7 @@ class OpenResponseEntity(
 	question: OpenQuestionEntity,
 
 	/** The answer given by the learner. May be empty, but is required. */
+	@NotNull
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Suppress("JpaAttributeTypeInspection") // IDEA-191568
 	var answer: FormattedContent,

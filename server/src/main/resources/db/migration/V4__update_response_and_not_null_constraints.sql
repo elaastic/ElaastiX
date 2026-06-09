@@ -17,18 +17,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core.infrastructure.seed
+ALTER TABLE response_entity
+	ADD grade DOUBLE PRECISION;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass
-import org.springframework.context.annotation.Profile
-import org.springframework.stereotype.Component
+ALTER TABLE response_entity
+	ADD max DOUBLE PRECISION;
 
-/**
- * Custom stereotype for database seeders.
- */
-@Component
-@Profile("develop & !openapi")
-@ConditionalOnMissingClass("testutils.WithMockUser")
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Seeder
+ALTER TABLE response_entity
+	ALTER COLUMN grade SET NOT NULL;
+
+ALTER TABLE response_entity
+	ALTER COLUMN max SET NOT NULL;
+
+-- Forgotten null constraints in V2
+
+ALTER TABLE response_entity
+	ALTER COLUMN question_id SET NOT NULL;
+
+ALTER TABLE response_entity
+	ALTER COLUMN author_id SET NOT NULL;
+
+ALTER TABLE response_entity
+	ALTER COLUMN answer SET NOT NULL;
+
+ALTER TABLE question_entity
+	ALTER COLUMN statement SET NOT NULL;
+
+ALTER TABLE question_entity
+	ALTER COLUMN author_id SET NOT NULL;
+
+ALTER TABLE question_entity
+	ALTER COLUMN choices SET NOT NULL;
+
+ALTER TABLE question_entity
+	ALTER COLUMN expected_answer SET NOT NULL;

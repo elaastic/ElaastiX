@@ -20,37 +20,30 @@
 package org.elaastix.server.sequences
 
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
-import jakarta.persistence.Inheritance
-import jakarta.persistence.InheritanceType
-import jakarta.persistence.ManyToOne
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Size
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
-import org.elaastix.server.users.entities.UserEntity
-import org.springframework.data.annotation.CreatedBy
+import jakarta.persistence.ManyToMany
+import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.server.activities.response.entities.QuestionEntity
+import org.elaastix.server.scenario.SciconumScenario
 
-/**
- * A pedagogical sequence.
- * TODO: Extensive description of the concept.
- */
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-open class SequenceEntity(
+@SciconumTechDebt
+class SciconumSequenceEntity(
+	name: String,
+
 	/**
-	 * Display name of the sequence.
+	 * SCICONUM scenario of the sequence.
 	 */
-	@NotNull
-	@Size(min = 2, max = 64)
-	var name: String,
-) : AbstractEntity() {
+	@property:SciconumTechDebt
+	@Enumerated(EnumType.STRING)
+	var sciconumScenario: SciconumScenario,
+
 	/**
-	 * Owner of the resource, but not necessarily its author per se.
+	 * Question for the SCICONUM sequence.
 	 */
-	@NotNull
-	@CreatedBy
-	@ManyToOne(fetch = FetchType.LAZY)
-	@property:UnclearAuthorshipOwnership
-	lateinit var owner: UserEntity
-}
+	@property:SciconumTechDebt
+	@ManyToMany(fetch = FetchType.EAGER)
+	var sciconumQuestions: MutableSet<QuestionEntity>,
+) : SequenceEntity(name)
