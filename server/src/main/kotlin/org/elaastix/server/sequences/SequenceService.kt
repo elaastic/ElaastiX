@@ -47,8 +47,17 @@ class SequenceService(
 ) {
 	companion object {
 		/** Maps a [SequenceEntity] to a [SequenceDto]. */
-		@OptIn(SciconumTechDebt::class, UnclearAuthorshipOwnership::class)
+		@OptIn(SciconumTechDebt::class)
 		fun SequenceEntity.toDto(): SequenceDto =
+			when (this) {
+				is SciconumSequenceEntity -> toDto()
+				else -> throw NotImplementedError()
+			}
+
+		/** Maps a [SciconumSequenceEntity] to a [SequenceDto]. */
+		@SciconumTechDebt
+		@OptIn(UnclearAuthorshipOwnership::class)
+		fun SciconumSequenceEntity.toDto(): SequenceDto =
 			SequenceDto(
 				id = id,
 				name = name,
@@ -82,6 +91,7 @@ class SequenceService(
 	 * @return The requested sequence.
 	 */
 	@Transactional(readOnly = true)
+	@OptIn(SciconumTechDebt::class)
 	fun getSequence(id: Uuid): SequenceDto = sequenceRepository.findById(id).orNotFound().toDto()
 
 	/**
@@ -93,10 +103,10 @@ class SequenceService(
 	 * @return The created entity.
 	 */
 	@Transactional
+	@OptIn(SciconumTechDebt::class)
 	fun createSequence(@Valid dto: CreateSequenceDto): SequenceDto {
 		val entity = sequenceRepository.persist(
-			@OptIn(SciconumTechDebt::class)
-			SequenceEntity(
+			SciconumSequenceEntity(
 				name = dto.name,
 				sciconumScenario = dto.sciconumScenario,
 				sciconumQuestions = dto.sciconumQuestionIds.toRefSet(questionRepository),
@@ -116,14 +126,13 @@ class SequenceService(
 	 * @return The updated entity.
 	 */
 	@Transactional
+	@OptIn(SciconumTechDebt::class)
 	fun updateSequence(id: Uuid, @Valid dto: UpdateSequenceDto): SequenceDto {
 		val entity = sequenceRepository.findByIdAndUpdate(id) {
+			if (this !is SciconumSequenceEntity) throw NotImplementedError()
+
 			dto.name.takeIfUpdated { name = it }
-
-			@OptIn(SciconumTechDebt::class)
 			dto.sciconumScenario.takeIfUpdated { sciconumScenario = it }
-
-			@OptIn(SciconumTechDebt::class)
 			dto.sciconumQuestionIds.takeIfUpdated { sciconumQuestions = it.toRefSet(questionRepository) }
 		}
 
