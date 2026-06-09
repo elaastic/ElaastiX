@@ -22,9 +22,13 @@ package org.elaastix.server.assignments.participants
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.exceptions.ResourceNotFoundException
 import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.server.assignments.AssignmentEntity
 import org.elaastix.server.assignments.AssignmentRepository
 import org.elaastix.server.assignments.dto.AssignmentDto
+import org.elaastix.server.assignments.event.AssignmentJoinEvent
 import org.elaastix.server.users.UserRepository
+import org.elaastix.server.users.entities.UserEntity
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
 import org.springframework.stereotype.Service
@@ -33,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @OptIn(SciconumTechDebt::class)
 class AssignmentParticipantsService(
+	private val applicationEventPublisher: ApplicationEventPublisher,
 	private val assignmentRepository: AssignmentRepository,
 	private val userRepository: UserRepository,
 ) {
@@ -61,9 +66,20 @@ class AssignmentParticipantsService(
 	fun addParticipantToAssignmentById(assignmentId: Uuid, userId: Uuid) {
 		val assignment = assignmentRepository.getReferenceById(assignmentId)
 		val user = userRepository.getReferenceById(userId)
-		assignment.participants.add(user)
 
-		// TODO: trigger creation of all sequence sessions
+		return addParticipantToAssignment(assignment, user)
+	}
+
+	/**
+	 * Adds a participant to an assignment by ID.
+	 *
+	 * @param assignment The pedagogical assignment to add the user to.
+	 * @param user The user to add to the pedagogical assignment.
+	 */
+	@Transactional
+	fun addParticipantToAssignment(assignment: AssignmentEntity, user: UserEntity) {
+		assignment.participants.add(user)
+		applicationEventPublisher.publishEvent(AssignmentJoinEvent(this, assignment, user))
 		assignmentRepository.update(assignment)
 	}
 
