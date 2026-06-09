@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component
  * Custom stereotype for database seeders.
  */
 @Component
-@Profile("develop")
+@Profile("develop & !openapi")
 @ConditionalOnMissingClass("testutils.WithMockUser")
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)

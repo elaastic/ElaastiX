@@ -1,0 +1,9 @@
+debug: false
+server.port: 0
+spring.jpa.hibernate.ddl-auto: none
+spring.flyway.enabled: false
+
+logging.level.root: WARN
+logging.level.org.elaastix.server: INFO
+
+generation-path: build/openapi.json
