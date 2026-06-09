@@ -19,11 +19,8 @@
 
 package org.elaastix.commons
 
-import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.exceptions.BadRequestException
 import org.elaastix.commons.exceptions.ResourceNotFoundException
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.jpa.repository.ElaastixRepository
 import java.util.Optional
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.ExperimentalExtendedContracts
@@ -51,9 +48,14 @@ fun <T> T?.orNotFound(): T = this ?: throw ResourceNotFoundException()
 /** Throws a [ResourceNotFoundException] if empty. */
 fun <T> Optional<T>.orNotFound(): T = orElseThrow { throw ResourceNotFoundException() }
 
-/** Maps a collection of [Uuid] to a set of entities. */
-fun <T : AbstractEntity> Collection<Uuid>.toRefSet(repo: ElaastixRepository<T>): MutableSet<T> {
-	val set = LinkedHashSet<T>(this.size)
-	for (id in this) set.add(repo.getReferenceById(id))
-	return set
+// SPDX-SnippetBegin
+// SPDX-SnippetCopyrightText: 2010-2018 JetBrains s.r.o. and Kotlin Programming Language contributors.
+// SPDX-License-Identifier: Apache-2.0
+
+/** Same as [map] but returns a set instead of a list. */
+inline fun <T, R> Iterable<T>.mapSet(transform: (T) -> R): Set<R> {
+	@Suppress("MagicNumber") // From Kotlin source code
+	return mapTo(LinkedHashSet(if (this is Collection<*>) this.size else 10), transform)
 }
+
+// SPDX-SnippetEnd
