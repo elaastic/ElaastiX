@@ -6,6 +6,7 @@ spring:
 
   jpa:
     open-in-view: false
+    hibernate.ddl-auto: validate
     properties.hibernate:
       jdbc.batch_size: 10
       order_inserts: true

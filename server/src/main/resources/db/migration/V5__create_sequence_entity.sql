@@ -1,0 +1,58 @@
+/*
+ * Elaastic / ElaastiX - formative assessment system
+ * Copyright (C) 2019  Université de Toulouse and Université Toulouse Capitole.
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+CREATE TABLE sequence_entity
+(
+	id                UUID                        NOT NULL,
+	dtype             VARCHAR(31)                 NOT NULL,
+	updated_at        TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	version           BIGINT                      NOT NULL,
+	name              VARCHAR(64)                 NOT NULL,
+	owner_id          UUID                        NOT NULL,
+	sciconum_scenario VARCHAR(255),
+	CONSTRAINT pk_sequenceentity PRIMARY KEY (id)
+);
+
+CREATE TABLE sequence_entity_sciconum_questions
+(
+	sciconum_sequence_entity_id UUID NOT NULL,
+	sciconum_questions_id       UUID NOT NULL,
+	CONSTRAINT pk_sequenceentity_sciconumquestions PRIMARY KEY (sciconum_sequence_entity_id, sciconum_questions_id)
+);
+
+ALTER TABLE response_entity
+	ADD grade DOUBLE PRECISION;
+
+ALTER TABLE response_entity
+	ADD max DOUBLE PRECISION;
+
+ALTER TABLE response_entity
+	ALTER COLUMN grade SET NOT NULL;
+
+ALTER TABLE response_entity
+	ALTER COLUMN max SET NOT NULL;
+
+ALTER TABLE sequence_entity
+	ADD CONSTRAINT FK_SEQUENCEENTITY_ON_OWNER FOREIGN KEY (owner_id) REFERENCES users (id);
+
+ALTER TABLE sequence_entity_sciconum_questions
+	ADD CONSTRAINT fk_seqentscique_on_question_entity FOREIGN KEY (sciconum_questions_id) REFERENCES question_entity (id);
+
+ALTER TABLE sequence_entity_sciconum_questions
+	ADD CONSTRAINT fk_seqentscique_on_sciconum_sequence_entity FOREIGN KEY (sciconum_sequence_entity_id) REFERENCES sequence_entity (id);
