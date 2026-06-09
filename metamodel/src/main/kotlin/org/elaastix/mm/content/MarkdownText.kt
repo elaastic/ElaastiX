@@ -17,10 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core.content
+package org.elaastix.mm.content
 
-import org.elaastix.mm.content.ContentTypesRegistry
-import org.elaastix.mm.content.FormattedText
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Plain text formatted in Markdown (inline syntax elements only).
@@ -29,14 +29,6 @@ import org.elaastix.mm.content.FormattedText
  *
  * @property content The Markdown-inline-formatted text.
  */
-class MarkdownText(val content: String) : FormattedText {
-	companion object {
-		init {
-			ContentTypesRegistry.registerPlainTextType {
-				MarkdownText(it)
-			}
-		}
-	}
-
-	override fun asString() = content
-}
+@Serializable
+@SerialName("MarkdownInline")
+data class MarkdownText(val content: String) : FormattedText

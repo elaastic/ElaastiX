@@ -17,25 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core.content
+package org.elaastix.mm.content
 
-import kotlinx.serialization.json.JsonPrimitive
-import org.elaastix.mm.content.ContentTypesRegistry
-import org.elaastix.mm.content.FormattedContent
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Contents formatted in Obsidian Flavoured Markdown (OFM).
  *
  * @property content The OFM-formatted content.
  */
-class MarkdownContent(val content: String) : FormattedContent {
-	companion object {
-		init {
-			ContentTypesRegistry.registerPlainTextType {
-				MarkdownContent(it)
-			}
-		}
-	}
-
-	override fun toJson() = JsonPrimitive(content)
-}
+@Serializable
+@SerialName("Markdown")
+data class MarkdownContent(val content: String) : FormattedContent

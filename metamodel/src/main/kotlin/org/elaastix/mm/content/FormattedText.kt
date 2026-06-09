@@ -20,8 +20,6 @@
 package org.elaastix.mm.content
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
-import kotlinx.serialization.json.JsonPrimitive
 
 /**
  * A type of content that can only make use of inline formatting (bold, italics, ...).
@@ -35,18 +33,6 @@ import kotlinx.serialization.json.JsonPrimitive
  * Examples of compliant formats are:
  * - CommonMark (0.31.2) § 6 "Inlines" ONLY, excluding § 6.4 "Images", § 6.6 "Raw HTML", § 6.7 "Hard line breaks".
  * - BBCode (from phpBB), excluding `img`, `list`, `code`, `quote`.
- *
- * **IMPORTANT**: All subclasses MUST register with [ContentTypesRegistry].
  */
-@Serializable(with = FormattedTextSerializer::class)
-interface FormattedText : FormattedContent {
-	/**
-	 * Losslessly convert a formatted text to a String.
-	 *
-	 * Type information (the kind of formatted text) is not encoded; it is up to the callee to perform any tagging
-	 * deemed appropriate.
-	 */
-	fun asString(): String
-
-	override fun toJson(): JsonElement = JsonPrimitive(asString())
-}
+@Serializable
+sealed interface FormattedText : FormattedContent

@@ -17,22 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core.content
+package org.elaastix.mm.content
 
-import org.elaastix.mm.content.ContentTypesRegistry
-import org.elaastix.mm.content.FormattedText
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 /**
  * Plain text without any formatting.
  *
  * @property content The plain text content.
  */
-class PlainText(val content: String) : FormattedText {
-	companion object {
-		init {
-			ContentTypesRegistry.registerPlainTextType { PlainText(it) }
-		}
-	}
-
-	override fun asString() = content
-}
+@Serializable
+@SerialName("Plain")
+data class PlainText(val content: String) : FormattedText
