@@ -28,6 +28,7 @@ import jakarta.validation.constraints.NotNull
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.platform.JpaImmutable
 import org.hibernate.proxy.HibernateProxy
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import kotlin.time.Instant
 import kotlin.uuid.ExperimentalUuidApi
 
@@ -38,7 +39,7 @@ import kotlin.uuid.ExperimentalUuidApi
  * All entities within Elaastix SHOULD inherit from AbstractEntity.
  */
 @MappedSuperclass
-@EntityListeners(EntityListener::class)
+@EntityListeners(EntityListener::class, AuditingEntityListener::class)
 abstract class AbstractEntity {
 	/**
 	 * ID of the entity. The ID is a UUID v7 as specified by [RFC 9562](https://www.rfc-editor.org/rfc/rfc9562.html).
