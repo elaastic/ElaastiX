@@ -36,18 +36,6 @@ CREATE TABLE sequence_entity_sciconum_questions
 	CONSTRAINT pk_sequenceentity_sciconumquestions PRIMARY KEY (sciconum_sequence_entity_id, sciconum_questions_id)
 );
 
-ALTER TABLE response_entity
-	ADD grade DOUBLE PRECISION;
-
-ALTER TABLE response_entity
-	ADD max DOUBLE PRECISION;
-
-ALTER TABLE response_entity
-	ALTER COLUMN grade SET NOT NULL;
-
-ALTER TABLE response_entity
-	ALTER COLUMN max SET NOT NULL;
-
 ALTER TABLE sequence_entity
 	ADD CONSTRAINT FK_SEQUENCEENTITY_ON_OWNER FOREIGN KEY (owner_id) REFERENCES users (id);
 
