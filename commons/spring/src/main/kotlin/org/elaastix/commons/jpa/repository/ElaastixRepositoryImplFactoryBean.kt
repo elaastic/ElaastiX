@@ -1,0 +1,47 @@
+/*
+ * Elaastic / ElaastiX - formative assessment system
+ * Copyright (C) 2019  Université de Toulouse and Université Toulouse Capitole.
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+package org.elaastix.commons.jpa.repository
+
+import jakarta.persistence.EntityManager
+import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.springframework.context.ApplicationEventPublisher
+import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean
+import org.springframework.data.repository.core.support.RepositoryFactorySupport
+
+/**
+ * Bean class wrapping the [ElaastixRepositoryImplFactory]. You love enterprise-grade Java when you see it!
+ */
+class ElaastixRepositoryImplFactoryBean<R : ElaastixRepository<T>, T : AbstractEntity>(
+	repositoryInterface: Class<out R>,
+) : JpaRepositoryFactoryBean<R, T, Uuid>(repositoryInterface) {
+	private lateinit var applicationEventPublisher: ApplicationEventPublisher
+
+	override fun createRepositoryFactory(entityManager: EntityManager): RepositoryFactorySupport =
+		ElaastixRepositoryImplFactory(
+			entityManager,
+			applicationEventPublisher,
+		)
+
+	override fun setApplicationEventPublisher(publisher: ApplicationEventPublisher) {
+		super.setApplicationEventPublisher(publisher)
+		this.applicationEventPublisher = publisher
+	}
+}
