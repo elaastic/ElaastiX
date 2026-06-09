@@ -44,6 +44,7 @@ class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
 			entity = UserEntity(
 				firstName = "Franck",
 				lastName = "Silvestre",
+				email = "franck.silvestre@elaastix.example",
 				roles = setOf(Role.ADMIN),
 			),
 		)
@@ -53,6 +54,7 @@ class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
 			entity = UserEntity(
 				firstName = "John",
 				lastName = "Tranier",
+				email = "john.tranier@elaastix.example",
 				roles = setOf(Role.WRITER),
 			),
 		)
@@ -62,6 +64,7 @@ class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
 			entity = UserEntity(
 				firstName = "Cynthia",
 				lastName = "Rey",
+				email = "cynthia.rey@elaastix.example",
 				roles = setOf(Role.USER),
 			),
 		)

@@ -24,6 +24,7 @@ import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.Table
+import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
@@ -48,6 +49,11 @@ class UserEntity(
 	@NotNull
 	@Size(max = 256)
 	override var lastName: String,
+
+	@Email
+	@NotNull
+	@Size(max = 256)
+	var email: String?, // non unique for compat reasons atm
 
 	/**
 	 * Roles granted to the user.

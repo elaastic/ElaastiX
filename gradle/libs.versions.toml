@@ -30,6 +30,8 @@ jdbc-postgresql = { module = "org.postgresql:postgresql", version.ref = "jdbc-po
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 mockk-bdd = { module = "io.mockk:mockk-bdd", version.ref = "mockk" }
+oauth-core = { module = "net.oauth.core:oauth", version = "20100527" }
+oauth-provider = { module = "net.oauth.core:oauth-provider", version = "20100527" }
 springdoc = { module = "org.springdoc:springdoc-openapi-starter-webmvc-scalar", version.ref = "springdoc" }
 springdoc-kdoc-ksp = { module = "com.github.cosmos-official.vingle-springdoc-kdoc-provider:kdoc-processor", version.ref = "springdoc-kdoc" }
 springdoc-kdoc-rt = { module = "com.github.cosmos-official.vingle-springdoc-kdoc-provider:kdoc-runtime", version.ref = "springdoc-kdoc" }

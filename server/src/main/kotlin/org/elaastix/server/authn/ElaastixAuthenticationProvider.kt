@@ -45,7 +45,7 @@ import javax.security.auth.login.AccountNotFoundException
 	description = "Primary authentication method for the Elaastix platform.",
 )
 class ElaastixAuthenticationProvider(
-	@Value($$"${elaastix.authn.develop:false}")
+	@Value($$"${elaastix.security.authn.develop:false}")
 	private val isDevelop: Boolean,
 	private val userRepository: UserRepository,
 	private val roleHierarchy: RoleHierarchy,

@@ -17,28 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm
+CREATE TABLE lms_user
+(
+	id          UUID                        NOT NULL,
+	updated_at  TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+	version     BIGINT                      NOT NULL,
+	lti_user_id VARCHAR(255)                NOT NULL,
+	user_id     UUID                        NOT NULL,
+	CONSTRAINT pk_lmsuser PRIMARY KEY (id)
+);
 
-import org.elaastix.commons.data.Uuid
-import kotlin.time.Instant
+ALTER TABLE users
+	ADD email VARCHAR(256);
 
-/**
- * Base interface of all objects from the metamodel.
- */
-interface MmObject {
-	/**
-	 * A globally unique identifier tied to the object.
-	 */
-	val id: Uuid
+UPDATE users
+	SET email = 'unknown@email.invalid'
+	WHERE email IS NULL;
 
-	/**
-	 * Instant at which the creation of the object occurred.
-	 */
-	val createdAt: Instant
+ALTER TABLE users
+	ALTER COLUMN email SET NOT NULL;
 
-	/**
-	 * Instant at which the last modification occurred.
-	 * If the object has never been modified, then it is equivalent (but not necessarily equal) to the creation date.
-	 */
-	val updatedAt: Instant
-}
+ALTER TABLE lms_user
+	ADD CONSTRAINT FK_LMSUSER_ON_USER FOREIGN KEY (user_id) REFERENCES users (id);

@@ -17,28 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm
+package org.elaastix.server.authn
 
+import jakarta.servlet.http.Cookie
 import org.elaastix.commons.data.Uuid
-import kotlin.time.Instant
+import org.elaastix.commons.data.UuidSerializer.toStringBase36
+import org.springframework.security.core.GrantedAuthority
 
 /**
- * Base interface of all objects from the metamodel.
+ * Authentication token for cookie-based authentication.
+ *
+ * @property cookie The cookie sent by the client
+ * @property userId The user ID contained in the cookie
  */
-interface MmObject {
-	/**
-	 * A globally unique identifier tied to the object.
-	 */
-	val id: Uuid
+class CookieAuthenticationToken(val cookie: Cookie, val userId: Uuid) : AuthToken() {
+	override fun getAuthorities() = emptySet<GrantedAuthority>()
 
-	/**
-	 * Instant at which the creation of the object occurred.
-	 */
-	val createdAt: Instant
+	override fun getCredentials() = cookie
 
-	/**
-	 * Instant at which the last modification occurred.
-	 * If the object has never been modified, then it is equivalent (but not necessarily equal) to the creation date.
-	 */
-	val updatedAt: Instant
+	override fun getDetails() = null
+
+	override fun getPrincipal() = userId
+
+	override fun isAuthenticated() = false
+
+	override fun setAuthenticated(authenticated: Boolean) =
+		throw UnsupportedOperationException("Cannot change the authentication status of a token")
+
+	override fun getName() = userId.toStringBase36()
 }
