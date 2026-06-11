@@ -22,25 +22,42 @@ package org.elaastix.server.scenario.exec.repositories
 import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.assignments.AssignmentEntity
+import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase
 import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
 import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.elaastix.server.users.entities.UserEntity
+import org.springframework.data.jpa.repository.Modifying
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
+import kotlin.time.Instant
 
 @Repository
 @SciconumTechDebt
 interface SciconumLearnerSessionRepository : ElaastixRepository<SciconumLearnerSessionEntity> {
 	@Query(
-		"FROM SciconumLearnerSessionEntity sls WHERE sls.learner = :learner AND sls.scenarioSession.assignment = :assignment",
+		"FROM SciconumLearnerSessionEntity sls " +
+			"WHERE sls.learner = :learner AND sls.scenarioSession.assignment = :assignment",
 	)
 	fun findAllByAssignmentAndLearner(
 		assignment: AssignmentEntity,
 		learner: UserEntity,
 	): List<SciconumLearnerSessionEntity>
 
-	fun findAllByScenarioSessionAndLearner(
+	fun findOneByScenarioSessionAndLearner(
 		globalSession: SciconumScenarioSessionEntity,
 		learner: UserEntity,
-	): List<SciconumLearnerSessionEntity>
+	): SciconumLearnerSessionEntity?
+
+	fun findAllByScenarioSession(globalSession: SciconumScenarioSessionEntity): List<SciconumLearnerSessionEntity>
+
+	@Modifying
+	@Query(
+		"UPDATE SciconumLearnerSessionEntity sls SET sls.phase = :phase, sls.nextPhaseAt = :nextPhaseAt " +
+			"WHERE sls.scenarioSession = :scenarioSession AND (:phase = 'QUESTION' OR sls.phase != 'PENDING')",
+	)
+	fun transitionAllLearnerSessionsOfSessionTo(
+		scenarioSession: SciconumScenarioSessionEntity,
+		phase: SciconumScenarioExecutionPhase,
+		nextPhaseAt: Instant?,
+	): Int
 }

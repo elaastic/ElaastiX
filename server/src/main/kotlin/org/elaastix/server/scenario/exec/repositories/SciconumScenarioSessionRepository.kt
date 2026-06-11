@@ -23,7 +23,7 @@ import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.assignments.AssignmentEntity
 import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
-import org.elaastix.server.sequences.SequenceEntity
+import org.elaastix.server.sequences.SciconumSequenceEntity
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -31,8 +31,10 @@ import org.springframework.stereotype.Repository
 interface SciconumScenarioSessionRepository : ElaastixRepository<SciconumScenarioSessionEntity> {
 	fun findAllByAssignment(assignment: AssignmentEntity): List<SciconumScenarioSessionEntity>
 
+	fun findAllByNextPhaseAtNotNull(): List<SciconumScenarioSessionEntity>
+
 	fun findOneByAssignmentAndSequence(
 		assignment: AssignmentEntity,
-		sequenceEntity: SequenceEntity,
+		sequenceEntity: SciconumSequenceEntity,
 	): SciconumScenarioSessionEntity?
 }

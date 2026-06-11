@@ -34,7 +34,6 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.Primary
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionTemplate
 import kotlin.time.Clock
 
@@ -67,9 +66,7 @@ abstract class IntegrationTest {
 		this.testInfo = testInfo
 	}
 
-	fun <T> runWithTransaction(block: (TransactionStatus) -> T): T = tx.execute(block)
-
-	fun <T : AbstractEntity> T.persist() = also { runWithTransaction { em.persist(this) } }
+	fun <T : AbstractEntity> T.persist() = also { tx.execute { em.persist(this) } }
 
 	fun makeRecognisableName(): String {
 		// Target maximum length: 64
