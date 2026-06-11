@@ -17,20 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core.infrastructure.seed
+package org.elaastix.server.scenario.exec
 
+import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.core.infrastructure.ExcludeFromSyntheticBoot
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass
-import org.springframework.context.annotation.Profile
+import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 
 /**
- * Custom stereotype for database seeders.
+ * Service implementing the execution flow of the sequences.
+ * Caution: it assumes there is only one instance of the app ever running (which is going to be the case for now).
  */
 @Component
-@Profile("develop")
 @ExcludeFromSyntheticBoot
-@ConditionalOnMissingClass("testutils.WithMockUser")
-@Target(AnnotationTarget.CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class Seeder
+@SciconumTechDebt
+class ScenarioExecutionRestoreRunner(private val executionService: ScenarioExecutionService) : CommandLineRunner {
+	override fun run(vararg args: String) {
+		executionService.restoreRunningSequences()
+	}
+}

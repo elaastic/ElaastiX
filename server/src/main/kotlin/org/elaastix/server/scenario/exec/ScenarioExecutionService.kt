@@ -28,8 +28,6 @@ import org.elaastix.server.scenario.SciconumScenario
 import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
 import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository
-import org.springframework.boot.context.event.ApplicationStartedEvent
-import org.springframework.context.event.EventListener
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -58,13 +56,13 @@ class ScenarioExecutionService(
 	}
 
 	/**
-	 * Handler resuming execution of sessions in case the server has been restarted or crashed.
+	 * Resumes execution of sessions, in case the server has been restarted or crashed.
 	 */
 	@Transactional
-	@EventListener(ApplicationStartedEvent::class)
 	fun restoreRunningSequences() {
 		val now = clock.now()
-		for (session in sciconumScenarioSessionRepository.findAllByNextPhaseAtNotNull()) {
+		val ongoingSessions = sciconumScenarioSessionRepository.findAllByNextPhaseAtNotNull()
+		for (session in ongoingSessions) {
 			session.nextPhaseAt?.let {
 				when {
 					it < now -> {

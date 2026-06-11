@@ -89,8 +89,8 @@ abstract class SciconumIntegrationTest : IntegrationTest() {
 					sequenceIds = makeList(sequencesCount) {
 						createSequence(scenario, questionsPerSequence).id
 					},
-				)
-			).id
+				),
+			).id,
 		).orElseThrow()
 
 	fun createSequence(scenario: SciconumScenario, questionsCount: UInt): SequenceEntity =

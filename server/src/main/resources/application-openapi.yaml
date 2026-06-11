@@ -7,3 +7,5 @@ logging.level.root: WARN
 logging.level.org.elaastix.server: INFO
 
 generation-path: build/openapi.json
+
+elaastix.synthetic-boot: true
