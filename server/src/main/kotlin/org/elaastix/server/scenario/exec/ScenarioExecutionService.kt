@@ -29,8 +29,10 @@ import org.elaastix.server.scenario.exec.entities.SciconumSessionEntity
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
 import org.elaastix.server.scenario.exec.repositories.SciconumSessionRepository
 import org.springframework.boot.context.event.ApplicationStartedEvent
+import org.springframework.context.annotation.Profile
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.TaskScheduler
+import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
@@ -57,25 +59,28 @@ class ScenarioExecutionService(
 		private val LOGGER = LogFactory.getLog(ScenarioExecutionService::class.java)
 	}
 
-	/**
-	 * Handler resuming execution of sessions in case the server has been restarted or crashed.
-	 */
-	@Transactional
-	@EventListener(ApplicationStartedEvent::class)
-	fun restoreRunningSequences() {
-		val now = clock.now()
-		for (session in sciconumSessionRepository.findAllByNextPhaseAtNotNull()) {
-			session.nextPhaseAt?.let {
-				when {
-					it < now -> {
-						val lag = (now - it).toInt(DurationUnit.SECONDS)
-						LOGGER.warn("Ticking session ${session.id}, was supposed to tick at $it ($lag seconds behind!)")
-						tickSession(session)
-					}
+	/** Conditionally loaded component dealing with session execution restoration. */
+	@Component
+	@Profile("!openapi")
+	inner class ScenarioExecutionRestoreListener {
+		/** Event listener called by Spring on application start. */
+		@Transactional
+		@EventListener(ApplicationStartedEvent::class)
+		fun restoreRunningSequences() {
+			val now = clock.now()
+			for (session in sciconumSessionRepository.findAllByNextPhaseAtNotNull()) {
+				session.nextPhaseAt?.let {
+					when {
+						it < now -> {
+							val lag = (now - it).toInt(DurationUnit.SECONDS)
+							LOGGER.warn("Ticking session ${session.id}, was supposed to tick at $it ($lag seconds behind!)")
+							tickSession(session)
+						}
 
-					else -> {
-						LOGGER.info("Resuming execution of session ${session.id}")
-						taskScheduler.schedule(ExecutionTask(session.id), it)
+						else -> {
+							LOGGER.info("Resuming execution of session ${session.id}")
+							taskScheduler.schedule(ExecutionTask(session.id), it)
+						}
 					}
 				}
 			}
