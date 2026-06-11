@@ -17,24 +17,5 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec.repositories
-
-import org.elaastix.commons.jpa.repository.ElaastixRepository
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.assignments.AssignmentEntity
-import org.elaastix.server.scenario.exec.entities.SciconumSessionEntity
-import org.elaastix.server.sequences.SciconumSequenceEntity
-import org.springframework.stereotype.Repository
-
-@Repository
-@SciconumTechDebt
-interface SciconumSessionRepository : ElaastixRepository<SciconumSessionEntity> {
-	fun findAllByAssignment(assignment: AssignmentEntity): List<SciconumSessionEntity>
-
-	fun findAllByNextPhaseAtNotNullAndPausedAtNull(): List<SciconumSessionEntity>
-
-	fun findOneByAssignmentAndSequence(
-		assignment: AssignmentEntity,
-		sequenceEntity: SciconumSequenceEntity,
-	): SciconumSessionEntity?
-}
+ALTER TABLE sciconum_session_entity
+	ADD paused_at TIMESTAMP WITHOUT TIME ZONE;

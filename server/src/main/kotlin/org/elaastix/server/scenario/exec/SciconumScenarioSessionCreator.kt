@@ -69,7 +69,6 @@ class SciconumScenarioSessionCreator(
 						sequence = sequence,
 						phase = SciconumScenarioExecutionPhase.PENDING,
 						currentQuestion = 0u,
-						nextPhaseAt = null,
 					),
 				)
 			}
