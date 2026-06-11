@@ -66,54 +66,63 @@ class ElaastixRepositoryImpl<T : AbstractEntity>(
 	override fun findByIdAndUpdate(id: Uuid, block: T.() -> Unit): T? =
 		findByIdOrNull(id)?.let { update(it.apply(block)) }
 
+	@Transactional
 	override fun <S : T> persist(entity: S): S {
 		val res = super.persist(entity)
 		applicationEventPublisher.publishEvent(EntityCreatedEvent(this, res))
 		return res
 	}
 
+	@Transactional
 	override fun <S : T> persistAndFlush(entity: S): S {
 		val res = super.persistAndFlush(entity)
 		applicationEventPublisher.publishEvent(EntityCreatedEvent(this, res))
 		return res
 	}
 
+	@Transactional
 	override fun <S : T> persistAll(entities: Iterable<S>): List<S> {
 		val res = super.persistAll(entities)
 		res.forEach { applicationEventPublisher.publishEvent(EntityCreatedEvent(this, it)) }
 		return res
 	}
 
+	@Transactional
 	override fun <S : T> persistAllAndFlush(entities: Iterable<S>): List<S> {
 		val res = super.persistAllAndFlush(entities)
 		res.forEach { applicationEventPublisher.publishEvent(EntityCreatedEvent(this, it)) }
 		return res
 	}
 
+	@Transactional
 	override fun <S : T> update(entity: S): S {
 		val res = super.update(entity)
 		applicationEventPublisher.publishEvent(EntityUpdatedEvent(this, res))
 		return res
 	}
 
+	@Transactional
 	override fun <S : T> updateAndFlush(entity: S): S {
 		val res = super.updateAndFlush(entity)
 		applicationEventPublisher.publishEvent(EntityUpdatedEvent(this, res))
 		return res
 	}
 
+	@Transactional
 	override fun <S : T> updateAll(entities: Iterable<S>): List<S> {
 		val res = super.updateAll(entities)
 		res.forEach { applicationEventPublisher.publishEvent(EntityUpdatedEvent(this, it)) }
 		return res
 	}
 
+	@Transactional
 	override fun <S : T> updateAllAndFlush(entities: Iterable<S>): List<S> {
 		val res = super.updateAllAndFlush(entities)
 		res.forEach { applicationEventPublisher.publishEvent(EntityUpdatedEvent(this, it)) }
 		return res
 	}
 
+	@Transactional
 	override fun <S : T> merge(entity: S): S {
 		val isNew = entityInformation.isNew(entity)
 		val res = super.merge(entity)
@@ -123,6 +132,7 @@ class ElaastixRepositoryImpl<T : AbstractEntity>(
 		return res
 	}
 
+	@Transactional
 	override fun <S : T> mergeAndFlush(entity: S): S {
 		val isNew = entityInformation.isNew(entity)
 		val res = super.mergeAndFlush(entity)
@@ -132,6 +142,7 @@ class ElaastixRepositoryImpl<T : AbstractEntity>(
 		return res
 	}
 
+	@Transactional
 	override fun <S : T> mergeAll(entities: Iterable<S>): List<S> {
 		val areNew = entities.map { entityInformation.isNew(it) }
 		val res = super.mergeAll(entities)
@@ -143,6 +154,7 @@ class ElaastixRepositoryImpl<T : AbstractEntity>(
 		return res
 	}
 
+	@Transactional
 	override fun <S : T> mergeAllAndFlush(entities: Iterable<S>): List<S> {
 		val areNew = entities.map { entityInformation.isNew(it) }
 		val res = super.mergeAllAndFlush(entities)

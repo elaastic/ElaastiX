@@ -30,7 +30,7 @@ import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.assignments.AssignmentEntity
 import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase
-import org.elaastix.server.sequences.SequenceEntity
+import org.elaastix.server.sequences.SciconumSequenceEntity
 import kotlin.time.Instant
 
 @Entity
@@ -48,7 +48,7 @@ class SciconumSessionEntity(
 
 	@NotNull
 	@ManyToOne
-	var sequence: SequenceEntity,
+	var sequence: SciconumSequenceEntity,
 
 	// -- State data
 
