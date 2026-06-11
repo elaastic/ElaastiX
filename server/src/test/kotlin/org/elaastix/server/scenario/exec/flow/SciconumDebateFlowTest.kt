@@ -19,7 +19,6 @@
 
 package org.elaastix.server.scenario.exec.flow
 
-import org.assertj.core.api.Assertions.assertThat
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.scenario.SciconumScenario
 import org.junit.jupiter.api.Test
@@ -32,120 +31,101 @@ import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase as Phase
 class SciconumDebateFlowTest : AbstractSciconumFlowTest() {
 	@Test
 	fun `PD sequence executes according to planned scenario`() {
-		validateScenario(SciconumScenario.PEER_DEBATE, 4u) {
-			val (_, session1) = createLearner()
-			val (_, session2) = createLearner()
-
-			fun checkState(phase: Phase, question: UInt) {
-				val (gs, s1, s2) = refresh(scenarioSession, session1, session2)
-				assertThat(gs.phase).isEqualTo(phase)
-				assertThat(gs.currentRound).isEqualTo(question)
-				assertThat(s1.phase).isEqualTo(phase)
-				assertThat(s2.phase).isEqualTo(phase)
-			}
-
-			checkState(Phase.PENDING, 0u)
+		validateScenario(SciconumScenario.PEER_DEBATE, 4u, 2u) {
+			assertThatAllSessions().areInPhase(Phase.PENDING)
 			start()
-			checkState(Phase.QUESTION, 0u)
 
-			advanceClock(1.minutes)
-			checkState(Phase.PEER, 0u)
+			assertThatAllSessions()
+				.areInPhase(Phase.QUESTION)
+				.areAtNthQuestion(1u)
+
+			checkTransitionToPhaseAfter(phase = Phase.PEER, after = 1.minutes)
+			assertThatAllSessions().areAtNthQuestion(1u)
 			// TODO: Check peering
 
-			advanceClock(5.5.minutes)
-			checkState(Phase.REVISE, 0u)
+			checkTransitionToPhaseAfter(phase = Phase.REVISE, after = 5.5.minutes)
+			assertThatAllSessions().areAtNthQuestion(1u)
 
-			advanceClock(0.5.minutes)
-			checkState(Phase.FEEDBACK, 0u)
+			checkTransitionToPhaseAfter(phase = Phase.FEEDBACK, after = 0.5.minutes)
+			assertThatAllSessions().areAtNthQuestion(1u)
 
-			advanceClock(0.5.minutes)
-			checkState(Phase.QUESTION, 1u)
+			checkTransitionToPhaseAfter(phase = Phase.QUESTION, after = 0.5.minutes)
+			assertThatAllSessions().areAtNthQuestion(2u)
 
-			advanceClock(1.minutes)
-			checkState(Phase.PEER, 1u)
+			checkTransitionToPhaseAfter(phase = Phase.PEER, after = 1.minutes)
+			assertThatAllSessions().areAtNthQuestion(2u)
 			// TODO: Check peering
 
-			advanceClock(5.5.minutes)
-			checkState(Phase.REVISE, 1u)
+			checkTransitionToPhaseAfter(phase = Phase.REVISE, after = 5.5.minutes)
+			assertThatAllSessions().areAtNthQuestion(2u)
 
-			advanceClock(0.5.minutes)
-			checkState(Phase.FEEDBACK, 1u)
+			checkTransitionToPhaseAfter(phase = Phase.FEEDBACK, after = 0.5.minutes)
+			assertThatAllSessions().areAtNthQuestion(2u)
 
-			advanceClock(0.5.minutes)
-			checkState(Phase.QUESTION, 2u)
+			checkTransitionToPhaseAfter(phase = Phase.QUESTION, after = 0.5.minutes)
+			assertThatAllSessions().areAtNthQuestion(3u)
 
-			advanceClock(1.minutes)
-			checkState(Phase.PEER, 2u)
+			checkTransitionToPhaseAfter(phase = Phase.PEER, after = 1.minutes)
+			assertThatAllSessions().areAtNthQuestion(3u)
 			// TODO: Check peering
 
-			advanceClock(5.5.minutes)
-			checkState(Phase.REVISE, 2u)
+			checkTransitionToPhaseAfter(phase = Phase.REVISE, after = 5.5.minutes)
+			assertThatAllSessions().areAtNthQuestion(3u)
 
-			advanceClock(0.5.minutes)
-			checkState(Phase.FEEDBACK, 2u)
+			checkTransitionToPhaseAfter(phase = Phase.FEEDBACK, after = 0.5.minutes)
+			assertThatAllSessions().areAtNthQuestion(3u)
 
-			advanceClock(0.5.minutes)
-			checkState(Phase.QUESTION, 3u)
+			checkTransitionToPhaseAfter(phase = Phase.QUESTION, after = 0.5.minutes)
+			assertThatAllSessions().areAtNthQuestion(4u)
 
-			advanceClock(1.minutes)
-			checkState(Phase.PEER, 3u)
+			checkTransitionToPhaseAfter(phase = Phase.PEER, after = 1.minutes)
+			assertThatAllSessions().areAtNthQuestion(4u)
 			// TODO: Check peering
 
-			advanceClock(5.5.minutes)
-			checkState(Phase.REVISE, 3u)
+			checkTransitionToPhaseAfter(phase = Phase.REVISE, after = 5.5.minutes)
+			assertThatAllSessions().areAtNthQuestion(4u)
 
-			advanceClock(0.5.minutes)
-			checkState(Phase.FEEDBACK, 3u)
+			checkTransitionToPhaseAfter(phase = Phase.FEEDBACK, after = 0.5.minutes)
+			assertThatAllSessions().areAtNthQuestion(4u)
 
-			advanceClock(0.5.minutes)
-			checkState(Phase.END, 4u)
+			checkTransitionToPhaseAfter(phase = Phase.END, after = 0.5.minutes)
 		}
 	}
 
 	@Test
 	fun `PD late learner can join and will be picked up on next question`() {
-		validateScenario(SciconumScenario.PEER_DEBATE, 4u) {
-			val (_, session1) = createLearner()
-			val (_, session2) = createLearner()
-
-			fun checkState(phase: Phase, question: UInt) {
-				val (gs, s1, s2) = refresh(scenarioSession, session1, session2)
-				assertThat(gs.phase).isEqualTo(phase)
-				assertThat(gs.currentRound).isEqualTo(question)
-				assertThat(s1.phase).isEqualTo(phase)
-				assertThat(s2.phase).isEqualTo(phase)
-			}
-
-			checkState(Phase.PENDING, 0u)
+		validateScenario(SciconumScenario.PEER_DEBATE, 4u, 2u) {
+			assertThatAllSessions().areInPhase(Phase.PENDING)
 			start()
 
-			advanceClock(
-				1.minutes +
+			checkTransitionToPhaseAfter(
+				phase = Phase.QUESTION,
+				after = 1.minutes +
 					5.5.minutes +
 					0.5.minutes +
 					0.5.minutes,
 			)
-			checkState(Phase.QUESTION, 1u)
 
-			val (_, session3) = createLearner()
-			assertThat(session3.refresh().phase).isEqualTo(Phase.PENDING)
+			assertThatAllSessions().areAtNthQuestion(2u)
 
-			advanceClock(1.minutes)
-			checkState(Phase.PEER, 1u)
-			assertThat(session3.refresh().phase).isEqualTo(Phase.PENDING)
+			val (_, lateLearnerSession) = createLearner()
+			assertThatSpecificSession(lateLearnerSession).isInPhase(Phase.PENDING)
+
+			checkTransitionToPhaseAfter(phase = Phase.PEER, after = 1.minutes)
+			assertThatSpecificSession(lateLearnerSession).isInPhase(Phase.PENDING)
+			assertThatAllSessions().areAtNthQuestion(2u)
 			// TODO: Check learner has no peering
 
-			advanceClock(5.5.minutes)
-			checkState(Phase.REVISE, 1u)
-			assertThat(session3.refresh().phase).isEqualTo(Phase.PENDING)
+			checkTransitionToPhaseAfter(phase = Phase.REVISE, after = 5.5.minutes)
+			assertThatSpecificSession(lateLearnerSession).isInPhase(Phase.PENDING)
+			assertThatAllSessions().areAtNthQuestion(2u)
 
-			advanceClock(0.5.minutes)
-			checkState(Phase.FEEDBACK, 1u)
-			assertThat(session3.refresh().phase).isEqualTo(Phase.PENDING)
+			checkTransitionToPhaseAfter(phase = Phase.FEEDBACK, after = 0.5.minutes)
+			assertThatSpecificSession(lateLearnerSession).isInPhase(Phase.PENDING)
+			assertThatAllSessions().areAtNthQuestion(2u)
 
-			advanceClock(0.5.minutes)
-			checkState(Phase.QUESTION, 2u)
-			assertThat(session3.refresh().phase).isEqualTo(Phase.QUESTION)
+			checkTransitionToPhaseAfter(phase = Phase.QUESTION, after = 0.5.minutes, lateLearnerSession)
+			assertThatAllSessions(lateLearnerSession).areAtNthQuestion(3u)
 		}
 	}
 }

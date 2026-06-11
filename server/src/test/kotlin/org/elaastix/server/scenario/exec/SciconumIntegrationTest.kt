@@ -86,7 +86,7 @@ abstract class SciconumIntegrationTest : IntegrationTest() {
 			assignmentService.createAssignment(
 				CreateAssignmentDto(
 					displayName = makeRecognisableName(),
-					sequenceIds = makeList(sequencesCount.toInt()) {
+					sequenceIds = makeList(sequencesCount) {
 						createSequence(scenario, questionsPerSequence).id
 					},
 				)
