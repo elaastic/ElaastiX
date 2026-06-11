@@ -37,7 +37,6 @@ plugins {
 }
 
 dependencies {
-	bom(SpringBootPlugin.BOM_COORDINATES)
 	implementation(kotlin("reflect"))
 
 	implementation(jakarta("persistence"))

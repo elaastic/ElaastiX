@@ -21,7 +21,11 @@
 
 package conventions
 
+import bom
+import kotlinx
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
 import version
+import kotlin
 
 val libs = the<VersionCatalogsExtension>().named("libs")
 
@@ -44,8 +48,13 @@ testing {
 			useJUnitJupiter(libs.version("junit"))
 
 			dependencies {
+				bom(kotlin("bom", version = libs.version("kotlin")))
+				bom(kotlinx("serialization-bom", version = libs.version("kotlinx-serialization")))
+				bom(SpringBootPlugin.BOM_COORDINATES)
+
 				implementation(project())
-				implementation(libs.findLibrary("assertj").get())
+				implementation("org.assertj:assertj-core")
+				// implementation("org.awaitility:awaitility")
 			}
 		}
 

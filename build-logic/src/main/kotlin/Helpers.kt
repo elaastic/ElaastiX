@@ -18,22 +18,25 @@
  */
 
 @file:Suppress(
+	"TooManyFunctions",
 	"UnusedReceiverParameter",
 	"UndocumentedPublicClass",
 	"UndocumentedPublicFunction",
 	"UndocumentedPublicProperty",
 	"FunctionOnlyReturningConstant",
 	"SpellCheckingInspection",
+	"UnstableApiUsage",
 )
 
 import org.gradle.api.artifacts.VersionCatalog
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.api.plugins.jvm.JvmComponentDependencies
 import org.gradle.kotlin.dsl.DependencyHandlerScope
 
-private fun depWithVersion(dep: String, version: String?): Any =
+private fun depWithVersion(dep: String, version: String?) =
 	"$dep${version?.let { ":$version" } ?: ""}"
 
-private fun depWithModule(prefix: String, module: String, version: String? = null): Any =
+private fun depWithModule(prefix: String, module: String, version: String? = null) =
 	depWithVersion(
 		when (module) {
 			"" -> prefix
@@ -44,35 +47,48 @@ private fun depWithModule(prefix: String, module: String, version: String? = nul
 
 // Extra "well-known" shortcuts for common sources
 
+object SpringDependencyShortcuts {
+	object SpringStarterShortcut {
+		operator fun invoke(module: String = "", version: String? = null) =
+			depWithModule("org.springframework.boot:spring-boot-starter", module, version)
+
+		fun test(module: String = "", version: String? = null) =
+			depWithVersion("${invoke(module)}-test", version)
+	}
+
+	operator fun invoke(module: String, version: String? = null) =
+		depWithModule("org.springframework:spring", module, version)
+	fun data(module: String, version: String? = null) =
+		depWithModule("org.springframework.data:spring-data", module, version)
+	fun security(module: String, version: String? = null) =
+		depWithModule("org.springframework.security:spring-security", module, version)
+	fun boot(module: String = "", version: String? = null) =
+		depWithModule("org.springframework.boot:spring-boot", module, version)
+
+	val starter = SpringStarterShortcut
+}
+
 fun DependencyHandler.kotlinx(module: String, version: String? = null) =
 	depWithVersion("org.jetbrains.kotlinx:kotlinx-$module", version)
 
 fun DependencyHandler.jakarta(module: String, version: String? = null) =
 	depWithVersion("jakarta.$module:jakarta.$module-api", version)
 
-object SpringDependencyShortcuts {
-	object SpringStarterShortcut {
-		operator fun invoke(module: String = "", version: String? = null): Any =
-			depWithModule("org.springframework.boot:spring-boot-starter", module, version)
-
-		fun test(module: String = "", version: String? = null): Any =
-			depWithVersion("${invoke(module)}-test", version)
-	}
-
-	operator fun invoke(module: String, version: String? = null): Any =
-		depWithModule("org.springframework:spring", module, version)
-	fun data(module: String, version: String? = null): Any =
-		depWithModule("org.springframework.data:spring-data", module, version)
-	fun security(module: String, version: String? = null): Any =
-		depWithModule("org.springframework.security:spring-security", module, version)
-	fun boot(module: String = "", version: String? = null): Any =
-		depWithModule("org.springframework.boot:spring-boot", module, version)
-
-	val starter = SpringStarterShortcut
-}
-
 val DependencyHandler.spring: SpringDependencyShortcuts
 	get() = SpringDependencyShortcuts
+
+fun JvmComponentDependencies.kotlin(module: String, version: String? = null) =
+	depWithVersion("org.jetbrains.kotlin:kotlin-$module", version)
+
+fun JvmComponentDependencies.kotlinx(module: String, version: String? = null) =
+	depWithVersion("org.jetbrains.kotlinx:kotlinx-$module", version)
+
+fun JvmComponentDependencies.jakarta(module: String, version: String? = null) =
+	depWithVersion("jakarta.$module:jakarta.$module-api", version)
+
+val JvmComponentDependencies.spring: SpringDependencyShortcuts
+	get() = SpringDependencyShortcuts
+
 
 /**
  * Helper for adding a Spring Boot starter to the dependencies.
@@ -94,3 +110,6 @@ fun DependencyHandlerScope.testSpringBootStarter(starter: String) = springBootSt
 
 internal fun VersionCatalog.version(id: String) = findVersion(id).get().toString()
 internal fun DependencyHandlerScope.bom(specifier: Any) = add("implementation", enforcedPlatform(specifier))
+
+internal fun JvmComponentDependencies.bom(specifier: CharSequence) =
+	implementation.add(enforcedPlatform.modify(specifier))
