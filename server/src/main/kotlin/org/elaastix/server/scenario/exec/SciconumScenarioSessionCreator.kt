@@ -27,6 +27,7 @@ import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
 import org.elaastix.server.scenario.exec.entities.SciconumSessionEntity
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
 import org.elaastix.server.scenario.exec.repositories.SciconumSessionRepository
+import org.elaastix.server.sequences.SciconumSequenceEntity
 import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
@@ -61,15 +62,17 @@ class SciconumScenarioSessionCreator(
 	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
 	fun handleAssignmentCreation(event: EntityCreatedEvent<AssignmentEntity>) {
 		for (sequence in event.entity.sequences) {
-			sessionRepository.persist(
-				SciconumSessionEntity(
-					assignment = event.entity,
-					sequence = sequence,
-					phase = SciconumScenarioExecutionPhase.PENDING,
-					currentQuestion = 0u,
-					nextPhaseAt = null,
-				),
-			)
+			if (sequence is SciconumSequenceEntity) {
+				sessionRepository.persist(
+					SciconumSessionEntity(
+						assignment = event.entity,
+						sequence = sequence,
+						phase = SciconumScenarioExecutionPhase.PENDING,
+						currentQuestion = 0u,
+						nextPhaseAt = null,
+					),
+				)
+			}
 		}
 	}
 }

@@ -20,7 +20,7 @@
 package org.elaastix.server
 
 import io.swagger.v3.oas.models.OpenAPI
-import org.slf4j.LoggerFactory
+import org.apache.commons.logging.LogFactory
 import org.springdoc.webmvc.api.OpenApiResource
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
@@ -51,7 +51,7 @@ class OpenApiCommandLineRunner(
 	private val openApiResource: OpenApiResource,
 ) : CommandLineRunner {
 	override fun run(vararg args: String) {
-		val logger = LoggerFactory.getLogger(this::class.java)
+		val logger = LogFactory.getLog(this::class.java)
 		logger.info("Generating OpenAPI specification. The server will exit once this is complete.")
 
 		val json = generate()
