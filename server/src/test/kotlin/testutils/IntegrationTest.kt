@@ -71,6 +71,11 @@ abstract class IntegrationTest {
 
 	fun <T : AbstractEntity> T.persist() = also { runWithTransaction { em.persist(this) } }
 
+	fun <T : AbstractEntity> T.freshCopy(): T = em.find(this::class.java, id)
+
+	fun <T : AbstractEntity> Iterable<T>.freshCopies(): List<T> = map { em.find(it::class.java, it.id) }
+	fun <T : AbstractEntity> Array<T>.freshCopies(): List<T> = map { em.find(it::class.java, it.id) }
+
 	fun makeRecognisableName(): String {
 		// Target maximum length: 64
 		// Structure: <class>#`<name>` @ <iso-time>

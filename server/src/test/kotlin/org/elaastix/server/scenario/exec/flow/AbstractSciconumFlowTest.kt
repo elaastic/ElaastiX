@@ -19,16 +19,19 @@
 
 package org.elaastix.server.scenario.exec.flow
 
-import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.assertj.core.api.Assertions.assertThat
+import org.elaastix.commons.makeMapN
 import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.assignments.AssignmentEntity
 import org.elaastix.server.scenario.SciconumScenario
 import org.elaastix.server.scenario.exec.ScenarioExecutionService
 import org.elaastix.server.scenario.exec.SciconumIntegrationTest
-import org.elaastix.server.scenario.exec.entities.SciconumSessionEntity
+import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase
+import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.nanoseconds
 
 @SpringBootTest
 @OptIn(SciconumTechDebt::class)
@@ -36,31 +39,32 @@ abstract class AbstractSciconumFlowTest : SciconumIntegrationTest() {
 	@Autowired
 	lateinit var sciconumScenarioExecutionService: ScenarioExecutionService
 
-	fun validateScenario(scenario: SciconumScenario, questionsCount: UInt, block: TimedFlowDsl.() -> Unit) {
-		val assignment = createAssignment(1u, scenario, questionsCount)
-		val session = sciconumSessionRepository.findAllByAssignment(assignment).single()
-
-		TimedFlowDsl(assignment, session).apply(block)
+	fun validateScenario(
+		scenario: SciconumScenario,
+		questionsCount: UInt,
+		initialLearnersCount: UInt,
+		block: TimedFlowDsl.() -> Unit,
+	) {
+		TimedFlowDsl(scenario, questionsCount, initialLearnersCount).apply(block)
 	}
 
-	inner class TimedFlowDsl(
-		/**
-		 * The assignment created for the test.
-		 */
-		val assignment: AssignmentEntity,
+	inner class TimedFlowDsl(scenario: SciconumScenario, questionsCount: UInt, initialLearnersCount: UInt) {
+		/** The assignment created for the test. */
+		val assignment = createAssignment(1u, scenario, questionsCount)
 
-		/**
-		 * The global session created for the test.
-		 */
-		val globalSession: SciconumSessionEntity,
-	) {
+		/** The global session created for the test. */
+		val globalSession = sciconumSessionRepository.findAllByAssignment(assignment).single()
+
+		/** Initial learners (and their session) created for the test. */
+		val learners: Map<UserEntity, SciconumLearnerSessionEntity> = makeMapN(initialLearnersCount, ::createLearner)
+
 		/**
 		 * Creates a learner and adds them to the assignment.
 		 *
 		 * ```kt
 		 * validateScenario(SciconumScenario.CONTROL, 9u) {
-		 *     val (learner1, session1) = createLearner()
-		 *     val (learner2, session2) = createLearner()
+		 *     val (learner, learnerSession) = createLearner()
+		 *     ...
 		 * }
 		 * ```
 		 */
@@ -92,26 +96,115 @@ abstract class AbstractSciconumFlowTest : SciconumIntegrationTest() {
 		 */
 		fun advanceClock(duration: Duration) = clock.add(duration)
 
-		private typealias E = AbstractEntity
+		/**
+		 * Checks that the session will transition to [phase] after exactly the duration set in [after].
+		 * Can optionally take any number of session to check. Internally, this function uses [assertThatAllSessions].
+		 *
+		 * This will assert that the state does not change after `duration - 1ns`, but does so after `duration`.
+		 */
+		fun checkTransitionToPhaseAfter(
+			phase: SciconumScenarioExecutionPhase,
+			after: Duration,
+			vararg sessions: SciconumLearnerSessionEntity,
+		) {
+			advanceClock(after - 1.nanoseconds)
+			assertThatAllSessions(*sessions).areNotInPhase(phase)
 
-		private fun <T : E> T.refresh0(): T = em.find(this::class.java, id)
+			advanceClock(1.nanoseconds)
+			assertThatAllSessions(*sessions).areInPhase(phase)
+		}
 
-		@JvmName("refresh1")
-		fun <T : E> T.refresh(): T =
-			tx.execute { refresh0() }
+		/**
+		 * Prepares an assertion object with the sessions passed in arguments.
+		 */
+		fun assertThatSpecificSessions(vararg sessions: SciconumLearnerSessionEntity) =
+			SessionsAssert(sessions)
 
-		fun <T : E> refresh(e1: T): T =
-			tx.execute { e1.refresh0() }
+		/**
+		 * Prepares an assertion object with the sessions passed in arguments.
+		 */
+		fun assertThatSpecificSession(session: SciconumLearnerSessionEntity) =
+			SessionAssert(session)
 
-		fun <T : E, U : E> refresh(e1: T, e2: U): Pair<T, U> =
-			tx.execute { Pair(e1.refresh0(), e2.refresh0()) }
+		/**
+		 * Prepares an assertion object with the global session, initial learner session, as well as sessions
+		 * passed in arguments.
+		 *
+		 * Initially created sessions **must not** be passed to this function.
+		 */
+		fun assertThatAllSessions(vararg sessions: SciconumLearnerSessionEntity) =
+			AllSessionsAssert(sessions)
 
-		fun <T : E, U : E, V : E> refresh(e1: T, e2: U, e3: V): Triple<T, U, V> =
-			tx.execute { Triple(e1.refresh0(), e2.refresh0(), e3.refresh0()) }
+		/** Assertions on session. */
+		inner class SessionAssert(learnerSession: SciconumLearnerSessionEntity) {
+			private val learnerSession = tx.execute { learnerSession.freshCopy() }
 
-		fun <T : E, U : E, V : E, W : E> refresh(e1: T, e2: U, e3: V, e4: W): Quadruple<T, U, V, W> =
-			tx.execute { Quadruple(e1.refresh0(), e2.refresh0(), e3.refresh0(), e4.refresh0()) }
+			/** Asserts that the session is in the specified [phase]. */
+			fun isInPhase(phase: SciconumScenarioExecutionPhase) = also {
+				assertThat(learnerSession.phase).isEqualTo(phase)
+			}
+
+			/** Asserts that the session is in the specified [phase]. */
+			fun isNotInPhase(phase: SciconumScenarioExecutionPhase) = also {
+				assertThat(learnerSession.phase).isNotEqualTo(phase)
+			}
+		}
+
+		/** Assertions on sessions. */
+		inner class SessionsAssert(learnerSessions: Array<out SciconumLearnerSessionEntity>) {
+			private val learnerSessions = tx.execute { learnerSessions.freshCopies() }
+
+			init {
+				require(this.learnerSessions.isNotEmpty())
+			}
+
+			/** Asserts that all sessions are in the specified [phase]. */
+			fun areInPhase(phase: SciconumScenarioExecutionPhase) = also {
+				for (session in learnerSessions) {
+					assertThat(session.phase).isEqualTo(phase)
+				}
+			}
+
+			/** Asserts that all sessions are in the specified [phase]. */
+			fun areNotInPhase(phase: SciconumScenarioExecutionPhase) = also {
+				for (session in learnerSessions) {
+					assertThat(session.phase).isNotEqualTo(phase)
+				}
+			}
+		}
+
+		/** Assertions on sessions. */
+		inner class AllSessionsAssert(extraSessions: Array<out SciconumLearnerSessionEntity>) {
+			private val globalSession = tx.execute { this@TimedFlowDsl.globalSession.freshCopy() }
+			private val learnerSessions = tx.execute { (learners.values + extraSessions).freshCopies() }
+
+			/** Asserts that all sessions are in the specified [phase]. */
+			fun areInPhase(phase: SciconumScenarioExecutionPhase) = also {
+				assertThat(globalSession.phase).isEqualTo(phase)
+				for (session in learnerSessions) {
+					assertThat(session.phase).isEqualTo(phase)
+				}
+			}
+
+			/** Asserts that all sessions are in the specified [phase]. */
+			fun areNotInPhase(phase: SciconumScenarioExecutionPhase) = also {
+				assertThat(globalSession.phase).isNotEqualTo(phase)
+				for (session in learnerSessions) {
+					assertThat(session.phase).isNotEqualTo(phase)
+				}
+			}
+
+			/** Asserts that the global session is at the [question]-th question. */
+			fun areAtNthQuestion(question: UInt) = also {
+				require(question != 0u) // When we say it's "nth", it's ACTUALLY nth and not actually 0-indexed :)
+				assertThat(globalSession.currentQuestion).isEqualTo(question - 1u)
+			}
+
+			/** Asserts that the global session is at the [question]-th question. */
+			fun areNotAtNthQuestion(question: UInt) = also {
+				require(question != 0u) // When we say it's "nth", it's ACTUALLY nth and not actually 0-indexed :)
+				assertThat(globalSession.currentQuestion).isNotEqualTo(question - 1u)
+			}
+		}
 	}
-
-	data class Quadruple<A, B, C, D>(val a: A, val b: B, val c: C, val d: D)
 }
