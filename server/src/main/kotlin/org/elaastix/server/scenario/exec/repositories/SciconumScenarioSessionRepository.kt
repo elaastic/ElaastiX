@@ -31,7 +31,7 @@ import org.springframework.stereotype.Repository
 interface SciconumScenarioSessionRepository : ElaastixRepository<SciconumScenarioSessionEntity> {
 	fun findAllByAssignment(assignment: AssignmentEntity): List<SciconumScenarioSessionEntity>
 
-	fun findAllByNextPhaseAtNotNull(): List<SciconumScenarioSessionEntity>
+	fun findAllByNextPhaseAtNotNullAndPausedAtNull(): List<SciconumScenarioSessionEntity>
 
 	fun findOneByAssignmentAndSequence(
 		assignment: AssignmentEntity,

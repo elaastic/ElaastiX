@@ -70,7 +70,6 @@ class SciconumScenarioSessionCreator(
 					sequence = sequence,
 					phase = SciconumScenarioExecutionPhase.PENDING,
 					currentRound = 0u,
-					nextPhaseAt = null,
 				),
 			)
 		}

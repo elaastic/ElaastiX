@@ -28,7 +28,7 @@ import org.springframework.security.access.prepost.PreAuthorize
  * @see RequiresRole
  * @see PreAuthorize
  */
-@PreAuthorize("hasAuthority('{permission.authority}')")
+@PreAuthorize("hasAuthority('{permission}')")
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class RequiresPermission(

@@ -17,21 +17,5 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.security
-
-import org.springframework.security.access.prepost.PreAuthorize
-
-/**
- * Helper annotation to only allow users with a given role to perform a call.
- * May be used as a meta-annotation.
- *
- * @see RequiresPermission
- * @see PreAuthorize
- */
-@PreAuthorize("hasRole('{role}')")
-@Target(AnnotationTarget.FUNCTION, AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class RequiresRole(
-	/** The role to match. */
-	val role: Role,
-)
+ALTER TABLE sciconum_scenario_session_entity
+	ADD paused_at TIMESTAMP WITHOUT TIME ZONE;

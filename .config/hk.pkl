@@ -1,5 +1,5 @@
-amends "package://github.com/jdx/hk/releases/download/v1.38.0/hk@1.38.0#/Config.pkl"
-import "package://github.com/jdx/hk/releases/download/v1.38.0/hk@1.38.0#/Builtins.pkl"
+amends "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Config.pkl"
+import "package://github.com/jdx/hk/releases/download/v1.48.0/hk@1.48.0#/Builtins.pkl"
 
 exclude = List(
 	"gradlew",
@@ -20,12 +20,14 @@ local frontend = new Mapping<String, Step> {
 local backend = new Mapping<String, Step> {
 	// If we decide this is too slow, consider using only Ktlint (via Mise)?
 	["detekt"] {
+		local detekt_cmd = "just gradle :detekt detektMain detektTest detektIntegrationTest"
+
 		glob = List("**/*.kt", "**/*.kts")
-		check = "just gradle :detekt detektMain detektTest detektIntegrationTest"
+		check = detekt_cmd
 		check_first = false  // Gradle's too slow for that
 
 		// Detekt is weird and needs multiple passes to fix things
-		local _fix = check + " -Pdetekt.fix"
+		local _fix = detekt_cmd + " -Pdetekt.fix"
 		fix = _fix + " && " + _fix
 	}
 }
@@ -50,7 +52,7 @@ local shared = new Mapping<String, Step> {
 	}
 
 	// Builtin hk checks
-	["check-byte-order-marker"] = (Builtins.check_byte_order_marker)
+	["byte-order-marker"] = (Builtins.byte_order_marker)
 	["trailing-whitespace"] = (Builtins.trailing_whitespace)
 	["check-added-large-files"] = (Builtins.check_added_large_files)
 	["check-merge-conflict"] = (Builtins.check_merge_conflict)
