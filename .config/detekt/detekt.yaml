@@ -65,8 +65,8 @@ style:
         reason: Use org.elaastix.commons.data.Uuid instead
       - value: kotlin.uuid.Uuid
         reason: Use org.elaastix.commons.data.Uuid instead
-      - value: java.time.Instant
-        reason: Use Kotlin's Instant type
+      - value: java.time.*
+        reason: Use kotlin.time.* instead
       # Ban Spring Security's helper as we have our own
       - value: org.springframework.security.test.context.support.WithMockUser
         reason: Use testutils.WithMockUser instead
@@ -76,8 +76,10 @@ style:
       - value: org.junit.jupiter.api.TestMethodOrder
         reason: Banned annotation. Tests are run in a randomised order to help fuzzing against race conditions.
     excludes:
-      - "**/commons/jpa/**"     # Compat layer
-      - "**/commons/data/Uuid.kt"  # Uuid type alias
+      - "**/commons/jpa/**"                                        # Compat layer
+      - "**/commons/data/Uuid.kt"                                  # Uuid type alias
+      - "**/server/core/infrastructure/config/SchedulerConfig.kt"  # Java Clock glue code
+      - "**/testutils/ControllableClock.kt"                        # Java Clock glue code
   AbstractClassCanBeConcreteClass:
     active: false
   VarCouldBeVal:

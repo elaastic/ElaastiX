@@ -1,4 +1,9 @@
 debug: true
+logging.level:
+  org.elaastix: DEBUG
+  # For SQL parameters, if needed
+  #org.hibernate.orm.jdbc.bind: TRACE
+
 spring:
   datasource:
     url: jdbc:postgresql://127.0.0.1:5432/elaastix
