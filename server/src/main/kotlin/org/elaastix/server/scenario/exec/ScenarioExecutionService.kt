@@ -24,6 +24,9 @@ import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.orNotFound
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.schedule
+import org.elaastix.commons.security.RequiresRole
+import org.elaastix.commons.security.Role
+import org.elaastix.commons.validate
 import org.elaastix.server.scenario.SciconumScenario
 import org.elaastix.server.scenario.exec.entities.SciconumSessionEntity
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
@@ -36,6 +39,7 @@ import org.springframework.stereotype.Component
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
+import java.util.concurrent.Future
 import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
@@ -48,6 +52,7 @@ import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase as Phase
  */
 @Service
 @SciconumTechDebt
+@Suppress("TooManyFunctions")
 class ScenarioExecutionService(
 	private val taskScheduler: TaskScheduler,
 	private val transactionTemplate: TransactionTemplate,
@@ -58,6 +63,8 @@ class ScenarioExecutionService(
 	companion object {
 		private val LOGGER = LogFactory.getLog(ScenarioExecutionService::class.java)
 	}
+
+	private val sessionFutureMap: MutableMap<Uuid, Future<*>> = mutableMapOf()
 
 	/** Conditionally loaded component dealing with session execution restoration. */
 	@Component
@@ -72,7 +79,7 @@ class ScenarioExecutionService(
 		@EventListener(ApplicationStartedEvent::class)
 		fun restoreRunningSequences() {
 			val now = clock.now()
-			for (session in sciconumSessionRepository.findAllByNextPhaseAtNotNull()) {
+			for (session in sciconumSessionRepository.findAllByNextPhaseAtNotNullAndPausedAtNull()) {
 				session.nextPhaseAt?.let {
 					when {
 						it < now -> {
@@ -92,19 +99,92 @@ class ScenarioExecutionService(
 	}
 
 	@Transactional
+	@RequiresRole(Role.WRITER)
 	fun startSequenceById(sessionId: Uuid) {
 		val session = sciconumSessionRepository.findById(sessionId).orNotFound()
 		startSequence(session)
 	}
 
 	@Transactional
+	@RequiresRole(Role.WRITER)
+	fun pauseSequenceById(sessionId: Uuid) {
+		val session = sciconumSessionRepository.findById(sessionId).orNotFound()
+		pauseSequence(session)
+	}
+
+	@Transactional
+	@RequiresRole(Role.WRITER)
+	fun resumeSequenceById(sessionId: Uuid) {
+		val session = sciconumSessionRepository.findById(sessionId).orNotFound()
+		resumeSequence(session)
+	}
+
+	@Transactional
+	@RequiresRole(Role.WRITER)
+	fun resetSequenceById(sessionId: Uuid) {
+		val session = sciconumSessionRepository.findById(sessionId).orNotFound()
+		resetSequence(session)
+	}
+
+	@Transactional
 	fun startSequence(session: SciconumSessionEntity) {
-		check(session.phase == Phase.PENDING)
+		validate(session.phase == Phase.PENDING) { "The session is already in progress." }
 		ExecutionTask(session.id).run()
 	}
 
+	@Transactional
+	fun pauseSequence(session: SciconumSessionEntity) {
+		validate(session.phase != Phase.PENDING) { "The session has not started." }
+		validate(session.phase != Phase.END) { "The session has terminated." }
+		validate(session.pausedAt == null) { "The session has already been paused." }
+
+		session.pausedAt = clock.now()
+		descheduleSessionTick(session)
+
+		// TODO: WS event
+	}
+
+	@Transactional
+	fun resumeSequence(session: SciconumSessionEntity) {
+		val suspendedAt = session.pausedAt
+		validate(session.phase != Phase.PENDING) { "The session has not started." }
+		validate(session.phase != Phase.END) { "The session has terminated." }
+		validate(suspendedAt != null) { "The session has not been paused." }
+
+		val suspendedFor = clock.now() - suspendedAt
+		session.pausedAt = null
+		session.nextPhaseAt?.let {
+			val nextTick = it + suspendedFor
+			session.nextPhaseAt = nextTick
+			scheduleSessionTick(session, nextTick)
+		} ?: LOGGER.warn("Unpaused session ${session.id}, but it didn't have a next scheduled tick.")
+
+		// TODO: WS event
+	}
+
+	@Transactional
+	fun resetSequence(session: SciconumSessionEntity) {
+		validate(session.phase != Phase.PENDING) { "The session has not started." }
+
+		// TODO: delete all produced content
+		descheduleSessionTick(session)
+		session.apply {
+			phase = Phase.PENDING
+			pausedAt = null
+			nextPhaseAt = null
+			currentQuestion = 0u
+		}
+
+		// TODO: WS event
+	}
+
 	private fun scheduleSessionTick(session: SciconumSessionEntity, nextTick: Instant) {
-		taskScheduler.schedule(ExecutionTask(session.id), nextTick)
+		val future = taskScheduler.schedule(ExecutionTask(session.id), nextTick)
+		sessionFutureMap.put(session.id, future)?.cancel(true)
+	}
+
+	private fun descheduleSessionTick(session: SciconumSessionEntity) {
+		sessionFutureMap.remove(session.id)?.cancel(true)
 	}
 
 	@Suppress("CyclomaticComplexMethod") // The logic is just a big state machine
@@ -183,6 +263,8 @@ class ScenarioExecutionService(
 		session.phase = phase
 		session.nextPhaseAt = nextTick
 		sciconumLearnerSessionRepository.transitionAllLearnerSessionsOfSessionTo(session, phase, nextTick)
+
+		// TODO: WS event
 
 		return nextTick
 	}
