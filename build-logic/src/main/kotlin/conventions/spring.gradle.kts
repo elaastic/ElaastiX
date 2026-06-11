@@ -21,9 +21,7 @@
 
 package conventions
 
-import bom
 import jakarta
-import org.springframework.boot.gradle.plugin.SpringBootPlugin
 
 val libs = the<VersionCatalogsExtension>().named("libs")
 

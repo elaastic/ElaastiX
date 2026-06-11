@@ -109,7 +109,10 @@ fun DependencyHandlerScope.springBootStarter(
 fun DependencyHandlerScope.testSpringBootStarter(starter: String) = springBootStarter(starter, mainTarget = null)
 
 internal fun VersionCatalog.version(id: String) = findVersion(id).get().toString()
-internal fun DependencyHandlerScope.bom(specifier: Any) = add("implementation", enforcedPlatform(specifier))
+internal fun DependencyHandlerScope.bomEnforced(specifier: Any) = add("implementation", enforcedPlatform(specifier))
+internal fun DependencyHandlerScope.bom(specifier: Any) = add("implementation", platform(specifier))
 
-internal fun JvmComponentDependencies.bom(specifier: CharSequence) =
+internal fun JvmComponentDependencies.bomEnforced(specifier: CharSequence) =
 	implementation.add(enforcedPlatform.modify(specifier))
+internal fun JvmComponentDependencies.bom(specifier: CharSequence) =
+	implementation.add(platform.modify(specifier))
