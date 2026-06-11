@@ -62,7 +62,11 @@ class ScenarioExecutionService(
 	/** Conditionally loaded component dealing with session execution restoration. */
 	@Component
 	@Profile("!openapi")
-	inner class ScenarioExecutionRestoreListener {
+	class ScenarioExecutionRestoreListener(
+		private val sciconumSessionRepository: SciconumSessionRepository,
+		private val executionService: ScenarioExecutionService,
+		private val clock: Clock,
+	) {
 		/** Event listener called by Spring on application start. */
 		@Transactional
 		@EventListener(ApplicationStartedEvent::class)
@@ -74,12 +78,12 @@ class ScenarioExecutionService(
 						it < now -> {
 							val lag = (now - it).toInt(DurationUnit.SECONDS)
 							LOGGER.warn("Ticking session ${session.id}, was supposed to tick at $it ($lag seconds behind!)")
-							tickSession(session)
+							executionService.tickSession(session)
 						}
 
 						else -> {
 							LOGGER.info("Resuming execution of session ${session.id}")
-							taskScheduler.schedule(ExecutionTask(session.id), it)
+							executionService.scheduleSessionTick(session, it)
 						}
 					}
 				}
@@ -97,6 +101,10 @@ class ScenarioExecutionService(
 	fun startSequence(session: SciconumSessionEntity) {
 		check(session.phase == Phase.PENDING)
 		ExecutionTask(session.id).run()
+	}
+
+	private fun scheduleSessionTick(session: SciconumSessionEntity, nextTick: Instant) {
+		taskScheduler.schedule(ExecutionTask(session.id), nextTick)
 	}
 
 	@Suppress("CyclomaticComplexMethod") // The logic is just a big state machine
