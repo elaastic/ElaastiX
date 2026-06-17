@@ -21,7 +21,6 @@ package org.elaastix.server.assignments.participants
 
 import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.Uuid
-import org.elaastix.server.assignments.AssignmentService
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
 import org.springframework.http.HttpStatus
@@ -52,7 +51,7 @@ class AssignmentParticipantsController(private val assignmentParticipantsService
 	/**
 	 * Lists all participants to an assignment.
 	 *
-	 * @see [AssignmentService.getAllAssignments]
+	 * @see [AssignmentParticipantsService.getAllParticipants]
 	 */
 	@GetMapping
 	fun getAllParticipants(

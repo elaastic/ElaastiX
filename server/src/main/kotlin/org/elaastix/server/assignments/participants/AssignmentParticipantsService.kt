@@ -45,7 +45,7 @@ class AssignmentParticipantsService(
 	 */
 	@Suppress("unused")
 	@Transactional(readOnly = true)
-	fun getAllAssignments(assignmentId: Uuid, pageable: Pageable): PagedModel<AssignmentDto> {
+	fun getAllParticipants(assignmentId: Uuid, pageable: Pageable): PagedModel<AssignmentDto> {
 		val user = assignmentRepository.findAllParticipantsById(assignmentId, pageable)
 		TODO("Not yet implemented")
 	}
