@@ -3,7 +3,6 @@ jdk = "25"
 kotlin = "2.3.21"
 ksp = "2.3.9"
 # ----
-assertj = "3.27.7"
 datafaker = "2.5.4"
 detekt = "2.0.0-alpha.3"
 flyway = "12.7.0"
@@ -21,7 +20,6 @@ springdoc-kdoc = "1.1.0"
 testcontainers = "2.0.5"
 
 [libraries]
-assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 datafaker = { module = "net.datafaker:datafaker", version.ref = "datafaker" }
 detekt-ktlint = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
 flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }

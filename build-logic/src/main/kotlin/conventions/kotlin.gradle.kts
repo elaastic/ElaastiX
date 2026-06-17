@@ -24,6 +24,7 @@ import dev.detekt.gradle.Detekt
 import kotlinx
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.springframework.boot.gradle.plugin.SpringBootPlugin
 import version
 
 val libs = the<VersionCatalogsExtension>().named("libs")
@@ -84,6 +85,7 @@ detekt {
 dependencies {
 	bom(kotlin("bom", version = libs.version("kotlin")))
 	bom(kotlinx("serialization-bom", version = libs.version("kotlinx-serialization")))
+	bom(SpringBootPlugin.BOM_COORDINATES)
 
 	implementation(kotlin("stdlib"))
 	implementation(kotlinx("serialization-core"))

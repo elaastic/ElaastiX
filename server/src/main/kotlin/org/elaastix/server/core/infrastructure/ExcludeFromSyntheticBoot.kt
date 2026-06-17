@@ -17,20 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core.infrastructure.seed
+package org.elaastix.server.core.infrastructure
 
-import org.elaastix.server.core.infrastructure.ExcludeFromSyntheticBoot
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass
-import org.springframework.context.annotation.Profile
-import org.springframework.stereotype.Component
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 
 /**
- * Custom stereotype for database seeders.
+ * A "synthetic boot" occurs when the application starts exclusively to achieve a specific task and then shuts down.
+ * This annotation marks a component as excluded from these type of startups.
  */
-@Component
-@Profile("develop")
-@ExcludeFromSyntheticBoot
-@ConditionalOnMissingClass("testutils.WithMockUser")
-@Target(AnnotationTarget.CLASS)
+@ConditionalOnProperty("elaastix.synthetic-boot", havingValue = "false", matchIfMissing = true)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class Seeder
+annotation class ExcludeFromSyntheticBoot

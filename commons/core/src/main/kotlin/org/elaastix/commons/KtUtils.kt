@@ -64,18 +64,6 @@ inline fun <T, R> Iterable<T>.mapSet(transform: (T) -> R): Set<R> {
 // SPDX-SnippetEnd
 
 /**
- * Creates a list of the specified [size] by calling the [factory].
- */
-inline fun <T> makeList(size: Int, factory: (Int) -> T): MutableList<T> =
-	mutableListOf<T>().apply { repeat(size) { add(factory(it)) } }
-
-/**
- * Creates a set of the specified [size] by calling the [factory].
- */
-inline fun <T> makeSet(size: Int, factory: (Int) -> T): MutableSet<T> =
-	mutableSetOf<T>().apply { repeat(size) { add(factory(it)) } }
-
-/**
  * Converts this instant to the ISO 8601 string representation, truncating sub-second information.
  *
  * @see Instant.toString

@@ -28,9 +28,12 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Primary
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionTemplate
 import kotlin.time.Clock
 
@@ -40,6 +43,7 @@ import kotlin.time.Clock
 	],
 )
 @AutoConfigureMockMvc
+@Import(IntegrationTest.TestSchedulerConfig::class)
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 abstract class IntegrationTest {
 	companion object {
@@ -53,7 +57,7 @@ abstract class IntegrationTest {
 	lateinit var mvc: MockMvc
 
 	@Autowired
-	private lateinit var tx: TransactionTemplate
+	lateinit var tx: TransactionTemplate
 
 	private lateinit var testInfo: TestInfo
 
@@ -62,9 +66,12 @@ abstract class IntegrationTest {
 		this.testInfo = testInfo
 	}
 
-	fun <T> runWithTransaction(block: (TransactionStatus) -> T): T = tx.execute(block)
+	fun <T : AbstractEntity> T.persist() = also { tx.execute { em.persist(this) } }
 
-	fun <T : AbstractEntity> T.persist() = also { runWithTransaction { em.persist(this) } }
+	fun <T : AbstractEntity> T.freshCopy(): T = em.find(this::class.java, id)
+
+	fun <T : AbstractEntity> Iterable<T>.freshCopies(): List<T> = map { em.find(it::class.java, it.id) }
+	fun <T : AbstractEntity> Array<T>.freshCopies(): List<T> = map { em.find(it::class.java, it.id) }
 
 	fun makeRecognisableName(): String {
 		// Target maximum length: 64
@@ -78,5 +85,16 @@ abstract class IntegrationTest {
 		val iso = Clock.System.now().toIsoStringSecondPrecise()
 
 		return "$clazz#`$name` @ $iso"
+	}
+
+	@TestConfiguration
+	class TestSchedulerConfig {
+		@Bean
+		@Primary
+		fun controllableClock() = ControllableClock()
+
+		@Bean
+		@Primary
+		fun syntheticScheduler(clock: ControllableClock) = clock.scheduler
 	}
 }

@@ -26,6 +26,7 @@ import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
 import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
 import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository
+import org.elaastix.server.sequences.SciconumSequenceEntity
 import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
@@ -59,7 +60,7 @@ class SciconumScenarioSessionCreator(
 
 	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
 	fun handleAssignmentCreation(event: AssignmentCreateEvent) {
-		val sequences = event.assignment.sequences
+		val sequences = event.assignment.sequences.filterIsInstance<SciconumSequenceEntity>()
 		check(sequences.isNotEmpty())
 
 		for (sequence in sequences) {
