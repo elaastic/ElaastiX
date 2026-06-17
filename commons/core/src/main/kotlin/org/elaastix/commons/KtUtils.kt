@@ -22,6 +22,10 @@ package org.elaastix.commons
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.require
+import kotlin.time.DurationUnit
+import kotlin.time.Instant
+import kotlin.time.toDuration
 
 /** Casts a type to another type. */
 inline fun <reified T> Any.cast(): T = T::class.java.cast(this as T)
@@ -45,4 +49,54 @@ inline fun <reified T> Any.alsoAs(block: (T) -> Unit): T {
 inline fun <reified T> Any.applyAs(block: T.() -> Unit): T {
 	contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
 	return cast<T>().apply(block)
+}
+
+// SPDX-SnippetBegin
+// SPDX-SnippetCopyrightText: 2010-2018 JetBrains s.r.o. and Kotlin Programming Language contributors.
+// SPDX-License-Identifier: Apache-2.0
+
+/** Same as [map] but returns a set instead of a list. */
+inline fun <T, R> Iterable<T>.mapSet(transform: (T) -> R): Set<R> {
+	@Suppress("MagicNumber") // From Kotlin source code
+	return mapTo(LinkedHashSet(if (this is Collection<*>) this.size else 10), transform)
+}
+
+// SPDX-SnippetEnd
+
+/**
+ * Creates a list of the specified [size] by calling the [factory].
+ */
+inline fun <T> makeList(size: Int, factory: (Int) -> T): MutableList<T> =
+	mutableListOf<T>().apply { repeat(size) { add(factory(it)) } }
+
+/**
+ * Creates a set of the specified [size] by calling the [factory].
+ */
+inline fun <T> makeSet(size: Int, factory: (Int) -> T): MutableSet<T> =
+	mutableSetOf<T>().apply { repeat(size) { add(factory(it)) } }
+
+/**
+ * Converts this instant to the ISO 8601 string representation, truncating sub-second information.
+ *
+ * @see Instant.toString
+ */
+fun Instant.toIsoStringSecondPrecise() =
+	minus(nanosecondsOfSecond.toDuration(DurationUnit.NANOSECONDS)).toString()
+
+/**
+ * Truncates the string to be of a given maximum length, if needed.
+ *
+ * If the string length is less than or equal to the maximum, it is returned as-is.
+ * Otherwise, the first `maximum - 2` characters are returned plus an ellipsis.
+ *
+ * The rationale for cutting off 2 letters is to ensure byte-length compatibility, rather than a more
+ * sophisticated Unicode grapheme clustering aware length.
+ */
+@Suppress("MagicNumber")
+fun String.truncate(max: UInt): String {
+	require(max >= 3u) { "Cannot truncate a string to less than 3 characters." }
+	return when {
+		this.length <= max.toInt() -> this
+		else -> "${this.substring(0, max.minus(2u).toInt())}…"
+	}
 }

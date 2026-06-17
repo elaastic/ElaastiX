@@ -37,4 +37,13 @@
       </database-info>
     </database-infos>
   </component>
+  <component name="JpaLiquibaseChangesConfig">
+    <exclude-change idName="response_entity#answer" tagName="dropNotNullConstraint" />
+    <exclude-change idName="question_entity#author_id" tagName="dropNotNullConstraint" />
+    <exclude-change idName="response_entity#author_id" tagName="dropNotNullConstraint" />
+    <exclude-change idName="question_entity#choices" tagName="dropNotNullConstraint" />
+    <exclude-change idName="question_entity#expected_answer" tagName="dropNotNullConstraint" />
+    <exclude-change idName="response_entity#question_id" tagName="dropNotNullConstraint" />
+    <exclude-change idName="question_entity#statement" tagName="dropNotNullConstraint" />
+  </component>
 </project>

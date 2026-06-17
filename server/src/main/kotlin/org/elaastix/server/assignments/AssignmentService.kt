@@ -23,7 +23,7 @@ import jakarta.validation.Valid
 import jakarta.validation.ValidationException
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.exceptions.ResourceNotFoundException
-import org.elaastix.commons.orNotFound
+import org.elaastix.commons.orElseNotFound
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.commons.toRefList
@@ -32,10 +32,12 @@ import org.elaastix.commons.toUuidSet
 import org.elaastix.server.assignments.dto.AssignmentDto
 import org.elaastix.server.assignments.dto.CreateAssignmentDto
 import org.elaastix.server.assignments.dto.UpdateAssignmentDto
+import org.elaastix.server.assignments.event.AssignmentCreateEvent
 import org.elaastix.server.sequences.SciconumSequenceEntity
 import org.elaastix.server.sequences.SequenceEntity
 import org.elaastix.server.sequences.SequenceRepository
 import org.elaastix.server.sequences.SequenceService.Companion.toDto
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
@@ -44,6 +46,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AssignmentService(
+	private val applicationEventPublisher: ApplicationEventPublisher,
 	private val assignmentRepository: AssignmentRepository,
 	private val sequenceRepository: SequenceRepository,
 ) {
@@ -80,7 +83,7 @@ class AssignmentService(
 	 * @return The requested assignment.
 	 */
 	@Transactional(readOnly = true)
-	fun getAssignment(id: Uuid): AssignmentDto = assignmentRepository.findById(id).orNotFound().toDto()
+	fun getAssignment(id: Uuid): AssignmentDto = assignmentRepository.findById(id).orElseNotFound().toDto()
 
 	/**
 	 * Creates a new assignment.
@@ -104,6 +107,8 @@ class AssignmentService(
 			),
 		)
 
+		applicationEventPublisher.publishEvent(AssignmentCreateEvent(this, entity))
+
 		return entity.toDto()
 	}
 
@@ -123,7 +128,7 @@ class AssignmentService(
 			dto.sequenceIds.takeIfUpdated { sequences = it.toRefList(sequenceRepository) }
 		}
 
-		return entity.orNotFound().toDto()
+		return entity.orElseNotFound().toDto()
 	}
 
 	/**

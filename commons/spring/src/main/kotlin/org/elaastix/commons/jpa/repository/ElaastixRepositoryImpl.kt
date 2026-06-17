@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.Transactional
  * Picked up by Spring Data while setting things up.
  */
 class ElaastixRepositoryImpl<T : AbstractEntity>(
-	private val entityInformation: JpaEntityInformation<T, *>,
+	private val entityInformation: JpaEntityInformation<T, Uuid>,
 	private val entityManager: EntityManager,
 ) : BaseJpaRepositoryImpl<T, Uuid>(entityInformation, entityManager),
 	ElaastixRepository<T> {

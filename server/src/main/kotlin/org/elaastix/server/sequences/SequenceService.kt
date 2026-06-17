@@ -24,7 +24,7 @@ import jakarta.validation.ValidationException
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.exceptions.ResourceNotFoundException
 import org.elaastix.commons.mapSet
-import org.elaastix.commons.orNotFound
+import org.elaastix.commons.orElseNotFound
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.commons.toRefSet
@@ -93,7 +93,7 @@ class SequenceService(
 	 */
 	@Transactional(readOnly = true)
 	@OptIn(SciconumTechDebt::class)
-	fun getSequence(id: Uuid): SequenceDto = sequenceRepository.findById(id).orNotFound().toDto()
+	fun getSequence(id: Uuid): SequenceDto = sequenceRepository.findById(id).orElseNotFound().toDto()
 
 	/**
 	 * Creates a new sequence.
@@ -137,7 +137,7 @@ class SequenceService(
 			dto.sciconumQuestionIds.takeIfUpdated { sciconumQuestions = it.toRefSet(questionRepository) }
 		}
 
-		return entity.orNotFound().toDto()
+		return entity.orElseNotFound().toDto()
 	}
 
 	/**

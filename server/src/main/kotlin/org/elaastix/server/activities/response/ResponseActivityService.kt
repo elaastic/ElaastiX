@@ -23,7 +23,7 @@ import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.inherits
-import org.elaastix.commons.orNotFound
+import org.elaastix.commons.orElseNotFound
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.commons.validate
 import org.elaastix.server.activities.response.dtos.ClosedQuestionStatementDto
@@ -104,7 +104,7 @@ class ResponseActivityService(
 	 */
 	@Transactional
 	fun submitResponse(questionId: Uuid, @Valid response: ResponseSubmitDto): ResponseDto {
-		val statement = questionRepository.findQuestionStatementById(questionId).orNotFound()
+		val statement = questionRepository.findQuestionStatementById(questionId).orElseNotFound()
 
 		val entity =
 			when (val questionRef = questionRepository.getTypedReferenceById(statement.type, statement.id)) {

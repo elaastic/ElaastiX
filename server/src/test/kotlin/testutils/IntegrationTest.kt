@@ -20,13 +20,19 @@
 package testutils
 
 import jakarta.persistence.EntityManager
+import net.datafaker.Faker
 import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.commons.toIsoStringSecondPrecise
+import org.elaastix.commons.truncate
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.TestInfo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionTemplate
+import kotlin.time.Clock
 
 @SpringBootTest(
 	properties = [
@@ -36,6 +42,10 @@ import org.springframework.transaction.support.TransactionTemplate
 @AutoConfigureMockMvc
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 abstract class IntegrationTest {
+	companion object {
+		val FAKER = Faker()
+	}
+
 	@Autowired
 	lateinit var em: EntityManager
 
@@ -45,7 +55,28 @@ abstract class IntegrationTest {
 	@Autowired
 	private lateinit var tx: TransactionTemplate
 
+	private lateinit var testInfo: TestInfo
+
+	@BeforeEach
+	fun receiveTestInfo(testInfo: TestInfo) {
+		this.testInfo = testInfo
+	}
+
 	fun <T> runWithTransaction(block: (TransactionStatus) -> T): T = tx.execute(block)
 
 	fun <T : AbstractEntity> T.persist() = also { runWithTransaction { em.persist(this) } }
+
+	fun makeRecognisableName(): String {
+		// Target maximum length: 64
+		// Structure: <class>#`<name>` @ <iso-time>
+		// Iso time is 20 chars
+		// 6 "cosmetic" chars
+		// 64 - 26 = 38 usable characters
+		// Split as 10 + 28 for class and name.
+		val clazz = this::class.java.simpleName.truncate(10u)
+		val name = testInfo.displayName.truncate(28u)
+		val iso = Clock.System.now().toIsoStringSecondPrecise()
+
+		return "$clazz#`$name` @ $iso"
+	}
 }

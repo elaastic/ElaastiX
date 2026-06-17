@@ -49,6 +49,8 @@ import java.util.concurrent.locks.ReentrantLock
  * The effective permissions will be resolved according to the project's configured role hierarchy.
  */
 @WithSecurityContext(factory = WithMockUser.SecurityContextFactory::class)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
 annotation class WithMockUser(
 	/** The roles to grant in the test context. */
 	val roles: Array<Role> = [],

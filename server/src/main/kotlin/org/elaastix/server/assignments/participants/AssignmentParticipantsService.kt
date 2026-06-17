@@ -24,7 +24,9 @@ import org.elaastix.commons.exceptions.ResourceNotFoundException
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.assignments.AssignmentRepository
 import org.elaastix.server.assignments.dto.AssignmentDto
+import org.elaastix.server.assignments.event.AssignmentJoinEvent
 import org.elaastix.server.users.UserRepository
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
 import org.springframework.stereotype.Service
@@ -33,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 @OptIn(SciconumTechDebt::class)
 class AssignmentParticipantsService(
+	private val applicationEventPublisher: ApplicationEventPublisher,
 	private val assignmentRepository: AssignmentRepository,
 	private val userRepository: UserRepository,
 ) {
@@ -61,10 +64,9 @@ class AssignmentParticipantsService(
 	fun addParticipantToAssignmentById(assignmentId: Uuid, userId: Uuid) {
 		val assignment = assignmentRepository.getReferenceById(assignmentId)
 		val user = userRepository.getReferenceById(userId)
-		assignment.participants.add(user)
 
-		// TODO: trigger creation of all sequence sessions
-		assignmentRepository.update(assignment)
+		assignment.participants.add(user)
+		applicationEventPublisher.publishEvent(AssignmentJoinEvent(this, assignment, user))
 	}
 
 	/**
@@ -76,8 +78,8 @@ class AssignmentParticipantsService(
 	@Transactional
 	fun removeParticipantFromAssignmentById(assignmentId: Uuid, userId: Uuid) {
 		val assignment = assignmentRepository.getReferenceById(assignmentId)
-		assignment.participants = assignment.participants.filter { it.id != userId }.toMutableSet()
-		assignmentRepository.update(assignment)
+		val participant = userRepository.getReferenceById(userId)
+		assignment.participants.remove(participant)
 	}
 
 	/**
