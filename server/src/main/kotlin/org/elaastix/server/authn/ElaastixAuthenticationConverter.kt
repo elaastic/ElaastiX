@@ -21,19 +21,30 @@ package org.elaastix.server.authn
 
 import jakarta.servlet.http.HttpServletRequest
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.springframework.security.web.authentication.AuthenticationConverter
+import org.springframework.stereotype.Component
 
 /**
  * Converter responsible for handling the initial token handling routine.
  * Extracts the `Authorization` header and parses it into the appropriate token type.
  */
-object ElaastixAuthenticationConverter : AuthenticationConverter {
-	private const val AUTHORISATION_HEADER = "Authorization"
-	private const val DEVELOP_TOKEN_TYPE = "Develop"
-	private const val JWT_TOKEN_TYPE = "JWT"
+@Component
+class ElaastixAuthenticationConverter @SciconumTechDebt constructor(
+	private val uuidAuthnCookieService: UuidAuthnCookieService,
+) : AuthenticationConverter {
+	companion object {
+		private const val AUTHORISATION_HEADER = "Authorization"
+		private const val DEVELOP_TOKEN_TYPE = "Develop"
+		private const val JWT_TOKEN_TYPE = "JWT"
+	}
+
+	@OptIn(SciconumTechDebt::class)
+	override fun convert(request: HttpServletRequest) =
+		convertHeaderAuthn(request) ?: convertCookieAuthn(request)
 
 	@Suppress("NestedBlockDepth")
-	override fun convert(request: HttpServletRequest) =
+	private fun convertHeaderAuthn(request: HttpServletRequest) =
 		request.getHeader(AUTHORISATION_HEADER)?.let { authorisation ->
 			val parts = authorisation.split(' ')
 			when (parts.size) {
@@ -48,4 +59,8 @@ object ElaastixAuthenticationConverter : AuthenticationConverter {
 				else -> null
 			}
 		}
+
+	@SciconumTechDebt
+	private fun convertCookieAuthn(request: HttpServletRequest) =
+		uuidAuthnCookieService.readCookie(request)?.let { (cookie, uuid) -> CookieAuthenticationToken(cookie, uuid) }
 }

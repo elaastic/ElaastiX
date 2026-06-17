@@ -17,28 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm
+package org.elaastix.server.authn.tmp.lti
 
-import org.elaastix.commons.data.Uuid
-import kotlin.time.Instant
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 
 /**
- * Base interface of all objects from the metamodel.
+ * Disables the component if LTI is not configured.
  */
-interface MmObject {
-	/**
-	 * A globally unique identifier tied to the object.
-	 */
-	val id: Uuid
-
-	/**
-	 * Instant at which the creation of the object occurred.
-	 */
-	val createdAt: Instant
-
-	/**
-	 * Instant at which the last modification occurred.
-	 * If the object has never been modified, then it is equivalent (but not necessarily equal) to the creation date.
-	 */
-	val updatedAt: Instant
-}
+@ConditionalOnProperty(name = ["elaastix.lti.consumer-key", "elaastix.lti.consumer-secret"], matchIfMissing = false)
+annotation class ConditionalOnLti

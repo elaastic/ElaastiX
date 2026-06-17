@@ -50,4 +50,7 @@ dependencies {
 	implementation(project(":metamodel"))
 
 	testImplementation(libs.datafaker)
+
+	implementation(libs.oauth.core)
+	implementation(libs.oauth.provider)
 }

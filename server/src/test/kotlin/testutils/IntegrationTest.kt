@@ -28,7 +28,11 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.TransactionTemplate
 
-@SpringBootTest
+@SpringBootTest(
+	properties = [
+		"elaastix.security.encryption-key=unsafe integration test key",
+	],
+)
 @AutoConfigureMockMvc
 @Suppress("SpringJavaInjectionPointsAutowiringInspection")
 abstract class IntegrationTest {

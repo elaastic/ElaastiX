@@ -20,6 +20,7 @@
 package org.elaastix.server.authn
 
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.data.UuidSerializer.toStringBase36
 import org.springframework.security.authentication.InsufficientAuthenticationException
 import org.springframework.security.core.GrantedAuthority
 
@@ -46,7 +47,5 @@ class DevelopAuthenticationToken(val uuid: Uuid) : AuthToken() {
 	override fun setAuthenticated(authenticated: Boolean) =
 		throw UnsupportedOperationException("Cannot change the authentication status of a token")
 
-	override fun getName(): String? {
-		TODO("Not yet implemented")
-	}
+	override fun getName() = uuid.toStringBase36()
 }

@@ -63,6 +63,7 @@ class AssignmentParticipantsService(
 		val user = userRepository.getReferenceById(userId)
 		assignment.participants.add(user)
 
+		// TODO: trigger creation of all sequence sessions
 		assignmentRepository.update(assignment)
 	}
 

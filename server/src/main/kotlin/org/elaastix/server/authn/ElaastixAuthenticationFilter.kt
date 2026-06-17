@@ -28,6 +28,7 @@ import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter
 import org.springframework.security.web.util.matcher.RequestMatcher
+import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerExceptionResolver
 
 /**
@@ -36,10 +37,11 @@ import org.springframework.web.servlet.HandlerExceptionResolver
 class ElaastixAuthenticationFilter(
 	requestMatcher: RequestMatcher,
 	authnManager: AuthenticationManager,
+	authenticationConverter: ElaastixAuthenticationConverter,
 	private val handlerExceptionResolver: HandlerExceptionResolver,
 ) : AbstractAuthenticationProcessingFilter(requestMatcher, authnManager) {
 	init {
-		setAuthenticationConverter(ElaastixAuthenticationConverter)
+		setAuthenticationConverter(authenticationConverter)
 	}
 
 	override fun successfulAuthentication(
@@ -59,5 +61,25 @@ class ElaastixAuthenticationFilter(
 		ex: AuthenticationException,
 	) {
 		handlerExceptionResolver.resolveException(req, res, null, ex)
+	}
+
+	/**
+	 * Factory receiving autowired properties from Spring and constructing instances of [ElaastixAuthenticationFilter].
+	 */
+	@Component
+	class ElaastixAuthenticationFilterFactory(
+		private val handlerExceptionResolver: HandlerExceptionResolver,
+		private val authenticationConverter: ElaastixAuthenticationConverter,
+	) {
+		/** The factory method. */
+		fun createFilter(
+			requestMatcher: RequestMatcher,
+			authnManager: AuthenticationManager,
+		): ElaastixAuthenticationFilter = ElaastixAuthenticationFilter(
+			requestMatcher,
+			authnManager,
+			authenticationConverter,
+			handlerExceptionResolver,
+		)
 	}
 }

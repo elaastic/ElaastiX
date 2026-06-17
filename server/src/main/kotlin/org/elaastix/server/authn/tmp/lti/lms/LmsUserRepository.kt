@@ -17,28 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm
+package org.elaastix.server.authn.tmp.lti.lms
 
-import org.elaastix.commons.data.Uuid
-import kotlin.time.Instant
+import org.elaastix.commons.jpa.repository.ElaastixRepository
+import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.server.authn.tmp.lti.ConditionalOnLti
+import org.springframework.stereotype.Repository
 
-/**
- * Base interface of all objects from the metamodel.
- */
-interface MmObject {
-	/**
-	 * A globally unique identifier tied to the object.
-	 */
-	val id: Uuid
-
-	/**
-	 * Instant at which the creation of the object occurred.
-	 */
-	val createdAt: Instant
-
-	/**
-	 * Instant at which the last modification occurred.
-	 * If the object has never been modified, then it is equivalent (but not necessarily equal) to the creation date.
-	 */
-	val updatedAt: Instant
+@SciconumTechDebt
+@Repository
+@ConditionalOnLti
+interface LmsUserRepository : ElaastixRepository<LmsUser> {
+	fun findByLtiUserId(id: String): LmsUser?
 }

@@ -17,28 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.mm
+package org.elaastix.server.authn.tmp.lti.lms
 
-import org.elaastix.commons.data.Uuid
-import kotlin.time.Instant
+import jakarta.persistence.Entity
+import jakarta.persistence.FetchType
+import jakarta.persistence.OneToOne
+import jakarta.validation.constraints.NotNull
+import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.server.users.entities.UserEntity
 
-/**
- * Base interface of all objects from the metamodel.
- */
-interface MmObject {
-	/**
-	 * A globally unique identifier tied to the object.
-	 */
-	val id: Uuid
+@SciconumTechDebt
+@Entity
+class LmsUser(
+	@NotNull
+	var ltiUserId: String,
 
-	/**
-	 * Instant at which the creation of the object occurred.
-	 */
-	val createdAt: Instant
-
-	/**
-	 * Instant at which the last modification occurred.
-	 * If the object has never been modified, then it is equivalent (but not necessarily equal) to the creation date.
-	 */
-	val updatedAt: Instant
-}
+	@NotNull
+	@OneToOne(fetch = FetchType.EAGER)
+	var user: UserEntity,
+) : AbstractEntity()

@@ -24,6 +24,7 @@ package testutils
 import jakarta.persistence.EntityManager
 import net.datafaker.Faker
 import org.elaastix.commons.cast
+import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.security.Role
 import org.elaastix.server.authn.ElaastixAuthentication
 import org.elaastix.server.users.entities.UserEntity
@@ -79,6 +80,7 @@ annotation class WithMockUser(
 			val user = UserEntity(
 				firstName = name.firstName(),
 				lastName = name.lastName(),
+				email = "${Uuid.random()}@elaastix.test",
 				roles = annotation.roles.toSet(),
 			)
 
