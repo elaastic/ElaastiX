@@ -21,7 +21,7 @@ package org.elaastix.server.activities.response
 
 import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.orNotFound
+import org.elaastix.commons.orElseNotFound
 import org.elaastix.server.activities.response.dtos.ResponseSubmitDto
 import org.elaastix.server.core.player.PlayerAction
 import org.elaastix.server.core.player.PlayerController
@@ -47,7 +47,7 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	 */
 	@PlayerQuery("org.elaastix.response.getQuestion")
 	fun getQuestion(@RequestParam id: Uuid) =
-		responseActivityService.findQuestionStatement(id).orNotFound()
+		responseActivityService.findQuestionStatement(id).orElseNotFound()
 
 	/**
 	 * Submit an answer to a question.

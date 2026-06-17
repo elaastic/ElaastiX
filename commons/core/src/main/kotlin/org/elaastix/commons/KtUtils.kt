@@ -51,6 +51,18 @@ inline fun <reified T> Any.applyAs(block: T.() -> Unit): T {
 	return cast<T>().apply(block)
 }
 
+// SPDX-SnippetBegin
+// SPDX-SnippetCopyrightText: 2010-2018 JetBrains s.r.o. and Kotlin Programming Language contributors.
+// SPDX-License-Identifier: Apache-2.0
+
+/** Same as [map] but returns a set instead of a list. */
+inline fun <T, R> Iterable<T>.mapSet(transform: (T) -> R): Set<R> {
+	@Suppress("MagicNumber") // From Kotlin source code
+	return mapTo(LinkedHashSet(if (this is Collection<*>) this.size else 10), transform)
+}
+
+// SPDX-SnippetEnd
+
 /**
  * Creates a list of the specified [size] by calling the [factory].
  */

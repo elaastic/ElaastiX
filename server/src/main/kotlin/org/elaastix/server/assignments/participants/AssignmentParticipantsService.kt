@@ -22,12 +22,10 @@ package org.elaastix.server.assignments.participants
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.exceptions.ResourceNotFoundException
 import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.assignments.AssignmentEntity
 import org.elaastix.server.assignments.AssignmentRepository
 import org.elaastix.server.assignments.dto.AssignmentDto
 import org.elaastix.server.assignments.event.AssignmentJoinEvent
 import org.elaastix.server.users.UserRepository
-import org.elaastix.server.users.entities.UserEntity
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
@@ -67,20 +65,8 @@ class AssignmentParticipantsService(
 		val assignment = assignmentRepository.getReferenceById(assignmentId)
 		val user = userRepository.getReferenceById(userId)
 
-		return addParticipantToAssignment(assignment, user)
-	}
-
-	/**
-	 * Adds a participant to an assignment by ID.
-	 *
-	 * @param assignment The pedagogical assignment to add the user to.
-	 * @param user The user to add to the pedagogical assignment.
-	 */
-	@Transactional
-	fun addParticipantToAssignment(assignment: AssignmentEntity, user: UserEntity) {
 		assignment.participants.add(user)
 		applicationEventPublisher.publishEvent(AssignmentJoinEvent(this, assignment, user))
-		assignmentRepository.update(assignment)
 	}
 
 	/**
@@ -92,8 +78,8 @@ class AssignmentParticipantsService(
 	@Transactional
 	fun removeParticipantFromAssignmentById(assignmentId: Uuid, userId: Uuid) {
 		val assignment = assignmentRepository.getReferenceById(assignmentId)
-		assignment.participants = assignment.participants.filter { it.id != userId }.toMutableSet()
-		assignmentRepository.update(assignment)
+		val participant = userRepository.getReferenceById(userId)
+		assignment.participants.remove(participant)
 	}
 
 	/**

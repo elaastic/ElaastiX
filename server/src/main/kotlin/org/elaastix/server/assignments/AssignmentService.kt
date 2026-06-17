@@ -23,7 +23,7 @@ import jakarta.validation.Valid
 import jakarta.validation.ValidationException
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.exceptions.ResourceNotFoundException
-import org.elaastix.commons.orNotFound
+import org.elaastix.commons.orElseNotFound
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.commons.toRefList
@@ -83,7 +83,7 @@ class AssignmentService(
 	 * @return The requested assignment.
 	 */
 	@Transactional(readOnly = true)
-	fun getAssignment(id: Uuid): AssignmentDto = assignmentRepository.findById(id).orNotFound().toDto()
+	fun getAssignment(id: Uuid): AssignmentDto = assignmentRepository.findById(id).orElseNotFound().toDto()
 
 	/**
 	 * Creates a new assignment.
@@ -128,7 +128,7 @@ class AssignmentService(
 			dto.sequenceIds.takeIfUpdated { sequences = it.toRefList(sequenceRepository) }
 		}
 
-		return entity.orNotFound().toDto()
+		return entity.orElseNotFound().toDto()
 	}
 
 	/**

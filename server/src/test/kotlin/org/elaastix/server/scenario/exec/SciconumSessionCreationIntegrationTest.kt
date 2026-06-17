@@ -26,9 +26,9 @@ import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.activities.response.entities.ClosedQuestionEntity
 import org.elaastix.server.activities.response.repositories.QuestionRepository
-import org.elaastix.server.assignments.AssignmentEntity
 import org.elaastix.server.assignments.AssignmentRepository
 import org.elaastix.server.assignments.AssignmentService
+import org.elaastix.server.assignments.dto.AssignmentDto
 import org.elaastix.server.assignments.dto.CreateAssignmentDto
 import org.elaastix.server.assignments.participants.AssignmentParticipantsService
 import org.elaastix.server.core.content.PlainText
@@ -74,8 +74,7 @@ class SciconumSessionCreationIntegrationTest : IntegrationTest() {
 	@Autowired
 	lateinit var assignmentParticipantsService: AssignmentParticipantsService
 
-	@Test
-	fun `creating an assignment creates a session for each sequence`() {
+	private fun createAssignment(): AssignmentDto {
 		val sequences = makeList(3) {
 			sequenceRepository.persist(
 				SciconumSequenceEntity(
@@ -96,12 +95,17 @@ class SciconumSessionCreationIntegrationTest : IntegrationTest() {
 			)
 		}
 
-		val assignmentDto = assignmentService.createAssignment(
+		return assignmentService.createAssignment(
 			CreateAssignmentDto(
 				displayName = makeRecognisableName(),
 				sequenceIds = sequences.map { it.id },
 			),
 		)
+	}
+
+	@Test
+	fun `creating an assignment creates a session for each sequence`() {
+		val assignmentDto = createAssignment()
 
 		// -- then
 
@@ -112,31 +116,7 @@ class SciconumSessionCreationIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `adding a learner to an assignment creates a learner session for each sequence`() {
-		val assignment = assignmentRepository.persist(
-			AssignmentEntity(
-				displayName = makeRecognisableName(),
-				sequences = makeList(3) {
-					sequenceRepository.persist(
-						SciconumSequenceEntity(
-							name = makeRecognisableName(),
-							sciconumScenario = SciconumScenario.CONTROL,
-							sciconumQuestions = makeSet(1) {
-								questionRepository.persist(
-									ClosedQuestionEntity(
-										statement = PlainText(FAKER.lorem().sentence(10)),
-										choices = makeList(4) { PlainText(FAKER.lorem().sentence(3)) },
-										expectedAnswer = ClosedAnswer.Single(1u),
-										answerExplanation = null,
-										multiple = false,
-									),
-								)
-							},
-						),
-					)
-				},
-			),
-		)
-
+		val assignment = assignmentRepository.findById(createAssignment().id).orElseThrow()
 		val user = userRepository.persist(
 			UserEntity(
 				firstName = FAKER.name().firstName(),
@@ -145,7 +125,7 @@ class SciconumSessionCreationIntegrationTest : IntegrationTest() {
 			),
 		)
 
-		assignmentParticipantsService.addParticipantToAssignment(assignment, user)
+		assignmentParticipantsService.addParticipantToAssignmentById(assignment.id, user.id)
 
 		// -- then
 
@@ -155,31 +135,7 @@ class SciconumSessionCreationIntegrationTest : IntegrationTest() {
 
 	@Test
 	fun `adding a learner to an assignment does not create a session for ended sequences`() {
-		val assignment = assignmentRepository.persist(
-			AssignmentEntity(
-				displayName = makeRecognisableName(),
-				sequences = makeList(3) {
-					sequenceRepository.persist(
-						SciconumSequenceEntity(
-							name = makeRecognisableName(),
-							sciconumScenario = SciconumScenario.CONTROL,
-							sciconumQuestions = makeSet(1) {
-								questionRepository.persist(
-									ClosedQuestionEntity(
-										statement = PlainText(FAKER.lorem().sentence(10)),
-										choices = makeList(4) { PlainText(FAKER.lorem().sentence(3)) },
-										expectedAnswer = ClosedAnswer.Single(1u),
-										answerExplanation = null,
-										multiple = false,
-									),
-								)
-							},
-						),
-					)
-				},
-			),
-		)
-
+		val assignment = assignmentRepository.findById(createAssignment().id).orElseThrow()
 		val session = sciconumScenarioSessionRepository.findAllByAssignment(assignment).first()
 		session.phase = SciconumScenarioExecutionPhase.END
 		sciconumScenarioSessionRepository.update(session)
@@ -192,7 +148,7 @@ class SciconumSessionCreationIntegrationTest : IntegrationTest() {
 			),
 		)
 
-		assignmentParticipantsService.addParticipantToAssignment(assignment, user)
+		assignmentParticipantsService.addParticipantToAssignmentById(assignment.id, user.id)
 
 		// -- then
 
