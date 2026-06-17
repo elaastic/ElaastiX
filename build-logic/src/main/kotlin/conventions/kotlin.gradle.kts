@@ -20,6 +20,7 @@
 package conventions
 
 import bom
+import bomEnforced
 import dev.detekt.gradle.Detekt
 import kotlinx
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -83,8 +84,8 @@ detekt {
 }
 
 dependencies {
-	bom(kotlin("bom", version = libs.version("kotlin")))
-	bom(kotlinx("serialization-bom", version = libs.version("kotlinx-serialization")))
+	bomEnforced(kotlin("bom", version = libs.version("kotlin")))
+	bomEnforced(kotlinx("serialization-bom", version = libs.version("kotlinx-serialization")))
 	bom(SpringBootPlugin.BOM_COORDINATES)
 
 	implementation(kotlin("stdlib"))

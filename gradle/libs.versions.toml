@@ -1,20 +1,20 @@
 [versions]
 jdk = "25"
-kotlin = "2.3.21"
+kotlin = "2.3.21" # KT 2.4 has goodies but IJ on WSL is moot and 2025.3 is confused at new language stuff
 ksp = "2.3.9"
 # ----
 datafaker = "2.5.4"
-detekt = "2.0.0-alpha.3"
-flyway = "12.7.0"
-hibernate = "7.3.4.Final"        # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
-hypersistence-utils = "3.15.2"
+detekt = "2.0.0-alpha.3"         # alpha.4 is broken https://github.com/detekt/detekt/issues/9396
+flyway = "12.8.1"
+hibernate = "7.4.1.Final"        # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
+hypersistence-utils = "3.15.3"
 ideax = "1.4.1"
 jdbc-postgresql = "42.7.11"
 junit = "6.1.0"
 kotlinx-serialization = "1.11.0"
 kover = "0.9.8"
 mockk = "1.14.11"
-spring-boot = "4.0.6"
+spring-boot = "4.1.0"
 springdoc = "3.0.3"
 springdoc-kdoc = "1.1.0"
 testcontainers = "2.0.5"
@@ -23,7 +23,7 @@ testcontainers = "2.0.5"
 datafaker = { module = "net.datafaker:datafaker", version.ref = "datafaker" }
 detekt-ktlint = { module = "dev.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
 flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
-hypersistence-utils = { module = "io.hypersistence:hypersistence-utils-hibernate-71", version.ref = "hypersistence-utils" }
+hypersistence-utils = { module = "io.hypersistence:hypersistence-utils-hibernate-73", version.ref = "hypersistence-utils" }
 jdbc-postgresql = { module = "org.postgresql:postgresql", version.ref = "jdbc-postgresql" }
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }

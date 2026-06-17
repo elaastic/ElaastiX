@@ -22,6 +22,7 @@
 package conventions
 
 import bom
+import bomEnforced
 import kotlinx
 import org.springframework.boot.gradle.plugin.SpringBootPlugin
 import version
@@ -48,8 +49,8 @@ testing {
 			useJUnitJupiter(libs.version("junit"))
 
 			dependencies {
-				bom(kotlin("bom", version = libs.version("kotlin")))
-				bom(kotlinx("serialization-bom", version = libs.version("kotlinx-serialization")))
+				bomEnforced(kotlin("bom", version = libs.version("kotlin")))
+				bomEnforced(kotlinx("serialization-bom", version = libs.version("kotlinx-serialization")))
 				bom(SpringBootPlugin.BOM_COORDINATES)
 
 				implementation(project())
