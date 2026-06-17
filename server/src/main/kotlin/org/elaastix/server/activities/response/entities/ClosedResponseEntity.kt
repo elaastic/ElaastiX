@@ -26,6 +26,7 @@ import org.elaastix.mm.content.FormattedContent
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.hibernate.annotations.JdbcTypeCode
 import org.hibernate.type.SqlTypes
+import org.jetbrains.annotations.NotNull
 
 /** Answer to a [ClosedQuestionEntity]. */
 @Entity
@@ -34,6 +35,7 @@ class ClosedResponseEntity(
 	question: ClosedQuestionEntity,
 
 	/** The answer given by the learner. May be empty, but is required. */
+	@NotNull
 	@JdbcTypeCode(SqlTypes.JSON)
 	@Suppress("JpaAttributeTypeInspection") // IDEA-191568
 	var answer: ClosedAnswer,

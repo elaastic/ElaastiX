@@ -54,7 +54,7 @@ stop:
 @openapi:
 	?[ "${SKIP_OPENAPI_GENERATION:-}" != "true" ]
 	-rm server/build/openapi.json 2>/dev/null
-	just sidecar gradle :server:bootRun --args=\"--spring.profiles.active=develop --spring.flyway.enable=false --logging.level.root=WARN --debug=false --server.port=0 --generate-openapi='`pwd`/server/build/openapi.json'\"
+	just sidecar gradle :server:bootRun --args=\"--spring.profiles.active=develop,openapi\"
 	test -f server/build/openapi.json
 
 [group('dependencies')]

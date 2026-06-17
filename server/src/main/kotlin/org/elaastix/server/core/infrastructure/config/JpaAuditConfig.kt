@@ -17,32 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core
+package org.elaastix.server.core.infrastructure.config
 
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.MappedSuperclass
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.JpaImmutable
-import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.users.entities.UserEntity
-import org.jetbrains.annotations.NotNull
-import org.springframework.data.annotation.CreatedBy
+import org.springframework.context.annotation.Configuration
+import org.springframework.data.domain.AuditorAware
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing
+import org.springframework.security.core.context.SecurityContextHolder
+import java.util.Optional
 
 /**
- * Trait for entities that keep track of authorship.
- * Leverages Spring Data's auditing infrastructure and Spring Security to receive the current user.
- *
- * TODO: Improve and implement authorship tracking via an audit trail
+ * Configuration for Spring Data's JPA auditing.
+ * See https://docs.spring.io/spring-data/jpa/reference/auditing.html#auditing.auditor-aware
  */
-@MappedSuperclass
-abstract class AbstractEntityWithAuthorship : AbstractEntity() {
-	/**
-	 * The original author.
-	 */
-	@NotNull
-	@CreatedBy
-	@ManyToOne
-	@property:UnclearAuthorshipOwnership
-	lateinit var author: UserEntity
-		@JpaImmutable set
+@Configuration
+@EnableJpaAuditing
+class JpaAuditConfig : AuditorAware<UserEntity> {
+	override fun getCurrentAuditor(): Optional<UserEntity> =
+		Optional.ofNullable(
+			SecurityContextHolder.getContext().authentication
+				?.takeIf { it.isAuthenticated }
+				?.let { it.principal as? UserEntity? },
+		)
 }

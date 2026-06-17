@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory
 import org.springdoc.webmvc.api.OpenApiResource
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
+import org.springframework.context.annotation.Profile
 import org.springframework.core.Ordered
 import org.springframework.core.annotation.Order
 import org.springframework.stereotype.Component
@@ -38,36 +39,37 @@ import kotlin.system.exitProcess
  * Best used via `just openapi`.
  */
 @Component
+@Profile("openapi")
 @Order(Ordered.HIGHEST_PRECEDENCE)
 class OpenApiCommandLineRunner(
-	@Value($$"${generate-openapi:#{null}}")
-	private val generationPath: String?,
+	@Value($$"${generation-path}")
+	private val generationPath: String,
 	private val openApiResource: OpenApiResource,
 ) : CommandLineRunner {
 	override fun run(vararg args: String) {
-		if (generationPath != null) {
-			val logger = LoggerFactory.getLogger(this::class.java)
+		val logger = LoggerFactory.getLogger(this::class.java)
+		logger.info("Generating OpenAPI specification. The server will exit once this is complete.")
 
-			logger.info("Generating OpenAPI specification. The server will exit once this is complete.")
+		val json = generate()
+		val file = File(generationPath)
+		val os = file.outputStream()
+		os.write(json)
+		os.close()
 
-			// It's protected. And putting together a fake HttpServletRequest is worse. Deal with it. >:(
-			val clazz = OpenApiResource::class.java.superclass
-			val getSpec = clazz.getDeclaredMethod("getOpenApi", String::class.java, Locale::class.java)
-			getSpec.trySetAccessible()
+		logger.info("Specification written to ${file.absolutePath}. Bye.")
+		exitProcess(0)
+	}
 
-			val writeJsonValue = clazz.getDeclaredMethod("writeJsonValue", OpenAPI::class.java)
-			writeJsonValue.trySetAccessible()
+	private fun generate(): ByteArray {
+		// It's protected. And putting together a fake HttpServletRequest is worse. Deal with it. >:(
+		val clazz = OpenApiResource::class.java.superclass
+		val getSpec = clazz.getDeclaredMethod("getOpenApi", String::class.java, Locale::class.java)
+		getSpec.trySetAccessible()
 
-			val spec = getSpec.invoke(openApiResource, "", Locale.UK) as OpenAPI
-			val json = writeJsonValue.invoke(openApiResource, spec) as ByteArray
+		val writeJsonValue = clazz.getDeclaredMethod("writeJsonValue", OpenAPI::class.java)
+		writeJsonValue.trySetAccessible()
 
-			val file = File(generationPath)
-			val os = file.outputStream()
-			os.write(json)
-			os.close()
-
-			logger.info("Specification written to ${file.absolutePath}. Bye.")
-			exitProcess(0)
-		}
+		val spec = getSpec.invoke(openApiResource, "", Locale.UK) as OpenAPI
+		return writeJsonValue.invoke(openApiResource, spec) as ByteArray
 	}
 }
