@@ -23,20 +23,20 @@ import jakarta.persistence.Entity
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.validation.constraints.NotNull
+import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.activities.response.entities.ResponseEntity
-import org.elaastix.server.users.entities.UserEntity
 
 @Entity
 @SciconumTechDebt
 class SciconumJudgePeeringEntity(
-	session: SciconumSessionEntity,
-	ofRound: UInt,
-
 	@NotNull
 	@ManyToOne
-	var learner: UserEntity,
+	var learnerSession: SciconumLearnerSessionEntity,
+
+	@NotNull
+	var sessionRound: UInt,
 
 	@ManyToMany
 	var responses: MutableSet<ResponseEntity<*, *>>,
-) : SciconumPeeringEntity(session, ofRound)
+) : AbstractEntity()

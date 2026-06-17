@@ -1,27 +1,25 @@
-SCNSession: per-assignment per-sequence
+SCNScenarioSession: per-assignment per-sequence
 - SCNLearnerSession: per-session per-learner
 
 A sequence happens in rounds. 1 round = 1 question.
 
 State machine: (State, Round) -- FYI: Z = high impedance
-(PENDING, 0) -> (QUESTION, 0) -> (PEER, 0) ->  (REVISE, 0) ->  (FEEDBACK, 0) -> (QUESTION, 1) -> ... -> (END, Z)
+(PENDING, Z) -> (QUESTION, 0) -> (PEER, 0) ->  (REVISE, 0) ->  (FEEDBACK, 0) -> (QUESTION, 1) -> ... -> (END, Z)
                 |----------------------------------------------------------|
                                        a round is this
 
 
 For peer assignment:
-  - SCN__PeeringEntity: many per-session per-round
+	Judge:
+		binds learner <-> Set<Response>
 
-Judge:
-	binds learner <-> Set<Response>
+	Chat:
+		learners: Set<Chatter>
 
-Chat:
-	learners: Set<Chatter>
-
-	Chatter:
-		actual: User
-		peering: PeeringEntity
-		nickname: "Fabulous Panda", "Curious Lemon", kinda stuff
+		Chatter:
+			actual: User
+			peering: PeeringEntity
+			nickname: "Fabulous Panda", "Curious Lemon", kinda stuff
 
 Late people:
 	-> Arrive in PENDING

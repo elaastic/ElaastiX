@@ -35,7 +35,7 @@ import kotlin.time.Instant
 class SciconumLearnerSessionEntity(
 	@NotNull
 	@ManyToOne
-	var globalSession: SciconumSessionEntity,
+	var scenarioSession: SciconumScenarioSessionEntity,
 
 	@NotNull
 	@ManyToOne

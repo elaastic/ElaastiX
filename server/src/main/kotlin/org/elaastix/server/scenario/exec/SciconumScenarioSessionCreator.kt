@@ -24,9 +24,9 @@ import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.assignments.AssignmentEntity
 import org.elaastix.server.assignments.event.AssignmentJoinEvent
 import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
-import org.elaastix.server.scenario.exec.entities.SciconumSessionEntity
+import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
-import org.elaastix.server.scenario.exec.repositories.SciconumSessionRepository
+import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository
 import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
@@ -34,12 +34,12 @@ import org.springframework.transaction.event.TransactionalEventListener
 @Component
 @SciconumTechDebt
 class SciconumScenarioSessionCreator(
-	private val sessionRepository: SciconumSessionRepository,
+	private val scenarioSessionRepository: SciconumScenarioSessionRepository,
 	private val learnerSessionRepository: SciconumLearnerSessionRepository,
 ) {
 	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
 	fun handleLearnerJoin(event: AssignmentJoinEvent) {
-		val sessions = sessionRepository.findAllByAssignment(event.assignment)
+		val sessions = scenarioSessionRepository.findAllByAssignment(event.assignment)
 		check(sessions.isNotEmpty())
 
 		for (session in sessions) {
@@ -47,7 +47,7 @@ class SciconumScenarioSessionCreator(
 
 			learnerSessionRepository.persist(
 				SciconumLearnerSessionEntity(
-					globalSession = session,
+					scenarioSession = session,
 					learner = event.learner,
 					// If scenario is in a different state, it means the learner is late.
 					// They'll transition on the next round and wait in the meantime.
@@ -60,13 +60,16 @@ class SciconumScenarioSessionCreator(
 
 	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
 	fun handleAssignmentCreation(event: EntityCreatedEvent<AssignmentEntity>) {
-		for (sequence in event.entity.sequences) {
-			sessionRepository.persist(
-				SciconumSessionEntity(
+		val sequences = event.entity.sequences
+		check(sequences.isNotEmpty())
+
+		for (sequence in sequences) {
+			scenarioSessionRepository.persist(
+				SciconumScenarioSessionEntity(
 					assignment = event.entity,
 					sequence = sequence,
 					phase = SciconumScenarioExecutionPhase.PENDING,
-					currentQuestion = 0u,
+					currentRound = 0u,
 					nextPhaseAt = null,
 				),
 			)

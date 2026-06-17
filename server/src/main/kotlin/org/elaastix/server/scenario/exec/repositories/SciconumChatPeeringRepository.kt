@@ -17,24 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec.entities
+package org.elaastix.server.scenario.exec.repositories
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Inheritance
-import jakarta.persistence.InheritanceType
-import jakarta.persistence.ManyToOne
-import jakarta.validation.constraints.NotNull
-import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.server.scenario.exec.entities.SciconumChatPeeringEntity
+import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
+import org.springframework.stereotype.Repository
 
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@Repository
 @SciconumTechDebt
-abstract class SciconumPeeringEntity(
-	@NotNull
-	@ManyToOne
-	var session: SciconumSessionEntity,
-
-	@NotNull
-	var round: UInt, // 1 question = 1 round. 0-indexed.
-) : AbstractEntity()
+interface SciconumChatPeeringRepository : ElaastixRepository<SciconumChatPeeringEntity> {
+	fun findOneByScenarioSessionAndSessionRound(
+		session: SciconumScenarioSessionEntity,
+		round: UInt,
+	): SciconumChatPeeringEntity?
+}

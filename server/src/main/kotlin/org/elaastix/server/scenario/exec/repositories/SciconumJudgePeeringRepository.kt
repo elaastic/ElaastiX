@@ -21,18 +21,15 @@ package org.elaastix.server.scenario.exec.repositories
 
 import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.assignments.AssignmentEntity
-import org.elaastix.server.scenario.exec.entities.SciconumSessionEntity
-import org.elaastix.server.sequences.SequenceEntity
+import org.elaastix.server.scenario.exec.entities.SciconumJudgePeeringEntity
+import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
 import org.springframework.stereotype.Repository
 
 @Repository
 @SciconumTechDebt
-interface SciconumSessionRepository : ElaastixRepository<SciconumSessionEntity> {
-	fun findAllByAssignment(assignment: AssignmentEntity): List<SciconumSessionEntity>
-
-	fun findOneByAssignmentAndSequence(
-		assignment: AssignmentEntity,
-		sequenceEntity: SequenceEntity,
-	): SciconumSessionEntity?
+interface SciconumJudgePeeringRepository : ElaastixRepository<SciconumJudgePeeringEntity> {
+	fun findOneByLearnerSessionAndSessionRound(
+		session: SciconumLearnerSessionEntity,
+		round: UInt,
+	): SciconumJudgePeeringEntity?
 }

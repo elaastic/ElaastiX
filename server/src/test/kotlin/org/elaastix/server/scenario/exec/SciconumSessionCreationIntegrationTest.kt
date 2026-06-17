@@ -34,7 +34,7 @@ import org.elaastix.server.assignments.participants.AssignmentParticipantsServic
 import org.elaastix.server.core.content.PlainText
 import org.elaastix.server.scenario.SciconumScenario
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
-import org.elaastix.server.scenario.exec.repositories.SciconumSessionRepository
+import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository
 import org.elaastix.server.sequences.SciconumSequenceEntity
 import org.elaastix.server.sequences.SequenceRepository
 import org.elaastix.server.users.UserRepository
@@ -63,7 +63,7 @@ class SciconumSessionCreationIntegrationTest : IntegrationTest() {
 	lateinit var assignmentRepository: AssignmentRepository
 
 	@Autowired
-	lateinit var sciconumSessionRepository: SciconumSessionRepository
+	lateinit var sciconumScenarioSessionRepository: SciconumScenarioSessionRepository
 
 	@Autowired
 	lateinit var sciconumLearnerSessionRepository: SciconumLearnerSessionRepository
@@ -106,7 +106,7 @@ class SciconumSessionCreationIntegrationTest : IntegrationTest() {
 		// -- then
 
 		val assignment = assignmentRepository.getReferenceById(assignmentDto.id)
-		val sessions = sciconumSessionRepository.findAllByAssignment(assignment)
+		val sessions = sciconumScenarioSessionRepository.findAllByAssignment(assignment)
 		assertThat(sessions).hasSize(3)
 	}
 
@@ -180,9 +180,9 @@ class SciconumSessionCreationIntegrationTest : IntegrationTest() {
 			),
 		)
 
-		val session = sciconumSessionRepository.findAllByAssignment(assignment).first()
+		val session = sciconumScenarioSessionRepository.findAllByAssignment(assignment).first()
 		session.phase = SciconumScenarioExecutionPhase.END
-		sciconumSessionRepository.update(session)
+		sciconumScenarioSessionRepository.update(session)
 
 		val user = userRepository.persist(
 			UserEntity(

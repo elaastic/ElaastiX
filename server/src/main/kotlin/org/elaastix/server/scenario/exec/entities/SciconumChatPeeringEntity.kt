@@ -22,14 +22,21 @@ package org.elaastix.server.scenario.exec.entities
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.ManyToMany
+import jakarta.persistence.ManyToOne
+import jakarta.validation.constraints.NotNull
+import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 
 @Entity
 @SciconumTechDebt
 class SciconumChatPeeringEntity(
-	session: SciconumSessionEntity,
-	ofRound: UInt,
+	@NotNull
+	@ManyToOne
+	var scenarioSession: SciconumScenarioSessionEntity,
+
+	@NotNull
+	var sessionRound: UInt,
 
 	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "peering")
 	var chatters: MutableSet<SciconumChatterEntity>,
-) : SciconumPeeringEntity(session, ofRound)
+) : AbstractEntity()

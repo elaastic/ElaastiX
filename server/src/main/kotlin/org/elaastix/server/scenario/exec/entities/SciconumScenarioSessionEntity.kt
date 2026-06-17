@@ -41,7 +41,7 @@ import kotlin.time.Instant
 	],
 )
 @SciconumTechDebt
-class SciconumSessionEntity(
+class SciconumScenarioSessionEntity(
 	@NotNull
 	@ManyToOne
 	var assignment: AssignmentEntity,
@@ -53,7 +53,7 @@ class SciconumSessionEntity(
 	// -- State data
 
 	@NotNull
-	var currentQuestion: UInt,
+	var currentRound: UInt, // 1 round = 1 question. (Round 1) Q > Peer > Revise > Feedback > (Round 2) Q > ...
 
 	@NotNull
 	@Enumerated(EnumType.STRING)

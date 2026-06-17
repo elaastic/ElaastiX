@@ -23,7 +23,7 @@ import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.assignments.AssignmentEntity
 import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
-import org.elaastix.server.scenario.exec.entities.SciconumSessionEntity
+import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.elaastix.server.users.entities.UserEntity
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
@@ -32,15 +32,15 @@ import org.springframework.stereotype.Repository
 @SciconumTechDebt
 interface SciconumLearnerSessionRepository : ElaastixRepository<SciconumLearnerSessionEntity> {
 	@Query(
-		"FROM SciconumLearnerSessionEntity sls WHERE sls.learner = :learner AND sls.globalSession.assignment = :assignment",
+		"FROM SciconumLearnerSessionEntity sls WHERE sls.learner = :learner AND sls.scenarioSession.assignment = :assignment",
 	)
 	fun findAllByAssignmentAndLearner(
 		assignment: AssignmentEntity,
 		learner: UserEntity,
 	): List<SciconumLearnerSessionEntity>
 
-	fun findAllByGlobalSessionAndLearner(
-		globalSession: SciconumSessionEntity,
+	fun findAllByScenarioSessionAndLearner(
+		globalSession: SciconumScenarioSessionEntity,
 		learner: UserEntity,
 	): List<SciconumLearnerSessionEntity>
 }
