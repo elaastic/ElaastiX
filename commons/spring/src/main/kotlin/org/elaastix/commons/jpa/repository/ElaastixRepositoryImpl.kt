@@ -23,9 +23,6 @@ import io.hypersistence.utils.spring.repository.BaseJpaRepositoryImpl
 import jakarta.persistence.EntityManager
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.jpa.event.EntityCreatedEvent
-import org.elaastix.commons.jpa.event.EntityUpdatedEvent
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.jpa.repository.support.JpaEntityInformation
 import org.springframework.transaction.annotation.Transactional
 
@@ -33,11 +30,9 @@ import org.springframework.transaction.annotation.Transactional
  * Concrete repository implementation of [ElaastixRepository].
  * Picked up by Spring Data while setting things up.
  */
-@Suppress("TooManyFunctions")
 class ElaastixRepositoryImpl<T : AbstractEntity>(
 	private val entityInformation: JpaEntityInformation<T, Uuid>,
 	private val entityManager: EntityManager,
-	private val applicationEventPublisher: ApplicationEventPublisher,
 ) : BaseJpaRepositoryImpl<T, Uuid>(entityInformation, entityManager),
 	ElaastixRepository<T> {
 	override fun findConcreteTypeById(id: Uuid): Class<T>? {
@@ -65,92 +60,4 @@ class ElaastixRepositoryImpl<T : AbstractEntity>(
 	@Transactional
 	override fun findByIdAndUpdate(id: Uuid, block: T.() -> Unit): T? =
 		findByIdOrNull(id)?.let { update(it.apply(block)) }
-
-	override fun <S : T> persist(entity: S): S {
-		val res = super.persist(entity)
-		applicationEventPublisher.publishEvent(EntityCreatedEvent(this, res))
-		return res
-	}
-
-	override fun <S : T> persistAndFlush(entity: S): S {
-		val res = super.persistAndFlush(entity)
-		applicationEventPublisher.publishEvent(EntityCreatedEvent(this, res))
-		return res
-	}
-
-	override fun <S : T> persistAll(entities: Iterable<S>): List<S> {
-		val res = super.persistAll(entities)
-		res.forEach { applicationEventPublisher.publishEvent(EntityCreatedEvent(this, it)) }
-		return res
-	}
-
-	override fun <S : T> persistAllAndFlush(entities: Iterable<S>): List<S> {
-		val res = super.persistAllAndFlush(entities)
-		res.forEach { applicationEventPublisher.publishEvent(EntityCreatedEvent(this, it)) }
-		return res
-	}
-
-	override fun <S : T> update(entity: S): S {
-		val res = super.update(entity)
-		applicationEventPublisher.publishEvent(EntityUpdatedEvent(this, res))
-		return res
-	}
-
-	override fun <S : T> updateAndFlush(entity: S): S {
-		val res = super.updateAndFlush(entity)
-		applicationEventPublisher.publishEvent(EntityUpdatedEvent(this, res))
-		return res
-	}
-
-	override fun <S : T> updateAll(entities: Iterable<S>): List<S> {
-		val res = super.updateAll(entities)
-		res.forEach { applicationEventPublisher.publishEvent(EntityUpdatedEvent(this, it)) }
-		return res
-	}
-
-	override fun <S : T> updateAllAndFlush(entities: Iterable<S>): List<S> {
-		val res = super.updateAllAndFlush(entities)
-		res.forEach { applicationEventPublisher.publishEvent(EntityUpdatedEvent(this, it)) }
-		return res
-	}
-
-	override fun <S : T> merge(entity: S): S {
-		val isNew = entityInformation.isNew(entity)
-		val res = super.merge(entity)
-		applicationEventPublisher.publishEvent(
-			if (isNew) EntityCreatedEvent(this, res) else EntityUpdatedEvent(this, res),
-		)
-		return res
-	}
-
-	override fun <S : T> mergeAndFlush(entity: S): S {
-		val isNew = entityInformation.isNew(entity)
-		val res = super.mergeAndFlush(entity)
-		applicationEventPublisher.publishEvent(
-			if (isNew) EntityCreatedEvent(this, res) else EntityUpdatedEvent(this, res),
-		)
-		return res
-	}
-
-	override fun <S : T> mergeAll(entities: Iterable<S>): List<S> {
-		val areNew = entities.map { entityInformation.isNew(it) }
-		val res = super.mergeAll(entities)
-		res.zip(areNew).forEach { (e, isNew) ->
-			applicationEventPublisher.publishEvent(
-				if (isNew) EntityCreatedEvent(this, e) else EntityUpdatedEvent(this, e),
-			)
-		}
-		return res
-	}
-
-	override fun <S : T> mergeAllAndFlush(entities: Iterable<S>): List<S> {
-		val areNew = entities.map { entityInformation.isNew(it) }
-		val res = super.mergeAllAndFlush(entities)
-		res.zip(areNew).forEach { (e, isNew) ->
-			applicationEventPublisher.publishEvent(
-				if (isNew) EntityCreatedEvent(this, e) else EntityUpdatedEvent(this, e),
-			)
-		}
-		return res
-	}
 }

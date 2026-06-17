@@ -21,7 +21,6 @@ package org.elaastix.commons.jpa.repository
 
 import jakarta.persistence.EntityManager
 import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory
 import org.springframework.data.repository.core.RepositoryInformation
 import org.springframework.data.repository.core.RepositoryMetadata
@@ -29,16 +28,12 @@ import org.springframework.data.repository.core.RepositoryMetadata
 /**
  * Factory class responsible for creating instances of [ElaastixRepositoryImpl] with the event publisher.
  */
-class ElaastixRepositoryImplFactory(
-	entityManager: EntityManager,
-	private val applicationEventPublisher: ApplicationEventPublisher,
-) : JpaRepositoryFactory(entityManager) {
+class ElaastixRepositoryImplFactory(entityManager: EntityManager) : JpaRepositoryFactory(entityManager) {
 	@Suppress("UNCHECKED_CAST")
 	override fun getTargetRepository(information: RepositoryInformation, entityManager: EntityManager) =
 		ElaastixRepositoryImpl(
 			getEntityInformation(information.domainType as Class<AbstractEntity>),
 			entityManager,
-			applicationEventPublisher,
 		)
 
 	override fun getRepositoryBaseClass(metadata: RepositoryMetadata) =

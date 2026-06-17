@@ -17,13 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.jpa.event
+package org.elaastix.server.assignments.event
 
-import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.server.assignments.AssignmentEntity
+import org.springframework.context.ApplicationEvent
 
 /**
- * Event fired when an entity is created.
+ * Fired when an assignment is created.
  *
- * @see AbstractEntityEvent
+ * @param source The object on which the event initially occurred or with which the event is associated.
+ * @property assignment The newly created assignment.
  */
-class EntityCreatedEvent<T : AbstractEntity>(source: Any, entity: T) : AbstractEntityEvent<T>(source, entity)
+class AssignmentCreateEvent(source: Any, val assignment: AssignmentEntity) : ApplicationEvent(source)

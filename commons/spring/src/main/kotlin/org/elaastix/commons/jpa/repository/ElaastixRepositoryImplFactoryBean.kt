@@ -22,7 +22,6 @@ package org.elaastix.commons.jpa.repository
 import jakarta.persistence.EntityManager
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean
 import org.springframework.data.repository.core.support.RepositoryFactorySupport
 
@@ -32,16 +31,8 @@ import org.springframework.data.repository.core.support.RepositoryFactorySupport
 class ElaastixRepositoryImplFactoryBean<R : ElaastixRepository<T>, T : AbstractEntity>(
 	repositoryInterface: Class<out R>,
 ) : JpaRepositoryFactoryBean<R, T, Uuid>(repositoryInterface) {
-	private lateinit var applicationEventPublisher: ApplicationEventPublisher
-
 	override fun createRepositoryFactory(entityManager: EntityManager): RepositoryFactorySupport =
 		ElaastixRepositoryImplFactory(
 			entityManager,
-			applicationEventPublisher,
 		)
-
-	override fun setApplicationEventPublisher(publisher: ApplicationEventPublisher) {
-		super.setApplicationEventPublisher(publisher)
-		this.applicationEventPublisher = publisher
-	}
 }

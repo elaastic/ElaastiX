@@ -32,10 +32,12 @@ import org.elaastix.commons.toUuidSet
 import org.elaastix.server.assignments.dto.AssignmentDto
 import org.elaastix.server.assignments.dto.CreateAssignmentDto
 import org.elaastix.server.assignments.dto.UpdateAssignmentDto
+import org.elaastix.server.assignments.event.AssignmentCreateEvent
 import org.elaastix.server.sequences.SciconumSequenceEntity
 import org.elaastix.server.sequences.SequenceEntity
 import org.elaastix.server.sequences.SequenceRepository
 import org.elaastix.server.sequences.SequenceService.Companion.toDto
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.Pageable
 import org.springframework.data.web.PagedModel
@@ -44,6 +46,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class AssignmentService(
+	private val applicationEventPublisher: ApplicationEventPublisher,
 	private val assignmentRepository: AssignmentRepository,
 	private val sequenceRepository: SequenceRepository,
 ) {
@@ -103,6 +106,8 @@ class AssignmentService(
 				participants = mutableSetOf(),
 			),
 		)
+
+		applicationEventPublisher.publishEvent(AssignmentCreateEvent(this, entity))
 
 		return entity.toDto()
 	}

@@ -19,9 +19,8 @@
 
 package org.elaastix.server.scenario.exec
 
-import org.elaastix.commons.jpa.event.EntityCreatedEvent
 import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.assignments.AssignmentEntity
+import org.elaastix.server.assignments.event.AssignmentCreateEvent
 import org.elaastix.server.assignments.event.AssignmentJoinEvent
 import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
 import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
@@ -59,14 +58,14 @@ class SciconumScenarioSessionCreator(
 	}
 
 	@TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-	fun handleAssignmentCreation(event: EntityCreatedEvent<AssignmentEntity>) {
-		val sequences = event.entity.sequences
+	fun handleAssignmentCreation(event: AssignmentCreateEvent) {
+		val sequences = event.assignment.sequences
 		check(sequences.isNotEmpty())
 
 		for (sequence in sequences) {
 			scenarioSessionRepository.persist(
 				SciconumScenarioSessionEntity(
-					assignment = event.entity,
+					assignment = event.assignment,
 					sequence = sequence,
 					phase = SciconumScenarioExecutionPhase.PENDING,
 					currentRound = 0u,
