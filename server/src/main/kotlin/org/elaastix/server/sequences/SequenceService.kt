@@ -23,6 +23,7 @@ import jakarta.validation.Valid
 import jakarta.validation.ValidationException
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.exceptions.ResourceNotFoundException
+import org.elaastix.commons.mapSet
 import org.elaastix.commons.orNotFound
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
@@ -62,7 +63,7 @@ class SequenceService(
 				id = id,
 				name = name,
 				sciconumScenario = sciconumScenario,
-				sciconumQuestions = sciconumQuestions.map { it.toDto() }.toSet(),
+				sciconumQuestions = sciconumQuestions.mapSet { it.toDto() },
 				ownerId = owner.id,
 			)
 
