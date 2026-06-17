@@ -79,7 +79,7 @@ abstract class AbstractSciconumFlowTest : SciconumIntegrationTest() {
 		/**
 		 * Starts the execution of the test scenario.
 		 */
-		fun start() = sciconumScenarioExecutionService.startSequence(scenarioSession)
+		fun start() = sciconumScenarioExecutionService.startSequenceScenarioSessionById(scenarioSession.id)
 
 		/**
 		 * Advances the clock by [duration].

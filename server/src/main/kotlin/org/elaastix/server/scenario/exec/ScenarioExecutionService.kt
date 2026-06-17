@@ -56,10 +56,10 @@ class ScenarioExecutionService(
 	}
 
 	/**
-	 * Resumes execution of sessions, in case the server has been restarted or crashed.
+	 * Resumes execution of scenario sessions, in case the server has been restarted or crashed.
 	 */
 	@Transactional
-	fun restoreRunningSequences() {
+	fun restoreRunningScenarioSessions() {
 		val now = clock.now()
 		val ongoingSessions = sciconumScenarioSessionRepository.findAllByNextPhaseAtNotNull()
 		for (session in ongoingSessions) {
@@ -67,12 +67,15 @@ class ScenarioExecutionService(
 				when {
 					it < now -> {
 						val lag = (now - it).toInt(DurationUnit.SECONDS)
-						LOGGER.warn("Ticking session ${session.id}, was supposed to tick at $it ($lag seconds behind!)")
-						tickSession(session)
+						LOGGER.warn(
+							"Ticking scenario session ${session.id}, " +
+								"was supposed to tick at $it ($lag seconds behind!)",
+						)
+						tickScenarioSession(session)
 					}
 
 					else -> {
-						LOGGER.info("Resuming execution of session ${session.id}")
+						LOGGER.info("Resuming execution of scenario session ${session.id}")
 						taskScheduler.schedule(ExecutionTask(session.id), it)
 					}
 				}
@@ -81,19 +84,14 @@ class ScenarioExecutionService(
 	}
 
 	@Transactional
-	fun startSequenceById(sessionId: Uuid) {
-		val session = sciconumScenarioSessionRepository.findById(sessionId).orElseNotFound()
-		startSequence(session)
-	}
-
-	@Transactional
-	fun startSequence(session: SciconumScenarioSessionEntity) {
+	fun startSequenceScenarioSessionById(scenarioSessionId: Uuid) {
+		val session = sciconumScenarioSessionRepository.findById(scenarioSessionId).orElseNotFound()
 		check(session.phase == Phase.PENDING)
 		ExecutionTask(session.id).run()
 	}
 
 	@Suppress("CyclomaticComplexMethod") // The logic is just a big state machine
-	private fun tickSession(session: SciconumScenarioSessionEntity): Instant? {
+	private fun tickScenarioSession(session: SciconumScenarioSessionEntity): Instant? {
 		val currentPhase = session.phase
 		val scenario = session.sequence.sciconumScenario
 
@@ -117,12 +115,12 @@ class ScenarioExecutionService(
 
 		return when (currentPhase) {
 			Phase.PENDING ->
-				updateSession(session, Phase.QUESTION, constants.ANSWER_PHASE_DURATION)
+				updateScenarioSession(session, Phase.QUESTION, constants.ANSWER_PHASE_DURATION)
 
 			Phase.QUESTION ->
 				when (scenario) {
 					SciconumScenario.CONTROL ->
-						updateSession(session, Phase.FEEDBACK, constants.FEEDBACK_PHASE_DURATION)
+						updateScenarioSession(session, Phase.FEEDBACK, constants.FEEDBACK_PHASE_DURATION)
 
 					SciconumScenario.PEER_ASSESSMENT ->
 						startPeerAssessmentPhase(session)
@@ -132,18 +130,18 @@ class ScenarioExecutionService(
 				}
 
 			Phase.PEER ->
-				updateSession(session, Phase.REVISE, constants.REVISE_PHASE_DURATION)
+				updateScenarioSession(session, Phase.REVISE, constants.REVISE_PHASE_DURATION)
 
 			Phase.REVISE ->
-				updateSession(session, Phase.FEEDBACK, constants.FEEDBACK_PHASE_DURATION)
+				updateScenarioSession(session, Phase.FEEDBACK, constants.FEEDBACK_PHASE_DURATION)
 
 			Phase.FEEDBACK -> {
 				when (++session.currentRound) {
 					session.sequence.sciconumQuestions.size.toUInt() ->
-						updateSession(session, Phase.END, null)
+						updateScenarioSession(session, Phase.END, null)
 
 					else ->
-						updateSession(session, Phase.QUESTION, constants.ANSWER_PHASE_DURATION)
+						updateScenarioSession(session, Phase.QUESTION, constants.ANSWER_PHASE_DURATION)
 				}
 			}
 
@@ -153,15 +151,19 @@ class ScenarioExecutionService(
 
 	private fun startPeerAssessmentPhase(session: SciconumScenarioSessionEntity): Instant? {
 		// TODO: Assign answers
-		return updateSession(session, Phase.PEER, Assessment.PEER_PHASE_DURATION)
+		return updateScenarioSession(session, Phase.PEER, Assessment.PEER_PHASE_DURATION)
 	}
 
 	private fun startPeerDebatePhase(session: SciconumScenarioSessionEntity): Instant? {
 		// TODO: Assign peers
-		return updateSession(session, Phase.PEER, Debate.PEER_PHASE_DURATION)
+		return updateScenarioSession(session, Phase.PEER, Debate.PEER_PHASE_DURATION)
 	}
 
-	private fun updateSession(session: SciconumScenarioSessionEntity, phase: Phase, nextTickIn: Duration?): Instant? {
+	private fun updateScenarioSession(
+		session: SciconumScenarioSessionEntity,
+		phase: Phase,
+		nextTickIn: Duration?,
+	): Instant? {
 		val nextTick = nextTickIn?.let { clock.now().plus(nextTickIn) }
 		LOGGER.trace("Transitioning session ${session.id} (${session.phase} -> $phase)")
 
@@ -172,16 +174,16 @@ class ScenarioExecutionService(
 		return nextTick
 	}
 
-	private inner class ExecutionTask(private val sessionId: Uuid) : Runnable {
+	private inner class ExecutionTask(private val scenarioSessionId: Uuid) : Runnable {
 		override fun run() {
 			transactionTemplate.execute {
-				val session = checkNotNull(sciconumScenarioSessionRepository.findByIdOrNull(sessionId))
-				tickSession(session)
+				val session = checkNotNull(sciconumScenarioSessionRepository.findByIdOrNull(scenarioSessionId))
+				tickScenarioSession(session)
 			}?.let {
 				if (LOGGER.isDebugEnabled) {
 					val now = clock.now()
 					val delta = (it - now).toInt(DurationUnit.SECONDS)
-					LOGGER.debug("Scheduling next tick of session $sessionId at $it (in $delta seconds)")
+					LOGGER.debug("Scheduling next tick of session $scenarioSessionId at $it (in $delta seconds)")
 				}
 				taskScheduler.schedule(this, it)
 			}

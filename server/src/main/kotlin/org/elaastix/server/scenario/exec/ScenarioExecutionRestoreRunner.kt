@@ -33,6 +33,6 @@ import org.springframework.stereotype.Component
 @SciconumTechDebt
 class ScenarioExecutionRestoreRunner(private val executionService: ScenarioExecutionService) : CommandLineRunner {
 	override fun run(vararg args: String) {
-		executionService.restoreRunningSequences()
+		executionService.restoreRunningScenarioSessions()
 	}
 }
