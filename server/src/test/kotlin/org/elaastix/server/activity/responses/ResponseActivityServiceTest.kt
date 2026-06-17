@@ -29,6 +29,7 @@ import org.elaastix.commons.cast
 import org.elaastix.commons.exceptions.BadRequestException
 import org.elaastix.commons.platform.JpaImmutable
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
+import org.elaastix.mm.content.PlainText
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.activities.response.ResponseActivityService
 import org.elaastix.server.activities.response.dtos.ClosedResponseDto
@@ -42,7 +43,6 @@ import org.elaastix.server.activities.response.entities.projections.QuestionStat
 import org.elaastix.server.activities.response.repositories.QuestionRepository
 import org.elaastix.server.activities.response.repositories.ResponseRepository
 import org.elaastix.server.core.AbstractEntityWithAuthorship
-import org.elaastix.server.core.content.PlainText
 import org.elaastix.server.users.entities.UserEntity
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

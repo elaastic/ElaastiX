@@ -20,7 +20,6 @@
 package org.elaastix.mm.content
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.json.JsonElement
 
 /**
  * A rich content is the least restricted type of content in ElaastiX, with no limits on what it allows.
@@ -34,12 +33,7 @@ import kotlinx.serialization.json.JsonElement
  * more resilient against misuse (voluntary or involuntary), and potentially more secure, thanks to its reduced feature
  * set. Advanced features imply a greater attack surface, and a higher risk of broken content (i.e. unreadable).
  *
- * **IMPORTANT**: All subclasses MUST register with [ContentTypesRegistry].
- *
  * @see FormattedContent
  */
-@Serializable(with = RichContentSerializer::class)
-interface RichContent {
-	/** Transforms the content into a JSON element that'll be saved to the database. */
-	fun toJson(): JsonElement
-}
+@Serializable
+sealed interface RichContent

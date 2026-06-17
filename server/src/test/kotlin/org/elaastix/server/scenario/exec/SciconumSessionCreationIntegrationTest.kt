@@ -23,6 +23,7 @@ import org.assertj.core.api.Assertions.assertThat
 import org.elaastix.commons.makeList
 import org.elaastix.commons.makeSet
 import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.mm.content.PlainText
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.activities.response.entities.ClosedQuestionEntity
 import org.elaastix.server.activities.response.repositories.QuestionRepository
@@ -31,7 +32,6 @@ import org.elaastix.server.assignments.AssignmentService
 import org.elaastix.server.assignments.dto.AssignmentDto
 import org.elaastix.server.assignments.dto.CreateAssignmentDto
 import org.elaastix.server.assignments.participants.AssignmentParticipantsService
-import org.elaastix.server.core.content.PlainText
 import org.elaastix.server.scenario.SciconumScenario
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
 import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository

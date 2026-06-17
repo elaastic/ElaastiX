@@ -21,11 +21,11 @@ package org.elaastix.server.core.infrastructure.seed
 
 import jakarta.persistence.EntityManager
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
+import org.elaastix.mm.content.MarkdownContent
+import org.elaastix.mm.content.MarkdownText
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.activities.response.entities.ClosedQuestionEntity
 import org.elaastix.server.activities.response.entities.QuestionEntity
-import org.elaastix.server.core.content.MarkdownContent
-import org.elaastix.server.core.content.MarkdownText
 import org.springframework.boot.ApplicationArguments
 
 @Seeder
