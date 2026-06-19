@@ -41,23 +41,18 @@ class SchedulerConfig {
 	fun kClock(): Clock = Clock.System
 
 	@Bean
-	fun jClock(kClock: Clock): JClock =
-		object : JClock() {
-			override fun getZone() = ZoneOffset.UTC
-			override fun withZone(zone: ZoneId): JClock = ZonedClock(this, zone)
-			override fun instant() = kClock.now().toJavaInstant()
-		}
+	fun jClock(kClock: Clock): JClock = JavaClock(kClock, ZoneOffset.UTC)
 
 	@Bean
 	fun scheduler() = ThreadPoolTaskScheduler()
 
-	private class ZonedClock(private val source: JClock, private val zone: ZoneId) : JClock() {
+	private class JavaClock(private val source: Clock, private val zone: ZoneId) : JClock() {
 		override fun getZone() = zone
-		override fun withZone(zone: ZoneId): JClock = ZonedClock(source, zone)
-		override fun instant(): JInstant = source.instant()
+		override fun withZone(zone: ZoneId): JClock = JavaClock(source, zone)
+		override fun instant(): JInstant = source.now().toJavaInstant()
 
-		override fun equals(obj: Any?) = obj is ZonedClock && source == obj.source && zone == obj.zone
+		override fun equals(obj: Any?) = obj is JavaClock && source == obj.source && zone == obj.zone
 		override fun hashCode() = source.hashCode() * 31 + zone.hashCode()
-		override fun toString() = "ZonedClock[$zone]"
+		override fun toString() = "JavaClock[$zone]"
 	}
 }

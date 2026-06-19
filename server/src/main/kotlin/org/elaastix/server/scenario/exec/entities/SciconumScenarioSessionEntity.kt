@@ -59,5 +59,7 @@ class SciconumScenarioSessionEntity(
 	@Enumerated(EnumType.STRING)
 	var phase: SciconumScenarioExecutionPhase,
 
-	var nextPhaseAt: Instant?,
+	var pausedAt: Instant? = null,
+
+	var nextPhaseAt: Instant? = null,
 ) : AbstractEntity()

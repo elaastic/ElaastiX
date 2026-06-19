@@ -22,6 +22,7 @@ package org.elaastix.server.scenario.exec
 import org.elaastix.commons.makeList
 import org.elaastix.commons.makeSet
 import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.commons.security.Role
 import org.elaastix.mm.content.PlainText
 import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.activities.response.entities.ClosedQuestionEntity
@@ -46,8 +47,8 @@ import testutils.IntegrationTest
 import testutils.WithMockUser
 import testutils.email
 
-@WithMockUser
 @SpringBootTest
+@WithMockUser(roles = [Role.WRITER])
 @OptIn(SciconumTechDebt::class)
 abstract class SciconumIntegrationTest : IntegrationTest() {
 	@Autowired
