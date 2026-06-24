@@ -17,25 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-group = "org.elaastix.commons"
+package org.elaastix.server.authn
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.spring")
-	id("conventions.test")
-}
+import org.elaastix.server.users.entities.UserEntity
+import org.springframework.security.core.context.SecurityContext
+import org.springframework.security.core.context.SecurityContextHolder
 
-dependencies {
-	implementation(spring.data("jpa"))
-	implementation(spring.boot("hibernate"))
-	implementation(spring.boot("autoconfigure"))
-	implementation(spring("websocket"))
-	implementation(libs.hypersistence.utils)
-	implementation(libs.springdoc)
-
-	implementation(project(":commons:core"))
-
-	testSpringBootStarter("data-jpa")
-	testSpringBootStarter("validation")
+/**
+ * Retrieves the currently authenticated user by querying the [SecurityContext].
+ */
+fun getAuthenticatedUser(): UserEntity {
+	val authn = SecurityContextHolder.getContext().authentication as? ElaastixAuthentication
+	return checkNotNull(authn?.principal)
 }

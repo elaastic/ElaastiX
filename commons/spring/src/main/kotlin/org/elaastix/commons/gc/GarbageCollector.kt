@@ -17,25 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-group = "org.elaastix.commons"
+package org.elaastix.commons.gc
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.spring")
-	id("conventions.test")
-}
-
-dependencies {
-	implementation(spring.data("jpa"))
-	implementation(spring.boot("hibernate"))
-	implementation(spring.boot("autoconfigure"))
-	implementation(spring("websocket"))
-	implementation(libs.hypersistence.utils)
-	implementation(libs.springdoc)
-
-	implementation(project(":commons:core"))
-
-	testSpringBootStarter("data-jpa")
-	testSpringBootStarter("validation")
+/**
+ * Interface for beans that implement a garbage collection mechanism.
+ * Beans that implement this interface will have their [gc] method invoked periodically.
+ *
+ * It primarily serves as a defence mechanism against runaway memory usage due to holding references to objects that
+ * should no longer be available.
+ */
+interface GarbageCollector {
+	/**
+	 * Procedure periodically called that should perform a full scrub over the held data and free any resource that
+	 * is no longer necessary.
+	 */
+	fun gc()
 }

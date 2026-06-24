@@ -36,6 +36,7 @@ dependencies {
 	springBootStarter("security-oauth2-client")
 	springBootStarter("validation")
 	springBootStarter("webmvc")
+	springBootStarter("websocket")
 	springBootStarter("kotlinx-serialization-json")
 
 	implementation(spring.security("data"))

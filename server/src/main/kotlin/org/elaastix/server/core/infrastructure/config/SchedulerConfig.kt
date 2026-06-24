@@ -21,6 +21,7 @@ package org.elaastix.server.core.infrastructure.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 import java.time.ZoneId
 import java.time.ZoneOffset
@@ -36,6 +37,7 @@ import java.time.Instant as JInstant
  * In tests, it is overridden with a controllable clock for easier testing of time-related events.
  */
 @Configuration
+@EnableScheduling
 class SchedulerConfig {
 	@Bean
 	fun kClock(): Clock = Clock.System

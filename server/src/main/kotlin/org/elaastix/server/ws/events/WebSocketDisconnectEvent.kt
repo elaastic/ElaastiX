@@ -17,15 +17,24 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.core.infrastructure
+package org.elaastix.server.ws.events
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.elaastix.server.users.entities.UserEntity
+import org.springframework.context.ApplicationEvent
+import org.springframework.web.socket.CloseStatus
+import org.springframework.web.socket.WebSocketSession
 
 /**
- * A "synthetic boot" occurs when the application starts exclusively to achieve a specific task and then shuts down.
- * This annotation marks a component as excluded from these type of startups.
+ * Fired when a client disconnects from the real-time WebSocket.
+ *
+ * @param source The object on which the event initially occurred or with which the event is associated.
+ * @property user The user associated with the connection.
+ * @property session The WebSocket session.
+ * @property status The close code the connection was closed with.
  */
-@ConditionalOnProperty("elaastix.synthetic-boot", havingValue = "false", matchIfMissing = true)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
-@Retention(AnnotationRetention.RUNTIME)
-annotation class ExcludeFromSyntheticBoot
+class WebSocketDisconnectEvent(
+	source: Any,
+	val user: UserEntity,
+	val session: WebSocketSession,
+	val status: CloseStatus,
+) : ApplicationEvent(source)

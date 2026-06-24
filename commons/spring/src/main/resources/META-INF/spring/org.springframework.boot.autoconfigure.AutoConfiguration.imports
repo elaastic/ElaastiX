@@ -1,3 +1,4 @@
 org.elaastix.commons.boot.autoconfigure.ElaastixHibernateAutoConfiguration
 org.elaastix.commons.boot.autoconfigure.SpringConvertersAutoConfiguration
 org.elaastix.commons.boot.autoconfigure.SpringdocAutoConfiguration
+org.elaastix.commons.boot.autoconfigure.GarbageCollectorAutoConfiguration
