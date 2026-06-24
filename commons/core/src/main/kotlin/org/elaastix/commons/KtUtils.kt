@@ -68,8 +68,7 @@ inline fun <T, R> Iterable<T>.mapSet(transform: (T) -> R): Set<R> {
  *
  * @see Instant.toString
  */
-fun Instant.toIsoStringSecondPrecise() =
-	minus(nanosecondsOfSecond.toDuration(DurationUnit.NANOSECONDS)).toString()
+fun Instant.toIsoStringSecondPrecise() = minus(nanosecondsOfSecond.toDuration(DurationUnit.NANOSECONDS)).toString()
 
 /**
  * Truncates the string to be of a given maximum length, if needed.

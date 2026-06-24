@@ -68,8 +68,7 @@ class SequenceService(
 			)
 
 		@SciconumTechDebt
-		fun QuestionEntity.toDto() =
-			QuestionStatementProjection.from(this).toDto()
+		fun QuestionEntity.toDto() = QuestionStatementProjection.from(this).toDto()
 	}
 
 	/**

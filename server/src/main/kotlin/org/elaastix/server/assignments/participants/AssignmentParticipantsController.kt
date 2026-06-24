@@ -42,10 +42,7 @@ class AssignmentParticipantsController(private val assignmentParticipantsService
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	fun addParticipant(
-		@PathVariable assignmentId: Uuid,
-		@RequestBody body: AddParticipantDto,
-	) =
+	fun addParticipant(@PathVariable assignmentId: Uuid, @RequestBody body: AddParticipantDto) =
 		assignmentParticipantsService.addParticipantToAssignmentById(assignmentId, body.userId)
 
 	/**
@@ -54,10 +51,7 @@ class AssignmentParticipantsController(private val assignmentParticipantsService
 	 * @see [AssignmentParticipantsService.getAllParticipants]
 	 */
 	@GetMapping
-	fun getAllParticipants(
-		@PathVariable assignmentId: Uuid,
-		pageable: Pageable,
-	): PagedModel<Nothing> =
+	fun getAllParticipants(@PathVariable assignmentId: Uuid, pageable: Pageable): PagedModel<Nothing> =
 		TODO("Not yet implemented")
 
 	/**
@@ -65,10 +59,7 @@ class AssignmentParticipantsController(private val assignmentParticipantsService
 	 */
 	@DeleteMapping("{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	fun removeParticipant(
-		@PathVariable assignmentId: Uuid,
-		@PathVariable id: Uuid,
-	) =
+	fun removeParticipant(@PathVariable assignmentId: Uuid, @PathVariable id: Uuid) =
 		assignmentParticipantsService.removeParticipantFromAssignmentById(assignmentId, id)
 
 	/**
@@ -76,10 +67,7 @@ class AssignmentParticipantsController(private val assignmentParticipantsService
 	 */
 	@DeleteMapping("bulk")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	fun removeParticipantsBulk(
-		@PathVariable assignmentId: Uuid,
-		@RequestBody ids: Set<Uuid>,
-	) =
+	fun removeParticipantsBulk(@PathVariable assignmentId: Uuid, @RequestBody ids: Set<Uuid>) =
 		assignmentParticipantsService.removeManyParticipantFromAssignmentById(assignmentId, ids)
 
 	/**

@@ -179,8 +179,7 @@ class ControllableClock :
 				prev.plus(jDelay)
 			}
 
-		override fun scheduleAtFixedRate(task: Runnable, jPeriod: JDuration) =
-			scheduleAtFixedRate(task, instant(), jPeriod)
+		override fun scheduleAtFixedRate(task: Runnable, jPeriod: JDuration) = scheduleAtFixedRate(task, instant(), jPeriod)
 
 		override fun scheduleWithFixedDelay(task: Runnable, jDelay: JDuration) =
 			scheduleWithFixedDelay(task, instant(), jDelay)

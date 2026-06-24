@@ -32,7 +32,8 @@ import org.springframework.context.annotation.Bean
 @AutoConfiguration
 class ElaastixHibernateAutoConfiguration {
 	@Bean
-	fun jsonFormatMapperCustomizer(json: Json): HibernatePropertiesCustomizer = {
-		it[AvailableSettings.JSON_FORMAT_MAPPER] = HibernateKotlinxJsonMapper(json)
-	}
+	fun jsonFormatMapperCustomizer(json: Json): HibernatePropertiesCustomizer =
+		{
+			it[AvailableSettings.JSON_FORMAT_MAPPER] = HibernateKotlinxJsonMapper(json)
+		}
 }
