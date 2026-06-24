@@ -41,10 +41,8 @@ complexity:
 
 ktlint:
   code_style: intellij_idea
-  Indentation:
-    indentStyle: tab
+  indentStyle: tab
   FunctionSignature:  # Detekt overrides this with `default` instead of the (better) default of Ktlint.
-    active: false  # https://github.com/detekt/detekt/issues/9295 -- remove on 2.0.0-alpha.5+
     functionBodyExpressionWrapping: multiline
   ValueParameterComment:
     active: false  # Annoying when adding comments after annotations. Wouldn't pass code review anyway.

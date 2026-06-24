@@ -46,8 +46,7 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	 * @return The question statement, and available choices for closed questions.
 	 */
 	@PlayerQuery("org.elaastix.response.getQuestion")
-	fun getQuestion(@RequestParam id: Uuid) =
-		responseActivityService.findQuestionStatement(id).orElseNotFound()
+	fun getQuestion(@RequestParam id: Uuid) = responseActivityService.findQuestionStatement(id).orElseNotFound()
 
 	/**
 	 * Submit an answer to a question.

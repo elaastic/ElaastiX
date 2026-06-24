@@ -54,10 +54,8 @@ class ElaastixRepositoryImpl<T : AbstractEntity>(
 		return clazz?.let { entityManager.getReference(it, id) }
 	}
 
-	override fun <U : T> getTypedReferenceById(clazz: Class<U>, id: Uuid): U =
-		entityManager.getReference(clazz, id)
+	override fun <U : T> getTypedReferenceById(clazz: Class<U>, id: Uuid): U = entityManager.getReference(clazz, id)
 
 	@Transactional
-	override fun findByIdAndUpdate(id: Uuid, block: T.() -> Unit): T? =
-		findByIdOrNull(id)?.let { update(it.apply(block)) }
+	override fun findByIdAndUpdate(id: Uuid, block: T.() -> Unit): T? = findByIdOrNull(id)?.let { update(it.apply(block)) }
 }

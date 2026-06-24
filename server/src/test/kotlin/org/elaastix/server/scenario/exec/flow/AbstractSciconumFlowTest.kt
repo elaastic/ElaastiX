@@ -117,14 +117,12 @@ abstract class AbstractSciconumFlowTest : SciconumIntegrationTest() {
 		/**
 		 * Prepares an assertion object with the sessions passed in arguments.
 		 */
-		fun assertThatSpecificSessions(vararg sessions: SciconumLearnerSessionEntity) =
-			SessionsAssert(sessions)
+		fun assertThatSpecificSessions(vararg sessions: SciconumLearnerSessionEntity) = SessionsAssert(sessions)
 
 		/**
 		 * Prepares an assertion object with the sessions passed in arguments.
 		 */
-		fun assertThatSpecificSession(session: SciconumLearnerSessionEntity) =
-			SessionAssert(session)
+		fun assertThatSpecificSession(session: SciconumLearnerSessionEntity) = SessionAssert(session)
 
 		/**
 		 * Prepares an assertion object with the global session, initial learner session, as well as sessions
@@ -132,22 +130,23 @@ abstract class AbstractSciconumFlowTest : SciconumIntegrationTest() {
 		 *
 		 * Initially created sessions **must not** be passed to this function.
 		 */
-		fun assertThatAllSessions(vararg sessions: SciconumLearnerSessionEntity) =
-			AllSessionsAssert(sessions)
+		fun assertThatAllSessions(vararg sessions: SciconumLearnerSessionEntity) = AllSessionsAssert(sessions)
 
 		/** Assertions on session. */
 		inner class SessionAssert(learnerSession: SciconumLearnerSessionEntity) {
 			private val learnerSession = tx.execute { learnerSession.freshCopy() }
 
 			/** Asserts that the session is in the specified [phase]. */
-			fun isInPhase(phase: SciconumScenarioExecutionPhase) = also {
-				assertThat(learnerSession.phase).isEqualTo(phase)
-			}
+			fun isInPhase(phase: SciconumScenarioExecutionPhase) =
+				also {
+					assertThat(learnerSession.phase).isEqualTo(phase)
+				}
 
 			/** Asserts that the session is in the specified [phase]. */
-			fun isNotInPhase(phase: SciconumScenarioExecutionPhase) = also {
-				assertThat(learnerSession.phase).isNotEqualTo(phase)
-			}
+			fun isNotInPhase(phase: SciconumScenarioExecutionPhase) =
+				also {
+					assertThat(learnerSession.phase).isNotEqualTo(phase)
+				}
 		}
 
 		/** Assertions on sessions. */
@@ -159,18 +158,20 @@ abstract class AbstractSciconumFlowTest : SciconumIntegrationTest() {
 			}
 
 			/** Asserts that all sessions are in the specified [phase]. */
-			fun areInPhase(phase: SciconumScenarioExecutionPhase) = also {
-				for (session in learnerSessions) {
-					assertThat(session.phase).isEqualTo(phase)
+			fun areInPhase(phase: SciconumScenarioExecutionPhase) =
+				also {
+					for (session in learnerSessions) {
+						assertThat(session.phase).isEqualTo(phase)
+					}
 				}
-			}
 
 			/** Asserts that all sessions are in the specified [phase]. */
-			fun areNotInPhase(phase: SciconumScenarioExecutionPhase) = also {
-				for (session in learnerSessions) {
-					assertThat(session.phase).isNotEqualTo(phase)
+			fun areNotInPhase(phase: SciconumScenarioExecutionPhase) =
+				also {
+					for (session in learnerSessions) {
+						assertThat(session.phase).isNotEqualTo(phase)
+					}
 				}
-			}
 		}
 
 		/** Assertions on sessions. */
@@ -179,32 +180,36 @@ abstract class AbstractSciconumFlowTest : SciconumIntegrationTest() {
 			private val learnerSessions = tx.execute { (learners.values + extraSessions).freshCopies() }
 
 			/** Asserts that all sessions are in the specified [phase]. */
-			fun areInPhase(phase: SciconumScenarioExecutionPhase) = also {
-				assertThat(scenarioSession.phase).isEqualTo(phase)
-				for (session in learnerSessions) {
-					assertThat(session.phase).isEqualTo(phase)
+			fun areInPhase(phase: SciconumScenarioExecutionPhase) =
+				also {
+					assertThat(scenarioSession.phase).isEqualTo(phase)
+					for (session in learnerSessions) {
+						assertThat(session.phase).isEqualTo(phase)
+					}
 				}
-			}
 
 			/** Asserts that all sessions are in the specified [phase]. */
-			fun areNotInPhase(phase: SciconumScenarioExecutionPhase) = also {
-				assertThat(scenarioSession.phase).isNotEqualTo(phase)
-				for (session in learnerSessions) {
-					assertThat(session.phase).isNotEqualTo(phase)
+			fun areNotInPhase(phase: SciconumScenarioExecutionPhase) =
+				also {
+					assertThat(scenarioSession.phase).isNotEqualTo(phase)
+					for (session in learnerSessions) {
+						assertThat(session.phase).isNotEqualTo(phase)
+					}
 				}
-			}
 
 			/** Asserts that the global session is at the [question]-th question. */
-			fun areAtNthQuestion(question: UInt) = also {
-				require(question != 0u) // When we say it's "nth", it's ACTUALLY nth and not actually 0-indexed :)
-				assertThat(scenarioSession.currentRound).isEqualTo(question - 1u)
-			}
+			fun areAtNthQuestion(question: UInt) =
+				also {
+					require(question != 0u) // When we say it's "nth", it's ACTUALLY nth and not actually 0-indexed :)
+					assertThat(scenarioSession.currentRound).isEqualTo(question - 1u)
+				}
 
 			/** Asserts that the global session is at the [question]-th question. */
-			fun areNotAtNthQuestion(question: UInt) = also {
-				require(question != 0u) // When we say it's "nth", it's ACTUALLY nth and not actually 0-indexed :)
-				assertThat(scenarioSession.currentRound).isNotEqualTo(question - 1u)
-			}
+			fun areNotAtNthQuestion(question: UInt) =
+				also {
+					require(question != 0u) // When we say it's "nth", it's ACTUALLY nth and not actually 0-indexed :)
+					assertThat(scenarioSession.currentRound).isNotEqualTo(question - 1u)
+				}
 		}
 	}
 }
