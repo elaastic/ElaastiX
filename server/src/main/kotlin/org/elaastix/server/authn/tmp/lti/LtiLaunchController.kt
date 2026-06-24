@@ -37,6 +37,5 @@ class LtiLaunchController(private val ltiService: LtiService) {
 		ltiService.launch(data, request, response)
 
 	@PostMapping("/finalise-consent")
-	fun finalise(request: HttpServletRequest, response: HttpServletResponse) =
-		ltiService.receiveConsent(request, response)
+	fun finalise(request: HttpServletRequest, response: HttpServletResponse) = ltiService.receiveConsent(request, response)
 }

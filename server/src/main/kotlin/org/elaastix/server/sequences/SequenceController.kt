@@ -46,8 +46,7 @@ class SequenceController(private val sequenceService: SequenceService) {
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	fun createSequence(@RequestBody body: CreateSequenceDto): SequenceDto =
-		sequenceService.createSequence(body)
+	fun createSequence(@RequestBody body: CreateSequenceDto): SequenceDto = sequenceService.createSequence(body)
 
 	/**
 	 * Get all sequences.
@@ -55,8 +54,7 @@ class SequenceController(private val sequenceService: SequenceService) {
 	 * @see [SequenceService.getAllSequences]
 	 */
 	@GetMapping
-	fun getAllSequences(pageable: Pageable): PagedModel<SequenceDto> =
-		sequenceService.getAllSequences(pageable)
+	fun getAllSequences(pageable: Pageable): PagedModel<SequenceDto> = sequenceService.getAllSequences(pageable)
 
 	/**
 	 * Get a sequence.
@@ -64,8 +62,7 @@ class SequenceController(private val sequenceService: SequenceService) {
 	 * @see [SequenceService.getSequence]
 	 */
 	@GetMapping("{id}")
-	fun getSequence(@PathVariable id: Uuid): SequenceDto =
-		sequenceService.getSequence(id)
+	fun getSequence(@PathVariable id: Uuid): SequenceDto = sequenceService.getSequence(id)
 
 	/**
 	 * Update a sequence.
@@ -83,6 +80,5 @@ class SequenceController(private val sequenceService: SequenceService) {
 	 */
 	@DeleteMapping("{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	fun deleteSequence(@PathVariable id: Uuid) =
-		sequenceService.deleteSequence(id)
+	fun deleteSequence(@PathVariable id: Uuid) = sequenceService.deleteSequence(id)
 }

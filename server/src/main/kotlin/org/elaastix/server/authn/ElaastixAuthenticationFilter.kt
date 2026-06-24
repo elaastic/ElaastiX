@@ -72,14 +72,12 @@ class ElaastixAuthenticationFilter(
 		private val authenticationConverter: ElaastixAuthenticationConverter,
 	) {
 		/** The factory method. */
-		fun createFilter(
-			requestMatcher: RequestMatcher,
-			authnManager: AuthenticationManager,
-		): ElaastixAuthenticationFilter = ElaastixAuthenticationFilter(
-			requestMatcher,
-			authnManager,
-			authenticationConverter,
-			handlerExceptionResolver,
-		)
+		fun createFilter(requestMatcher: RequestMatcher, authnManager: AuthenticationManager): ElaastixAuthenticationFilter =
+			ElaastixAuthenticationFilter(
+				requestMatcher,
+				authnManager,
+				authenticationConverter,
+				handlerExceptionResolver,
+			)
 	}
 }

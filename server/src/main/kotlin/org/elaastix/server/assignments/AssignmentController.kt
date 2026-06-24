@@ -46,8 +46,7 @@ class AssignmentController(private val assignmentService: AssignmentService) {
 	 */
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	fun createAssignment(@RequestBody body: CreateAssignmentDto): AssignmentDto =
-		assignmentService.createAssignment(body)
+	fun createAssignment(@RequestBody body: CreateAssignmentDto): AssignmentDto = assignmentService.createAssignment(body)
 
 	/**
 	 * Get all assignments.
@@ -55,8 +54,7 @@ class AssignmentController(private val assignmentService: AssignmentService) {
 	 * @see [AssignmentService.getAllAssignments]
 	 */
 	@GetMapping
-	fun getAllAssignments(pageable: Pageable): PagedModel<AssignmentDto> =
-		assignmentService.getAllAssignments(pageable)
+	fun getAllAssignments(pageable: Pageable): PagedModel<AssignmentDto> = assignmentService.getAllAssignments(pageable)
 
 	/**
 	 * Get an assignment.
@@ -64,8 +62,7 @@ class AssignmentController(private val assignmentService: AssignmentService) {
 	 * @see [AssignmentService.getAssignment]
 	 */
 	@GetMapping("{id}")
-	fun getAssignment(@PathVariable id: Uuid): AssignmentDto =
-		assignmentService.getAssignment(id)
+	fun getAssignment(@PathVariable id: Uuid): AssignmentDto = assignmentService.getAssignment(id)
 
 	/**
 	 * Update an assignment.
@@ -83,6 +80,5 @@ class AssignmentController(private val assignmentService: AssignmentService) {
 	 */
 	@DeleteMapping("{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	fun deleteAssignment(@PathVariable id: Uuid) =
-		assignmentService.deleteAssignment(id)
+	fun deleteAssignment(@PathVariable id: Uuid) = assignmentService.deleteAssignment(id)
 }
