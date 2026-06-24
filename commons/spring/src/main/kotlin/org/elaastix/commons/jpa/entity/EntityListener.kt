@@ -20,11 +20,13 @@
 package org.elaastix.commons.jpa.entity
 
 import jakarta.persistence.PrePersist
+import jakarta.persistence.PreUpdate
 import org.elaastix.commons.platform.JpaImmutable
 import kotlin.time.Clock
 
 internal class EntityListener(private val clock: Clock) {
 	@PrePersist
+	@PreUpdate
 	fun prePersist(entity: AbstractEntity) {
 		@OptIn(JpaImmutable::class)
 		entity.updatedAt = clock.now()

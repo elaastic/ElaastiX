@@ -72,3 +72,6 @@ fun List<AbstractEntity>.toUuidList(): List<Uuid> {
 	for (entity in this) list.add(entity.id)
 	return list
 }
+
+/** Transforms a collection of [AbstractEntity] to a map keyed by their ID. */
+fun Collection<AbstractEntity>.toMap() = associate { it.id to it }

@@ -42,13 +42,13 @@ class OpenResponseEntity(
 	selfExplanation: FormattedContent?,
 	confidenceDegree: UInt?,
 	amendedResponse: OpenResponseEntity? = null,
-	absoluteGrade: ScalarGrade? = null,
+	scalarGrade: ScalarGrade? = null,
 ) : ResponseEntity<OpenResponseEntity, OpenQuestionEntity>(
 	question,
 	selfExplanation,
 	confidenceDegree,
 	amendedResponse,
-	absoluteGrade,
+	scalarGrade,
 ) {
 	companion object {
 		/** Discriminator used within the database. Unique amongst other [ResponseEntity] subclasses. */

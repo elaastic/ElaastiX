@@ -87,3 +87,10 @@ fun String.truncate(max: UInt): String {
 		else -> "${this.substring(0, max.minus(2u).toInt())}…"
 	}
 }
+
+/**
+ * Returns the string representation of the double with a fixed number of decimals.
+ * The value is rounded down towards zero if needed.
+ */
+fun Double.toFixed(decimalPlaces: UInt): String =
+	"${toLong()}${(this % 1).toString().padEnd(1 + decimalPlaces.toInt(), '0').substring(1, 1 + decimalPlaces.toInt())}"

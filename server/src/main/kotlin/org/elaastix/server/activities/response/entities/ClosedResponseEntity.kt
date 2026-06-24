@@ -21,6 +21,7 @@ package org.elaastix.server.activities.response.entities
 
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
+import org.elaastix.mm.activity.AbsoluteGradable
 import org.elaastix.mm.activity.ScalarGrade
 import org.elaastix.mm.content.FormattedContent
 import org.elaastix.server.activities.response.ClosedAnswer
@@ -43,14 +44,17 @@ class ClosedResponseEntity(
 	selfExplanation: FormattedContent?,
 	confidenceDegree: UInt?,
 	amendedResponse: ClosedResponseEntity? = null,
-	absoluteGrade: ScalarGrade? = null,
+	scalarGrade: ScalarGrade? = null,
+
+	override var absoluteGrade: AbsoluteGradable.AbsoluteGrade? = null,
 ) : ResponseEntity<ClosedResponseEntity, ClosedQuestionEntity>(
 	question,
 	selfExplanation,
 	confidenceDegree,
 	amendedResponse,
-	absoluteGrade,
-) {
+	scalarGrade,
+),
+	AbsoluteGradable {
 	companion object {
 		/** Discriminator used within the database. Unique amongst other [ResponseEntity] subclasses. */
 		const val DISCRIMINATOR: String = "C"
