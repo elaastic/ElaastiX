@@ -29,4 +29,7 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 @SerialName("Plain")
-data class PlainText(val content: String) : FormattedText
+data class PlainText(val content: String) : FormattedText {
+	override fun isEmpty() = content.isEmpty()
+	override fun isBlank() = content.isBlank()
+}

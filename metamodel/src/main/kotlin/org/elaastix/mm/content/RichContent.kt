@@ -36,4 +36,28 @@ import kotlinx.serialization.Serializable
  * @see FormattedContent
  */
 @Serializable
-sealed interface RichContent
+sealed interface RichContent {
+	/** Returns whether the content is empty. */
+	fun isEmpty(): Boolean
+
+	/** Returns whether the content is blank (i.e. either no text, or only whitespace). */
+	fun isBlank(): Boolean
+
+	/** Returns whether the content is not empty. */
+	fun isNotEmpty(): Boolean = !isEmpty()
+
+	/** Returns whether the content is not blank (i.e. it contains text other than whitespace). */
+	fun isNotBlank(): Boolean = !isBlank()
+}
+
+/**
+ * Checks whether a content is null or blank (i.e. either no text, or only whitespace).
+ * @see [RichContent.isBlank]
+ */
+fun RichContent?.isNullOrBlank() = this?.isBlank() != false
+
+/**
+ * Checks whether a content is null or empty.
+ * @see [RichContent.isEmpty]
+ */
+fun RichContent?.isNullOrEmpty() = this?.isEmpty() != false

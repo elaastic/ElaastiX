@@ -52,6 +52,7 @@ kotlin {
 		freeCompilerArgs.addAll(
 			"-Xjsr305=strict",
 			"-Xannotation-default-target=param-property",
+			"-Xcontext-parameters", // Stable in Kotlin 2.4, but we stuck in 2.3 for now
 		)
 		jvmTarget = JvmTarget.valueOf("JVM_$jdkVersion")
 		languageVersion = kotlinVersion

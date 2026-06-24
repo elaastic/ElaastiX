@@ -94,14 +94,15 @@ class BuiltinCustomisers(private val json: Json) {
 	 * See the relevant [documentation](https://kotlinlang.org/docs/inline-classes.html#mangling).
 	 */
 	@Bean
-	fun valueClassInterop(): DtoCustomiser = { schema, _ ->
-		schema.apply {
-			properties = properties?.mapKeys { (k, _) ->
-				val idx = k.indexOf('-')
-				if (idx > 0) k.substring(0, idx) else k
+	fun valueClassInterop(): DtoCustomiser =
+		{ schema, _ ->
+			schema.apply {
+				properties = properties?.mapKeys { (k, _) ->
+					val idx = k.indexOf('-')
+					if (idx > 0) k.substring(0, idx) else k
+				}
 			}
 		}
-	}
 
 	/**
 	 * [DtoCustomiser] dealing with Kotlinx Serialization closed polymorphism.
@@ -109,32 +110,33 @@ class BuiltinCustomisers(private val json: Json) {
 	 * Since these cannot be detected by simple reflection, we need to detect it ourselves.
 	 */
 	@Bean
-	fun kotlinxClosedPolymorphism(): DtoCustomiser = { schema, clazz ->
-		when {
-			clazz.isClosedPolymorphicSerdeRoot() -> {
-				val possibleTypes = clazz.sealedSubclasses
-					.filter { !it.isAbstract }
-					.map { it.serdeDiscriminator }
+	fun kotlinxClosedPolymorphism(): DtoCustomiser =
+		{ schema, clazz ->
+			when {
+				clazz.isClosedPolymorphicSerdeRoot() -> {
+					val possibleTypes = clazz.sealedSubclasses
+						.filter { !it.isAbstract }
+						.map { it.serdeDiscriminator }
 
-				schema.addProperty(
-					json.configuration.classDiscriminator,
-					StringSchema().apply {
-						enum = possibleTypes
-						description = "Discriminator field of the union type"
-					},
-				)
+					schema.addProperty(
+						json.configuration.classDiscriminator,
+						StringSchema().apply {
+							enum = possibleTypes
+							description = "Discriminator field of the union type"
+						},
+					)
+				}
+
+				clazz.isMemberOfClosedPolymorphicSerde() -> {
+					schema.addProperty(
+						json.configuration.classDiscriminator,
+						StringSchema().apply { setConst(clazz.serdeDiscriminator) },
+					)
+				}
+
+				else -> schema
 			}
-
-			clazz.isMemberOfClosedPolymorphicSerde() -> {
-				schema.addProperty(
-					json.configuration.classDiscriminator,
-					StringSchema().apply { setConst(clazz.serdeDiscriminator) },
-				)
-			}
-
-			else -> schema
 		}
-	}
 
 	private fun KClass<*>.isClosedPolymorphicSerdeRoot(): Boolean = isSealed && hasAnnotation<Serializable>()
 

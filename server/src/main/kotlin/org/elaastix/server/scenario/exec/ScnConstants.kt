@@ -34,25 +34,34 @@ interface ScenarioConstants {
 }
 
 @SciconumTechDebt
-object Control : ScenarioConstants {
-	override val ANSWER_PHASE_DURATION = 2.minutes
-	override val PEER_PHASE_DURATION get() = error("Peer phase is not a thing in control!!")
-	override val REVISE_PHASE_DURATION get() = error("Revise phase is not a thing in control!!")
-	override val FEEDBACK_PHASE_DURATION = 0.5.minutes
-}
+object ScnConstants {
+	const val MIN_CORRECT_SHARE = 0.35
+	const val MAX_CORRECT_SHARE = 0.80
+	const val ASSESSED_COUNT = 2u
+	const val CHATTERS_COUNT = 3u
 
-@SciconumTechDebt
-object Assessment : ScenarioConstants {
-	override val ANSWER_PHASE_DURATION = 2.minutes
-	override val PEER_PHASE_DURATION = 3.5.minutes
-	override val REVISE_PHASE_DURATION = 0.5.minutes
-	override val FEEDBACK_PHASE_DURATION = 1.5.minutes
-}
+	const val MIN_CONFIDENCE = 0u
+	const val MAX_CONFIDENCE = 3u
+	const val HIGH_CONFIDENCE_THRESHOLD_INCL = 2u
 
-@SciconumTechDebt
-object Debate : ScenarioConstants {
-	override val ANSWER_PHASE_DURATION = 1.minutes
-	override val PEER_PHASE_DURATION = 5.5.minutes
-	override val REVISE_PHASE_DURATION = 0.5.minutes
-	override val FEEDBACK_PHASE_DURATION = 0.5.minutes
+	object Control : ScenarioConstants {
+		override val ANSWER_PHASE_DURATION = 2.minutes
+		override val PEER_PHASE_DURATION get() = error("Peer phase is not a thing in control!!")
+		override val REVISE_PHASE_DURATION get() = error("Revise phase is not a thing in control!!")
+		override val FEEDBACK_PHASE_DURATION = 0.5.minutes
+	}
+
+	object Assessment : ScenarioConstants {
+		override val ANSWER_PHASE_DURATION = 2.minutes
+		override val PEER_PHASE_DURATION = 3.5.minutes
+		override val REVISE_PHASE_DURATION = 0.5.minutes
+		override val FEEDBACK_PHASE_DURATION = 1.5.minutes
+	}
+
+	object Debate : ScenarioConstants {
+		override val ANSWER_PHASE_DURATION = 1.minutes
+		override val PEER_PHASE_DURATION = 5.5.minutes
+		override val REVISE_PHASE_DURATION = 0.5.minutes
+		override val FEEDBACK_PHASE_DURATION = 0.5.minutes
+	}
 }

@@ -22,6 +22,7 @@ package org.elaastix.server.activities.response.entities
 import jakarta.persistence.DiscriminatorValue
 import jakarta.persistence.Entity
 import jakarta.persistence.PrePersist
+import jakarta.persistence.PreUpdate
 import org.elaastix.mm.content.FormattedText
 import org.elaastix.mm.content.RichContent
 import org.elaastix.server.activities.response.ClosedAnswer
@@ -64,6 +65,7 @@ class ClosedQuestionEntity(
 	}
 
 	@PrePersist
+	@PreUpdate
 	internal fun checkInvariants() {
 		when (val e = expectedAnswer) {
 			is ClosedAnswer.Single -> {

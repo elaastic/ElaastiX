@@ -25,7 +25,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.validation.constraints.NotNull
 import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.activities.response.entities.ResponseEntity
+import org.elaastix.server.activities.response.entities.ClosedResponseEntity
 
 @Entity
 @SciconumTechDebt
@@ -38,5 +38,5 @@ class SciconumJudgePeeringEntity(
 	var sessionRound: UInt,
 
 	@ManyToMany
-	var responses: MutableSet<ResponseEntity<*, *>>,
+	var responses: MutableSet<ClosedResponseEntity>,
 ) : AbstractEntity()

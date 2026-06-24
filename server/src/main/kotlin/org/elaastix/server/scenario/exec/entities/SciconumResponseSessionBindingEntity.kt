@@ -17,25 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.platform.debt
+package org.elaastix.server.scenario.exec.entities
 
-/**
- * Annotation flagging code that must not be preserved beyond the SCICONUM experiments.
- *
- * @property explainer An optional explanation regarding why the code is tech debt and its relevance.
- */
-@Suppress("unused") // Used by humans ;)
-@RequiresOptIn("This is a temporary workaround or implementation introduced for shipping SCICONUM deliverables.")
-@Target(
-	AnnotationTarget.CLASS,
-	AnnotationTarget.PROPERTY,
-	AnnotationTarget.FIELD,
-	AnnotationTarget.LOCAL_VARIABLE,
-	AnnotationTarget.CONSTRUCTOR,
-	AnnotationTarget.FUNCTION,
-	AnnotationTarget.PROPERTY_GETTER,
-	AnnotationTarget.PROPERTY_SETTER,
-	AnnotationTarget.TYPEALIAS,
-)
-@Retention(AnnotationRetention.BINARY)
-annotation class SciconumTechDebt(val explainer: String = "")
+import jakarta.persistence.Entity
+import jakarta.persistence.ManyToOne
+import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.server.activities.response.entities.ResponseEntity
+
+@Entity
+@SciconumTechDebt
+class SciconumResponseSessionBindingEntity(
+	@ManyToOne
+	val response: ResponseEntity<*, *>,
+
+	@ManyToOne
+	val scenarioSession: SciconumScenarioSessionEntity,
+
+	val round: UInt,
+) : AbstractEntity()

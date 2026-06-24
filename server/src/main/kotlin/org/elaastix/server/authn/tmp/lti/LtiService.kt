@@ -77,11 +77,7 @@ class LtiService(
 	}
 
 	@Transactional
-	fun launch(
-		dto: LtiLaunchDataDto,
-		request: HttpServletRequest,
-		response: HttpServletResponse,
-	): ResponseEntity<Unit> {
+	fun launch(dto: LtiLaunchDataDto, request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<Unit> {
 		validateOAuthRequest(request)
 
 		return when (val user = lmsUserRepository.findByLtiUserId(dto.user_id)) {
@@ -105,10 +101,7 @@ class LtiService(
 	}
 
 	@Transactional
-	fun receiveConsent(
-		request: HttpServletRequest,
-		response: HttpServletResponse,
-	): ResponseEntity<Unit> {
+	fun receiveConsent(request: HttpServletRequest, response: HttpServletResponse): ResponseEntity<Unit> {
 		val cookie = request.cookies.find { it.name == LTI_COOKIE }
 			?: throw BadRequestException()
 
@@ -129,11 +122,7 @@ class LtiService(
 		return finalise(dto, user, response)
 	}
 
-	private fun finalise(
-		dto: LtiLaunchDataDto,
-		user: UserEntity,
-		response: HttpServletResponse,
-	): ResponseEntity<Unit> {
+	private fun finalise(dto: LtiLaunchDataDto, user: UserEntity, response: HttpServletResponse): ResponseEntity<Unit> {
 		response.addCookie(uuidAuthnCookieService.createCookie(user.id))
 		assignmentParticipantsService.addParticipantToAssignmentById(
 			Uuid.fromBase36(dto.resource_link_id),

@@ -17,25 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.platform.debt
+package org.elaastix.commons
 
 /**
- * Annotation flagging code that must not be preserved beyond the SCICONUM experiments.
- *
- * @property explainer An optional explanation regarding why the code is tech debt and its relevance.
+ * A specialised helper counting the number of times objects have been seen.
  */
-@Suppress("unused") // Used by humans ;)
-@RequiresOptIn("This is a temporary workaround or implementation introduced for shipping SCICONUM deliverables.")
-@Target(
-	AnnotationTarget.CLASS,
-	AnnotationTarget.PROPERTY,
-	AnnotationTarget.FIELD,
-	AnnotationTarget.LOCAL_VARIABLE,
-	AnnotationTarget.CONSTRUCTOR,
-	AnnotationTarget.FUNCTION,
-	AnnotationTarget.PROPERTY_GETTER,
-	AnnotationTarget.PROPERTY_SETTER,
-	AnnotationTarget.TYPEALIAS,
-)
-@Retention(AnnotationRetention.BINARY)
-annotation class SciconumTechDebt(val explainer: String = "")
+@JvmInline
+value class Counter<T> private constructor(private val map: MutableMap<T, UInt>) {
+	constructor() : this(mutableMapOf())
+
+	/**
+	 * Gets the counter's value for a given key.
+	 */
+	fun getValue(key: T) = map[key] ?: 0u
+
+	/**
+	 * Increments the counter for the given key.
+	 */
+	fun increment(key: T) = map.compute(key) { _, v -> v?.let { it + 1u } ?: 1u }
+}

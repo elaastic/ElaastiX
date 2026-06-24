@@ -40,8 +40,7 @@ class ElaastixAuthenticationConverter @SciconumTechDebt constructor(
 	}
 
 	@OptIn(SciconumTechDebt::class)
-	override fun convert(request: HttpServletRequest) =
-		convertHeaderAuthn(request) ?: convertCookieAuthn(request)
+	override fun convert(request: HttpServletRequest) = convertHeaderAuthn(request) ?: convertCookieAuthn(request)
 
 	@Suppress("NestedBlockDepth")
 	private fun convertHeaderAuthn(request: HttpServletRequest) =

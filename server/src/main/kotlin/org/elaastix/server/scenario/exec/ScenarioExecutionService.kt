@@ -50,11 +50,13 @@ import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase as Phase
 @SciconumTechDebt
 @Suppress("TooManyFunctions")
 class ScenarioExecutionService(
+	private val clock: Clock,
 	private val taskScheduler: TaskScheduler,
 	private val transactionTemplate: TransactionTemplate,
 	private val sciconumScenarioSessionRepository: SciconumScenarioSessionRepository,
 	private val sciconumLearnerSessionRepository: SciconumLearnerSessionRepository,
-	private val clock: Clock,
+	private val gradingService: ScenarioGradingService,
+	private val peeringService: ScenarioPeeringService,
 ) {
 	companion object {
 		private val LOGGER = LogFactory.getLog(ScenarioExecutionService::class.java)
@@ -192,40 +194,44 @@ class ScenarioExecutionService(
 		}
 
 		val constants = when (scenario) {
-			SciconumScenario.CONTROL -> Control
-			SciconumScenario.PEER_ASSESSMENT -> Assessment
-			SciconumScenario.PEER_DEBATE -> Debate
+			SciconumScenario.CONTROL -> ScnConstants.Control
+			SciconumScenario.PEER_ASSESSMENT -> ScnConstants.Assessment
+			SciconumScenario.PEER_DEBATE -> ScnConstants.Debate
 		}
 
 		return when (currentPhase) {
-			Phase.PENDING ->
-				updateScenarioSession(session, Phase.QUESTION, constants.ANSWER_PHASE_DURATION)
+			Phase.PENDING -> updateSession(session, Phase.QUESTION, constants.ANSWER_PHASE_DURATION)
 
-			Phase.QUESTION ->
+			Phase.QUESTION -> {
+				val responses = gradingService.gradeResponsesOfSession(session)
+
 				when (scenario) {
 					SciconumScenario.CONTROL ->
-						updateScenarioSession(session, Phase.FEEDBACK, constants.FEEDBACK_PHASE_DURATION)
+						updateSession(session, Phase.FEEDBACK, constants.FEEDBACK_PHASE_DURATION)
 
 					SciconumScenario.PEER_ASSESSMENT ->
-						startPeerAssessmentPhase(session)
+						peeringService.assignPeerResponses(session, responses)
+							?.let { updateSession(session, Phase.PEER, ScnConstants.Assessment.PEER_PHASE_DURATION) }
+							?: updateSession(session, Phase.FEEDBACK, ScnConstants.Control.FEEDBACK_PHASE_DURATION)
 
 					SciconumScenario.PEER_DEBATE ->
-						startPeerDebatePhase(session)
+						peeringService.assignPeerChatters(session, responses)
+							?.let { updateSession(session, Phase.PEER, ScnConstants.Debate.PEER_PHASE_DURATION) }
+							?: updateSession(session, Phase.FEEDBACK, ScnConstants.Control.FEEDBACK_PHASE_DURATION)
 				}
+			}
 
-			Phase.PEER ->
-				updateScenarioSession(session, Phase.REVISE, constants.REVISE_PHASE_DURATION)
+			Phase.PEER -> updateSession(session, Phase.REVISE, constants.REVISE_PHASE_DURATION)
 
-			Phase.REVISE ->
-				updateScenarioSession(session, Phase.FEEDBACK, constants.FEEDBACK_PHASE_DURATION)
+			Phase.REVISE -> updateSession(session, Phase.FEEDBACK, constants.FEEDBACK_PHASE_DURATION)
 
 			Phase.FEEDBACK -> {
 				when (++session.currentRound) {
 					session.sequence.sciconumQuestions.size.toUInt() ->
-						updateScenarioSession(session, Phase.END, null)
+						updateSession(session, Phase.END, null)
 
 					else ->
-						updateScenarioSession(session, Phase.QUESTION, constants.ANSWER_PHASE_DURATION)
+						updateSession(session, Phase.QUESTION, constants.ANSWER_PHASE_DURATION)
 				}
 			}
 
@@ -233,21 +239,7 @@ class ScenarioExecutionService(
 		}
 	}
 
-	private fun startPeerAssessmentPhase(session: SciconumScenarioSessionEntity): Instant? {
-		// TODO: Assign answers
-		return updateScenarioSession(session, Phase.PEER, Assessment.PEER_PHASE_DURATION)
-	}
-
-	private fun startPeerDebatePhase(session: SciconumScenarioSessionEntity): Instant? {
-		// TODO: Assign peers
-		return updateScenarioSession(session, Phase.PEER, Debate.PEER_PHASE_DURATION)
-	}
-
-	private fun updateScenarioSession(
-		session: SciconumScenarioSessionEntity,
-		phase: Phase,
-		nextTickIn: Duration?,
-	): Instant? {
+	private fun updateSession(session: SciconumScenarioSessionEntity, phase: Phase, nextTickIn: Duration?): Instant? {
 		val nextTick = nextTickIn?.let { clock.now().plus(nextTickIn) }
 		LOGGER.trace("Transitioning session ${session.id} (${session.phase} -> $phase)")
 

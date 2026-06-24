@@ -80,8 +80,9 @@ class OpenApiCommandLineRunner(
 	@Bean
 	@Fallback
 	@ConditionalOnMissingBean(BytesEncryptor::class)
-	fun noopEncryptor(): BytesEncryptor = object : BytesEncryptor {
-		override fun encrypt(byteArray: ByteArray) = ByteArray(0)
-		override fun decrypt(encryptedByteArray: ByteArray) = ByteArray(0)
-	}
+	fun noopEncryptor(): BytesEncryptor =
+		object : BytesEncryptor {
+			override fun encrypt(byteArray: ByteArray) = ByteArray(0)
+			override fun decrypt(encryptedByteArray: ByteArray) = ByteArray(0)
+		}
 }
