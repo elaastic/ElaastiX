@@ -17,23 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec.repositories
+package org.elaastix.server.scenario.exec
 
-import org.elaastix.commons.jpa.repository.ElaastixRepository
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.scenario.exec.entities.SciconumChatPeeringEntity
-import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
-import org.springframework.data.jpa.repository.Query
-import org.springframework.stereotype.Repository
+import kotlin.time.Duration
 
-@Repository
 @SciconumTechDebt
-interface SciconumChatPeeringRepository : ElaastixRepository<SciconumChatPeeringEntity> {
-	@Query(
-		"FROM SciconumChatPeeringEntity cpe " +
-			"INNER JOIN SciconumLearnerSessionEntity lse ON lse.scenarioSession = cpe.scenarioSession " +
-			"INNER JOIN SciconumChatterEntity ce ON ce.learner = lse.learner AND ce.peering = cpe " +
-			"WHERE lse = :session AND cpe.sessionRound = lse.scenarioSession.currentRound",
-	)
-	fun findOneByLearnerSession(session: SciconumLearnerSessionEntity): SciconumChatPeeringEntity?
-}
+@Serializable
+@SerialName("org.elaastix.engine.scenario.transition")
+data class ScenarioTransitionMessage(
+	val phase: SciconumScenarioExecutionPhase,
+	val paused: Boolean,
+	val duration: Duration?,
+)

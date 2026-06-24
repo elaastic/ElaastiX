@@ -42,7 +42,6 @@ class WebSocketMessageFormatter(private val cbor: Cbor) {
 
 		// Encoding:
 		// Array(2) [ String(n) "payload name", ... payload ]
-		@OptIn(ExperimentalUnsignedTypes::class) // Signed bytes are a PITA
 		val preamble = when (serialName.length) {
 			in 0..23 -> byteArrayOf((0x80 or 0x02).toByte(), (0x60 or serialName.length).toByte())
 			in 24..255 -> byteArrayOf((0x80 or 0x02).toByte(), 0x78.toByte(), serialName.length.toByte())

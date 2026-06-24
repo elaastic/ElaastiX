@@ -27,8 +27,8 @@ import org.elaastix.commons.schedule
 import org.elaastix.commons.security.RequiresRole
 import org.elaastix.commons.security.Role
 import org.elaastix.commons.validate
+import org.elaastix.commons.ws.WebSocketEventPublisher
 import org.elaastix.server.scenario.SciconumScenario
-import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
 import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository
 import org.springframework.scheduling.TaskScheduler
@@ -39,8 +39,8 @@ import java.util.concurrent.Future
 import kotlin.time.Clock
 import kotlin.time.Duration
 import kotlin.time.DurationUnit
-import kotlin.time.Instant
 import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase as Phase
+import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity as ScenarioSessionEntity
 
 /**
  * Service implementing the execution flow of the sequences.
@@ -54,6 +54,7 @@ class ScenarioExecutionService(
 	private val transactionTemplate: TransactionTemplate,
 	private val sciconumScenarioSessionRepository: SciconumScenarioSessionRepository,
 	private val sciconumLearnerSessionRepository: SciconumLearnerSessionRepository,
+	private val webSocketEventPublisher: WebSocketEventPublisher,
 	private val clock: Clock,
 ) {
 	companion object {
@@ -83,7 +84,7 @@ class ScenarioExecutionService(
 
 					else -> {
 						LOGGER.info("Resuming execution of scenario session ${session.id}")
-						scheduleSessionTick(session, it)
+						session.scheduleTick()
 					}
 				}
 			}
@@ -95,7 +96,7 @@ class ScenarioExecutionService(
 	fun startSequenceScenarioSessionById(scenarioSessionId: Uuid) {
 		val session = sciconumScenarioSessionRepository.findById(scenarioSessionId).orElseNotFound()
 		validate(session.phase == Phase.PENDING) { "The session is already in progress." }
-		ExecutionTask(session.id).run()
+		ExecutionTickTask(session.id).run()
 	}
 
 	@Transactional
@@ -108,9 +109,8 @@ class ScenarioExecutionService(
 		validate(session.pausedAt == null) { "The session has already been paused." }
 
 		session.pausedAt = clock.now()
-		descheduleSessionTick(session)
-
-		// TODO: WS event
+		session.dispatchTransition()
+		session.deschedule()
 	}
 
 	@Transactional
@@ -128,10 +128,10 @@ class ScenarioExecutionService(
 		session.nextPhaseAt?.let {
 			val nextTick = it + suspendedFor
 			session.nextPhaseAt = nextTick
-			scheduleSessionTick(session, nextTick)
 		} ?: LOGGER.warn("Unpaused session ${session.id}, but it didn't have a next scheduled tick.")
 
-		// TODO: WS event
+		session.dispatchTransition()
+		session.scheduleTick()
 	}
 
 	@Transactional
@@ -142,7 +142,6 @@ class ScenarioExecutionService(
 		validate(session.phase != Phase.PENDING) { "The session has not started." }
 
 		// TODO: delete all produced content
-		descheduleSessionTick(session)
 		session.apply {
 			phase = Phase.PENDING
 			pausedAt = null
@@ -150,32 +149,12 @@ class ScenarioExecutionService(
 			currentRound = 0u
 		}
 
-		// TODO: WS event
-	}
-
-	private fun scheduleSessionTick(session: SciconumScenarioSessionEntity, nextTick: Instant) =
-		scheduleSessionTick(ExecutionTask(session.id), nextTick)
-
-	private fun scheduleSessionTick(task: ExecutionTask, nextTick: Instant) {
-		if (LOGGER.isDebugEnabled) {
-			val now = clock.now()
-			val delta = (nextTick - now).toInt(DurationUnit.SECONDS)
-			LOGGER.debug("Scheduling next tick of session ${task.scenarioSessionId} at $nextTick (in $delta seconds)")
-		}
-
-		val future = taskScheduler.schedule(task, nextTick)
-		sessionFutureMap.put(task.scenarioSessionId, future)?.cancel(true)
-	}
-
-	private fun descheduleSessionTick(session: SciconumScenarioSessionEntity) {
-		sessionFutureMap.remove(session.id)?.let {
-			LOGGER.debug("De-scheduling next tick of session ${session.id}")
-			it.cancel(true)
-		}
+		session.dispatchTransition()
+		session.scheduleTick()
 	}
 
 	@Suppress("CyclomaticComplexMethod") // The logic is just a big state machine
-	private fun tickScenarioSession(session: SciconumScenarioSessionEntity): Instant? {
+	private fun tickScenarioSession(session: ScenarioSessionEntity) {
 		val currentPhase = session.phase
 		val scenario = session.sequence.sciconumScenario
 
@@ -197,7 +176,7 @@ class ScenarioExecutionService(
 			SciconumScenario.PEER_DEBATE -> Debate
 		}
 
-		return when (currentPhase) {
+		when (currentPhase) {
 			Phase.PENDING ->
 				updateScenarioSession(session, Phase.QUESTION, constants.ANSWER_PHASE_DURATION)
 
@@ -231,42 +210,62 @@ class ScenarioExecutionService(
 
 			Phase.END -> error("Ticking an ended session?!")
 		}
+
+		session.dispatchTransition()
 	}
 
-	private fun startPeerAssessmentPhase(session: SciconumScenarioSessionEntity): Instant? {
+	private fun startPeerAssessmentPhase(session: ScenarioSessionEntity) {
 		// TODO: Assign answers
-		return updateScenarioSession(session, Phase.PEER, Assessment.PEER_PHASE_DURATION)
+		updateScenarioSession(session, Phase.PEER, Assessment.PEER_PHASE_DURATION)
 	}
 
-	private fun startPeerDebatePhase(session: SciconumScenarioSessionEntity): Instant? {
+	private fun startPeerDebatePhase(session: ScenarioSessionEntity) {
 		// TODO: Assign peers
-		return updateScenarioSession(session, Phase.PEER, Debate.PEER_PHASE_DURATION)
+		updateScenarioSession(session, Phase.PEER, Debate.PEER_PHASE_DURATION)
 	}
 
-	private fun updateScenarioSession(
-		session: SciconumScenarioSessionEntity,
-		phase: Phase,
-		nextTickIn: Duration?,
-	): Instant? {
+	private fun updateScenarioSession(session: ScenarioSessionEntity, phase: Phase, nextTickIn: Duration?) {
 		val nextTick = nextTickIn?.let { clock.now().plus(nextTickIn) }
 		LOGGER.trace("Transitioning session ${session.id} (${session.phase} -> $phase)")
 
 		session.phase = phase
 		session.nextPhaseAt = nextTick
 		sciconumLearnerSessionRepository.transitionAllLearnerSessionsOfSessionTo(session, phase, nextTick)
-
-		// TODO: WS event
-
-		return nextTick
 	}
 
-	private inner class ExecutionTask(val scenarioSessionId: Uuid) : Runnable {
+	private fun ScenarioSessionEntity.dispatchTransition() {
+		val duration = nextPhaseAt?.let { it - clock.now() }
+		val message = ScenarioTransitionMessage(phase, pausedAt != null, duration)
+		webSocketEventPublisher.publishPayload(id, message)
+	}
+
+	private fun ScenarioSessionEntity.scheduleTick() = scheduleTick(ExecutionTickTask(id))
+	private fun ScenarioSessionEntity.scheduleTick(task: ExecutionTickTask) {
+		nextPhaseAt?.let {
+			if (LOGGER.isDebugEnabled) {
+				val now = clock.now()
+				val delta = (it - now).toInt(DurationUnit.SECONDS)
+				LOGGER.debug("Scheduling next tick of session ${task.scenarioSessionId} at $it (in $delta seconds)")
+			}
+
+			val future = taskScheduler.schedule(task, it)
+			sessionFutureMap.put(task.scenarioSessionId, future)?.cancel(true)
+		}
+	}
+
+	private fun ScenarioSessionEntity.deschedule() {
+		sessionFutureMap.remove(id)?.let {
+			LOGGER.debug("De-scheduling next tick of session $it")
+			it.cancel(true)
+		}
+	}
+
+	private inner class ExecutionTickTask(val scenarioSessionId: Uuid) : Runnable {
 		override fun run() {
 			transactionTemplate.execute {
 				val session = checkNotNull(sciconumScenarioSessionRepository.findByIdOrNull(scenarioSessionId))
 				tickScenarioSession(session)
-			}?.let {
-				scheduleSessionTick(this, it)
+				session.scheduleTick(this)
 			}
 		}
 	}
