@@ -29,6 +29,23 @@ import kotlin.time.Duration
 @SerialName("org.elaastix.engine.scenario.transition")
 data class ScenarioTransitionMessage(
 	val phase: SciconumScenarioExecutionPhase,
-	val paused: Boolean,
+	val state: State,
 	val duration: Duration?,
-)
+) {
+	/**
+	 * The state of the current phase.
+	 */
+	enum class State {
+		// TODO: define a mechanism for "grace period submission" before actually assigning?
+		//       the client may not be able to send the response RIGHT at the end (clock drift and all)
+		//       so there needs to be a 2-5s window where learners have a waiting screen and final responses can arrive
+		/** The phase is not started and/or busy preparing. */
+		PENDING,
+
+		/** The phase is currently running. */
+		RUNNING,
+
+		/** The phase has been paused. */
+		PAUSED,
+	}
+}
