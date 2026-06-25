@@ -27,6 +27,7 @@ import io.swagger.v3.oas.models.media.StringSchema
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
+import org.elaastix.commons.data.MaybeUpdate
 import org.elaastix.commons.data.Uuid
 import org.springdoc.core.customizers.PropertyCustomizer
 import org.springframework.context.annotation.Bean
@@ -35,6 +36,7 @@ import java.lang.reflect.Type
 import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotations
 import kotlin.reflect.full.hasAnnotation
+import kotlin.reflect.full.memberProperties
 import kotlin.reflect.full.superclasses
 import kotlin.reflect.jvm.jvmName
 
@@ -105,6 +107,21 @@ class BuiltinCustomisers(private val json: Json) {
 		}
 
 	/**
+	 * [DtoCustomiser] marking properties as required unless their type is [MaybeUpdate].
+	 */
+	@Bean
+	fun requiredProperties(): DtoCustomiser =
+		{ schema, clazz ->
+			schema.apply {
+				properties?.forEach { (k, _) ->
+					if (clazz.memberProperties.find { it.name == k }?.returnType != MaybeUpdate::class) {
+						addRequiredItem(k)
+					}
+				}
+			}
+		}
+
+	/**
 	 * [DtoCustomiser] dealing with Kotlinx Serialization closed polymorphism.
 	 *
 	 * Since these cannot be detected by simple reflection, we need to detect it ourselves.
@@ -118,7 +135,7 @@ class BuiltinCustomisers(private val json: Json) {
 						.filter { !it.isAbstract }
 						.map { it.serdeDiscriminator }
 
-					schema.addProperty(
+					schema.addRequiredProperty(
 						json.configuration.classDiscriminator,
 						StringSchema().apply {
 							enum = possibleTypes
@@ -128,7 +145,7 @@ class BuiltinCustomisers(private val json: Json) {
 				}
 
 				clazz.isMemberOfClosedPolymorphicSerde() -> {
-					schema.addProperty(
+					schema.addRequiredProperty(
 						json.configuration.classDiscriminator,
 						StringSchema().apply { setConst(clazz.serdeDiscriminator) },
 					)
@@ -145,4 +162,11 @@ class BuiltinCustomisers(private val json: Json) {
 
 	private val KClass<*>.serdeDiscriminator: String
 		get() = findAnnotations<SerialName>().firstOrNull()?.value ?: jvmName
+
+	/**
+	 * Helper to add a property that is directly marked as required.
+	 * Shortcut that avoids calling both [Schema.addProperty] and [Schema.addRequiredItem].
+	 */
+	fun Schema<*>.addRequiredProperty(key: String, property: Schema<*>): Schema<*> =
+		addProperty(key, property).addRequiredItem(key)
 }
