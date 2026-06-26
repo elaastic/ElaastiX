@@ -9,13 +9,14 @@ allowBuilds:
   vue-demi: false
 
 trustPolicyExclude:
-  - chokidar@4.0.3  # https://github.com/paulmillr/chokidar/issues/1440
-  - semver@5.7.2 || 6.3.1  # Old versions, published while attestation was a new feature
+  - chokidar@4.0.3 # https://github.com/paulmillr/chokidar/issues/1440
+  - semver@5.7.2 || 6.3.1 # Old versions, published while attestation was a new feature
 
 overrides:
-  vite: ^8
+  vite: ^7
 
 pmOnFail: error
 
 patchedDependencies:
   '@nuxt/fonts': patches/@nuxt__fonts.patch
+  temml: patches/temml.patch
