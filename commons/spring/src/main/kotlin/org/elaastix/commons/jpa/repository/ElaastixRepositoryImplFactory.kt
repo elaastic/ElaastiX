@@ -36,6 +36,5 @@ class ElaastixRepositoryImplFactory(entityManager: EntityManager) : JpaRepositor
 			entityManager,
 		)
 
-	override fun getRepositoryBaseClass(metadata: RepositoryMetadata) =
-		ElaastixRepositoryImpl::class.java
+	override fun getRepositoryBaseClass(metadata: RepositoryMetadata) = ElaastixRepositoryImpl::class.java
 }

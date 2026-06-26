@@ -17,25 +17,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-group = "org.elaastix.commons"
+package org.elaastix.commons.platform
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.spring")
-	id("conventions.test")
-}
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 
-dependencies {
-	implementation(spring.data("jpa"))
-	implementation(spring.boot("hibernate"))
-	implementation(spring.boot("autoconfigure"))
-	implementation(spring("websocket"))
-	implementation(libs.hypersistence.utils)
-	implementation(libs.springdoc)
-
-	implementation(project(":commons:core"))
-
-	testSpringBootStarter("data-jpa")
-	testSpringBootStarter("validation")
-}
+/**
+ * A "synthetic boot" occurs when the application starts exclusively to achieve a specific task and then shuts down.
+ * This annotation marks a component as excluded from these type of startups.
+ */
+@ConditionalOnProperty("elaastix.synthetic-boot", havingValue = "false", matchIfMissing = true)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.FUNCTION, AnnotationTarget.ANNOTATION_CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ExcludeFromSyntheticBoot

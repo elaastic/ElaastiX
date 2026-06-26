@@ -17,22 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec
+package org.elaastix.commons.ws
 
-import org.elaastix.commons.platform.ExcludeFromSyntheticBoot
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.springframework.boot.CommandLineRunner
-import org.springframework.stereotype.Component
+import org.elaastix.commons.data.Uuid
+import org.springframework.web.socket.WebSocketMessage
 
 /**
- * Service implementing the execution flow of the sequences.
- * Caution: it assumes there is only one instance of the app ever running (which is going to be the case for now).
+ * Event publisher that dispatches events to connected WebSocket clients.
+ *
+ * @see WebSocketSessionHolder
  */
-@Component
-@ExcludeFromSyntheticBoot
-@SciconumTechDebt
-class ScenarioExecutionRestoreRunner(private val executionService: ScenarioExecutionService) : CommandLineRunner {
-	override fun run(vararg args: String) {
-		executionService.restoreRunningScenarioSessions()
+class WebSocketEventPublisher(
+	private val sessionHolder: WebSocketSessionHolder,
+
+	@PublishedApi
+	internal val formatter: WebSocketMessageFormatter,
+) {
+	/**
+	 * Publishes a payload to all connections registered on the given broadcast scope.
+	 */
+	inline fun <reified T : Any> publishPayload(scope: Uuid, event: T) = publishMessage(scope, formatter.format(event))
+
+	/**
+	 * Publishes a WebSocket message to all connections registered on the given broadcast scope.
+	 */
+	fun publishMessage(scope: Uuid, message: WebSocketMessage<*>) {
+		sessionHolder.getSessionsInBroadcastScope(scope).forEach {
+			it.sendMessage(message)
+		}
 	}
 }

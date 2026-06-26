@@ -19,7 +19,7 @@
 
 package org.elaastix.server.core.infrastructure.seed
 
-import org.elaastix.server.core.infrastructure.ExcludeFromSyntheticBoot
+import org.elaastix.commons.platform.ExcludeFromSyntheticBoot
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass
 import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component

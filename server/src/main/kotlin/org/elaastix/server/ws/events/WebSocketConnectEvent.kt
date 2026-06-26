@@ -17,25 +17,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-group = "org.elaastix.commons"
+package org.elaastix.server.ws.events
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.spring")
-	id("conventions.test")
-}
+import org.elaastix.server.users.entities.UserEntity
+import org.springframework.context.ApplicationEvent
+import org.springframework.web.socket.WebSocketSession
 
-dependencies {
-	implementation(spring.data("jpa"))
-	implementation(spring.boot("hibernate"))
-	implementation(spring.boot("autoconfigure"))
-	implementation(spring("websocket"))
-	implementation(libs.hypersistence.utils)
-	implementation(libs.springdoc)
-
-	implementation(project(":commons:core"))
-
-	testSpringBootStarter("data-jpa")
-	testSpringBootStarter("validation")
-}
+/**
+ * Fired when a new client connects to the real-time WebSocket.
+ *
+ * @param source The object on which the event initially occurred or with which the event is associated.
+ * @property user The user associated with the connection.
+ * @property session The WebSocket session. Thread-safe.
+ */
+class WebSocketConnectEvent(source: Any, val user: UserEntity, val session: WebSocketSession) : ApplicationEvent(source)

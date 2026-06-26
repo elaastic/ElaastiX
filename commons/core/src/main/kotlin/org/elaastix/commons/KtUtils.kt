@@ -23,6 +23,8 @@ import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.require
+import kotlin.time.Clock
+import kotlin.time.Duration
 import kotlin.time.DurationUnit
 import kotlin.time.Instant
 import kotlin.time.toDuration
@@ -68,8 +70,7 @@ inline fun <T, R> Iterable<T>.mapSet(transform: (T) -> R): Set<R> {
  *
  * @see Instant.toString
  */
-fun Instant.toIsoStringSecondPrecise() =
-	minus(nanosecondsOfSecond.toDuration(DurationUnit.NANOSECONDS)).toString()
+fun Instant.toIsoStringSecondPrecise() = minus(nanosecondsOfSecond.toDuration(DurationUnit.NANOSECONDS)).toString()
 
 /**
  * Truncates the string to be of a given maximum length, if needed.
@@ -87,4 +88,18 @@ fun String.truncate(max: UInt): String {
 		this.length <= max.toInt() -> this
 		else -> "${this.substring(0, max.minus(2u).toInt())}…"
 	}
+}
+
+/**
+ * Runs the [block] and returns its execution time.
+ */
+@OptIn(ExperimentalContracts::class)
+inline fun <R> withTimeMeasurement(clock: Clock, block: () -> R): Pair<R, Duration> {
+	contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
+
+	val start = clock.now()
+	val ret = block()
+	val end = clock.now()
+
+	return Pair(ret, end - start)
 }

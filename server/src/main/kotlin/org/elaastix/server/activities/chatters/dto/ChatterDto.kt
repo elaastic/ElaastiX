@@ -17,25 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-group = "org.elaastix.commons"
+package org.elaastix.server.activities.chatters.dto
 
-plugins {
-	id("conventions.idea")
-	id("conventions.kotlin")
-	id("conventions.spring")
-	id("conventions.test")
-}
+import kotlinx.serialization.Serializable
+import org.elaastix.commons.data.Uuid
 
-dependencies {
-	implementation(spring.data("jpa"))
-	implementation(spring.boot("hibernate"))
-	implementation(spring.boot("autoconfigure"))
-	implementation(spring("websocket"))
-	implementation(libs.hypersistence.utils)
-	implementation(libs.springdoc)
+/**
+ * An anonymous chatter, who has a random UUID and a randomly generated nickname.
+ */
+@Serializable
+data class ChatterDto(
+	/** The randomly generated ID assigned to the chatter. Unique per chat session. */
+	val id: Uuid,
 
-	implementation(project(":commons:core"))
-
-	testSpringBootStarter("data-jpa")
-	testSpringBootStarter("validation")
-}
+	/** The nickname assigned to the chatter. */
+	val nickname: String,
+)

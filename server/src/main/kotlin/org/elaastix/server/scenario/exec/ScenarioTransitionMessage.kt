@@ -17,23 +17,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec.repositories
+package org.elaastix.server.scenario.exec
 
-import org.elaastix.commons.jpa.repository.ElaastixRepository
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.scenario.exec.entities.SciconumChatPeeringEntity
-import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
-import org.springframework.data.jpa.repository.Query
-import org.springframework.stereotype.Repository
+import kotlin.time.Duration
 
-@Repository
 @SciconumTechDebt
-interface SciconumChatPeeringRepository : ElaastixRepository<SciconumChatPeeringEntity> {
-	@Query(
-		"FROM SciconumChatPeeringEntity cpe " +
-			"INNER JOIN SciconumLearnerSessionEntity lse ON lse.scenarioSession = cpe.scenarioSession " +
-			"INNER JOIN SciconumChatterEntity ce ON ce.learner = lse.learner AND ce.peering = cpe " +
-			"WHERE lse = :session AND cpe.sessionRound = lse.scenarioSession.currentRound",
-	)
-	fun findOneByLearnerSession(session: SciconumLearnerSessionEntity): SciconumChatPeeringEntity?
+@Serializable
+@SerialName("org.elaastix.engine.scenario.transition")
+data class ScenarioTransitionMessage(
+	val phase: SciconumScenarioExecutionPhase,
+	val state: State,
+	val duration: Duration?,
+) {
+	/**
+	 * The state of the current phase.
+	 */
+	enum class State {
+		// TODO: define a mechanism for "grace period submission" before actually assigning?
+		//       the client may not be able to send the response RIGHT at the end (clock drift and all)
+		//       so there needs to be a 2-5s window where learners have a waiting screen and final responses can arrive
+		/** The phase is not started and/or busy preparing. */
+		PENDING,
+
+		/** The phase is currently running. */
+		RUNNING,
+
+		/** The phase has been paused. */
+		PAUSED,
+	}
 }

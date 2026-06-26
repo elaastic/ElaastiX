@@ -78,11 +78,7 @@ abstract class SciconumIntegrationTest : IntegrationTest() {
 	@Autowired
 	lateinit var assignmentParticipantsService: AssignmentParticipantsService
 
-	fun createAssignment(
-		sequencesCount: UInt,
-		scenario: SciconumScenario,
-		questionsPerSequence: UInt,
-	): AssignmentEntity =
+	fun createAssignment(sequencesCount: UInt, scenario: SciconumScenario, questionsPerSequence: UInt): AssignmentEntity =
 		assignmentRepository.findById(
 			assignmentService.createAssignment(
 				CreateAssignmentDto(
