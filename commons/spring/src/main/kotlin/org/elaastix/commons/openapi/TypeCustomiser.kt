@@ -19,15 +19,24 @@
 
 package org.elaastix.commons.openapi
 
+import com.fasterxml.jackson.databind.type.TypeBindings
+import io.swagger.v3.core.converter.AnnotatedType
+import io.swagger.v3.core.converter.ModelConverterContext
 import io.swagger.v3.oas.models.media.Schema
 import kotlin.reflect.KClass
 
 /**
- * Interface for customising data transfer object schemas.
+ * Interface for customising schemas associated with a given type.
  * All implementors registered as beans will be automatically invoked during schema generation.
  */
 @FunctionalInterface
-fun interface DtoCustomiser {
+fun interface TypeCustomiser {
 	/** The customisation logic. Returns the transformed schema (or [schema]). */
-	fun customise(schema: Schema<*>, clazz: KClass<*>): Schema<*>
+	fun customise(
+		schema: Schema<*>,
+		clazz: KClass<*>,
+		bindings: TypeBindings,
+		annotatedType: AnnotatedType,
+		context: ModelConverterContext,
+	): Schema<*>
 }

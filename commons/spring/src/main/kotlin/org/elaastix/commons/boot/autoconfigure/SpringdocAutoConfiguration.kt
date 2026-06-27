@@ -19,54 +19,21 @@
 
 package org.elaastix.commons.boot.autoconfigure
 
-import com.fasterxml.jackson.databind.type.SimpleType
-import io.swagger.v3.core.converter.ModelConverter
-import io.swagger.v3.oas.models.Components
-import kotlinx.serialization.Serializable
 import org.elaastix.commons.openapi.BuiltinCustomisers
-import org.elaastix.commons.openapi.DtoCustomiser
+import org.elaastix.commons.openapi.MaybeUpdateConverter
+import org.elaastix.commons.openapi.OpenApiPostProcessor
+import org.elaastix.commons.openapi.TypeCustomisingConverter
 import org.springframework.boot.autoconfigure.AutoConfiguration
-import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Import
-import kotlin.reflect.full.hasAnnotation
 
 /**
  * Autoconfiguration class importing SpringDoc components.
  */
 @AutoConfiguration
-@Import(BuiltinCustomisers::class)
-class SpringdocAutoConfiguration(private val dtoCustomiserList: List<DtoCustomiser>) {
-	/**
-	 * Swagger [io.swagger.v3.core.converter.ModelConverter] applying all registered [DtoCustomiser] beans.
-	 *
-	 * Kotlin generates synthetic getters with a random suffix for value classes, which appear in the documentation.
-	 * Since Kotlin separates the name and the suffix with a dash and this character cannot be present elsewhere, the
-	 * converter detects these properties and strip the prefix.
-	 *
-	 * Implementation based on [org.springdoc.core.customizers.KotlinNullablePropertyCustomizer].
-	 */
-	@Bean
-	fun dtoCustomiserConverter(): ModelConverter {
-		return c@{ aType, context, chain ->
-			if (!chain.hasNext()) return@c null
-			chain.next().resolve(aType, context, chain)?.also {
-				val clazz =
-					when (val type = aType.type) {
-						is SimpleType -> type.rawClass.kotlin
-						is Class<*> -> type.kotlin
-						else -> return@also
-					}
-
-				if (!clazz.hasAnnotation<Serializable>()) return@also
-
-				var schema = it.`$ref`
-					?.let { ref -> context.definedModels[ref.substring(Components.COMPONENTS_SCHEMAS_REF.length)] }
-					?: it
-
-				for (customiser in dtoCustomiserList) {
-					schema = customiser.customise(schema, clazz)
-				}
-			}
-		}
-	}
-}
+@Import(
+	BuiltinCustomisers::class,
+	MaybeUpdateConverter::class,
+	TypeCustomisingConverter::class,
+	OpenApiPostProcessor::class,
+)
+class SpringdocAutoConfiguration
