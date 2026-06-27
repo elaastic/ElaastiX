@@ -86,10 +86,12 @@ clean-dry:
 	git clean --dry-run -xdf --exclude .idea/shelf
 
 [windows]
+[no-exit-message]
 _gradle *ARGS:
 	./gradlew.bat {{ARGS}}
 
 [unix]
+[no-exit-message]
 _gradle *ARGS:
 	./gradlew {{ARGS}}
 

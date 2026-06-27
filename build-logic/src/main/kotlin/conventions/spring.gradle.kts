@@ -17,8 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("unused") // Modern Gradle uses `by xxx`
-
 package conventions
 
 import jakarta
