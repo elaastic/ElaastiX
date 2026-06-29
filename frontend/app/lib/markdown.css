@@ -112,6 +112,17 @@
 	color: red;
 }
 
+.markdown-prose .has-focused .line:not(.focused) {
+    opacity: .7;
+	filter: blur(.095rem);
+    transition: filter .35s, opacity .35s;
+}
+
+.markdown-prose .has-focused:hover .line:not(.focused) {
+    opacity: .85;
+    filter: blur(.005rem);
+}
+
 /* SPDX-SnippetEnd */
 
 /* SPDX-SnippetBegin */
