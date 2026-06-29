@@ -103,9 +103,10 @@ annotation class WithMockUser(
 			}
 		}
 
-		private fun getHolder(): ThreadLocal<UserEntity> {
-			val registry = configurableApplicationContext.beanFactory as BeanDefinitionRegistry
+		private fun getHolder(): ThreadLocal<UserEntity> =
 			synchronized(lock) {
+				val registry = configurableApplicationContext.beanFactory as BeanDefinitionRegistry
+
 				if (!registry.isBeanNameInUse(SEC_MOCK_USER_HOLDER)) {
 					val holder = ThreadLocal<UserEntity>()
 					registry.registerBeanDefinition(
@@ -116,26 +117,25 @@ annotation class WithMockUser(
 						},
 					)
 				}
+
+				val holder = configurableApplicationContext
+					.autowireCapableBeanFactory
+					.getBean(SEC_MOCK_USER_HOLDER)
+					.cast<ThreadLocal<UserEntity>>()
+
+				if (!registry.isBeanNameInUse(SEC_MOCK_USER)) {
+					registry.registerBeanDefinition(
+						SEC_MOCK_USER,
+						GenericBeanDefinition().apply {
+							setBeanClass(UserEntity::class.java)
+							setDependsOn(SEC_MOCK_USER_HOLDER)
+							instanceSupplier = { holder.get() }
+						},
+					)
+				}
+
+				holder
 			}
-
-			val holder = configurableApplicationContext
-				.autowireCapableBeanFactory
-				.getBean(SEC_MOCK_USER_HOLDER)
-				.cast<ThreadLocal<UserEntity>>()
-
-			if (!registry.isBeanNameInUse(SEC_MOCK_USER)) {
-				registry.registerBeanDefinition(
-					SEC_MOCK_USER,
-					GenericBeanDefinition().apply {
-						setBeanClass(UserEntity::class.java)
-						setDependsOn(SEC_MOCK_USER_HOLDER)
-						instanceSupplier = { holder.get() }
-					},
-				)
-			}
-
-			return holder
-		}
 
 		@Autowired(required = false)
 		@Suppress("SpringJavaInjectionPointsAutowiringInspection") // Code literally pulled from Spring Security itself

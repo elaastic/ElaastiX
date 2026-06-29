@@ -17,8 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("unused") // Modern Gradle uses `by xxx`
-
 package conventions
 
 import org.springframework.boot.gradle.tasks.bundling.BootJar
@@ -81,8 +79,8 @@ tasks.register<BootRun>("bootRunDebug") {
 testing {
 	suites {
 		// TODO: Separate unit tests and integration tests (for Kover reporting)
-		// val integrationTest by existing(JvmTestSuite::class) {
-		val test by existing(JvmTestSuite::class) {
+		// named<JvmTestSuite>("integrationTest") {
+		named<JvmTestSuite>("test") {
 			targets.configureEach {
 				testTask.configure {
 					jvmArgs = listOf("-Dspring.profiles.active=develop")

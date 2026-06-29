@@ -6,7 +6,7 @@ ksp = "2.3.9"
 datafaker = "2.5.4"
 detekt = "2.0.0-alpha.5"
 flyway = "12.8.1"
-hibernate = "7.4.1.Final"        # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
+hibernate = "7.4.2.Final"        # CAREFUL!! Hypersistence Utils module target MUST be adjusted accordingly!!
 hypersistence-utils = "3.15.3"
 ideax = "1.4.1"
 jdbc-postgresql = "42.7.11"
@@ -16,7 +16,7 @@ kover = "0.9.8"
 mockk = "1.14.11"
 spring-boot = "4.1.0"
 springdoc = "3.0.3"
-springdoc-kdoc = "1.1.0"
+springdoc-kdoc = "1.1.1"
 testcontainers = "2.0.5"
 
 [libraries]

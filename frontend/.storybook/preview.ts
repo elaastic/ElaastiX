@@ -12,3 +12,19 @@ const preview: Preview = {
 }
 
 export default preview
+
+export const decorators = [
+	story => ({
+		components: { story },
+		template: `
+			<suspense>
+				<template #default>
+					<story />
+				</template>
+				<template #fallback>
+					<div>Loading...</div>
+				</template>
+			</suspense>
+		`,
+	}),
+]

@@ -1,0 +1,56 @@
+{
+	"tagline": "Engagez vos élèves, révélez leur raisonnement",
+	"description": "ElaastiX est une plateforme d’orchestration d’activités pédagogiques, permettant aux enseignants de proposer des parcours d’apprentissage personnalisés et collaboratifs aux apprenants.",
+	"documentation": "Documentation",
+	"source-code": "Code source",
+	"activity": {
+		"responses": {
+			"answer-field-label": "Votre réponse",
+			"self-explanation-field-label": "Veuillez fournir une explication de votre réponse",
+			"confidence-degree-field-label": "À quel degré êtes-vous confiant∙e de votre réponse\u00a0?",
+			"skip": "Passer",
+			"submit": "Envoyer",
+			"confirm-skip": "Vous ne pourrez pas répondre après avoir passé.",
+			"confirm-no-explanation": "Êtes-vous sûr∙e de ne pas vouloir fournir d’explication\u00a0?",
+			"confirm-no-confidence": "Êtes-vous sûr∙e de ne pas vouloir renseigner le degré de confiance\u00a0?"
+		}
+	},
+	"likert": {
+		"AGREEMENT": [
+			"Pas du tout d’accord",
+			"Pas d’accord",
+			"Pas entièrement d’accord",
+			"Neutre",
+			"Un peu d’accord",
+			"D’accord",
+			"Tout à fait d’accord"
+		],
+		"CONFIDENCE": [
+			"Pas du tout confiant∙e",
+			"Pas confiant∙e",
+			"Pas entièrement confiant∙e",
+			"Neutre",
+			"Un peu confiant∙e",
+			"Confiant∙e",
+			"Tout à fait confiant∙e"
+		]
+	},
+	"legal": {
+		"about": "À propos",
+		"notice": "Mentions légales",
+		"about-elaastix": "À propos d’ElaastiX",
+		"project": {
+			"str": "ElaastiX est un projet de l’équipe {0}, à l’{1}",
+			"talent": "TALENT",
+			"irit": "Institut de Recherche en Informatique de Toulouse"
+		},
+		"license": {
+			"str": "Publié sous licence {0}",
+			"link": "AGPL-3.0-or-later"
+		},
+		"cat": {
+			"str": "{0} (par River Kao sur Unsplash)",
+			"link": "Photo arbitraire d’un chat"
+		}
+	}
+}

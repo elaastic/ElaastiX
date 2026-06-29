@@ -29,8 +29,8 @@ import kotlin.contracts.contract
 /**
  * Throws a [BadRequestException] if [value] is false.
  */
+@OptIn(ExperimentalContracts::class, ExperimentalExtendedContracts::class)
 fun validate(value: Boolean, lazyMessage: () -> Any) {
-	@OptIn(ExperimentalContracts::class, ExperimentalExtendedContracts::class)
 	contract {
 		returns() implies value
 		!value holdsIn lazyMessage

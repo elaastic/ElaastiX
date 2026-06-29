@@ -1,0 +1,23 @@
+diff --git a/dist/module.mjs b/dist/module.mjs
+index c6401a76a217cf024201ff040558c2c4803adb1a..f4fc3d1d6b22c8c35d7a33eeb959809d264be166 100644
+--- a/dist/module.mjs
++++ b/dist/module.mjs
+@@ -8,7 +8,7 @@ import { createStorage } from 'unstorage';
+ import fsDriver from 'unstorage/drivers/fs';
+ import { createUnplugin } from 'unplugin';
+ import { writeFileSync, existsSync } from 'node:fs';
+-import { eventHandler, createError, setResponseHeader } from 'h3';
++import { eventHandler, createError, createEvent, setResponseHeader } from 'h3';
+ import { $fetch } from 'ofetch';
+ import { colors } from 'consola/utils';
+ import { onDevToolsInitialized, extendServerRpc, addCustomTab } from '@nuxt/devtools-kit';
+@@ -131,7 +131,8 @@ async function setupPublicAssetStrategy(options = {}) {
+         server.middlewares.use(
+           context.assetsBaseURL,
+           async (req, res) => {
+-            res.end(await devEventHandler({ path: req.url }));
++			const h3evt = createEvent(req, res);
++            res.end(await devEventHandler(h3evt));
+           }
+         );
+       }

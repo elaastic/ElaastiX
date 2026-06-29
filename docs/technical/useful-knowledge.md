@@ -170,3 +170,29 @@ When comes the time to repair the broken pots, the annotation use sites reveal p
 Once all code has been migrated, drop the annotation altogether. Congrats, you successfully paid off technical debt.
 You're now part of an elite many consider only a legend; a software engineer who wrote code actually intended to be
 permanent and good. Get yourself a warm coffee. Or chocolate. Or whatever, just get something nice. :)
+
+## Validating string length
+### A little explainer on grapheme clusters
+So we can't do fancy grapheme cluster count because Jakatra validation does not support it, even though Valibot can
+do such checks on the client side.
+
+Measuring the length of text is hard and 99.99% of software gets it wrong. *Especially* with modern Unicode.
+This single symbol "`👨‍👩‍👧‍👦`" is actually **25 bytes of UTF-8**, so most software would wrongly measure it as 25 characters
+(of 11 if the platform uses UTF-16 as its string representation).
+
+The *correct* way to measure text is to count **grapheme clusters**, which does account for everything and anything
+Unicode currently does and may do in the future to accommodate complex composition.
+
+### String length is a mess
+HOWEVER. That's not the end of the story. That would be too simple wouldn't it?
+
+Remember what I said about the string length being 25 or 11 depending on the platform's encoding? Yeah so if we use
+Valibot's length validation gates, we'll run into this exact mismatch case since JavaScript specifies strings to be
+UTF-16, while the JVM uses UTF-8 encoding. Who knew measuring text is *that* exiting!!
+
+So it's important that the client-side checks **measures the byte count** and not the length, since Valibot measures
+the byte count based on the UTF-8 encoding. This gets rid of the potential mismatch between the client measurements and
+the server measurements, which gets rid of unexpected errors because of it.
+
+- ~~`minLength`~~ => `minBytes`
+- ~~`maxLength`~~ => `maxBytes`
