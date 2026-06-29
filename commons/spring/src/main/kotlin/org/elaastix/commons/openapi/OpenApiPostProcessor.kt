@@ -149,7 +149,17 @@ class OpenApiPostProcessor(private val json: Json) : OpenApiCustomizer {
 
 	@JvmName("process4")
 	private fun Operation.process(spec: OpenAPI) =
-		also {
+		also { _ ->
+			// Little polish on the description and summary.
+			// Gets rid of the period on the summary, and removes the duplicate summary text from the description.
+			summary = summary?.trimEnd('.')
+			description = description?.let {
+				when (val idx = it.indexOf("\n\n")) {
+					-1 -> null
+					else -> it.substring(idx).trim().ifEmpty { null }
+				}
+			}
+
 			parameters = parameters?.process(spec)
 			requestBody = requestBody?.process(spec)
 			responses = responses?.process(spec)
