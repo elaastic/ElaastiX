@@ -20,7 +20,7 @@
 import type { Locale } from 'vue-i18n'
 import type { LocaleObject } from '@nuxtjs/i18n'
 
-export const defaultLocale: Locale = 'fr-FR'
+export const defaultLocale: Locale = 'fr_fr'
 
 export const locales: LocaleObject[] = [
 	{
