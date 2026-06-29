@@ -68,6 +68,6 @@ abstract class ResponseEntity<TSelf : ResponseEntity<TSelf, TQuestion>, TQuestio
 	var amendedResponse: TSelf? = null,
 
 	@Embedded
-	override var absoluteGrade: ScalarGrade? = null,
+	override var scalarGrade: ScalarGrade? = null,
 ) : AbstractEntityWithAuthorship(),
 	ScalarGradable
