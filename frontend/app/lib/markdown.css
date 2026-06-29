@@ -22,6 +22,14 @@
 	src: url(~/assets/latin-modern-math.woff2);
 }
 
+.markdown-prose > :first-child {
+	margin-top: 0 !important;
+}
+
+.markdown-prose > :last-child {
+	margin-bottom: 0 !important;
+}
+
 /* SPDX-SnippetBegin */
 /* SPDX-SnippetCopyrightText: Copyright (c) 2021 Pine Wu */
 /* SPDX-SnippetCopyrightText: Copyright (c) 2023 Anthony Fu <https://github.com/antfu> */

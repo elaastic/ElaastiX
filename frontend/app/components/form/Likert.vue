@@ -15,7 +15,7 @@
   -
   - You should have received a copy of the GNU Affero General Public License
   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
-  -->
+-->
 
 <script lang="ts">
 export enum LikertScaleType {
@@ -67,7 +67,7 @@ const LABELS = [
 import type { RadioGroupItem } from '@nuxt/ui'
 
 const { points = 5, type = LikertScaleType.AGREEMENT } = defineProps<Props>()
-const value = defineModel<number>()
+const value = defineModel<number | null>()
 
 const { t } = useI18n()
 
@@ -87,7 +87,7 @@ const likertItems = computed<RadioGroupItem[]>(() =>
 		orientation="horizontal"
 		variant="card"
 		:ui="{
-			item: 'flex-[1_1_0px] cursor-pointer',
+			fieldset: 'grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]',
 		}"
 	/>
 </template>
