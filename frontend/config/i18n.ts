@@ -24,12 +24,12 @@ export const defaultLocale: Locale = 'fr-FR'
 
 export const locales: LocaleObject[] = [
 	{
-		code: 'en-GB',
+		code: 'en_gb',
 		file: 'en-GB.json',
 		name: 'English',
 	},
 	{
-		code: 'fr-FR',
+		code: 'fr_fr',
 		file: 'fr-FR.json',
 		name: 'Français',
 	},
