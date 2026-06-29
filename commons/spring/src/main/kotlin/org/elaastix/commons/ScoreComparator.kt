@@ -58,9 +58,7 @@ fun interface Scorer<T, S : Comparable<S>> {
 }
 
 /** Returns a list of all elements sorted according to the specified scoring function via [ScoreComparator]. */
-fun <T, S : Comparable<S>> Iterable<T>.sortedWith(scorer: Scorer<T, S>) =
-	sortedWith(scorer.toComparator())
+fun <T, S : Comparable<S>> Iterable<T>.sortedWith(scorer: Scorer<T, S>) = sortedWith(scorer.toComparator())
 
 /** Converts the collection to a sorted set using a scoring function via [ScoreComparator]. */
-fun <T, S : Comparable<S>> Iterable<T>.toSortedSet(scorer: Scorer<T, S>) =
-	toSortedSet(scorer.toComparator())
+fun <T, S : Comparable<S>> Iterable<T>.toSortedSet(scorer: Scorer<T, S>) = toSortedSet(scorer.toComparator())
