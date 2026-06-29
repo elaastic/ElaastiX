@@ -108,7 +108,7 @@ export interface MarkdownProps {
 
 export default defineComponent({
 	__name: 'Markdown',
-	__file: 'app/components/Markdown.async.ts',
+	__file: 'lib/Markdown.async.ts',
 	props: {
 		inline: { type: Boolean },
 		markdown: {},

@@ -53,6 +53,35 @@ export default defineNuxtConfig({
 		},
 	},
 
+	vite: {
+		optimizeDeps: {
+			include: [
+				'valibot',
+				// Markdown
+				'markdown-exit',
+				'markdown-it-abbr',
+				'markdown-it-anchor',
+				'markdown-it-footnote',
+				'markdown-it-github-alerts',
+				'markdown-it-mark',
+				'markdown-it-sub',
+				'markdown-it-sup',
+				// Math
+				'temml',
+				'markdown-it-math/no-default-renderer',
+				'temml/contrib/copy-tex/copy-tex.js',
+				// Code highlighting
+				'shiki/core',
+				'shiki/bundle/full',
+				'shiki/engine/javascript',
+				'@shikijs/markdown-exit/core',
+				'@shikijs/transformers',
+				'@shikijs/themes/github-dark',
+				'@shikijs/themes/github-light',
+			],
+		},
+	},
+
 	eslint: {
 		config: {
 			stylistic: {
