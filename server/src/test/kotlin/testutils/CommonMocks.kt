@@ -22,9 +22,9 @@ package testutils
 import io.mockk.every
 import io.mockk.mockk
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
 
-inline fun <reified T : AbstractEntity> mockkEntity(block: T.() -> Unit = {}): Pair<Uuid, T> =
+inline fun <reified T : AbstractMinimalEntity> mockkEntity(block: T.() -> Unit = {}): Pair<Uuid, T> =
 	Uuid.random().let {
 		it to mockk<T> {
 			every { id } returns it

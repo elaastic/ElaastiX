@@ -23,6 +23,7 @@ import jakarta.persistence.EntityManager
 import jakarta.transaction.Transactional
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
 import org.elaastix.commons.platform.JpaImmutable
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.core.AbstractEntityWithAuthorship
@@ -32,7 +33,7 @@ import org.springframework.boot.ApplicationRunner
 /** Abstract class holding useful logic for all database seeders. */
 @Transactional
 abstract class AbstractSeeder(private val entityManager: EntityManager) : ApplicationRunner {
-	protected fun <T : AbstractEntity> upsert(id: ULong, entity: T): T = upsert0(id, entity)
+	protected fun <T : AbstractMinimalEntity> upsert(id: ULong, entity: T): T = upsert0(id, entity)
 
 	@UnclearAuthorshipOwnership
 	protected fun <T : AbstractEntityWithAuthorship> upsert(id: ULong, author: UserEntity, entity: T): T =
@@ -42,14 +43,16 @@ abstract class AbstractSeeder(private val entityManager: EntityManager) : Applic
 		}
 
 	// TODO: avoid unnecessary UPDATE on startup. dev-only issue, so very low priority.
-	private fun <T : AbstractEntity> upsert0(id: ULong, entity: T, block: T.() -> Unit = {}): T =
+	private fun <T : AbstractMinimalEntity> upsert0(id: ULong, entity: T, block: T.() -> Unit = {}): T =
 		entityManager.merge(
 			entity.apply {
 				@OptIn(JpaImmutable::class) // SAFETY: Test-only identifiers outside the normal allocation range
 				this.id = Uuid.fromULongs(0UL, id)
 
-				@OptIn(JpaImmutable::class) // SAFETY: Manual reconciliation of version to make JPA happy
-				this.version = entityManager.find(this::class.java, this.id)?.version
+				if (this is AbstractEntity) {
+					@OptIn(JpaImmutable::class) // SAFETY: Manual reconciliation of version to make JPA happy
+					this.version = entityManager.find(this::class.java, this.id)?.version
+				}
 
 				block()
 			},
