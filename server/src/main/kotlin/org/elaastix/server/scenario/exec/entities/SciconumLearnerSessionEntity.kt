@@ -22,6 +22,7 @@ package org.elaastix.server.scenario.exec.entities
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
+import jakarta.persistence.FetchType
 import jakarta.persistence.ManyToOne
 import jakarta.validation.constraints.NotNull
 import org.elaastix.commons.jpa.entity.AbstractEntity
@@ -34,7 +35,7 @@ import kotlin.time.Instant
 @SciconumTechDebt
 class SciconumLearnerSessionEntity(
 	@NotNull
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	var scenarioSession: SciconumScenarioSessionEntity,
 
 	@NotNull

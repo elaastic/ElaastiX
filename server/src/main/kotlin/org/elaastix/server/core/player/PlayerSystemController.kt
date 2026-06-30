@@ -17,27 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.security
+package org.elaastix.server.core.player
+
+import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RestController
 
 /**
- * Roles that may be granted to a user.
- * Used to restrict access via the [RequiresRole] annotation.
+ * Annotation that conveniently applies the necessary ones for Spring to configure a system player controller.
  */
-enum class Role : Authority {
-	/**
-	 * Users with unrestricted access to the platform.
-	 */
-	ADMIN,
-
-	/**
-	 * Users that are permitted to create content on the platform.
-	 *
-	 * TODO: currently everything's been shoved onto this role instead of using more fine grained permissions.
-	 */
-	WRITER,
-
-	/**
-	 * Any successfully authenticated user.
-	 */
-	USER,
-}
+@RestController
+// Note: endpoints inside the namespace may have their own versioning separate from the API version.
+// The version here only designates the RPC protocol version (which is 1).
+@RequestMapping("/player", version = "1+")
+@Target(AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class PlayerSystemController

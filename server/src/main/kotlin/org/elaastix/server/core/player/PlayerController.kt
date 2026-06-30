@@ -19,12 +19,22 @@
 
 package org.elaastix.server.core.player
 
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.enums.ParameterIn
+import io.swagger.v3.oas.annotations.media.Schema
+import org.elaastix.commons.openapi.UuidSchema
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 /**
  * Annotation that conveniently applies the necessary ones for Spring to configure a player controller.
  */
+@Parameter(
+	name = "sessionId",
+	`in` = ParameterIn.QUERY,
+	description = "ID of the learner session to use for the action.",
+	schema = Schema(type = "string", pattern = UuidSchema.PATTERN),
+)
 @RestController
 // Note: endpoints inside the namespace may have their own versioning separate from the API version.
 // The version here only designates the RPC protocol version (which is 1).

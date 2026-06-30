@@ -17,27 +17,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.security
+package org.elaastix.server.scenario.exec.annotation
 
 /**
- * Roles that may be granted to a user.
- * Used to restrict access via the [RequiresRole] annotation.
+ * Annotation flagging an HTTP handler's argument to be resolved with
+ * the [org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity].
  */
-enum class Role : Authority {
-	/**
-	 * Users with unrestricted access to the platform.
-	 */
-	ADMIN,
-
-	/**
-	 * Users that are permitted to create content on the platform.
-	 *
-	 * TODO: currently everything's been shoved onto this role instead of using more fine grained permissions.
-	 */
-	WRITER,
-
-	/**
-	 * Any successfully authenticated user.
-	 */
-	USER,
-}
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ScenarioSession

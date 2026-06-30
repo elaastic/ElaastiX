@@ -19,11 +19,11 @@
 
 package org.elaastix.server.activities.response
 
-import jakarta.transaction.Transactional
 import jakarta.validation.Valid
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.inherits
 import org.elaastix.commons.orElseNotFound
+import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.commons.validate
 import org.elaastix.server.activities.response.dtos.ClosedQuestionStatementDto
@@ -38,17 +38,24 @@ import org.elaastix.server.activities.response.entities.ClosedQuestionEntity
 import org.elaastix.server.activities.response.entities.ClosedResponseEntity
 import org.elaastix.server.activities.response.entities.OpenQuestionEntity
 import org.elaastix.server.activities.response.entities.OpenResponseEntity
+import org.elaastix.server.activities.response.entities.QuestionEntity
 import org.elaastix.server.activities.response.entities.ResponseEntity
 import org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection
 import org.elaastix.server.activities.response.repositories.QuestionRepository
 import org.elaastix.server.activities.response.repositories.ResponseRepository
+import org.elaastix.server.scenario.exec.ScenarioExecutionStatusCheckService
+import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase
+import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
+import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 /** Service responsible for the response activity. */
 @Service
-class ResponseActivityService(
+class ResponseActivityService @SciconumTechDebt constructor(
 	private val questionRepository: QuestionRepository,
 	private val responseRepository: ResponseRepository,
+	private val scenarioExecutionStatusCheckService: ScenarioExecutionStatusCheckService,
 ) {
 	companion object {
 		/** Transforms the DAO-level type into a Service-level type. */
@@ -98,6 +105,30 @@ class ResponseActivityService(
 	 * Finds a question's statement (and available choices if it's a closed question).
 	 */
 	fun findQuestionStatement(id: Uuid) = questionRepository.findQuestionStatementById(id)?.toDto()
+
+	@SciconumTechDebt
+	private fun getCurrentQuestion(
+		scenarioSession: SciconumScenarioSessionEntity,
+		learnerSession: SciconumLearnerSessionEntity,
+	): QuestionEntity {
+		scenarioExecutionStatusCheckService.assertAppropriateScenarioState(
+			scenarioSession,
+			learnerSession,
+			requiredPhase = SciconumScenarioExecutionPhase.QUESTION,
+		)
+
+		return scenarioSession.sequence.sciconumQuestions[scenarioSession.currentRound.toInt()]
+	}
+
+	/**
+	 * Returns the current question for the scenario session.
+	 */
+	@SciconumTechDebt
+	@Transactional(readOnly = true)
+	fun findCurrentQuestionStatement(
+		scenarioSession: SciconumScenarioSessionEntity,
+		learnerSession: SciconumLearnerSessionEntity,
+	) = QuestionStatementProjection.from(getCurrentQuestion(scenarioSession, learnerSession)).toDto()
 
 	/**
 	 * Validates and records a response to a question.
@@ -152,4 +183,15 @@ class ResponseActivityService(
 				validate(response.answer.value.all { it < statement.choices!!.size.toUInt() }) { "Invalid answer." }
 			}
 		}
+
+	/**
+	 * Processes the response to the current question in the scenario.
+	 */
+	@SciconumTechDebt
+	@Transactional
+	fun submitResponseToCurrentQuestion(
+		scenarioSession: SciconumScenarioSessionEntity,
+		learnerSession: SciconumLearnerSessionEntity,
+		response: ResponseSubmitDto,
+	) = submitResponse(getCurrentQuestion(scenarioSession, learnerSession).id, response)
 }
