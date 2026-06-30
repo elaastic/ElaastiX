@@ -22,6 +22,7 @@ package org.elaastix.server.assignments
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
+import jakarta.persistence.OrderColumn
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
 import org.elaastix.commons.jpa.entity.AbstractEntity
@@ -49,8 +50,11 @@ class AssignmentEntity(
 
 	/**
 	 * The pedagogical sequences this assignment is for.
+	 *
+	 * TODO: ManyToMany + OrderColumn is smelly asf, we should use an intermediate entity to enforce uniqueness.
 	 */
 	@ManyToMany
+	@OrderColumn
 	var sequences: MutableList<SequenceEntity>,
 
 	/**

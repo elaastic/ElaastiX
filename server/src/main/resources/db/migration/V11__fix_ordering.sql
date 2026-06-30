@@ -17,26 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.sequences.dto
+ALTER TABLE sequence_entity_sciconum_questions
+	ADD sciconum_questions_order INTEGER;
 
-import jakarta.validation.constraints.Size
-import kotlinx.serialization.Serializable
-import org.elaastix.commons.data.MaybeUpdate
-import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.scenario.SciconumScenario
+ALTER TABLE assignment_entity_sequences
+	ADD sequences_order INTEGER;
 
-/**
- * Request payload for updating a sequence.
- */
-@Serializable
-data class UpdateSequenceDto @SciconumTechDebt constructor(
-	@Size(min = 2, max = 64)
-	val name: MaybeUpdate<String> = MaybeUpdate.Keep,
+UPDATE sequence_entity_sciconum_questions
+	SET sciconum_questions_order = 0
+	WHERE sciconum_questions_order IS NULL;
 
-	@property:SciconumTechDebt
-	val sciconumScenario: MaybeUpdate<SciconumScenario> = MaybeUpdate.Keep,
+UPDATE assignment_entity_sequences
+	SET sequences_order = 0
+	WHERE sequences_order IS NULL;
 
-	@property:SciconumTechDebt
-	val sciconumQuestionIds: MaybeUpdate<List<Uuid>> = MaybeUpdate.Keep,
-)
+ALTER TABLE assignment_entity_sequences
+	ADD CONSTRAINT pk_assignmententity_sequences PRIMARY KEY (assignment_entity_id, sequences_order);
+
+ALTER TABLE sequence_entity_sciconum_questions
+	ADD CONSTRAINT pk_sequenceentity_sciconumquestions PRIMARY KEY (sciconum_sequence_entity_id, sciconum_questions_order);
