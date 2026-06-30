@@ -72,7 +72,10 @@ style:
       - value: org.springframework.test.annotation.DirtiesContext
         reason: Banned annotation. @DirtiesContext is incompatible with parallel test execution
       - value: org.junit.jupiter.api.TestMethodOrder
-        reason: Banned annotation. Tests are run in a randomised order to help fuzzing against race conditions.
+        reason: Banned annotation. Tests are run in a randomised order to help fuzzing against race conditions
+      # Bad types
+      - value: io.swagger.v3.oas.models.media.UUIDSchema
+        reason: We do not send UUIDs according to the `format=uuid` schema. Use Use org.elaastix.commons.openapi.UuidSchema instead
     excludes:
       - "**/commons/jpa/**"                                        # Compat layer
       - "**/commons/data/Uuid.kt"                                  # Uuid type alias

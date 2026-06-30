@@ -31,8 +31,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import org.springframework.security.crypto.encrypt.Encryptors
 import org.springframework.security.crypto.keygen.KeyGenerators
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
@@ -40,6 +42,7 @@ import org.springframework.security.web.util.matcher.AnyRequestMatcher
 import org.springframework.web.servlet.HandlerExceptionResolver
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
+import java.security.SecureRandom
 
 /**
  * Configuration for Spring Security features.
@@ -111,6 +114,30 @@ class SecurityConfiguration : WebMvcConfigurer {
 	 */
 	@Bean
 	fun securityEvaluationContextExtension() = SecurityEvaluationContextExtension()
+
+	/**
+	 * Randomness is provided by a cryptographically secure pseudo-random number generator to guarantee the highest
+	 * degree of fairness across rolls, as a CSPRNG is guaranteed to be as unpredictable as possible.
+	 */
+	@Bean
+	fun random() = SecureRandom()
+
+	/**
+	 * Password encoding uses Spring's [DelegatingPasswordEncoder], which allows us to update the password encoding
+	 * scheme in the future while maintaining full backwards compatibility.
+	 *
+	 * Argon2 (RFC 9106) is the current state-of-the-art for password hashing. While it is very unlikely Argon2 will
+	 * be replaced by another algorithm, its parameters are designed to evolve over time to maintain optimal security
+	 * as computing capacity increases.
+	 */
+	@Bean
+	fun passwordEncoder() =
+		DelegatingPasswordEncoder(
+			"argon2+v5_8",
+			mapOf(
+				"argon2+v5_8" to Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8(),
+			),
+		)
 
 	@Bean
 	@ConditionalOnProperty(name = ["elaastix.security.encryption-key"], matchIfMissing = false)

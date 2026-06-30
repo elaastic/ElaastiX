@@ -23,6 +23,7 @@ import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.scenario.exec.entities.SciconumChatPeeringEntity
 import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
+import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
@@ -35,5 +36,7 @@ interface SciconumChatPeeringRepository : ElaastixRepository<SciconumChatPeering
 			"INNER JOIN SciconumChatterEntity ce ON ce.learner = lse.learner AND ce.peering = cpe " +
 			"WHERE lse = :session AND cpe.sessionRound = lse.scenarioSession.currentRound",
 	)
-	fun findOneByLearnerSession(session: SciconumLearnerSessionEntity): SciconumChatPeeringEntity?
+	fun findCurrentOneByLearnerSession(session: SciconumLearnerSessionEntity): SciconumChatPeeringEntity?
+
+	fun findAllByScenarioSession(session: SciconumScenarioSessionEntity): List<SciconumChatPeeringEntity>
 }

@@ -101,7 +101,7 @@ dependencies {
 
 tasks.withType<Detekt>().configureEach {
 	jvmTarget = libs.version("jdk")
-	autoCorrect = project.hasProperty("detekt.fix")
+	autoCorrect = providers.gradleProperty("detekt.fix").isPresent
 
 	exclude("**/resources/**", "**/build/**", "**/generated/**")
 

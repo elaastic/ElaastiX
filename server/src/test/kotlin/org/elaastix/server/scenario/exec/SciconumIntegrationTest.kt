@@ -20,7 +20,6 @@
 package org.elaastix.server.scenario.exec
 
 import org.elaastix.commons.makeList
-import org.elaastix.commons.makeSet
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.security.Role
 import org.elaastix.mm.content.PlainText
@@ -95,7 +94,7 @@ abstract class SciconumIntegrationTest : IntegrationTest() {
 			SciconumSequenceEntity(
 				name = makeRecognisableName(),
 				sciconumScenario = scenario,
-				sciconumQuestions = makeSet(questionsCount.toInt()) {
+				sciconumQuestions = makeList(questionsCount) {
 					questionRepository.persist(
 						ClosedQuestionEntity(
 							statement = PlainText(FAKER.lorem().sentence(10)),

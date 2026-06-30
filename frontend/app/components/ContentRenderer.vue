@@ -16,11 +16,11 @@ const never = (a: never): string => (a as { $type: string }).$type ?? JSON.strin
 
 <template>
 	<Markdown
-		v-if="content.$type === 'MarkdownContent'"
+		v-if="content.$type === 'Markdown'"
 		:markdown="content.content"
 	/>
 	<Markdown
-		v-else-if="content.$type === 'MarkdownText'"
+		v-else-if="content.$type === 'MarkdownInline'"
 		:markdown="content.content"
 		inline
 	/>

@@ -37,5 +37,5 @@ data class CreateSequenceDto @SciconumTechDebt constructor(
 	val sciconumScenario: SciconumScenario,
 
 	@property:SciconumTechDebt
-	val sciconumQuestionIds: Set<Uuid>,
+	val sciconumQuestionIds: List<Uuid>,
 )

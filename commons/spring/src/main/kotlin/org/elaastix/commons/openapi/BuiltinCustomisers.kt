@@ -20,7 +20,6 @@
 package org.elaastix.commons.openapi
 
 import io.swagger.v3.oas.models.media.StringSchema
-import io.swagger.v3.oas.models.media.UUIDSchema
 import kotlinx.serialization.json.Json
 import org.elaastix.commons.data.MaybeUpdate
 import org.elaastix.commons.data.Uuid
@@ -44,7 +43,7 @@ class BuiltinCustomisers(private val json: Json) {
 	fun commonTypesCustomiser(): TypeCustomiser =
 		{ schema, type, _, _, _ ->
 			when (type) {
-				Uuid::class -> UUIDSchema().copyMetaFrom(schema)
+				Uuid::class -> UuidSchema().copyMetaFrom(schema)
 
 				// Note: Sending ULong is risky; JS can only represent them safely up to 53 bits.
 				ULong::class -> schema.apply { format = "uint64" }

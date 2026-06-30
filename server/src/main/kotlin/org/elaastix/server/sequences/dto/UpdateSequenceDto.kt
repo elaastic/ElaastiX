@@ -38,5 +38,5 @@ data class UpdateSequenceDto @SciconumTechDebt constructor(
 	val sciconumScenario: MaybeUpdate<SciconumScenario> = MaybeUpdate.Keep,
 
 	@property:SciconumTechDebt
-	val sciconumQuestionIds: MaybeUpdate<Set<Uuid>> = MaybeUpdate.Keep,
+	val sciconumQuestionIds: MaybeUpdate<List<Uuid>> = MaybeUpdate.Keep,
 )

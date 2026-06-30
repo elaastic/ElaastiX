@@ -30,7 +30,7 @@ import jakarta.persistence.Embeddable
  */
 interface ScalarGradable {
 	/** The scalar grade given to the object. */
-	val absoluteGrade: ScalarGrade?
+	val scalarGrade: ScalarGrade?
 }
 
 /**

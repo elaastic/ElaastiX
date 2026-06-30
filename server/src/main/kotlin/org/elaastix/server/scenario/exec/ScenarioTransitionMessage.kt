@@ -28,7 +28,7 @@ import kotlin.time.Duration
 @Serializable
 @SerialName("org.elaastix.engine.scenario.transition")
 data class ScenarioTransitionMessage(
-	val phase: SciconumScenarioExecutionPhase,
+	val sciconumPhase: SciconumScenarioExecutionPhase,
 	val state: State,
 	val duration: Duration?,
 ) {
