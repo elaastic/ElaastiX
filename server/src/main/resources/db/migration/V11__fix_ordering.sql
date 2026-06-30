@@ -31,6 +31,9 @@ UPDATE assignment_entity_sequences
 	SET sequences_order = 0
 	WHERE sequences_order IS NULL;
 
+ALTER TABLE sequence_entity_sciconum_questions
+	DROP CONSTRAINT pk_sequenceentity_sciconumquestions;
+
 ALTER TABLE assignment_entity_sequences
 	ADD CONSTRAINT pk_assignmententity_sequences PRIMARY KEY (assignment_entity_id, sequences_order);
 
