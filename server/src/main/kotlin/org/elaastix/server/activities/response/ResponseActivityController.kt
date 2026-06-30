@@ -22,10 +22,15 @@ package org.elaastix.server.activities.response
 import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.orElseNotFound
+import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.activities.response.dtos.ResponseSubmitDto
 import org.elaastix.server.core.player.PlayerAction
 import org.elaastix.server.core.player.PlayerController
 import org.elaastix.server.core.player.PlayerQuery
+import org.elaastix.server.scenario.exec.annotation.LearnerSession
+import org.elaastix.server.scenario.exec.annotation.ScenarioSession
+import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
+import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestParam
@@ -45,8 +50,24 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	 * @param id The ID of the question.
 	 * @return The question statement, and available choices for closed questions.
 	 */
-	@PlayerQuery("org.elaastix.response.getQuestion")
+	@PlayerQuery("org.elaastix.response.getQuestion") // TODO: remove?
 	fun getQuestion(@RequestParam id: Uuid) = responseActivityService.findQuestionStatement(id).orElseNotFound()
+
+	/**
+	 * Retrieve the current question statement.
+	 *
+	 * The returned object does not include the expected answer and its explanation.
+	 *
+	 * @param scenarioSession The scenario session.
+	 * @param learnerSession The learner's session.
+	 * @return The question statement, and available choices for closed questions.
+	 */
+	@PlayerQuery("org.elaastix.response.getCurrentQuestion")
+	@OptIn(SciconumTechDebt::class)
+	fun getCurrentQuestion(
+		@ScenarioSession scenarioSession: SciconumScenarioSessionEntity,
+		@LearnerSession learnerSession: SciconumLearnerSessionEntity,
+	) = responseActivityService.findCurrentQuestionStatement(scenarioSession, learnerSession)
 
 	/**
 	 * Submit an answer to a question.
@@ -55,9 +76,25 @@ class ResponseActivityController(private val responseActivityService: ResponseAc
 	 * @throws org.elaastix.commons.exceptions.BadRequestException if the data is invalid.
 	 */
 	@ResponseStatus(HttpStatus.CREATED)
-	@PlayerAction("org.elaastix.response.submitResponse")
+	@PlayerAction("org.elaastix.response.submitResponse") // TODO: remove?
+	@OptIn(SciconumTechDebt::class)
 	fun submitResponse(@RequestBody payload: SubmitAnswerDto) =
 		responseActivityService.submitResponse(payload.questionId, payload.response)
+
+	/**
+	 * Submit an answer to the current question in the scenario question.
+	 *
+	 * @return The created response statement object.
+	 * @throws org.elaastix.commons.exceptions.BadRequestException if the data is invalid.
+	 */
+	@ResponseStatus(HttpStatus.CREATED)
+	@PlayerAction("org.elaastix.response.submitResponseToCurrentQuestion")
+	@OptIn(SciconumTechDebt::class)
+	fun submitResponse(
+		@ScenarioSession scenarioSession: SciconumScenarioSessionEntity,
+		@LearnerSession learnerSession: SciconumLearnerSessionEntity,
+		@RequestBody payload: ResponseSubmitDto,
+	) = responseActivityService.submitResponseToCurrentQuestion(scenarioSession, learnerSession, payload)
 
 	/** Payload for the submitResponse action. */
 	@Serializable

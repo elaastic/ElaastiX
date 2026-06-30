@@ -19,6 +19,7 @@
 
 package org.elaastix.server.scenario.exec.repositories
 
+import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.assignments.AssignmentEntity
@@ -34,6 +35,8 @@ import kotlin.time.Instant
 @Repository
 @SciconumTechDebt
 interface SciconumLearnerSessionRepository : ElaastixRepository<SciconumLearnerSessionEntity> {
+	fun findByIdAndLearner(id: Uuid, learner: UserEntity): SciconumLearnerSessionEntity?
+
 	@Query("FROM SciconumLearnerSessionEntity sls WHERE sls.learner = :learner AND sls.phase != 'END'")
 	fun findAllByLearnerAndNotEnded(learner: UserEntity): List<SciconumLearnerSessionEntity>
 
