@@ -17,36 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec.entities
+package org.elaastix.server.activities.chatting.entities
 
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
 import jakarta.validation.constraints.NotNull
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
 import org.elaastix.server.users.entities.UserEntity
 
+/**
+ * A "throwaway" identity used to anonymise chatters whilst ensuring they have a consistent identity during
+ * the activity.
+ *
+ * Each identity is effectively *single-use*, and a new identity should be generated when creating a new chat-based
+ * activity.
+ */
 @Entity
-@Table(
-	uniqueConstraints = [
-		UniqueConstraint(
-			name = "unique_nick_per_group",
-			columnNames = ["peering_id", "nickname"],
-		),
-	],
-)
-@SciconumTechDebt
-class SciconumChatterEntity(
+class ChatterEntity(
+	/**
+	 * The actual chatter's identity.
+	 */
 	@NotNull
 	@ManyToOne
-	var learner: UserEntity,
+	var chatter: UserEntity,
 
-	@NotNull
-	@ManyToOne
-	var peering: SciconumChatPeeringEntity,
-
+	/**
+	 * The nickname used for this throwaway identity.
+	 */
 	@NotNull
 	var nickname: String,
-) : AbstractEntity()
+) : AbstractMinimalEntity()

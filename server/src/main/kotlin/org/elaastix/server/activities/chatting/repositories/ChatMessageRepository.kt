@@ -17,27 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec.entities
+package org.elaastix.server.activities.chatting.repositories
 
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.ManyToMany
-import jakarta.persistence.ManyToOne
-import jakarta.validation.constraints.NotNull
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.activities.chatting.entities.ChatterEntity
+import org.elaastix.commons.jpa.repository.ElaastixRepository
+import org.elaastix.server.activities.chatting.entities.ChatMessageEntity
+import org.springframework.stereotype.Repository
 
-@Entity
-@SciconumTechDebt
-class SciconumChatPeeringEntity(
-	@NotNull
-	@ManyToOne
-	var scenarioSession: SciconumScenarioSessionEntity,
-
-	@NotNull
-	var sessionRound: UInt,
-
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "peering")
-	var chatters: MutableSet<ChatterEntity>,
-) : AbstractEntity()
+@Repository
+interface ChatMessageRepository : ElaastixRepository<ChatMessageEntity>

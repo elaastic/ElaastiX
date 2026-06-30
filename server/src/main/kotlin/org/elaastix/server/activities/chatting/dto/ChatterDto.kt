@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.activities.chatters.dto
+package org.elaastix.server.activities.chatting.dto
 
 import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.Uuid

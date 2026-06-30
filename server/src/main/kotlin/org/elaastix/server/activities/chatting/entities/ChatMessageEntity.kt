@@ -17,27 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec.entities
+package org.elaastix.server.activities.chatting.entities
 
 import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.ManyToMany
 import jakarta.persistence.ManyToOne
 import jakarta.validation.constraints.NotNull
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.activities.chatting.entities.ChatterEntity
+import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
+import org.elaastix.mm.content.FormattedText
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
+/**
+ * A message sent by a chatter.
+ * Messages sent are considered immutable, akin to traditional IRC chat software.
+ */
 @Entity
-@SciconumTechDebt
-class SciconumChatPeeringEntity(
+class ChatMessageEntity(
+	/**
+	 * The chatter who sent the message.
+	 */
 	@NotNull
 	@ManyToOne
-	var scenarioSession: SciconumScenarioSessionEntity,
+	var chatter: ChatterEntity,
 
+	/**
+	 * The contents of the message.
+	 */
 	@NotNull
-	var sessionRound: UInt,
-
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "peering")
-	var chatters: MutableSet<ChatterEntity>,
-) : AbstractEntity()
+	@JdbcTypeCode(SqlTypes.JSON)
+	var message: FormattedText,
+) : AbstractMinimalEntity()

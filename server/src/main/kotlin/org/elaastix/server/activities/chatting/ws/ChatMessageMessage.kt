@@ -17,27 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec.entities
+package org.elaastix.server.activities.chatting.ws
 
-import jakarta.persistence.Entity
-import jakarta.persistence.FetchType
-import jakarta.persistence.ManyToMany
-import jakarta.persistence.ManyToOne
-import jakarta.validation.constraints.NotNull
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.activities.chatting.entities.ChatterEntity
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.elaastix.mm.content.FormattedText
+import org.elaastix.server.activities.chatting.dto.ChatterDto
 
-@Entity
-@SciconumTechDebt
-class SciconumChatPeeringEntity(
-	@NotNull
-	@ManyToOne
-	var scenarioSession: SciconumScenarioSessionEntity,
+/**
+ * WebSocket message broadcast when a message is sent in the chat.
+ */
+@Serializable
+@SerialName("org.elaastix.chat.message")
+data class ChatMessageMessage(
+	/** The author of the chat message. */
+	val author: ChatterDto,
 
-	@NotNull
-	var sessionRound: UInt,
-
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "peering")
-	var chatters: MutableSet<ChatterEntity>,
-) : AbstractEntity()
+	/** The contents of the message. May be inline-formatted. */
+	val message: FormattedText,
+)

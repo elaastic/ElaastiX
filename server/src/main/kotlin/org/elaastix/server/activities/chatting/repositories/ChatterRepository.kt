@@ -17,28 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec.repositories
+package org.elaastix.server.activities.chatting.repositories
 
 import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.server.activities.chatting.entities.ChatterEntity
 import org.elaastix.server.scenario.exec.entities.SciconumChatPeeringEntity
-import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
-import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
-@SciconumTechDebt
-interface SciconumChatPeeringRepository : ElaastixRepository<SciconumChatPeeringEntity> {
-	@Query(
-		"FROM SciconumChatPeeringEntity cpe " +
-			"INNER JOIN SciconumLearnerSessionEntity lse ON lse.scenarioSession = cpe.scenarioSession " +
-			"INNER JOIN cpe.chatters c " +
-			"WHERE lse = :session " +
-			"AND c.chatter = lse.learner " +
-			"AND cpe.sessionRound = lse.scenarioSession.currentRound",
-	)
-	fun findCurrentOneByLearnerSession(session: SciconumLearnerSessionEntity): SciconumChatPeeringEntity?
-
-	fun findAllByScenarioSession(session: SciconumScenarioSessionEntity): List<SciconumChatPeeringEntity>
+interface ChatterRepository : ElaastixRepository<ChatterEntity> {
+	@SciconumTechDebt
+	@Query("FROM SciconumChatPeeringEntity p INNER JOIN p.chatters c WHERE p = :peering AND c.chatter = :chatter")
+	fun findChatterIdentityOfUserInPeering(chatter: UserEntity, peering: SciconumChatPeeringEntity): ChatterEntity?
 }
