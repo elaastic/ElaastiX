@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController
  * Annotation that conveniently applies the necessary ones for Spring to configure a player controller.
  */
 @Parameter(
+	required = true,
 	name = "sessionId",
 	`in` = ParameterIn.QUERY,
 	description = "ID of the learner session to use for the action.",

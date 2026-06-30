@@ -19,10 +19,13 @@
 
 package org.elaastix.server.scenario.exec.annotation
 
+import io.swagger.v3.oas.annotations.Hidden
+
 /**
  * Annotation flagging an HTTP handler's argument to be resolved with
  * the [org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity].
  */
+@Hidden
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class ScenarioSession
