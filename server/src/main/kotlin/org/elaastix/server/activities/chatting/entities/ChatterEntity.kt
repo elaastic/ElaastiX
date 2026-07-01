@@ -17,17 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package testutils
+package org.elaastix.server.activities.chatting.entities
 
-import io.mockk.every
-import io.mockk.mockk
-import org.elaastix.commons.data.Uuid
+import jakarta.persistence.Entity
+import jakarta.persistence.ManyToOne
+import jakarta.validation.constraints.NotNull
 import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
+import org.elaastix.server.users.entities.UserEntity
 
-inline fun <reified T : AbstractMinimalEntity> mockkEntity(block: T.() -> Unit = {}): Pair<Uuid, T> =
-	Uuid.random().let {
-		it to mockk<T> {
-			every { id } returns it
-			block()
-		}
-	}
+/**
+ * A "throwaway" identity used to anonymise chatters whilst ensuring they have a consistent identity during
+ * the activity.
+ *
+ * Each identity is effectively *single-use*, and a new identity should be generated when creating a new chat-based
+ * activity.
+ */
+@Entity
+class ChatterEntity(
+	/**
+	 * The actual chatter's identity.
+	 */
+	@NotNull
+	@ManyToOne
+	var chatter: UserEntity,
+
+	/**
+	 * The nickname used for this throwaway identity.
+	 */
+	@NotNull
+	var nickname: String,
+) : AbstractMinimalEntity()

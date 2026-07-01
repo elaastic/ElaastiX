@@ -17,17 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package testutils
+package org.elaastix.server.activities.chatting.repositories
 
-import io.mockk.every
-import io.mockk.mockk
-import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
+import org.elaastix.commons.jpa.repository.ElaastixRepository
+import org.elaastix.server.activities.chatting.entities.ChatMessageEntity
+import org.springframework.stereotype.Repository
 
-inline fun <reified T : AbstractMinimalEntity> mockkEntity(block: T.() -> Unit = {}): Pair<Uuid, T> =
-	Uuid.random().let {
-		it to mockk<T> {
-			every { id } returns it
-			block()
-		}
-	}
+@Repository
+interface ChatMessageRepository : ElaastixRepository<ChatMessageEntity>

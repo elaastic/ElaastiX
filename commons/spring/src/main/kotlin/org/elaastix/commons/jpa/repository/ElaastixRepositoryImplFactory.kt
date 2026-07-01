@@ -20,7 +20,7 @@
 package org.elaastix.commons.jpa.repository
 
 import jakarta.persistence.EntityManager
-import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory
 import org.springframework.data.repository.core.RepositoryInformation
 import org.springframework.data.repository.core.RepositoryMetadata
@@ -32,7 +32,7 @@ class ElaastixRepositoryImplFactory(entityManager: EntityManager) : JpaRepositor
 	@Suppress("UNCHECKED_CAST")
 	override fun getTargetRepository(information: RepositoryInformation, entityManager: EntityManager) =
 		ElaastixRepositoryImpl(
-			getEntityInformation(information.domainType as Class<AbstractEntity>),
+			getEntityInformation(information.domainType as Class<AbstractMinimalEntity>),
 			entityManager,
 		)
 

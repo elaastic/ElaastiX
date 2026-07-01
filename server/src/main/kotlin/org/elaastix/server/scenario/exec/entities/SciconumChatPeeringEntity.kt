@@ -26,6 +26,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.validation.constraints.NotNull
 import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.server.activities.chatting.entities.ChatterEntity
 
 @Entity
 @SciconumTechDebt
@@ -37,6 +38,6 @@ class SciconumChatPeeringEntity(
 	@NotNull
 	var sessionRound: UInt,
 
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "peering")
-	var chatters: MutableSet<SciconumChatterEntity>,
+	@ManyToMany(fetch = FetchType.EAGER)
+	var chatters: MutableSet<ChatterEntity>,
 ) : AbstractEntity()

@@ -31,10 +31,12 @@ import org.springframework.stereotype.Repository
 @SciconumTechDebt
 interface SciconumChatPeeringRepository : ElaastixRepository<SciconumChatPeeringEntity> {
 	@Query(
-		"FROM SciconumChatPeeringEntity cpe " +
+		"SELECT cpe FROM SciconumChatPeeringEntity cpe " +
 			"INNER JOIN SciconumLearnerSessionEntity lse ON lse.scenarioSession = cpe.scenarioSession " +
-			"INNER JOIN SciconumChatterEntity ce ON ce.learner = lse.learner AND ce.peering = cpe " +
-			"WHERE lse = :session AND cpe.sessionRound = lse.scenarioSession.currentRound",
+			"INNER JOIN cpe.chatters c " +
+			"WHERE lse = :session " +
+			"AND c.chatter = lse.learner " +
+			"AND cpe.sessionRound = lse.scenarioSession.currentRound",
 	)
 	fun findCurrentOneByLearnerSession(session: SciconumLearnerSessionEntity): SciconumChatPeeringEntity?
 

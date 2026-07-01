@@ -21,17 +21,17 @@ package org.elaastix.commons.jpa.repository
 
 import io.hypersistence.utils.spring.repository.BaseJpaRepository
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
 import org.springframework.data.repository.NoRepositoryBean
 
 /**
  * Specialised Repository type for use in all Elaastix projects.
  * Wrapper around Hypersistence Utils's [BaseJpaRepository].
  *
- * @param T Type of entities managed by the repository. Must be a subclass of [AbstractEntity].
+ * @param T Type of entities managed by the repository. Must be a subclass of [AbstractMinimalEntity].
  */
 @NoRepositoryBean
-interface ElaastixRepository<T : AbstractEntity> : BaseJpaRepository<T, Uuid> {
+interface ElaastixRepository<T : AbstractMinimalEntity> : BaseJpaRepository<T, Uuid> {
 	/**
 	 * Helper to use Kotlin nullability instead of Java's `Optional`, which is more idiomatic.
 	 */
@@ -72,5 +72,5 @@ interface ElaastixRepository<T : AbstractEntity> : BaseJpaRepository<T, Uuid> {
 }
 
 /** Reified helper method. */
-inline fun <T : AbstractEntity, reified U : T> ElaastixRepository<T>.getTypedReferenceById(id: Uuid) =
+inline fun <T : AbstractMinimalEntity, reified U : T> ElaastixRepository<T>.getTypedReferenceById(id: Uuid) =
 	getTypedReferenceById(U::class.java, id)

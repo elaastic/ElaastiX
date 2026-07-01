@@ -22,7 +22,7 @@ package org.elaastix.commons.jpa.repository
 import io.hypersistence.utils.spring.repository.BaseJpaRepositoryImpl
 import jakarta.persistence.EntityManager
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
 import org.springframework.data.jpa.repository.support.JpaEntityInformation
 import org.springframework.transaction.annotation.Transactional
 
@@ -30,7 +30,7 @@ import org.springframework.transaction.annotation.Transactional
  * Concrete repository implementation of [ElaastixRepository].
  * Picked up by Spring Data while setting things up.
  */
-class ElaastixRepositoryImpl<T : AbstractEntity>(
+class ElaastixRepositoryImpl<T : AbstractMinimalEntity>(
 	private val entityInformation: JpaEntityInformation<T, Uuid>,
 	private val entityManager: EntityManager,
 ) : BaseJpaRepositoryImpl<T, Uuid>(entityInformation, entityManager),

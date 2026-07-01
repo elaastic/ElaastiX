@@ -17,36 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec.entities
+package org.elaastix.server.activities.chatting.dto
 
-import jakarta.persistence.Entity
-import jakarta.persistence.ManyToOne
-import jakarta.persistence.Table
-import jakarta.persistence.UniqueConstraint
-import jakarta.validation.constraints.NotNull
-import org.elaastix.commons.jpa.entity.AbstractEntity
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.users.entities.UserEntity
+import kotlinx.serialization.Serializable
+import org.elaastix.commons.data.Uuid
 
-@Entity
-@Table(
-	uniqueConstraints = [
-		UniqueConstraint(
-			name = "unique_nick_per_group",
-			columnNames = ["peering_id", "nickname"],
-		),
-	],
+/**
+ * An anonymous chatter, who has a random UUID and a randomly generated nickname.
+ */
+@Serializable
+data class ChatterDto(
+	/** The randomly generated ID assigned to the chatter. Unique per chat session. */
+	val id: Uuid,
+
+	/** The nickname assigned to the chatter. */
+	val nickname: String,
 )
-@SciconumTechDebt
-class SciconumChatterEntity(
-	@NotNull
-	@ManyToOne
-	var learner: UserEntity,
-
-	@NotNull
-	@ManyToOne
-	var peering: SciconumChatPeeringEntity,
-
-	@NotNull
-	var nickname: String,
-) : AbstractEntity()
