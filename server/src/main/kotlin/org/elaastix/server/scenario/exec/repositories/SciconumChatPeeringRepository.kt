@@ -31,7 +31,7 @@ import org.springframework.stereotype.Repository
 @SciconumTechDebt
 interface SciconumChatPeeringRepository : ElaastixRepository<SciconumChatPeeringEntity> {
 	@Query(
-		"FROM SciconumChatPeeringEntity cpe " +
+		"SELECT cpe FROM SciconumChatPeeringEntity cpe " +
 			"INNER JOIN SciconumLearnerSessionEntity lse ON lse.scenarioSession = cpe.scenarioSession " +
 			"INNER JOIN cpe.chatters c " +
 			"WHERE lse = :session " +

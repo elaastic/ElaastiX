@@ -38,6 +38,6 @@ class SciconumChatPeeringEntity(
 	@NotNull
 	var sessionRound: UInt,
 
-	@ManyToMany(fetch = FetchType.EAGER, mappedBy = "peering")
+	@ManyToMany(fetch = FetchType.EAGER)
 	var chatters: MutableSet<ChatterEntity>,
 ) : AbstractEntity()

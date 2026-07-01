@@ -17,23 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.activities.chatting.repositories
+CREATE TABLE chat_message_entity
+(
+	id         UUID  NOT NULL,
+	chatter_id UUID  NOT NULL,
+	message    JSONB NOT NULL,
+	CONSTRAINT pk_chatmessageentity PRIMARY KEY (id)
+);
 
-import org.elaastix.commons.jpa.repository.ElaastixRepository
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.activities.chatting.entities.ChatterEntity
-import org.elaastix.server.scenario.exec.entities.SciconumChatPeeringEntity
-import org.elaastix.server.users.entities.UserEntity
-import org.springframework.data.jpa.repository.Query
-import org.springframework.stereotype.Repository
+ALTER TABLE sciconum_chatter_entity
+	RENAME TO chatter_entity;
 
-@Repository
-interface ChatterRepository : ElaastixRepository<ChatterEntity> {
-	@SciconumTechDebt
-	@Query(
-		"SELECT c FROM SciconumChatPeeringEntity p " +
-			"INNER JOIN p.chatters c " +
-			"WHERE p = :peering AND c.chatter = :chatter",
-	)
-	fun findChatterIdentityOfUserInPeering(chatter: UserEntity, peering: SciconumChatPeeringEntity): ChatterEntity?
-}
+ALTER TABLE chatter_entity
+	DROP COLUMN updated_at;
+
+ALTER TABLE chatter_entity
+	DROP COLUMN version;
+
+ALTER TABLE chatter_entity
+	DROP COLUMN peering_id;
+
+ALTER TABLE chatter_entity
+	RENAME COLUMN learner_id TO chatter_id;
+
+CREATE TABLE sciconum_chat_peering_entity_chatters
+(
+	sciconum_chat_peering_entity_id UUID NOT NULL,
+	chatters_id                     UUID NOT NULL,
+	CONSTRAINT pk_sciconumchatpeeringentity_chatters PRIMARY KEY (sciconum_chat_peering_entity_id, chatters_id)
+);
