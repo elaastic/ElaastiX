@@ -106,3 +106,9 @@ _gradle *ARGS:
 ij-wsl-clear:
 	rm /tmp/**/*.jar /tmp/**/*.gradle >/dev/null 2>&1 || true
 	rmdir /tmp/* >/dev/null 2>&1 || true
+
+[group('misc')]
+[doc('Configures mise for the current shell session, if mise is not configured in `~/.[shell]rc`')]
+fix-mise:
+	@echo "{{ BOLD + ITALIC + YELLOW }}For a more long-term solution, see {{ UNDERLINE + BLUE }}https://mise.jdx.dev/installing-mise.html#shells{{ NORMAL }}"
+	eval $(mise e)

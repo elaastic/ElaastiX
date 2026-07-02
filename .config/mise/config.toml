@@ -1,4 +1,4 @@
-#:schema https://mise.en.dev/schema/mise.json
+#:schema https://mise.jdx.dev/schema/mise.json
 min_version = "2026.5.15" # Required: registry issues with `pnpm`
 
 [settings]
@@ -13,7 +13,6 @@ actionlint = "latest"
 hk = "latest"
 jq = "latest"
 just = "latest"
-pkl = "latest"
 taplo = "latest"
 typos = "latest"
 zizmor = "latest"
