@@ -21,7 +21,7 @@ services:
       - /tmp
 
   storage:
-    image: docker.io/dxflrs/garage:v2.1.0
+    image: docker.io/dxflrs/garage:v2.3.0
     read_only: true
     volumes:
       - .config/garage/config.toml:/etc/garage.toml
