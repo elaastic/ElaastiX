@@ -20,15 +20,18 @@ local frontend = new Mapping<String, Step> {
 local backend = new Mapping<String, Step> {
 	// If we decide this is too slow, consider using only Ktlint (via Mise)?
 	["detekt"] {
-		local detekt_cmd = "just gradle :detekt detektMain detektTest detektIntegrationTest"
+		// Running type-aware lints is kinda slow, so let's run it on the CI only
+		local detekt_cmd = "just gradle detekt"
 
 		glob = List("**/*.kt", "**/*.kts")
 		check = detekt_cmd
 		check_first = false  // Gradle's too slow for that
 
-		// Detekt is weird and needs multiple passes to fix things
+		// Detekt is weird and needs multiple passes to fix things..? Some fixes generate new problems causing false negatives.
+		// First run is `|| true`'d, so it always does 2 passes and only fails if the 2nd pass is unsuccessful.
+		// This solves some weird situations where the run fails despite the fixes being applied.
 		local _fix = detekt_cmd + " -Pdetekt.fix"
-		fix = _fix + " && " + _fix
+		fix = "(" + _fix + " || true) && " + _fix
 	}
 }
 
@@ -74,7 +77,11 @@ hooks {
 	}
 	["commit-msg"] {
 		steps {
-			["conventional-commits"] = (Builtins.check_conventional_commit)
+			["conventional-commits"] = (Builtins.check_conventional_commit) {
+				// Workaround for https://github.com/jdx/hk/discussions/902
+				// Allows `fixup!`, `amend!`, and `squash!` commits for git autosquashing.
+				check = "./.config/conventional-check.sh {{commit_msg_file}}"
+			}
 		}
 	}
 	["check"] {
