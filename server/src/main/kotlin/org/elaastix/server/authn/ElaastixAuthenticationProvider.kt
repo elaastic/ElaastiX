@@ -24,6 +24,7 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType
 import io.swagger.v3.oas.annotations.security.SecurityScheme
 import org.elaastix.commons.security.Role
 import org.elaastix.server.users.UserRepository
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.access.hierarchicalroles.RoleHierarchy
 import org.springframework.security.authentication.AuthenticationProvider
@@ -53,6 +54,7 @@ class ElaastixAuthenticationProvider(
 	override fun authenticate(authentication: Authentication) =
 		when (authentication) {
 			is DevelopAuthenticationToken -> authenticateDevelop(authentication)
+			is CookieAuthenticationToken -> authenticateCookie(authentication)
 			else -> null // COVERAGE: unreachable
 		}
 
@@ -62,20 +64,31 @@ class ElaastixAuthenticationProvider(
 		val user = userRepository.findByIdOrNull(authentication.uuid)
 			?: throw AccountNotFoundException("User does not exist.")
 
-		return ElaastixAuthentication(
+		return createAuthentication(user, authentication)
+	}
+
+	private fun authenticateCookie(authentication: CookieAuthenticationToken): Authentication {
+		val user = userRepository.findByIdOrNull(authentication.userId)
+			?: throw AccountNotFoundException("User does not exist.")
+
+		return createAuthentication(user, authentication)
+	}
+
+	private fun createAuthentication(user: UserEntity, credential: Authentication) =
+		ElaastixAuthentication(
 			user = user,
-			credentials = authentication,
+			credentials = credential,
 			authenticated = true,
 			authorities = when (user.roles.size) {
 				0 -> roleHierarchy.getReachableGrantedAuthorities(listOf(Role.USER))
 				else -> roleHierarchy.getReachableGrantedAuthorities(user.roles)
 			},
 		)
-	}
 
 	override fun supports(authentication: Class<*>) =
 		when (authentication) {
 			DevelopAuthenticationToken::class.java -> true
+			CookieAuthenticationToken::class.java -> true
 			else -> false
 		}
 }

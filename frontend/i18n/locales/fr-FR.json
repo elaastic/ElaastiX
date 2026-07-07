@@ -52,5 +52,10 @@
 			"str": "{0} (par River Kao sur Unsplash)",
 			"link": "Photo arbitraire d’un chat"
 		}
+	},
+	"login": {
+		"login": "Connexion",
+		"user": "Utilisateur",
+		"description": "Choisir l'utilisateur avec lequel vous voulez vous authentifier"
 	}
 }

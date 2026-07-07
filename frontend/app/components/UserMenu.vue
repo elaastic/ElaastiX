@@ -20,6 +20,8 @@
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
 
+const { $api } = useNuxtApp()
+
 defineProps<{
 	collapsed?: boolean
 }>()
@@ -27,11 +29,35 @@ defineProps<{
 const { locale, locales, setLocale } = useI18n()
 const colorMode = useColorMode()
 
-const user = ref({
-	name: 'Cynthia Rey',
+const { data } = await useApi('/v0/internal/nuxt/context-v1', {
+	watch: false,
 })
 
-const items = computed<DropdownMenuItem[][]>(() => ([
+const userdto = ref<UserAccountDto | null>()
+
+watchEffect(() => {
+	userdto.value = data.value?.currentUser
+})
+
+const isAuthenticated = computed(() => !!userdto.value)
+
+const user = computed(() => ({
+	name: isAuthenticated.value ? 'Auth' : 'Guest',
+}))
+
+async function log() {
+	if (isAuthenticated.value) {
+		await $api('/v1/authn/tmp/logout', {
+			method: 'DELETE',
+		})
+		userdto.value = null
+		return
+	}
+
+	await navigateTo('/login')
+}
+
+const items = computed<DropdownMenuItem[][]>(() => [
 	[
 		{
 			type: 'label',
@@ -103,20 +129,33 @@ const items = computed<DropdownMenuItem[][]>(() => ([
 	],
 	[
 		{
-			label: 'Log out',
-			icon: 'i-lucide-log-out',
-			color: 'error',
+			label: isAuthenticated.value ? 'Log out' : 'Log In',
+			icon: isAuthenticated.value ? 'i-lucide-log-out' : 'i-lucide-log-in',
+			color: isAuthenticated.value ? 'error' : 'neutral',
+			onSelect() {
+				log()
+			},
 		},
 	],
-	[{ type: 'label', class: 'flex flex-col text-center font-thin gap-0 p-0', slot: 'extra' }],
-]))
+	[
+		{
+			type: 'label',
+			class: 'flex flex-col text-center font-thin gap-0 p-0',
+			slot: 'extra',
+		},
+	],
+])
 </script>
 
 <template>
 	<UDropdownMenu
 		:items="items"
 		:content="{ align: 'center', collisionPadding: 12 }"
-		:ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }"
+		:ui="{
+			content: collapsed
+				? 'w-48'
+				: 'w-(--reka-dropdown-menu-trigger-width)',
+		}"
 	>
 		<UButton
 			:label="collapsed ? undefined : 'My account'"

@@ -20,6 +20,9 @@
 package org.elaastix.server.core.infrastructure.bff
 
 import org.elaastix.server.core.infrastructure.bff.dtos.NuxtContextDto
+import org.elaastix.server.users.dtos.UserAccountDto
+import org.elaastix.server.users.entities.UserEntity
+import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -38,15 +41,18 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/internal/nuxt", version = "0+")
 class NuxtConfigController {
+
 	/**
 	 * Get client context information.
 	 *
 	 * @return Context and configuration information needed for the first-party Nuxt webapp.
 	 */
 	@GetMapping("/context-v1")
-	fun getContextVersion1(): NuxtContextDto {
+	fun getContextVersion1(@AuthenticationPrincipal user: UserEntity?): NuxtContextDto {
 		// TODO: pull user from the AuthenticationFacade, pull feature flags config, build a DTO out of it...
 		//       this is mostly just scaffolding for later
-		return NuxtContextDto(emptyList(), null)
+
+		val userDTO = user?.let { UserAccountDto(user.id) }
+		return NuxtContextDto(emptyList(), userDTO)
 	}
 }

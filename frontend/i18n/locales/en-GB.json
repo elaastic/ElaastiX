@@ -52,5 +52,10 @@
 			"str": "{0} (by River Kao on Unsplash)",
 			"link": "Arbitrary photo of a cat"
 		}
+	},
+	"login": {
+		"login": "Login",
+		"user": "User",
+		"description": "Choose the user you want to authenticate as"
 	}
 }
