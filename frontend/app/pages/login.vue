@@ -23,6 +23,8 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 
 const { $api } = useNuxtApp()
 
+const { refresh } = provideAuthentication()
+
 definePageMeta({
 	layout: false,
 })
@@ -53,6 +55,7 @@ async function onSubmit(submission: FormSubmitEvent<Schema>) {
 		},
 	})
 
+	await refresh()
 	await navigateTo('/')
 }
 </script>

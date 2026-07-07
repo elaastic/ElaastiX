@@ -29,21 +29,13 @@ defineProps<{
 const { locale, locales, setLocale } = useI18n()
 const colorMode = useColorMode()
 
-const { data } = await useApi('/v0/internal/nuxt/context-v1', {
-	watch: false,
-})
+const { userAuthenticated, refresh } = provideAuthentication()
 
-const userdto = ref<UserAccountDto | null>()
-
-watchEffect(() => {
-	userdto.value = data.value?.currentUser
-})
-
-const isAuthenticated = computed(() => !!userdto.value)
+const isAuthenticated = computed(() => !!userAuthenticated.value)
 
 const user = computed(() => ({
-	name: isAuthenticated.value ? userdto.value!.firstname : $t('login.guest'),
-	roles: isAuthenticated.value ? userdto.value!.roles.toString() : '',
+	name: isAuthenticated.value ? userAuthenticated.value!.firstname : $t('login.guest'),
+	roles: isAuthenticated.value ? userAuthenticated.value!.roles.toString() : '',
 }))
 
 async function log() {
@@ -51,8 +43,7 @@ async function log() {
 		await $api('/v1/authn/tmp/logout', {
 			method: 'DELETE',
 		})
-		userdto.value = null
-		return
+		return refresh()
 	}
 
 	await navigateTo('/login')

@@ -2,6 +2,7 @@
 import * as locales from '@nuxt/ui/locale'
 
 const { locale } = useI18n()
+createAuthenticationContext()
 const nuxtLocale = computed(() => {
 	switch (locale.value) {
 		case 'fr_fr': return 'fr'
