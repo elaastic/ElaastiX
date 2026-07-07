@@ -55,7 +55,9 @@
 	},
 	"login": {
 		"login": "Login",
+		"logout" : "Log out",
 		"user": "User",
-		"description": "Choose the user you want to authenticate as"
+		"description": "Choose the user you want to authenticate as",
+		"guest": "Guest"
 	}
 }

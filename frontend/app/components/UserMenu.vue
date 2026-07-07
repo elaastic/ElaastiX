@@ -42,7 +42,8 @@ watchEffect(() => {
 const isAuthenticated = computed(() => !!userdto.value)
 
 const user = computed(() => ({
-	name: isAuthenticated.value ? 'Auth' : 'Guest',
+	name: isAuthenticated.value ? userdto.value!.firstname : $t('login.guest'),
+	roles: isAuthenticated.value ? userdto.value!.roles.toString() : '',
 }))
 
 async function log() {
@@ -62,6 +63,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 		{
 			type: 'label',
 			label: user.value.name,
+			description: user.value.roles,
 		},
 	],
 	[
@@ -129,7 +131,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 	],
 	[
 		{
-			label: isAuthenticated.value ? 'Log out' : 'Log In',
+			label: isAuthenticated.value ? $t('login.logout') : $t('login.login'),
 			icon: isAuthenticated.value ? 'i-lucide-log-out' : 'i-lucide-log-in',
 			color: isAuthenticated.value ? 'error' : 'neutral',
 			onSelect() {
@@ -158,7 +160,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 		}"
 	>
 		<UButton
-			:label="collapsed ? undefined : 'My account'"
+			:label="collapsed ? undefined : user.name"
 			leading-icon="i-lucide-user-circle"
 			:trailing-icon="collapsed ? undefined : 'i-lucide-chevrons-up-down'"
 			color="neutral"
