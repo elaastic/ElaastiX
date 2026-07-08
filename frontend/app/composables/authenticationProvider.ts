@@ -25,7 +25,7 @@ export type UserAuthenticated = {
 	refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
 }
 
-const key = Symbol() as InjectionKey<UserAuthenticated>
+export const AuthnContextKey = Symbol() as InjectionKey<UserAuthenticated>
 
 export function provideAuthnContext() {
 	const { data, refresh } = useApi('/v0/internal/nuxt/context-v1', {
@@ -35,7 +35,7 @@ export function provideAuthnContext() {
 	const userAuthenticated = computed<UserAccountDto | null | undefined>(() => data.value?.currentUser)
 	const isAuthenticated = computed(() => (userAuthenticated.value !== null && userAuthenticated.value !== undefined))
 
-	provide(key, {
+	provide(AuthnContextKey, {
 		userAuthenticated,
 		isAuthenticated,
 		refresh,
@@ -43,5 +43,5 @@ export function provideAuthnContext() {
 }
 
 export function useAuthnContext(): UserAuthenticated {
-	return inject(key)!
+	return inject(AuthnContextKey)!
 }

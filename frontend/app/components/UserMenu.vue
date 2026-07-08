@@ -27,7 +27,7 @@ defineProps<{
 	collapsed?: boolean
 }>()
 
-const { locale, locales, setLocale } = useI18n()
+const { locale, locales, setLocale, t } = useI18n()
 const colorMode = useColorMode()
 
 const { isAuthenticated, userAuthenticated, refresh } = useAuthnContext()
@@ -35,7 +35,7 @@ const { isAuthenticated, userAuthenticated, refresh } = useAuthnContext()
 const user = computed(() => {
 	const u = userAuthenticated.value
 	return {
-		name: u?.firstname ?? $t('login.guest'),
+		name: u?.firstname ?? t('login.guest'),
 		roles: u?.roles.toString() ?? '',
 	}
 })
@@ -125,7 +125,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 	],
 	[
 		{
-			label: isAuthenticated.value ? $t('login.logout') : $t('login.login'),
+			label: isAuthenticated.value ? t('login.logout') : t('login.login'),
 			icon: isAuthenticated.value ? 'i-lucide-log-out' : 'i-lucide-log-in',
 			color: isAuthenticated.value ? 'error' : 'neutral',
 			onSelect() {
