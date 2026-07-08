@@ -36,9 +36,9 @@ import org.springframework.web.bind.annotation.RestController
 @Profile("develop")
 @RestController
 @RequestMapping("/authn/tmp", version = "1+")
-class AuthConverter(private val uuidAuthnCookieService: UuidAuthnCookieService) {
+class DevelopAuthToCookieAuth(private val uuidAuthnCookieService: UuidAuthnCookieService) {
 
-	@PostMapping("/convert")
+	@PostMapping("/login")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	fun convertAuthn(@AuthenticationPrincipal user: UserEntity, response: HttpServletResponse) {
 		response.addCookie(uuidAuthnCookieService.createCookie(user.id))

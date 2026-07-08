@@ -21,24 +21,27 @@ import type { AsyncDataExecuteOptions } from '#app/composables/asyncData'
 
 export type UserAuthenticated = {
 	userAuthenticated: ComputedRef<UserAccountDto | null | undefined>
+	isAuthenticated: ComputedRef<boolean>
 	refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
 }
 
 const key = Symbol() as InjectionKey<UserAuthenticated>
 
-export function createAuthenticationContext() {
+export function provideAuthnContext() {
 	const { data, refresh } = useApi('/v0/internal/nuxt/context-v1', {
 		watch: false,
 	})
 
 	const userAuthenticated = computed<UserAccountDto | null | undefined>(() => data.value?.currentUser)
+	const isAuthenticated = computed(() => (userAuthenticated.value !== null && userAuthenticated.value !== undefined))
 
 	provide(key, {
 		userAuthenticated,
+		isAuthenticated,
 		refresh,
 	})
 }
 
-export function provideAuthentication(): UserAuthenticated {
+export function useAuthnContext(): UserAuthenticated {
 	return inject(key)!
 }

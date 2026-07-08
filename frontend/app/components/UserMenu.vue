@@ -19,6 +19,7 @@
 
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
+import { useAuthnContext } from '~/composables/authenticationProvider'
 
 const { $api } = useNuxtApp()
 
@@ -29,24 +30,26 @@ defineProps<{
 const { locale, locales, setLocale } = useI18n()
 const colorMode = useColorMode()
 
-const { userAuthenticated, refresh } = provideAuthentication()
+const { isAuthenticated, userAuthenticated, refresh } = useAuthnContext()
 
-const isAuthenticated = computed(() => !!userAuthenticated.value)
+const user = computed(() => {
+	const u = userAuthenticated.value
+	return {
+		name: u?.firstname ?? $t('login.guest'),
+		roles: u?.roles.toString() ?? '',
+	}
+})
 
-const user = computed(() => ({
-	name: isAuthenticated.value ? userAuthenticated.value!.firstname : $t('login.guest'),
-	roles: isAuthenticated.value ? userAuthenticated.value!.roles.toString() : '',
-}))
-
-async function log() {
+async function logButtonAction() {
+	// Logout action
 	if (isAuthenticated.value) {
 		await $api('/v1/authn/tmp/logout', {
 			method: 'DELETE',
 		})
 		return refresh()
 	}
-
-	await navigateTo('/login')
+	// Login action
+	navigateTo('/login')
 }
 
 const items = computed<DropdownMenuItem[][]>(() => [
@@ -126,7 +129,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 			icon: isAuthenticated.value ? 'i-lucide-log-out' : 'i-lucide-log-in',
 			color: isAuthenticated.value ? 'error' : 'neutral',
 			onSelect() {
-				log()
+				logButtonAction()
 			},
 		},
 	],

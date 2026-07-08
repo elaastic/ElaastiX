@@ -20,10 +20,11 @@
 <script setup lang="ts">
 import * as v from 'valibot'
 import type { FormSubmitEvent } from '@nuxt/ui'
+import { useAuthnContext } from '~/composables/authenticationProvider'
 
 const { $api } = useNuxtApp()
 
-const { refresh } = provideAuthentication()
+const { refresh } = useAuthnContext()
 
 definePageMeta({
 	layout: false,
@@ -48,7 +49,7 @@ const state = reactive({
 async function onSubmit(submission: FormSubmitEvent<Schema>) {
 	const user = submission.data.user
 	const id = users.get(user)
-	await $api(`/v1/authn/tmp/convert`, {
+	await $api(`/v1/authn/tmp/login`, {
 		method: 'POST',
 		headers: {
 			Authorization: `Develop ${id}`,
