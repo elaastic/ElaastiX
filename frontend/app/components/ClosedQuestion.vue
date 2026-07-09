@@ -86,7 +86,7 @@ const response = reactive<Output>({
 
 const options = computed(() => question.choices.map((c, i) => ({ label: c, value: i })))
 const state = computed(() => ({
-	answer: (question.multiple && response.answer?.length > 0) || (!question.multiple && response.answer !== null),
+	answer: (Array.isArray(response.answer) && response.answer.length > 0) || (!Array.isArray(response.answer) && response.answer !== null),
 	selfExplanation: !requestSelfExplanation || response.selfExplanation !== null,
 	confidenceDegree: !confidenceDegreeOptions || response.confidenceDegree !== null,
 }))
