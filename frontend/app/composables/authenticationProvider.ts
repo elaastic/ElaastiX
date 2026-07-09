@@ -20,28 +20,32 @@
 import type { AsyncDataExecuteOptions } from '#app/composables/asyncData'
 
 export type UserAuthenticated = {
-	userAuthenticated: ComputedRef<UserAccountDto | null | undefined>
+	userAuthenticated: Ref<UserAccountDto | null | undefined>
 	isAuthenticated: ComputedRef<boolean>
 	refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
 }
 
-export const AuthnContextKey = Symbol() as InjectionKey<UserAuthenticated>
+export const AuthnContextKey = 'AuthnContextKey'
+
+const useContextController = () => useApi('/v0/internal/nuxt/context-v1')
 
 export function provideAuthnContext() {
-	const { data, refresh } = useApi('/v0/internal/nuxt/context-v1', {
-		watch: false,
-	})
+	const userState = useState<UserAccountDto | null | undefined>(AuthnContextKey, () => undefined)
+	const { data } = useContextController()
 
-	const userAuthenticated = computed<UserAccountDto | null | undefined>(() => data.value?.currentUser)
-	const isAuthenticated = computed(() => (userAuthenticated.value !== null && userAuthenticated.value !== undefined))
-
-	provide(AuthnContextKey, {
-		userAuthenticated,
-		isAuthenticated,
-		refresh,
+	watchEffect(() => {
+		userState.value = data.value?.currentUser
 	})
 }
 
 export function useAuthnContext(): UserAuthenticated {
-	return inject(AuthnContextKey)!
+	const { refresh } = useContextController()
+	const user = useState<UserAccountDto | null | undefined>(AuthnContextKey)
+	const isAuthenticated = computed(() => (user.value !== null && user.value !== undefined))
+
+	return {
+		userAuthenticated: user,
+		isAuthenticated,
+		refresh,
+	}
 }
