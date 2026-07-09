@@ -1,0 +1,257 @@
+/*
+ * Elaastic / ElaastiX - formative assessment system
+ * Copyright (C) 2019  Université de Toulouse and Université Toulouse Capitole.
+ * SPDX-License-Identifier: AGPL-3.0-or-later
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+@font-face {
+	font-family: Latin Modern Math;
+	src: url(~/assets/latin-modern-math.woff2);
+}
+
+.markdown-prose > :first-child {
+	margin-top: 0 !important;
+}
+
+.markdown-prose > :last-child {
+	margin-bottom: 0 !important;
+}
+
+/* SPDX-SnippetBegin */
+/* SPDX-SnippetCopyrightText: Copyright (c) 2021 Pine Wu */
+/* SPDX-SnippetCopyrightText: Copyright (c) 2023 Anthony Fu <https://github.com/antfu> */
+/* SPDX-License-Identifier: MIT */
+
+.markdown-prose pre .indent {
+	display: inline-block;
+	position: relative;
+	left: var(--indent-offset);
+}
+
+.markdown-prose pre .indent:empty {
+	height: 1lh;
+	vertical-align: bottom;
+}
+
+.markdown-prose pre .indent::before {
+	content: '';
+	position: absolute;
+	opacity: 0.15;
+	width: 1px;
+	height: 100%;
+	background-color: currentColor;
+}
+
+
+.markdown-prose pre .indent {
+	display: inline-block;
+	position: relative;
+	left: var(--indent-offset);
+	text-indent: 0;
+}
+
+.markdown-prose pre .indent:empty {
+	height: 1lh;
+	vertical-align: bottom;
+}
+
+.markdown-prose pre .indent::before {
+	content: '';
+	position: absolute;
+	opacity: 0.15;
+	width: 1px;
+	height: 100%;
+	background-color: currentColor;
+}
+
+.markdown-prose pre .highlighted-word {
+	@apply border border-muted bg-muted;
+	padding: 1px 3px;
+	margin: -1px -3px;
+	border-radius: 4px;
+}
+
+.markdown-prose pre .diff {
+	margin: 0 -24px;
+	padding: 0 24px;
+}
+
+.markdown-prose pre .diff.add {
+	background-color: #46e74655 !important;
+}
+
+.markdown-prose pre .diff.remove {
+	background-color: #f7717155 !important;
+}
+
+.markdown-prose pre .line::before {
+	position: absolute;
+	left: 5px;
+}
+
+.markdown-prose pre .diff.add::before {
+	content: "+";
+	color: green;
+}
+
+.markdown-prose pre .diff.remove::before {
+	content: "-";
+	color: red;
+}
+
+.markdown-prose .has-focused .line:not(.focused) {
+    opacity: .7;
+	filter: blur(.095rem);
+    transition: filter .35s, opacity .35s;
+}
+
+.markdown-prose .has-focused:hover .line:not(.focused) {
+    opacity: .85;
+    filter: blur(.005rem);
+}
+
+/* SPDX-SnippetEnd */
+
+/* SPDX-SnippetBegin */
+/* SPDX-SnippetCopyrightText: Copyright (c) 2023 Nuxt */
+/* SPDX-License-Identifier: MIT */
+
+@reference "~/assets/css/main.css";
+
+.markdown-prose a {
+	@apply text-primary border-b border-transparent hover:border-primary font-medium rounded-xs outline-primary/25 focus-visible:outline-3 focus-visible:has-[>code]:outline-0 [&>code]:border-dashed [&>code]:outline-primary/25 focus-visible:[&>code]:outline-3 hover:[&>code]:border-primary hover:[&>code]:text-primary focus-visible:[&>code]:border-primary focus-visible:[&>code]:text-primary transition-colors [&>code]:transition-colors;
+}
+
+.markdown-prose blockquote {
+	@apply border-s-4 border-accented ps-4 italic;
+}
+
+.markdown-prose .markdown-alert {
+	@apply relative block px-4 py-2 rounded-md my-5 last:mb-0 [&_code]:text-xs/5 [&_code]:bg-default [&_pre]:bg-default [&_p]:my-2 [&_ul]:my-2 [&_ol]:my-2 *:last:mb-0! *:first:mt-0! [&_ul]:ps-4.5 [&_ol]:ps-4.5 [&_li]:my-0 transition-colors;
+}
+
+.markdown-alert-title svg {
+	@apply size-4 shrink-0 align-sub me-2 inline-block transition-colors;
+}
+
+.markdown-prose code:not(pre > code) {
+	@apply px-1.5 py-0.5 text-sm font-mono font-medium rounded-md inline-block border border-muted text-highlighted bg-muted;
+}
+
+.markdown-prose pre code {
+	@apply block text-xs/5;
+}
+
+.markdown-prose h1 {
+	@apply text-4xl text-highlighted font-bold mb-8 scroll-mt-[calc(45px+var(--ui-header-height))] lg:scroll-mt-(--ui-header-height);
+}
+
+.markdown-prose :which(h2, h3, h4) {
+	@apply text-highlighted font-bold [&>a]:rounded-sm [&>a]:outline-primary/25 [&>a]:focus-visible:outline-3 [&>a>code]:border-dashed hover:[&>a>code]:border-primary hover:[&>a>code]:text-primary [&>a>code]:font-bold;
+}
+
+.markdown-prose h2 {
+	@apply text-2xl mt-12 mb-6 scroll-mt-[calc(48px+45px+var(--ui-header-height))] lg:scroll-mt-[calc(48px+var(--ui-header-height))] [&>a>code]:text-xl/7;
+}
+
+.markdown-prose h3 {
+	@apply text-xl mt-8 mb-3 scroll-mt-[calc(32px+45px+var(--ui-header-height))] lg:scroll-mt-[calc(32px+var(--ui-header-height))] [&>a>code]:text-lg/6;
+}
+
+.markdown-prose h4 {
+	@apply text-lg mt-6 mb-2 scroll-mt-[calc(24px+45px+var(--ui-header-height))] lg:scroll-mt-[calc(24px+var(--ui-header-height))];
+}
+
+.markdown-prose hr {
+	@apply border-t border-default my-12;
+}
+
+.markdown-prose li {
+	@apply ps-1.5 leading-7 [&>ul]:my-0;
+}
+
+.markdown-prose ol {
+	@apply list-decimal ps-6 my-5 marker:text-muted;
+}
+
+.markdown-prose p {
+	@apply my-5 leading-7 text-pretty;
+}
+
+.markdown-prose ol p {
+	@apply my-0;
+}
+
+.markdown-prose pre {
+	@apply my-5 font-mono text-sm/6 border border-muted bg-muted rounded-md px-4 py-3 whitespace-pre-wrap wrap-break-word overflow-x-auto outline-primary/25 focus-visible:outline-3 focus-visible:border-primary;
+	@apply **:[.line]:block **:[.line.highlighted]:-mx-4 **:[.line.highlighted]:px-4 **:[.line.highlighted]:bg-accented/50!;
+	@apply **:[.line.highlighted.info]:bg-info/15! **:[.line.highlighted.info]:border-l-4 **:[.line.highlighted.info]:border-info;
+	@apply **:[.line.highlighted.warning]:bg-warning/15! **:[.line.highlighted.warning]:border-l-4 **:[.line.highlighted.warning]:border-warning;
+	@apply **:[.line.highlighted.error]:bg-error/15! **:[.line.highlighted.error]:border-l-4 **:[.line.highlighted.error]:border-error;
+}
+
+.markdown-prose pre .highlighted.info::before {
+	@apply text-info;
+	content: "i";
+}
+
+.markdown-prose pre .highlighted.warning::before {
+	@apply text-warning;
+	content: "!";
+}
+
+.markdown-prose pre .highlighted.error::before {
+	@apply text-error;
+	content: "!";
+}
+
+.markdown-prose pre .line:empty::after {
+	content: ' ';
+}
+
+.markdown-prose table {
+	@apply relative my-5 overflow-x-auto rounded-md outline-primary/25 focus-visible:outline-3 w-full border-separate border-spacing-0;
+}
+
+.markdown-prose td {
+	@apply py-3 px-4 text-sm align-top border-e border-b first:border-s border-muted [&_code]:text-xs/5 [&_p]:my-0 [&_p]:leading-6 [&_ul]:my-0 [&_ol]:my-0 [&_ul]:ps-4.5 [&_ol]:ps-4.5 [&_li]:leading-6 [&_li]:my-0.5;
+}
+
+.markdown-prose th {
+	@apply py-3 px-4 font-semibold text-sm border-e border-b first:border-s border-t border-muted;
+}
+
+.markdown-prose thead {
+	@apply bg-muted;
+}
+
+.markdown-prose tr {
+	@apply [&:first-child>th:first-child]:rounded-tl-md [&:first-child>th:last-child]:rounded-tr-md [&:last-child>td:first-child]:rounded-bl-md [&:last-child>td:last-child]:rounded-br-md;
+}
+
+.markdown-prose ul {
+	@apply list-disc ps-6 my-5 marker:text-(--ui-border-accented);
+}
+
+.markdown-prose .footnotes-sep {
+	@apply mb-0;
+}
+
+.markdown-prose .footnotes ol {
+	@apply text-sm my-0.25;
+}
+
+/* SPDX-SnippetEnd */

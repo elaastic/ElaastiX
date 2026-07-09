@@ -17,23 +17,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.boot.autoconfigure
+declare module 'markdown-it-abbr' {
+	export default function (mdit: object)
+}
 
-import org.elaastix.commons.openapi.BuiltinCustomisers
-import org.elaastix.commons.openapi.MaybeUpdateConverter
-import org.elaastix.commons.openapi.OpenApiPostProcessor
-import org.elaastix.commons.openapi.TypeCustomisingConverter
-import org.springframework.boot.autoconfigure.AutoConfiguration
-import org.springframework.context.annotation.Import
+declare module 'markdown-it-sub' {
+	export default function (mdit: object)
+}
 
-/**
- * Autoconfiguration class importing SpringDoc components.
- */
-@AutoConfiguration
-@Import(
-	BuiltinCustomisers::class,
-	MaybeUpdateConverter::class,
-	TypeCustomisingConverter::class,
-	OpenApiPostProcessor::class,
-)
-class SpringdocAutoConfiguration
+declare module 'markdown-it-sup' {
+	export default function (mdit: object)
+}
+
+declare module 'markdown-it-mark' {
+	export default function (mdit: object)
+}

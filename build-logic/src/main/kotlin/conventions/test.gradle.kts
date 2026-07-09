@@ -17,8 +17,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@file:Suppress("unused") // Modern Gradle uses `by xxx`
-
 package conventions
 
 import bom
@@ -59,13 +57,13 @@ testing {
 			}
 		}
 
-		val test by existing(JvmTestSuite::class) {
+		named<JvmTestSuite>("test") {
 			dependencies {
 				implementation(libs.findLibrary("mockk").get())
 				implementation(libs.findLibrary("mockk.bdd").get())
 			}
 		}
 
-		val integrationTest by registering(JvmTestSuite::class)
+		register<JvmTestSuite>("integrationTest")
 	}
 }

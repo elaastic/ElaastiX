@@ -17,17 +17,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.openapi
+import { locales, defaultLocale } from '../config/i18n'
 
-import io.swagger.v3.oas.models.media.Schema
-import kotlin.reflect.KClass
-
-/**
- * Interface for customising data transfer object schemas.
- * All implementors registered as beans will be automatically invoked during schema generation.
- */
-@FunctionalInterface
-fun interface DtoCustomiser {
-	/** The customisation logic. Returns the transformed schema (or [schema]). */
-	fun customise(schema: Schema<*>, clazz: KClass<*>): Schema<*>
-}
+export default defineI18nConfig(() => {
+	return {
+		availableLocales: locales.map(l => l.code),
+		fallbackLocale: defaultLocale,
+		fallbackWarn: true,
+		missingWarn: true,
+	}
+})

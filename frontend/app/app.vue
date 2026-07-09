@@ -2,9 +2,16 @@
 import * as locales from '@nuxt/ui/locale'
 
 const { locale } = useI18n()
+const nuxtLocale = computed(() => {
+	switch (locale.value) {
+		case 'fr_fr': return 'fr'
+		case 'en_gb': return 'en'
+		default: return locale.value
+	}
+})
 
-const lang = computed(() => locales[locale.value].code)
-const dir = computed(() => locales[locale.value].dir)
+const lang = computed(() => locales[nuxtLocale.value].code)
+const dir = computed(() => locales[nuxtLocale.value].dir)
 
 useHead({
 	htmlAttrs: {
@@ -15,7 +22,7 @@ useHead({
 </script>
 
 <template>
-	<UApp :locale="locales[locale]">
+	<UApp :locale="locales[nuxtLocale]">
 		<NuxtLoadingIndicator />
 		<NuxtRouteAnnouncer />
 		<NuxtLayout>

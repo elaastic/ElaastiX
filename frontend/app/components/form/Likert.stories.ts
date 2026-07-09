@@ -17,23 +17,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.boot.autoconfigure
+import type { Meta, StoryObj } from '@nuxtjs/storybook'
 
-import org.elaastix.commons.openapi.BuiltinCustomisers
-import org.elaastix.commons.openapi.MaybeUpdateConverter
-import org.elaastix.commons.openapi.OpenApiPostProcessor
-import org.elaastix.commons.openapi.TypeCustomisingConverter
-import org.springframework.boot.autoconfigure.AutoConfiguration
-import org.springframework.context.annotation.Import
+import Likert, { LikertScaleType } from './Likert.vue'
 
-/**
- * Autoconfiguration class importing SpringDoc components.
- */
-@AutoConfiguration
-@Import(
-	BuiltinCustomisers::class,
-	MaybeUpdateConverter::class,
-	TypeCustomisingConverter::class,
-	OpenApiPostProcessor::class,
-)
-class SpringdocAutoConfiguration
+const meta = {
+	title: 'Form/Likert',
+	component: Likert,
+	tags: ['autodocs'],
+	// Controls generation sucks in monorepos...
+	argTypes: {
+		type: {
+			control: 'select',
+			options: Object.values(LikertScaleType),
+		},
+		points: {
+			control: {
+				type: 'range',
+				min: 3,
+				max: 7,
+			},
+		},
+	},
+} satisfies Meta<typeof Likert>
+
+export default meta
+type Story = StoryObj<typeof meta>
+
+export const AgreementLikert: Story = {
+	args: {
+		type: LikertScaleType.AGREEMENT,
+		points: 5,
+	},
+}
+
+export const ConfidenceLikert: Story = {
+	args: {
+		type: LikertScaleType.CONFIDENCE,
+		points: 4,
+	},
+}

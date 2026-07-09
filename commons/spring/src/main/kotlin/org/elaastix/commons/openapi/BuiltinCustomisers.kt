@@ -19,73 +19,44 @@
 
 package org.elaastix.commons.openapi
 
-import com.fasterxml.jackson.databind.type.CollectionType
-import com.fasterxml.jackson.databind.type.SimpleType
-import io.swagger.v3.oas.models.media.ArraySchema
-import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.media.StringSchema
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import io.swagger.v3.oas.models.media.UUIDSchema
 import kotlinx.serialization.json.Json
+import org.elaastix.commons.data.MaybeUpdate
 import org.elaastix.commons.data.Uuid
-import org.springdoc.core.customizers.PropertyCustomizer
+import org.elaastix.commons.openapi.utils.addRequiredProperty
+import org.elaastix.commons.openapi.utils.copyMetaFrom
+import org.elaastix.commons.openapi.utils.isMemberOfClosedPolymorphicSerde
+import org.elaastix.commons.openapi.utils.isPhantomMemberOfClosedPolymorphicSerde
+import org.elaastix.commons.openapi.utils.markToPrune
+import org.elaastix.commons.openapi.utils.serdeDiscriminator
 import org.springframework.context.annotation.Bean
-import org.springframework.context.annotation.Configuration
-import java.lang.reflect.Type
-import kotlin.reflect.KClass
-import kotlin.reflect.full.findAnnotations
-import kotlin.reflect.full.hasAnnotation
-import kotlin.reflect.full.superclasses
-import kotlin.reflect.jvm.jvmName
+import kotlin.reflect.full.memberProperties
 
 /**
  * Autoconfiguration class importing SpringDoc components.
  */
-@Configuration(proxyBeanMethods = false)
 class BuiltinCustomisers(private val json: Json) {
 	/**
 	 * OpenAPI property customiser setting the schema of well-known types such as [Uuid].
 	 */
 	@Bean
-	fun commonTypesCustomiser(): PropertyCustomizer {
-		fun customiser(schema: Schema<*>?, baseType: Type): Schema<*>? {
-			val type =
-				when (baseType) {
-					is CollectionType ->
-						return (schema ?: ArraySchema()).apply { items = customiser(items, baseType.contentType) }
+	fun commonTypesCustomiser(): TypeCustomiser =
+		{ schema, type, _, _, _ ->
+			when (type) {
+				Uuid::class -> UUIDSchema().copyMetaFrom(schema)
 
-					is SimpleType -> baseType.rawClass
+				// Note: Sending ULong is risky; JS can only represent them safely up to 53 bits.
+				ULong::class -> schema.apply { format = "uint64" }
 
-					else -> baseType
-				}
-
-			return when (type) {
-				Uuid::class.java ->
-					StringSchema().apply {
-						pattern = "[a-zA-Z0-9]{25}"
-						example = schema?.example ?: "02t2razan0q9kzr7gr55oi54j"
-						description = schema?.description
-					}
-
-				// We should not send `(U)Long` over the wire because JavaScript does not deal with them properly.
-				// ULong::class.java ->
-
-				// Would be cool but isn't applied consistently because of Kotlin inlining shenanigans.
-				// We might need to use smth akin to the DtoCustomiser, but this is minor and will have to wait :)
-				// UInt::class.java ->
-				//     IntegerSchema().apply {
-				//         format = "uint32"
-				//     }
+				UInt::class -> schema.apply { format = "uint32" }
 
 				else -> schema
 			}
 		}
 
-		return { schema, type -> customiser(schema, type.type) }
-	}
-
 	/**
-	 * [DtoCustomiser] dealing with Kotlin value class interop.
+	 * [SerializableCustomiser] dealing with Kotlin value class interop.
 	 *
 	 * Kotlin generates synthetic getters with a random suffix for value classes, which appear in the documentation.
 	 * Since Kotlin separates the name and the suffix with a dash and this character cannot be present elsewhere, the
@@ -94,8 +65,8 @@ class BuiltinCustomisers(private val json: Json) {
 	 * See the relevant [documentation](https://kotlinlang.org/docs/inline-classes.html#mangling).
 	 */
 	@Bean
-	fun valueClassInterop(): DtoCustomiser =
-		{ schema, _ ->
+	fun valueClassInterop(): SerializableCustomiser =
+		{ schema, _, _, _, _ ->
 			schema.apply {
 				properties = properties?.mapKeys { (k, _) ->
 					val idx = k.indexOf('-')
@@ -105,44 +76,55 @@ class BuiltinCustomisers(private val json: Json) {
 		}
 
 	/**
-	 * [DtoCustomiser] dealing with Kotlinx Serialization closed polymorphism.
+	 * [SerializableCustomiser] marking properties as required unless their type is [MaybeUpdate].
+	 *
+	 * Complements [org.springdoc.core.customizers.KotlinNullablePropertyCustomizer], which does not update the
+	 * `required` property of the schemas.
+	 */
+	@Bean
+	@Suppress("NestedBlockDepth")
+	fun requiredProperties(): SerializableCustomiser =
+		{ schema, clazz, _, _, _ ->
+			schema.apply {
+				(allOf?.mapNotNull { it.properties?.keys }?.flatten() ?: properties?.keys)?.let { props ->
+					for (property in clazz.memberProperties) {
+						if (
+							property.returnType != MaybeUpdate::class &&
+							props.contains(property.name) &&
+							required?.contains(property.name) != true
+						) {
+							addRequiredItem(property.name)
+						}
+					}
+				}
+			}
+		}
+
+	/**
+	 * [SerializableCustomiser] dealing with Kotlinx Serialization closed polymorphism.
 	 *
 	 * Since these cannot be detected by simple reflection, we need to detect it ourselves.
 	 */
 	@Bean
-	fun kotlinxClosedPolymorphism(): DtoCustomiser =
-		{ schema, clazz ->
+	fun kotlinxClosedPolymorphism(): SerializableCustomiser =
+		{ schema, clazz, _, _, _ ->
 			when {
-				clazz.isClosedPolymorphicSerdeRoot() -> {
-					val possibleTypes = clazz.sealedSubclasses
-						.filter { !it.isAbstract }
-						.map { it.serdeDiscriminator }
-
-					schema.addProperty(
-						json.configuration.classDiscriminator,
-						StringSchema().apply {
-							enum = possibleTypes
-							description = "Discriminator field of the union type"
-						},
-					)
+				clazz.isPhantomMemberOfClosedPolymorphicSerde() -> {
+					schema.markToPrune()
+					schema
 				}
 
 				clazz.isMemberOfClosedPolymorphicSerde() -> {
-					schema.addProperty(
+					schema.addRequiredProperty(
 						json.configuration.classDiscriminator,
-						StringSchema().apply { setConst(clazz.serdeDiscriminator) },
+						StringSchema().apply {
+							description = "Discriminator property. Must be present to identify the type among discriminated unions."
+							setConst(clazz.serdeDiscriminator)
+						},
 					)
 				}
 
 				else -> schema
 			}
 		}
-
-	private fun KClass<*>.isClosedPolymorphicSerdeRoot(): Boolean = isSealed && hasAnnotation<Serializable>()
-
-	private fun KClass<*>.isMemberOfClosedPolymorphicSerde(): Boolean =
-		superclasses.any { isClosedPolymorphicSerdeRoot() || it.isMemberOfClosedPolymorphicSerde() }
-
-	private val KClass<*>.serdeDiscriminator: String
-		get() = findAnnotations<SerialName>().firstOrNull()?.value ?: jvmName
 }

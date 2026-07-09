@@ -17,6 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { defaultLocale, locales } from './config/i18n'
+
 export default defineNuxtConfig({
 	modules: [
 		'@nuxt/eslint',
@@ -53,6 +55,35 @@ export default defineNuxtConfig({
 		},
 	},
 
+	vite: {
+		optimizeDeps: {
+			include: [
+				'valibot',
+				// Markdown
+				'markdown-exit',
+				'markdown-it-abbr',
+				'markdown-it-anchor',
+				'markdown-it-footnote',
+				'markdown-it-github-alerts',
+				'markdown-it-mark',
+				'markdown-it-sub',
+				'markdown-it-sup',
+				// Math
+				'temml',
+				'markdown-it-math/no-default-renderer',
+				'temml/contrib/copy-tex/copy-tex.js',
+				// Code highlighting
+				'shiki/core',
+				'shiki/bundle/full',
+				'shiki/engine/javascript',
+				'@shikijs/markdown-exit/core',
+				'@shikijs/transformers',
+				'@shikijs/themes/github-dark',
+				'@shikijs/themes/github-light',
+			],
+		},
+	},
+
 	eslint: {
 		config: {
 			stylistic: {
@@ -64,11 +95,8 @@ export default defineNuxtConfig({
 	},
 
 	i18n: {
-		defaultLocale: 'en',
-		locales: [
-			{ code: 'en', name: 'English', language: 'en-GB', file: 'en.json' },
-			{ code: 'fr', name: 'Français', language: 'fr-FR', file: 'fr.json' },
-		],
+		locales: locales,
+		defaultLocale: defaultLocale,
 		strategy: 'no_prefix',
 	},
 

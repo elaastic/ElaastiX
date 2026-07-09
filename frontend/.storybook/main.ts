@@ -21,8 +21,8 @@ function getRealVuePath(): string | undefined {
 
 const config: StorybookConfig = {
 	stories: [
-		'../app/components/**/*.mdx',
-		'../app/components/**/*.stories.@(js|jsx|ts|tsx|mdx)',
+		'../app/@(components|lib)/**/*.mdx',
+		'../app/@(components|lib)/**/*.stories.@(js|jsx|ts|tsx|mdx)',
 	],
 	addons: [
 		'@storybook/addon-a11y',

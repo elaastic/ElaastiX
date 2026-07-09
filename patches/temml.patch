@@ -1,0 +1,16 @@
+diff --git a/dist/Temml-Latin-Modern.css b/dist/Temml-Latin-Modern.css
+index ff93060629519491f1cc10eef3189e1e60dc3d3e..0edc26621e9e10d93a87c9b2208b502e286a26cb 100644
+--- a/dist/Temml-Latin-Modern.css
++++ b/dist/Temml-Latin-Modern.css
+@@ -19,11 +19,6 @@ @font-face {
+   font-style: normal;
+ }
+
+-@font-face {
+-  font-family: Latin Modern Math;
+-  src: url('./latinmodernmath.woff2');
+-}
+-
+ math {
+   font-style: normal;
+   font-weight: normal;

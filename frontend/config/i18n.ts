@@ -17,23 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.commons.boot.autoconfigure
+import type { Locale } from 'vue-i18n'
+import type { LocaleObject } from '@nuxtjs/i18n'
 
-import org.elaastix.commons.openapi.BuiltinCustomisers
-import org.elaastix.commons.openapi.MaybeUpdateConverter
-import org.elaastix.commons.openapi.OpenApiPostProcessor
-import org.elaastix.commons.openapi.TypeCustomisingConverter
-import org.springframework.boot.autoconfigure.AutoConfiguration
-import org.springframework.context.annotation.Import
+export const defaultLocale: Locale = 'fr_fr'
 
-/**
- * Autoconfiguration class importing SpringDoc components.
- */
-@AutoConfiguration
-@Import(
-	BuiltinCustomisers::class,
-	MaybeUpdateConverter::class,
-	TypeCustomisingConverter::class,
-	OpenApiPostProcessor::class,
-)
-class SpringdocAutoConfiguration
+export const locales: LocaleObject[] = [
+	{
+		code: 'en_gb',
+		file: 'en-GB.json',
+		name: 'English',
+	},
+	{
+		code: 'fr_fr',
+		file: 'fr-FR.json',
+		name: 'Français',
+	},
+]
