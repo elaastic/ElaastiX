@@ -40,15 +40,14 @@ const user = computed(() => {
 	}
 })
 
-async function logButtonAction() {
-	// Logout action
-	if (isAuthenticated.value) {
-		await $api('/v1/authn/tmp/logout', {
-			method: 'DELETE',
-		})
-		return refresh()
-	}
-	// Login action
+async function logoutAction() {
+	await $api('/v1/authn/tmp/logout', {
+		method: 'DELETE',
+	})
+	await refresh()
+}
+
+function loginAction() {
 	navigateTo('/login')
 }
 
@@ -129,7 +128,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 			icon: isAuthenticated.value ? 'i-lucide-log-out' : 'i-lucide-log-in',
 			color: isAuthenticated.value ? 'error' : 'neutral',
 			onSelect() {
-				logButtonAction()
+				return isAuthenticated.value ? logoutAction() : loginAction()
 			},
 		},
 	],
