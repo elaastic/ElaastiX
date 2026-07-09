@@ -79,14 +79,14 @@ const schema = computed(() => {
 })
 
 const response = reactive<Output>({
-	answer: null,
+	answer: question.multiple ? [] : null,
 	selfExplanation: null,
 	confidenceDegree: null,
 })
 
 const options = computed(() => question.choices.map((c, i) => ({ label: c, value: i })))
 const state = computed(() => ({
-	answer: response.answer !== null,
+	answer: (question.multiple && response.answer.length > 0) || (!question.multiple && response.answer !== null),
 	selfExplanation: !requestSelfExplanation || response.selfExplanation !== null,
 	confidenceDegree: !confidenceDegreeOptions || response.confidenceDegree !== null,
 }))
