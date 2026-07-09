@@ -21,6 +21,8 @@ package org.elaastix.server.users.dtos
 
 import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.Uuid
+import org.elaastix.commons.security.Role
+import org.elaastix.server.users.entities.UserEntity
 
 /**
  * A user account. Holds all profile-related information and limited
@@ -29,4 +31,47 @@ import org.elaastix.commons.data.Uuid
 data class UserAccountDto(
 	/** The user's unique ID. */
 	val id: Uuid,
-)
+
+	val firstname: String,
+
+	val lastname: String,
+
+	val email: String,
+
+	val roles: Array<Role>,
+) {
+	override fun equals(other: Any?): Boolean {
+		if (this === other) return true
+		if (javaClass != other?.javaClass) return false
+
+		other as UserAccountDto
+
+		if (id != other.id) return false
+		if (firstname != other.firstname) return false
+		if (lastname != other.lastname) return false
+		if (email != other.email) return false
+		if (!roles.contentEquals(other.roles)) return false
+
+		return true
+	}
+
+	override fun hashCode(): Int {
+		var result = id.hashCode()
+		result = 31 * result + firstname.hashCode()
+		result = 31 * result + lastname.hashCode()
+		result = 31 * result + email.hashCode()
+		result = 31 * result + roles.contentHashCode()
+		return result
+	}
+
+	companion object {
+		fun fromEntity(user: UserEntity): UserAccountDto =
+			UserAccountDto(
+				id = user.id,
+				firstname = user.firstName,
+				lastname = user.lastName,
+				email = user.email ?: "",
+				roles = user.roles.toTypedArray(),
+			)
+	}
+}

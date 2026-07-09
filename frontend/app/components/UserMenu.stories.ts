@@ -20,6 +20,7 @@
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
 
 import UserMenu from './UserMenu.vue'
+import { AuthnContextKey } from '~/composables/authenticationProvider'
 
 const meta = {
 	title: 'Sidebar/UserMenu',
@@ -30,6 +31,44 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const UserMenuStory: Story = {
+export const Logout: Story = {
 	args: {},
+	decorators: [
+		() => ({
+			setup() {
+				provide(AuthnContextKey, {
+					isAuthenticated: computed(() => false),
+					userAuthenticated: computed(() => {
+						return undefined
+					}),
+					refresh: () => new Promise<void>(() => console.log('Mocked Refresh triggered')),
+				})
+			},
+			template: '<story />',
+		}),
+	],
+}
+
+export const Login: Story = {
+	args: {},
+	decorators: [
+		() => ({
+			setup() {
+				provide(AuthnContextKey, {
+					isAuthenticated: computed(() => true),
+					userAuthenticated: computed(() => {
+						return {
+							id: 'ee',
+							firstname: 'Franck',
+							lastname: 'Silvestre',
+							email: 'franck.silvestre.com',
+							roles: ['ADMIN', 'WRITER'],
+						} as UserAccountDto
+					}),
+					refresh: () => new Promise<void>(() => console.log('Mocked Refresh triggered')),
+				})
+			},
+			template: '<story />',
+		}),
+	],
 }
