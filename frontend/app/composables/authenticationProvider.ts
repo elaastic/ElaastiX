@@ -25,12 +25,12 @@ export type UserAuthenticated = {
 	refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
 }
 
-export const AuthnContextKey = 'AuthnContextKey'
+export const STATE_AUTHN_KEY = 'authn'
 
 const useContextController = () => useApi('/v0/internal/nuxt/context-v1')
 
 export function initAuthnContext() {
-	const userState = useState<UserAccountDto | null | undefined>(AuthnContextKey, () => undefined)
+	const userState = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY, () => undefined)
 	const { data } = useContextController()
 
 	watchEffect(() => {
@@ -40,7 +40,7 @@ export function initAuthnContext() {
 
 export function useAuthnContext(): UserAuthenticated {
 	const { refresh } = useContextController()
-	const user = useState<UserAccountDto | null | undefined>(AuthnContextKey)
+	const user = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
 	const isAuthenticated = computed(() => (user.value !== null && user.value !== undefined))
 
 	return {
