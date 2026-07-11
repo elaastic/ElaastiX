@@ -29,7 +29,7 @@ export const AuthnContextKey = 'AuthnContextKey'
 
 const useContextController = () => useApi('/v0/internal/nuxt/context-v1')
 
-export function provideAuthnContext() {
+export function initAuthnContext() {
 	const userState = useState<UserAccountDto | null | undefined>(AuthnContextKey, () => undefined)
 	const { data } = useContextController()
 
