@@ -22,7 +22,7 @@ package org.elaastix.server.scenario.exec
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.core.player.PlayerAction
-import org.elaastix.server.core.player.PlayerController
+import org.elaastix.server.core.player.PlayerSystemController
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.ResponseStatus
 /**
  * Engine-level operations controlling the execution of a sequence session.
  */
-@PlayerController
+@PlayerSystemController
 @SciconumTechDebt
 class ExecutionController(private val scenarioExecutionService: ScenarioExecutionService) {
 	/**

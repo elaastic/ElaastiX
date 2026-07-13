@@ -99,4 +99,7 @@ object UuidSerializer : KSerializer<KtUuid> {
 
 		return fromByteArray(bytes)
 	}
+
+	/** Attempts to parse a base-36 encoded string into a Uuid. */
+	fun KtUuid.Companion.tryFromBase36(str: String) = runCatching { fromBase36(str) }
 }
