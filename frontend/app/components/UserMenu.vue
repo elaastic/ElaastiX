@@ -30,15 +30,7 @@ defineProps<{
 const { locale, locales, setLocale, t } = useI18n()
 const colorMode = useColorMode()
 
-const { isAuthenticated, userAuthenticated, refresh } = useAuthnContext()
-
-const user = computed(() => {
-	const u = userAuthenticated.value
-	return {
-		name: u?.firstname ?? t('login.guest'),
-		roles: u?.roles.toString() ?? '',
-	}
-})
+const { isAuthenticated, displayUser, refresh } = useAuthnContext()
 
 async function logoutAction() {
 	await $api('/v1/authn/tmp/logout', {
@@ -55,8 +47,8 @@ const items = computed<DropdownMenuItem[][]>(() => [
 	[
 		{
 			type: 'label',
-			label: user.value.name,
-			description: user.value.roles,
+			label: displayUser.value.name,
+			description: displayUser.value.roles,
 		},
 	],
 	[
@@ -153,7 +145,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 		}"
 	>
 		<UButton
-			:label="collapsed ? undefined : user.name"
+			:label="collapsed ? undefined : displayUser.name"
 			leading-icon="i-lucide-user-circle"
 			:trailing-icon="collapsed ? undefined : 'i-lucide-chevrons-up-down'"
 			color="neutral"
