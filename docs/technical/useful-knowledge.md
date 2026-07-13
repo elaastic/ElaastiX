@@ -2,6 +2,41 @@
 Unsorted entries of miscellaneous information that someone at some point decided was useful enough to be written here.
 Think of it as the unwritten wisdom of the project, except it's actually written.
 
+## Managing migrations
+The "proper" way to deal with migrations in the project is to use IntelliJ's JPA Buddy tool. First, make sure to sync
+the state of the database by going to the `Database` panel and hitting the `Refresh` button.
+
+Then, go to any entity class file. In the gutter on the `class xxxEntity` line, there should be an `Entity actions`
+icon: click it. Alternatively, move the text cursor to that line and press `Alt+Enter`.
+
+Select `Flyway Migration...`. Edit the scope (left column, last form item, the pencil icon). Select all entities
+**EXCEPT**: `AbstractAuditable`, `AbstractPersistable`, `ChangelogMapping`, `DefaultChangelog`,
+`DefaultTrackingModifiedEntitiesChangelog`, `TrackingModifiedEntitiesChangelogMapping`. That's kind of annoying
+but IJ picks them up despite us not making use of them.
+
+Review the generated migrations. Make sure the `NOT NULL` constraints are all present, that it didn't miss important
+details, and that overall everything seems to be in order. It may sometimes propose tweaks on the migration by merging
+certain operations, transforming a `DROP TABLE + CREATE TABLE` into a rename, providing a value for new non-nullable
+columns or columns that become non-nullable, etc. If there's a light bulb on an operation, it means there's optional
+tweaks that can be applied.
+
+If IJ picks up elements that are undesirable (e.g. it tries to drop a `NOT NULL` constraint that was manually added
+because it failed to pick up `@NotNull`), mark it as explicitly ignored and commit the changes to the tracked settings
+file in `.idea`.
+
+### Nullability constraints shenanigans
+- While `@NotBlank` is supposed to imply `@NotNull` per the Jakarta Persistence standard, IJ does not generate `NOT NULL`.
+  You need to use both `@NotBlank @NotNull`.
+
+- Sometimes IJ gets a bit confused and doesn't register the `@NotNull` annotation. In that case, add it manually to the
+  migration, launch the server to apply the migration, refresh the database, and then re-run the migration generation
+  steps. IJ should generate a migration that drops the `NOT NULL` constraint: mark the change as ignored. Then, commit
+  the tracked config file in `.idea` along with the migration.
+
+- When adding a new non-nullable column, or when adding a non-null constraint on a column, **it is important to `UPDATE`
+  existing rows with a non-null value prior to applying the constraint**. Generally, JPAB's migration utility will
+  have an option to specify a default value when generating the migration on the relevant change item.
+
 ## Using generics in abstract entities
 It's fine and actually pretty nice to use once you dare go head first with it. Remember to:
 - Use single-letter bounds, or names that start with T (or else it might cause mapping clashes when generating diffs)
@@ -186,7 +221,7 @@ Unicode currently does and may do in the future to accommodate complex compositi
 ### String length is a mess
 HOWEVER. That's not the end of the story. That would be too simple wouldn't it?
 
-Remember what I said about the string length being 25 or 11 depending on the platform's encoding? Yeah so if we use
+Remember what I said about the string length being 25 or 11 depending on the platform's encoding? Yeah, so if we use
 Valibot's length validation gates, we'll run into this exact mismatch case since JavaScript specifies strings to be
 UTF-16, while the JVM uses UTF-8 encoding. Who knew measuring text is *that* exiting!!
 
