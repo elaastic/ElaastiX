@@ -20,11 +20,11 @@
 <script setup lang="ts">
 import * as v from 'valibot'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { useAuthnContext } from '~/composables/authenticationProvider'
+import { useAuthnContext } from '~/composables/authn.service'
 
 const { $api } = useNuxtApp()
-
 const { refresh } = useAuthnContext()
+const { query } = useRoute()
 
 definePageMeta({
 	layout: false,
@@ -46,6 +46,15 @@ const state = reactive({
 	user: items.value[0]!,
 })
 
+function redirectToTheCorrectPage() {
+	if (typeof query.pageAsked === 'string') {
+		navigateTo(query.pageAsked)
+		return
+	}
+
+	navigateTo('/')
+}
+
 async function onSubmit(submission: FormSubmitEvent<Schema>) {
 	const user = submission.data.user
 	const id = users.get(user)
@@ -57,7 +66,7 @@ async function onSubmit(submission: FormSubmitEvent<Schema>) {
 	})
 
 	await refresh()
-	await navigateTo('/')
+	redirectToTheCorrectPage()
 }
 </script>
 

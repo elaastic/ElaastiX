@@ -18,9 +18,10 @@
  */
 
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
+import { useState } from '#app'
 
 import UserMenu from './UserMenu.vue'
-import { AuthnContextKey } from '~/composables/authenticationProvider'
+import { STATE_AUTHN_KEY } from '~/composables/authn.service'
 
 const meta = {
 	title: 'Sidebar/UserMenu',
@@ -36,13 +37,8 @@ export const Logout: Story = {
 	decorators: [
 		() => ({
 			setup() {
-				provide(AuthnContextKey, {
-					isAuthenticated: computed(() => false),
-					userAuthenticated: computed(() => {
-						return undefined
-					}),
-					refresh: () => new Promise<void>(() => console.log('Mocked Refresh triggered')),
-				})
+				const user = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
+				user.value = undefined
 			},
 			template: '<story />',
 		}),
@@ -54,19 +50,14 @@ export const Login: Story = {
 	decorators: [
 		() => ({
 			setup() {
-				provide(AuthnContextKey, {
-					isAuthenticated: computed(() => true),
-					userAuthenticated: computed(() => {
-						return {
-							id: 'ee',
-							firstname: 'Franck',
-							lastname: 'Silvestre',
-							email: 'franck.silvestre.com',
-							roles: ['ADMIN', 'WRITER'],
-						} as UserAccountDto
-					}),
-					refresh: () => new Promise<void>(() => console.log('Mocked Refresh triggered')),
-				})
+				const user = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
+				user.value = {
+					id: 'ee',
+					firstname: 'Franck',
+					lastname: 'Silvestre',
+					email: 'franck.silvestre.com',
+					roles: ['ADMIN', 'WRITER'],
+				} as UserAccountDto
 			},
 			template: '<story />',
 		}),

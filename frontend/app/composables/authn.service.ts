@@ -17,31 +17,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import type { AsyncDataExecuteOptions } from '#app/composables/asyncData'
+export const STATE_AUTHN_KEY = 'authn'
 
-export type UserAuthenticated = {
-	userAuthenticated: ComputedRef<UserAccountDto | null | undefined>
-	isAuthenticated: ComputedRef<boolean>
-	refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
+const useContextController = () => useApi('/v0/internal/nuxt/context-v1')
+
+export function initAuthnContext() {
+	const currentUser = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY, () => undefined)
+	const { data } = useContextController()
+
+	watch(data, (context) => {
+		currentUser.value = context?.currentUser
+	}, { immediate: true })
 }
 
-export const AuthnContextKey = Symbol() as InjectionKey<UserAuthenticated>
+export function useAuthnContext() {
+	const { t } = useI18n()
+	const { refresh } = useContextController()
+	const currentUser = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
+	const isAuthenticated = computed(() => !!currentUser.value)
 
-export function provideAuthnContext() {
-	const { data, refresh } = useApi('/v0/internal/nuxt/context-v1', {
-		watch: false,
-	})
+	const displayUser = computed(() => ({
+		name: currentUser.value?.firstname ?? t('login.guest'),
+		roles: currentUser.value?.roles.join(', ') ?? '',
+	}))
 
-	const userAuthenticated = computed<UserAccountDto | null | undefined>(() => data.value?.currentUser)
-	const isAuthenticated = computed(() => (userAuthenticated.value !== null && userAuthenticated.value !== undefined))
-
-	provide(AuthnContextKey, {
-		userAuthenticated,
+	return {
+		user: currentUser,
+		displayUser,
 		isAuthenticated,
 		refresh,
-	})
-}
-
-export function useAuthnContext(): UserAuthenticated {
-	return inject(AuthnContextKey)!
+	}
 }
