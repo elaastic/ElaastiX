@@ -19,7 +19,7 @@
 
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
-import { useAuthnContext } from '~/composables/authenticationProvider'
+import { useAuthnContext } from '~/composables/authn.service'
 
 const { $api } = useNuxtApp()
 

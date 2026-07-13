@@ -21,7 +21,7 @@ import type { Meta, StoryObj } from '@nuxtjs/storybook'
 import { useState } from '#app'
 
 import UserMenu from './UserMenu.vue'
-import { STATE_AUTHN_KEY } from '~/composables/authenticationProvider'
+import { STATE_AUTHN_KEY } from '~/composables/authn.service'
 
 const meta = {
 	title: 'Sidebar/UserMenu',

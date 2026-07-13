@@ -20,7 +20,7 @@
 <script setup lang="ts">
 import * as v from 'valibot'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { useAuthnContext } from '~/composables/authenticationProvider'
+import { useAuthnContext } from '~/composables/authn.service'
 
 const { $api } = useNuxtApp()
 const { refresh } = useAuthnContext()

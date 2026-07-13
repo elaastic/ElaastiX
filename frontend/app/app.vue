@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import * as locales from '@nuxt/ui/locale'
-import { initAuthnContext } from '~/composables/authenticationProvider'
+import { initAuthnContext } from '~/composables/authn.service'
 
 const { locale } = useI18n()
 initAuthnContext()
