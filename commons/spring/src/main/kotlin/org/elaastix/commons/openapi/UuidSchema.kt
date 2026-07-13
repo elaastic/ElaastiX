@@ -17,18 +17,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.ws.events
+package org.elaastix.commons.openapi
 
-import org.springframework.context.ApplicationEvent
-import org.springframework.web.socket.CloseStatus
-import org.springframework.web.socket.WebSocketSession
+import io.swagger.v3.oas.models.media.Schema
+import io.swagger.v3.oas.models.media.StringSchema
+import org.elaastix.commons.data.Uuid
 
 /**
- * Fired when a client disconnects from the real-time WebSocket.
- *
- * @param source The object on which the event initially occurred or with which the event is associated.
- * @property session The WebSocket session.
- * @property status The close code the connection was closed with.
+ * Specialised form of [StringSchema] for UUIDs serialised in Base36.
  */
-class WebSocketDisconnectEvent(source: Any, val session: WebSocketSession, val status: CloseStatus) :
-	ApplicationEvent(source)
+class UuidSchema : Schema<Uuid>("string", null) {
+	companion object {
+		/** Regex pattern of UUIDs in Base36. */
+		const val PATTERN = "[a-zA-Z0-9]{25}"
+	}
+
+	override fun getPattern() = PATTERN
+	override fun getFormat() = null
+
+	override fun setPattern(pattern: String?) = throw UnsupportedOperationException()
+	override fun pattern(pattern: String?) = throw UnsupportedOperationException()
+
+	override fun setFormat(pattern: String?) = throw UnsupportedOperationException()
+	override fun format(pattern: String?) = throw UnsupportedOperationException()
+}

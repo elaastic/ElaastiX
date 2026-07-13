@@ -34,7 +34,8 @@ import kotlin.time.Instant
 @Repository
 @SciconumTechDebt
 interface SciconumLearnerSessionRepository : ElaastixRepository<SciconumLearnerSessionEntity> {
-	fun findAllByLearner(learner: UserEntity): List<SciconumLearnerSessionEntity>
+	@Query("FROM SciconumLearnerSessionEntity sls WHERE sls.learner = :learner AND sls.phase != 'END'")
+	fun findAllByLearnerAndNotEnded(learner: UserEntity): List<SciconumLearnerSessionEntity>
 
 	@Query(
 		"FROM SciconumLearnerSessionEntity sls " +

@@ -17,18 +17,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.ws.events
+ALTER TABLE sequence_entity_sciconum_questions
+	ADD sciconum_questions_order INTEGER;
 
-import org.springframework.context.ApplicationEvent
-import org.springframework.web.socket.CloseStatus
-import org.springframework.web.socket.WebSocketSession
+ALTER TABLE assignment_entity_sequences
+	ADD sequences_order INTEGER;
 
-/**
- * Fired when a client disconnects from the real-time WebSocket.
- *
- * @param source The object on which the event initially occurred or with which the event is associated.
- * @property session The WebSocket session.
- * @property status The close code the connection was closed with.
- */
-class WebSocketDisconnectEvent(source: Any, val session: WebSocketSession, val status: CloseStatus) :
-	ApplicationEvent(source)
+UPDATE sequence_entity_sciconum_questions
+	SET sciconum_questions_order = 0
+	WHERE sciconum_questions_order IS NULL;
+
+UPDATE assignment_entity_sequences
+	SET sequences_order = 0
+	WHERE sequences_order IS NULL;
+
+ALTER TABLE sequence_entity_sciconum_questions
+	DROP CONSTRAINT pk_sequenceentity_sciconumquestions;
+
+ALTER TABLE assignment_entity_sequences
+	ADD CONSTRAINT pk_assignmententity_sequences PRIMARY KEY (assignment_entity_id, sequences_order);
+
+ALTER TABLE sequence_entity_sciconum_questions
+	ADD CONSTRAINT pk_sequenceentity_sciconumquestions PRIMARY KEY (sciconum_sequence_entity_id, sciconum_questions_order);

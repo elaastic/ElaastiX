@@ -48,16 +48,17 @@ class WebSocketHandler(
 	}
 
 	override fun afterConnectionEstablished(session: WebSocketSession) {
-		LOGGER.debug("Connection ${session.id} opened")
+		val user = getAuthenticatedUser()
+		LOGGER.debug("Connection ${session.id} opened (User: ${user.id})")
 		val safeSession = ConcurrentWebSocketSessionDecorator(session, SESSION_STALL_LIMIT, SESSION_BUFFER_LIMIT)
-		sessionHolder.registerSession(session)
-		applicationEventPublisher.publishEvent(WebSocketConnectEvent(this, getAuthenticatedUser(), safeSession))
+		sessionHolder.registerSession(session, user.id)
+		applicationEventPublisher.publishEvent(WebSocketConnectEvent(this, user, safeSession))
 	}
 
 	override fun afterConnectionClosed(session: WebSocketSession, status: CloseStatus) {
 		LOGGER.debug("Connection ${session.id} closed: $status")
 		sessionHolder.unregisterSession(session)
-		applicationEventPublisher.publishEvent(WebSocketDisconnectEvent(this, getAuthenticatedUser(), session, status))
+		applicationEventPublisher.publishEvent(WebSocketDisconnectEvent(this, session, status))
 	}
 
 	override fun handleTransportError(session: WebSocketSession, exception: Throwable) {

@@ -34,18 +34,23 @@ import kotlin.time.DurationUnit
  * represents a session learners are a part of.
  */
 class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
+	typealias UserId = Uuid
+	typealias BroadcastScope = Uuid
+
 	companion object {
 		private val LOGGER = LogFactory.getLog(WebSocketSessionHolder::class.java)
 	}
 
 	private val sessions = mutableMapOf<String, WebSocketSession>()
-	private val broadcastScopes = mutableMapOf<Uuid, MutableSet<String>>().withDefault { mutableSetOf() }
+	private val userSessions = mutableMapOf<UserId, MutableSet<String>>().withDefault { mutableSetOf() }
+	private val broadcastScopes = mutableMapOf<BroadcastScope, MutableSet<String>>().withDefault { mutableSetOf() }
 
 	/**
 	 * Registers a WebSocket session. Mandatory in order to assign the session to broadcast scopes.
 	 * Must be unregistered via [unregisterSession] when disconnecting!
 	 */
-	fun registerSession(session: WebSocketSession) {
+	fun registerSession(session: WebSocketSession, owner: UserId) {
+		userSessions.getValue(owner).add(session.id)
 		sessions[session.id] = session
 	}
 
@@ -53,6 +58,7 @@ class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
 	 * Un-registers a WebSocket session. Failing to unregister a session is a memory leak!
 	 */
 	fun unregisterSession(session: WebSocketSession) {
+		userSessions.values.forEach { it.remove(session.id) }
 		broadcastScopes.values.forEach { it.remove(session.id) }
 		sessions.remove(session.id)
 	}
@@ -61,7 +67,7 @@ class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
 	 * Assigns a session to a broadcast scope.
 	 * Once assigned to a broadcast scope, the session will receive events broadcast to the scope.
 	 */
-	fun assignToBroadcastScope(session: WebSocketSession, scope: Uuid) {
+	fun assignToBroadcastScope(session: WebSocketSession, scope: BroadcastScope) {
 		broadcastScopes.getValue(scope).add(session.id)
 	}
 
@@ -70,9 +76,23 @@ class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
 	 *
 	 * Note: it is not necessarily to explicitly unassign sessions prior to unregistering them.
 	 */
-	fun unassignToBroadcastScope(session: WebSocketSession, scope: Uuid) {
+	fun unassignToBroadcastScope(session: WebSocketSession, scope: BroadcastScope) {
 		broadcastScopes.getValue(scope).remove(session.id)
 	}
+
+	/**
+	 * Disbands the broadcast scope, unsubscribing all sessions from receiving events for the scope.
+	 */
+	fun disbandBroadcastScope(scope: BroadcastScope) {
+		broadcastScopes.remove(scope)
+	}
+
+	/**
+	 * Retrieves all sessions of a given user.
+	 *
+	 * A user may have multiple tabs open, so there is a possibility that the number of sessions is greater than 1.
+	 */
+	fun getSessionsOfUser(userId: UserId) = userSessions.getValue(userId).mapNotNull { sessions[it] }
 
 	/**
 	 * Retrieves all sessions that are part of the given broadcast scope.
@@ -80,7 +100,7 @@ class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
 	 * Sessions should all be opened, but consumers should guard against stale sessions being returned in case of
 	 * bugs or clients disconnecting in between the retrieval of the set and the actual use of the session object.
 	 */
-	fun getSessionsInBroadcastScope(scope: Uuid) = broadcastScopes.getValue(scope).mapNotNull { sessions[it] }
+	fun getSessionsInBroadcastScope(scope: BroadcastScope) = broadcastScopes.getValue(scope).mapNotNull { sessions[it] }
 
 	override fun gc() {
 		LOGGER.debug("Starting garbage collection.")
@@ -114,6 +134,20 @@ class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
 
 			if (removedScopes > 0u) {
 				LOGGER.debug("Garbage collector purged $removedScopes unused scopes.")
+			}
+
+			var removedUserSets = 0u
+			val userSessionsIterator = userSessions.iterator()
+			while (userSessionsIterator.hasNext()) {
+				val (_, item) = userSessionsIterator.next()
+				if (item.isEmpty()) {
+					userSessionsIterator.remove()
+					removedUserSets++
+				}
+			}
+
+			if (removedUserSets > 0u) {
+				LOGGER.debug("Garbage collector purged $removedUserSets unused user session mapping holders.")
 			}
 		}
 

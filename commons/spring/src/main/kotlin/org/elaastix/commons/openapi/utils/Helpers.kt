@@ -26,7 +26,7 @@ import io.swagger.v3.oas.models.media.Schema
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlin.reflect.KClass
-import kotlin.reflect.full.findAnnotations
+import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.full.superclasses
 import kotlin.reflect.jvm.jvmName
@@ -52,7 +52,7 @@ internal fun KClass<*>.isMemberOfClosedPolymorphicSerde(): Boolean =
  * Value of the discriminator field if the type is part of a sealed hierarchy of [Serializable].
  */
 internal val KClass<*>.serdeDiscriminator: String
-	get() = findAnnotations<SerialName>().firstOrNull()?.value ?: jvmName
+	get() = findAnnotation<SerialName>()?.value ?: jvmName
 
 /**
  * Resolves the schema using the next resolver in the chain. Returns `null` if there is no resolver left to try.

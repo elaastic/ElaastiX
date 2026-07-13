@@ -27,30 +27,53 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
 
+/**
+ * Engine-level operations controlling the execution of a sequence session.
+ */
 @PlayerController
 @SciconumTechDebt
 class ExecutionController(private val scenarioExecutionService: ScenarioExecutionService) {
+	/**
+	 * Start a SCICONUM sequence session.
+	 *
+	 * @see [ScenarioExecutionService.startSequenceScenarioSessionById]
+	 */
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PlayerAction("org.elaastix.platform.startSciconumScenarioSession")
-	fun startSciconumSequence(@RequestParam scenarioSessionId: Uuid) {
+	@PlayerAction("org.elaastix.engine.startSciconumScenarioSession")
+	fun startSciconumSequenceSession(@RequestParam scenarioSessionId: Uuid) {
 		scenarioExecutionService.startSequenceScenarioSessionById(scenarioSessionId)
 	}
 
+	/**
+	 * Pause a SCICONUM sequence session.
+	 *
+	 * @see [ScenarioExecutionService.pauseSequenceScenarioSessionById]
+	 */
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PlayerAction("org.elaastix.platform.pauseSciconumScenarioSession")
-	fun pauseSciconumSequence(@RequestParam scenarioSessionId: Uuid) {
+	@PlayerAction("org.elaastix.engine.pauseSciconumScenarioSession")
+	fun pauseSciconumSequenceSession(@RequestParam scenarioSessionId: Uuid) {
 		scenarioExecutionService.pauseSequenceScenarioSessionById(scenarioSessionId)
 	}
 
+	/**
+	 * Start a SCICONUM sequence session.
+	 *
+	 * @see [ScenarioExecutionService.resumeSequenceScenarioSessionById]
+	 */
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PlayerAction("org.elaastix.platform.resumeSciconumScenarioSession")
-	fun resumeSciconumSequence(@RequestParam scenarioSessionId: Uuid) {
+	@PlayerAction("org.elaastix.engine.resumeSciconumScenarioSession")
+	fun resumeSciconumSequenceSession(@RequestParam scenarioSessionId: Uuid) {
 		scenarioExecutionService.resumeSequenceScenarioSessionById(scenarioSessionId)
 	}
 
+	/**
+	 * Start a SCICONUM sequence session.
+	 *
+	 * @see [ScenarioExecutionService.resetSequenceScenarioSessionById]
+	 */
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PlayerAction("org.elaastix.platform.resetSciconumScenarioSession")
-	fun resetSciconumSequence(@RequestParam scenarioSessionId: Uuid) {
+	@PlayerAction("org.elaastix.engine.resetSciconumScenarioSession")
+	fun resetSciconumSequenceSession(@RequestParam scenarioSessionId: Uuid) {
 		scenarioExecutionService.resetSequenceScenarioSessionById(scenarioSessionId)
 	}
 }

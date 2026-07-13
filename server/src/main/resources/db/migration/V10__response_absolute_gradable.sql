@@ -17,18 +17,5 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.ws.events
-
-import org.springframework.context.ApplicationEvent
-import org.springframework.web.socket.CloseStatus
-import org.springframework.web.socket.WebSocketSession
-
-/**
- * Fired when a client disconnects from the real-time WebSocket.
- *
- * @param source The object on which the event initially occurred or with which the event is associated.
- * @property session The WebSocket session.
- * @property status The close code the connection was closed with.
- */
-class WebSocketDisconnectEvent(source: Any, val session: WebSocketSession, val status: CloseStatus) :
-	ApplicationEvent(source)
+ALTER TABLE response_entity
+	ADD absolute_grade VARCHAR(255);

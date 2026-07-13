@@ -27,7 +27,7 @@ import org.elaastix.commons.mapSet
 import org.elaastix.commons.orElseNotFound
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
-import org.elaastix.commons.toRefSet
+import org.elaastix.commons.toRefList
 import org.elaastix.server.activities.response.ResponseActivityService.Companion.toDto
 import org.elaastix.server.activities.response.entities.QuestionEntity
 import org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection
@@ -109,7 +109,7 @@ class SequenceService(
 			SciconumSequenceEntity(
 				name = dto.name,
 				sciconumScenario = dto.sciconumScenario,
-				sciconumQuestions = dto.sciconumQuestionIds.toRefSet(questionRepository),
+				sciconumQuestions = dto.sciconumQuestionIds.toRefList(questionRepository),
 			),
 		)
 
@@ -133,7 +133,7 @@ class SequenceService(
 
 			dto.name.takeIfUpdated { name = it }
 			dto.sciconumScenario.takeIfUpdated { sciconumScenario = it }
-			dto.sciconumQuestionIds.takeIfUpdated { sciconumQuestions = it.toRefSet(questionRepository) }
+			dto.sciconumQuestionIds.takeIfUpdated { sciconumQuestions = it.toRefList(questionRepository) }
 		}
 
 		return entity.orElseNotFound().toDto()

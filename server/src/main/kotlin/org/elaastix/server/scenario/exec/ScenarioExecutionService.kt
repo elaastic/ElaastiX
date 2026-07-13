@@ -32,6 +32,7 @@ import org.elaastix.server.scenario.SciconumScenario
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
 import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository
 import org.springframework.scheduling.TaskScheduler
+import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
@@ -55,6 +56,7 @@ class ScenarioExecutionService(
 	private val transactionTemplate: TransactionTemplate,
 	private val sciconumScenarioSessionRepository: SciconumScenarioSessionRepository,
 	private val sciconumLearnerSessionRepository: SciconumLearnerSessionRepository,
+	private val webSocketSessionBinderService: WebSocketSessionBinderService,
 	private val webSocketEventPublisher: WebSocketEventPublisher,
 	private val clock: Clock,
 ) {
@@ -66,7 +68,15 @@ class ScenarioExecutionService(
 
 	/**
 	 * Resumes execution of scenario sessions, in case the server has been restarted or crashed.
+	 *
+	 * Caution: this method does not perform WebSocket session binding, as it runs under the assumption it only runs
+	 * after the server experienced total availability loss. In these circumstances, clients reconnecting to the server
+	 * will be bound as expected at connect time.
+	 *
+	 * In other words, a session that is to be restored by this recovery mechanism is a session that is already in
+	 * progress, and clients connecting to the real-time endpoint automatically get bound to them at connect time.
 	 */
+	@Async
 	@Transactional
 	fun restoreRunningScenarioSessions() {
 		val ongoingSessions = sciconumScenarioSessionRepository.findAllByNextPhaseAtNotNullAndPausedAtNull()
@@ -83,6 +93,8 @@ class ScenarioExecutionService(
 	fun startSequenceScenarioSessionById(scenarioSessionId: Uuid) {
 		val session = sciconumScenarioSessionRepository.findById(scenarioSessionId).orElseNotFound()
 		validate(session.phase == Phase.PENDING) { "The session is already in progress." }
+
+		webSocketSessionBinderService.bindBroadcastScopesForSciconumSequenceSession(session)
 		session.tick()
 	}
 
@@ -125,8 +137,8 @@ class ScenarioExecutionService(
 	@RequiresRole(Role.WRITER)
 	fun resetSequenceScenarioSessionById(scenarioSessionId: Uuid) {
 		val session = sciconumScenarioSessionRepository.findById(scenarioSessionId).orElseNotFound()
-
 		validate(session.phase != Phase.PENDING) { "The session has not started." }
+		validate(session.phase != Phase.END) { "The session has already ended." }
 
 		// TODO: delete all produced content
 		session.apply {
@@ -136,6 +148,7 @@ class ScenarioExecutionService(
 			currentRound = 0u
 		}
 
+		webSocketSessionBinderService.freeBroadcastScopesOfSession(session)
 		session.dispatchTransition()
 		session.scheduleTick()
 	}
@@ -187,7 +200,11 @@ class ScenarioExecutionService(
 
 			Phase.FEEDBACK -> {
 				when (++currentRound) {
-					sequence.sciconumQuestions.size.toUInt() -> transition(Phase.END, null)
+					sequence.sciconumQuestions.size.toUInt() -> {
+						webSocketSessionBinderService.freeBroadcastScopesOfSession(this)
+						transition(Phase.END, null)
+					}
+
 					else -> transition(Phase.QUESTION, constants.ANSWER_PHASE_DURATION)
 				}
 			}

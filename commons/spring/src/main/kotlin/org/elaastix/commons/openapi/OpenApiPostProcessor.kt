@@ -27,19 +27,16 @@ import io.swagger.v3.oas.models.Paths
 import io.swagger.v3.oas.models.headers.Header
 import io.swagger.v3.oas.models.media.ComposedSchema
 import io.swagger.v3.oas.models.media.Content
-import io.swagger.v3.oas.models.media.Discriminator
 import io.swagger.v3.oas.models.media.MediaType
 import io.swagger.v3.oas.models.media.Schema
 import io.swagger.v3.oas.models.parameters.Parameter
 import io.swagger.v3.oas.models.parameters.RequestBody
 import io.swagger.v3.oas.models.responses.ApiResponse
 import io.swagger.v3.oas.models.responses.ApiResponses
-import kotlinx.serialization.json.Json
 import org.elaastix.commons.openapi.utils.copyMetaFromTypeCompatible
 import org.elaastix.commons.openapi.utils.hasExtension
 import org.elaastix.commons.openapi.utils.isSumOrProductType
 import org.elaastix.commons.openapi.utils.resolve
-import org.elaastix.commons.openapi.utils.resolveProperties
 import org.springdoc.core.customizers.OpenApiCustomizer
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.contract
@@ -49,7 +46,7 @@ import kotlin.contracts.contract
  * Gets rid of undesired schemas from closed polymorphisms, and collapses empty composites.
  */
 @Suppress("TooManyFunctions")
-class OpenApiPostProcessor(private val json: Json) : OpenApiCustomizer {
+class OpenApiPostProcessor : OpenApiCustomizer {
 	companion object {
 		/** Marker to apply as an extension, for the post-processor to clean it up. */
 		internal const val MARKER_TO_PRUNE = "___PRUNE___"
@@ -87,10 +84,12 @@ class OpenApiPostProcessor(private val json: Json) : OpenApiCustomizer {
 			}
 		}
 
-		val discriminator = json.configuration.classDiscriminator
-		if (!schema?.oneOf.isNullOrEmpty() && spec.resolveProperties(schema).contains(discriminator)) {
-			schema.discriminator = Discriminator().apply { propertyName = discriminator }
-		}
+		// While this would be best practice, `openapi-typescript` struggles with it.
+		//
+		// val discriminator = json.configuration.classDiscriminator
+		// if (!schema?.oneOf.isNullOrEmpty() && spec.resolveProperties(schema).contains(discriminator)) {
+		// 	schema.discriminator = Discriminator().apply { propertyName = discriminator }
+		// }
 
 		// Fix: SpringDoc botches nullable types for sum types and product types
 		if (schema?.types?.contains("null") == true && schema.isSumOrProductType()) {
@@ -149,7 +148,17 @@ class OpenApiPostProcessor(private val json: Json) : OpenApiCustomizer {
 
 	@JvmName("process4")
 	private fun Operation.process(spec: OpenAPI) =
-		also {
+		also { _ ->
+			// Little polish on the description and summary.
+			// Gets rid of the period on the summary, and removes the duplicate summary text from the description.
+			summary = summary?.trimEnd('.')
+			description = description?.let {
+				when (val idx = it.indexOf("\n\n")) {
+					-1 -> null
+					else -> it.substring(idx).trim().ifEmpty { null }
+				}
+			}
+
 			parameters = parameters?.process(spec)
 			requestBody = requestBody?.process(spec)
 			responses = responses?.process(spec)

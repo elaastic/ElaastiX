@@ -24,12 +24,13 @@ import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.ManyToMany
+import jakarta.persistence.OrderColumn
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.activities.response.entities.QuestionEntity
 import org.elaastix.server.scenario.SciconumScenario
 
 @Entity
-@SciconumTechDebt
+@SciconumTechDebt("This shouldn't be named sequence but subject instead.")
 class SciconumSequenceEntity(
 	name: String,
 
@@ -41,9 +42,10 @@ class SciconumSequenceEntity(
 	var sciconumScenario: SciconumScenario,
 
 	/**
-	 * Question for the SCICONUM sequence.
+	 * Questions for the SCICONUM sequence.
 	 */
-	@property:SciconumTechDebt
+	@property:SciconumTechDebt("This is smelly asf, and we should instead use an explicit intermediary")
+	@OrderColumn
 	@ManyToMany(fetch = FetchType.EAGER)
-	var sciconumQuestions: MutableSet<QuestionEntity>,
+	var sciconumQuestions: MutableList<QuestionEntity>,
 ) : SequenceEntity(name)

@@ -34,8 +34,8 @@ export const SingleChoice: Story = {
 	args: {
 		question: {
 			id: '0000000000000000000000000',
-			$type: 'ClosedQuestionStatementDto',
-			statement: { $type: 'MarkdownContent', content: 'What is the best multipurpose operating system?' },
+			$type: 'ClosedQuestion',
+			statement: { $type: 'Markdown', content: 'What is the best multipurpose operating system?' },
 			multiple: false,
 			choices: [
 				{ $type: 'PlainText', content: 'Linux' },
@@ -51,14 +51,14 @@ export const MultipleChoice: Story = {
 	args: {
 		question: {
 			id: '0000000000000000000000000',
-			$type: 'ClosedQuestionStatementDto',
-			statement: { $type: 'MarkdownContent', content: '**TRUE OR FALSE**. Software written in Haskell is guaranteed to have no side-effects.' },
+			$type: 'ClosedQuestion',
+			statement: { $type: 'Markdown', content: '**TRUE OR FALSE**. Software written in Haskell is guaranteed to have no side-effects.' },
 			multiple: true,
 			choices: [
-				{ $type: 'MarkdownText', content: '**TRUE**. Haskell is a functional programming language, and therefore pure' },
-				{ $type: 'MarkdownText', content: '**FALSE**. It is impossible to write side-effect-free code' },
-				{ $type: 'MarkdownText', content: '**TRUE**. No one run Haskell software, and therefore no side-effect ever occurs' },
-				{ $type: 'MarkdownText', content: '**FALSE**. Haskell wraps "impure" logic using monadic structures' },
+				{ $type: 'MarkdownInline', content: '**TRUE**. Haskell is a functional programming language, and therefore pure' },
+				{ $type: 'MarkdownInline', content: '**FALSE**. It is impossible to write side-effect-free code' },
+				{ $type: 'MarkdownInline', content: '**TRUE**. No one run Haskell software, and therefore no side-effect ever occurs' },
+				{ $type: 'MarkdownInline', content: '**FALSE**. Haskell wraps "impure" logic using monadic structures' },
 			],
 		},
 	},

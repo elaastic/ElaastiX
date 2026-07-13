@@ -31,4 +31,9 @@ import kotlinx.serialization.Serializable
  */
 @Serializable
 @SerialName("MarkdownInline")
-data class MarkdownText(val content: String) : FormattedText
+data class MarkdownText(val content: String) : FormattedText {
+	override fun isEmpty() = content.isEmpty()
+	override fun isBlank() = content.isBlank()
+	override fun isNotEmpty() = content.isNotEmpty()
+	override fun isNotBlank() = content.isNotBlank()
+}
