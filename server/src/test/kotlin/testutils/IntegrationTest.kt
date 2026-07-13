@@ -21,7 +21,7 @@ package testutils
 
 import jakarta.persistence.EntityManager
 import net.datafaker.Faker
-import org.elaastix.commons.jpa.entity.AbstractEntity
+import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
 import org.elaastix.commons.toIsoStringSecondPrecise
 import org.elaastix.commons.truncate
 import org.junit.jupiter.api.BeforeEach
@@ -66,12 +66,12 @@ abstract class IntegrationTest {
 		this.testInfo = testInfo
 	}
 
-	fun <T : AbstractEntity> T.persist() = also { tx.execute { em.persist(this) } }
+	fun <T : AbstractMinimalEntity> T.persist() = also { tx.execute { em.persist(this) } }
 
-	fun <T : AbstractEntity> T.freshCopy(): T = em.find(this::class.java, id)
+	fun <T : AbstractMinimalEntity> T.freshCopy(): T = em.find(this::class.java, id)
 
-	fun <T : AbstractEntity> Iterable<T>.freshCopies(): List<T> = map { em.find(it::class.java, it.id) }
-	fun <T : AbstractEntity> Array<T>.freshCopies(): List<T> = map { em.find(it::class.java, it.id) }
+	fun <T : AbstractMinimalEntity> Iterable<T>.freshCopies(): List<T> = map { em.find(it::class.java, it.id) }
+	fun <T : AbstractMinimalEntity> Array<T>.freshCopies(): List<T> = map { em.find(it::class.java, it.id) }
 
 	fun makeRecognisableName(): String {
 		// Target maximum length: 64

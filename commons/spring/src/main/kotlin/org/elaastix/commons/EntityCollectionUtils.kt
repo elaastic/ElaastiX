@@ -20,58 +20,58 @@
 package org.elaastix.commons
 
 import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.jpa.repository.ElaastixRepository
+import org.elaastix.commons.jpa.entity.AbstractMinimalEntity as MinimalEntity
 
 /** Maps a set of [Uuid] to a set of entities. */
-fun <T : AbstractEntity> Set<Uuid>.toRefSet(repo: ElaastixRepository<T>): MutableSet<T> {
+fun <T : MinimalEntity> Set<Uuid>.toRefSet(repo: ElaastixRepository<T>): MutableSet<T> {
 	val set = LinkedHashSet<T>(this.size)
 	for (id in this) set.add(repo.getReferenceById(id))
 	return set
 }
 
 /** Maps a list of [Uuid] to a list of entities. */
-fun <T : AbstractEntity> List<Uuid>.toRefList(repo: ElaastixRepository<T>): MutableList<T> {
+fun <T : MinimalEntity> List<Uuid>.toRefList(repo: ElaastixRepository<T>): MutableList<T> {
 	val list = ArrayList<T>(this.size)
 	for (id in this) list.add(repo.getReferenceById(id))
 	return list
 }
 
 /** Maps a set of [Uuid] to a set of typed entities. */
-fun <U : T, T : AbstractEntity> Set<Uuid>.toTypedRefSet(cls: Class<U>, repo: ElaastixRepository<T>): MutableSet<U> {
+fun <U : T, T : MinimalEntity> Set<Uuid>.toTypedRefSet(cls: Class<U>, repo: ElaastixRepository<T>): MutableSet<U> {
 	val set = LinkedHashSet<U>(this.size)
 	for (id in this) set.add(repo.getTypedReferenceById(cls, id))
 	return set
 }
 
 /** Maps a list of [Uuid] to a list of typed entities. */
-fun <U : T, T : AbstractEntity> List<Uuid>.toTypedRefList(cls: Class<U>, repo: ElaastixRepository<T>): MutableList<U> {
+fun <U : T, T : MinimalEntity> List<Uuid>.toTypedRefList(cls: Class<U>, repo: ElaastixRepository<T>): MutableList<U> {
 	val list = ArrayList<U>(this.size)
 	for (id in this) list.add(repo.getTypedReferenceById(cls, id))
 	return list
 }
 
 /** Reified variant of [toTypedRefSet]. */
-inline fun <reified U : T, T : AbstractEntity> Set<Uuid>.toTypedRefSet(repo: ElaastixRepository<T>): MutableSet<U> =
+inline fun <reified U : T, T : MinimalEntity> Set<Uuid>.toTypedRefSet(repo: ElaastixRepository<T>): MutableSet<U> =
 	toTypedRefSet(U::class.java, repo)
 
 /** Reified variant of [toTypedRefList]. */
-inline fun <reified U : T, T : AbstractEntity> List<Uuid>.toTypedRefList(repo: ElaastixRepository<T>): MutableList<U> =
+inline fun <reified U : T, T : MinimalEntity> List<Uuid>.toTypedRefList(repo: ElaastixRepository<T>): MutableList<U> =
 	toTypedRefList(U::class.java, repo)
 
-/** Maps a set of [AbstractEntity] to a set of [Uuid]. */
-fun Set<AbstractEntity>.toUuidSet(): Set<Uuid> {
+/** Maps a set of [MinimalEntity] to a set of [Uuid]. */
+fun Set<MinimalEntity>.toUuidSet(): Set<Uuid> {
 	val set = LinkedHashSet<Uuid>(this.size)
 	for (entity in this) set.add(entity.id)
 	return set
 }
 
-/** Maps a list of [AbstractEntity] to a list of [Uuid]. */
-fun List<AbstractEntity>.toUuidList(): List<Uuid> {
+/** Maps a list of [MinimalEntity] to a list of [Uuid]. */
+fun List<MinimalEntity>.toUuidList(): List<Uuid> {
 	val list = ArrayList<Uuid>(this.size)
 	for (entity in this) list.add(entity.id)
 	return list
 }
 
-/** Transforms an iterable object of [AbstractEntity] to a map keyed by their ID. */
-fun Iterable<AbstractEntity>.toMap() = associate { it.id to it }
+/** Transforms an iterable object of [MinimalEntity] to a map keyed by their ID. */
+fun Iterable<MinimalEntity>.toMap() = associate { it.id to it }

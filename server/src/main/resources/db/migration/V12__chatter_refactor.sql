@@ -17,19 +17,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.activities.chatters.dto
+CREATE TABLE chat_message_entity
+(
+	id         UUID  NOT NULL,
+	chatter_id UUID  NOT NULL,
+	message    JSONB NOT NULL,
+	CONSTRAINT pk_chatmessageentity PRIMARY KEY (id)
+);
 
-import kotlinx.serialization.Serializable
-import org.elaastix.commons.data.Uuid
+ALTER TABLE sciconum_chatter_entity
+	RENAME TO chatter_entity;
 
-/**
- * An anonymous chatter, who has a random UUID and a randomly generated nickname.
- */
-@Serializable
-data class ChatterDto(
-	/** The randomly generated ID assigned to the chatter. Unique per chat session. */
-	val id: Uuid,
+ALTER TABLE chatter_entity
+	DROP COLUMN updated_at;
 
-	/** The nickname assigned to the chatter. */
-	val nickname: String,
-)
+ALTER TABLE chatter_entity
+	DROP COLUMN version;
+
+ALTER TABLE chatter_entity
+	DROP COLUMN peering_id;
+
+ALTER TABLE chatter_entity
+	RENAME COLUMN learner_id TO chatter_id;
+
+CREATE TABLE sciconum_chat_peering_entity_chatters
+(
+	sciconum_chat_peering_entity_id UUID NOT NULL,
+	chatters_id                     UUID NOT NULL,
+	CONSTRAINT pk_sciconumchatpeeringentity_chatters PRIMARY KEY (sciconum_chat_peering_entity_id, chatters_id)
+);

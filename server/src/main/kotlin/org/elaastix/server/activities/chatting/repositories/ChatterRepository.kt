@@ -17,17 +17,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package testutils
+package org.elaastix.server.activities.chatting.repositories
 
-import io.mockk.every
-import io.mockk.mockk
-import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
+import org.elaastix.commons.jpa.repository.ElaastixRepository
+import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.server.activities.chatting.entities.ChatterEntity
+import org.elaastix.server.scenario.exec.entities.SciconumChatPeeringEntity
+import org.elaastix.server.users.entities.UserEntity
+import org.springframework.data.jpa.repository.Query
+import org.springframework.stereotype.Repository
 
-inline fun <reified T : AbstractMinimalEntity> mockkEntity(block: T.() -> Unit = {}): Pair<Uuid, T> =
-	Uuid.random().let {
-		it to mockk<T> {
-			every { id } returns it
-			block()
-		}
-	}
+@Repository
+interface ChatterRepository : ElaastixRepository<ChatterEntity> {
+	@SciconumTechDebt
+	@Query(
+		"SELECT c FROM SciconumChatPeeringEntity p " +
+			"INNER JOIN p.chatters c " +
+			"WHERE p = :peering AND c.chatter = :chatter",
+	)
+	fun findChatterIdentityOfUserInPeering(chatter: UserEntity, peering: SciconumChatPeeringEntity): ChatterEntity?
+}

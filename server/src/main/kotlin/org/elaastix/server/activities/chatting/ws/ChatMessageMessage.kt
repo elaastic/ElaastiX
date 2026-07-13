@@ -17,17 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package testutils
+package org.elaastix.server.activities.chatting.ws
 
-import io.mockk.every
-import io.mockk.mockk
-import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+import org.elaastix.mm.content.FormattedText
+import org.elaastix.server.activities.chatting.dto.ChatterDto
 
-inline fun <reified T : AbstractMinimalEntity> mockkEntity(block: T.() -> Unit = {}): Pair<Uuid, T> =
-	Uuid.random().let {
-		it to mockk<T> {
-			every { id } returns it
-			block()
-		}
-	}
+/**
+ * WebSocket message broadcast when a message is sent in the chat.
+ */
+@Serializable
+@SerialName("org.elaastix.chat.message")
+data class ChatMessageMessage(
+	/** The author of the chat message. */
+	val author: ChatterDto,
+
+	/** The contents of the message. May be inline-formatted. */
+	val message: FormattedText,
+)

@@ -17,17 +17,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package testutils
+package org.elaastix.server.activities.chatting.entities
 
-import io.mockk.every
-import io.mockk.mockk
-import org.elaastix.commons.data.Uuid
+import jakarta.persistence.Entity
+import jakarta.persistence.ManyToOne
+import jakarta.validation.constraints.NotNull
 import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
+import org.elaastix.mm.content.FormattedText
+import org.hibernate.annotations.JdbcTypeCode
+import org.hibernate.type.SqlTypes
 
-inline fun <reified T : AbstractMinimalEntity> mockkEntity(block: T.() -> Unit = {}): Pair<Uuid, T> =
-	Uuid.random().let {
-		it to mockk<T> {
-			every { id } returns it
-			block()
-		}
-	}
+/**
+ * A message sent by a chatter.
+ * Messages sent are considered immutable, akin to traditional IRC chat software.
+ */
+@Entity
+class ChatMessageEntity(
+	/**
+	 * The chatter who sent the message.
+	 */
+	@NotNull
+	@ManyToOne
+	var chatter: ChatterEntity,
+
+	/**
+	 * The contents of the message.
+	 */
+	@NotNull
+	@JdbcTypeCode(SqlTypes.JSON)
+	var message: FormattedText,
+) : AbstractMinimalEntity()
