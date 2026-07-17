@@ -19,23 +19,36 @@
 
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
+import { useAuthnContext } from '~/composables/authn.service'
+
+const { $api } = useNuxtApp()
 
 defineProps<{
 	collapsed?: boolean
 }>()
 
-const { locale, locales, setLocale } = useI18n()
+const { locale, locales, setLocale, t } = useI18n()
 const colorMode = useColorMode()
 
-const user = ref({
-	name: 'Cynthia Rey',
-})
+const { isAuthenticated, displayUser, refresh } = useAuthnContext()
 
-const items = computed<DropdownMenuItem[][]>(() => ([
+async function logoutAction() {
+	await $api('/v1/authn/tmp/logout', {
+		method: 'DELETE',
+	})
+	await refresh()
+}
+
+function loginAction() {
+	navigateTo('/login')
+}
+
+const items = computed<DropdownMenuItem[][]>(() => [
 	[
 		{
 			type: 'label',
-			label: user.value.name,
+			label: displayUser.value.name,
+			description: displayUser.value.roles,
 		},
 	],
 	[
@@ -103,23 +116,36 @@ const items = computed<DropdownMenuItem[][]>(() => ([
 	],
 	[
 		{
-			label: 'Log out',
-			icon: 'i-lucide-log-out',
-			color: 'error',
+			label: isAuthenticated.value ? t('login.logout') : t('login.login'),
+			icon: isAuthenticated.value ? 'i-lucide-log-out' : 'i-lucide-log-in',
+			color: isAuthenticated.value ? 'error' : 'neutral',
+			onSelect() {
+				return isAuthenticated.value ? logoutAction() : loginAction()
+			},
 		},
 	],
-	[{ type: 'label', class: 'flex flex-col text-center font-thin gap-0 p-0', slot: 'extra' }],
-]))
+	[
+		{
+			type: 'label',
+			class: 'flex flex-col text-center font-thin gap-0 p-0',
+			slot: 'extra',
+		},
+	],
+])
 </script>
 
 <template>
 	<UDropdownMenu
 		:items="items"
 		:content="{ align: 'center', collisionPadding: 12 }"
-		:ui="{ content: collapsed ? 'w-48' : 'w-(--reka-dropdown-menu-trigger-width)' }"
+		:ui="{
+			content: collapsed
+				? 'w-48'
+				: 'w-(--reka-dropdown-menu-trigger-width)',
+		}"
 	>
 		<UButton
-			:label="collapsed ? undefined : 'My account'"
+			:label="collapsed ? undefined : displayUser.name"
 			leading-icon="i-lucide-user-circle"
 			:trailing-icon="collapsed ? undefined : 'i-lucide-chevrons-up-down'"
 			color="neutral"

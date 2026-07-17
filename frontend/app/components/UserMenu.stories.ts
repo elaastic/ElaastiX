@@ -18,8 +18,10 @@
  */
 
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
+import { useState } from '#app'
 
 import UserMenu from './UserMenu.vue'
+import { STATE_AUTHN_KEY } from '~/composables/authn.service'
 
 const meta = {
 	title: 'Sidebar/UserMenu',
@@ -30,6 +32,34 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-export const UserMenuStory: Story = {
+export const Logout: Story = {
 	args: {},
+	decorators: [
+		() => ({
+			setup() {
+				const user = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
+				user.value = undefined
+			},
+			template: '<story />',
+		}),
+	],
+}
+
+export const Login: Story = {
+	args: {},
+	decorators: [
+		() => ({
+			setup() {
+				const user = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
+				user.value = {
+					id: 'ee',
+					firstname: 'Franck',
+					lastname: 'Silvestre',
+					email: 'franck.silvestre.com',
+					roles: ['ADMIN', 'WRITER'],
+				} as UserAccountDto
+			},
+			template: '<story />',
+		}),
+	],
 }

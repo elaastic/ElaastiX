@@ -18,84 +18,86 @@
   -->
 
 <script setup lang="ts">
-import type { AuthFormField, FormSubmitEvent } from '@nuxt/ui'
 import * as v from 'valibot'
+import type { FormSubmitEvent } from '@nuxt/ui'
+import { useAuthnContext } from '~/composables/authn.service'
+
+const { $api } = useNuxtApp()
+const { refresh } = useAuthnContext()
+const { query } = useRoute()
 
 definePageMeta({
 	layout: false,
 })
 
-const toast = useToast()
-
-const fields: AuthFormField[] = [{
-	name: 'login',
-	type: 'text',
-	label: 'Login',
-	placeholder: 'Enter your login',
-	required: true,
-	defaultValue: '',
-}, {
-	name: 'password',
-	label: 'Password',
-	type: 'password',
-	placeholder: 'Enter your password',
-	required: true,
-	defaultValue: '',
-}, {
-	name: 'remember',
-	label: 'Remember me',
-	type: 'checkbox',
-}]
-
-const providers = [{
-	label: 'Google',
-	icon: 'i-simple-icons-google',
-	onClick: () => {
-		toast.add({ title: 'Google', description: 'Login with Google' })
-	},
-}, {
-	label: 'GitHub',
-	icon: 'i-simple-icons-github',
-	onClick: () => {
-		toast.add({ title: 'GitHub', description: 'Login with GitHub' })
-	},
-}]
-
-const LoginSchema = v.object({
-	login: v.pipe(
-		v.string(),
-		v.nonEmpty('Please enter your login'),
-		v.maxLength(128),
-	),
-	// Don't impose length/complexity constraints on the current password
-	// It may not be up to requirements (e.g. set before policy changes, bypassed via internal systems, ...).
-	password: v.pipe(
-		v.string(),
-		v.nonEmpty('Please enter your password'),
-		v.maxLength(512),
-	),
+const schema = v.object({
+	user: v.pipe(v.string()),
 })
 
-type LoginData = v.InferInput<typeof LoginSchema>
+type Schema = v.InferOutput<typeof schema>
 
-function onSubmit(payload: FormSubmitEvent<LoginData>) {
-	console.log('Submitted', payload)
+const users = new Map([
+	['Franck', '00000000-0000-0000-0000-000000000001'],
+	['John', '00000000-0000-0000-0000-000000000002'],
+	['Cynthia', '00000000-0000-0000-0000-000000000003'],
+])
+const items = ref(users.keys().toArray())
+const state = reactive({
+	user: items.value[0]!,
+})
+
+function redirectToTheCorrectPage() {
+	if (typeof query.pageAsked === 'string') {
+		navigateTo(query.pageAsked)
+		return
+	}
+
+	navigateTo('/')
+}
+
+async function onSubmit(submission: FormSubmitEvent<Schema>) {
+	const user = submission.data.user
+	const id = users.get(user)
+	await $api(`/v1/authn/tmp/login`, {
+		method: 'POST',
+		headers: {
+			Authorization: `Develop ${id}`,
+		},
+	})
+
+	await refresh()
+	redirectToTheCorrectPage()
 }
 </script>
 
 <template>
 	<div class="min-h-svh flex flex-col items-center justify-center gap-4 p-4">
-		<UPageCard class="w-full max-w-md">
-			<UAuthForm
-				:schema="LoginSchema"
-				title="Login"
-				description="Enter your credentials to access your account."
-				icon="i-lucide-user"
-				:fields="fields"
-				:providers="providers"
+		<UPageCard
+			:title="$t('login.login')"
+			:description="$t('login.description')"
+		>
+			<UForm
+				:schema="schema"
+				:state="state"
+				class="flex flex-col gap-4"
 				@submit="onSubmit"
-			/>
+			>
+				<UFormField
+					:label="$t('login.user')"
+					name="uuid"
+				>
+					<USelect
+						v-model="state.user"
+						:items="items"
+					/>
+				</UFormField>
+				<UButton
+					type="submit"
+					class="max-inline-max"
+				>
+					{{ $t("login.login") }}
+				</UButton>
+			</UForm>
 		</UPageCard>
-		<VersionAndLegal class="w-full max-w-md" />
 	</div>
 </template>

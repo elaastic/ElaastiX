@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import * as locales from '@nuxt/ui/locale'
+import { initAuthnContext } from '~/composables/authn.service'
 
 const { locale } = useI18n()
+initAuthnContext()
 const nuxtLocale = computed(() => {
 	switch (locale.value) {
 		case 'fr_fr': return 'fr'

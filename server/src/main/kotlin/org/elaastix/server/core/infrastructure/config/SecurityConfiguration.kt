@@ -33,12 +33,12 @@ import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder
 import org.springframework.security.crypto.encrypt.Encryptors
-import org.springframework.security.crypto.keygen.KeyGenerators
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder
 import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter
 import org.springframework.security.web.util.matcher.AnyRequestMatcher
+import org.springframework.util.DigestUtils
 import org.springframework.web.servlet.HandlerExceptionResolver
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
@@ -144,5 +144,5 @@ class SecurityConfiguration : WebMvcConfigurer {
 	fun encryptors(@Value($$"${elaastix.security.encryption-key}") key: String) =
 		// SAFETY: MUST be AEAD. `stronger` uses AES-GCM which is acceptable.
 		// https://bsky.app/profile/joncallas.bsky.social/post/3jz3qztg3du2y
-		Encryptors.stronger(key, KeyGenerators.secureRandom().generateKey().toHexString())
+		Encryptors.stronger(key, DigestUtils.md5Digest(key.toByteArray()).toHexString())
 }

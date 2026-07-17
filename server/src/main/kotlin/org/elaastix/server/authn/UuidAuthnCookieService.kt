@@ -46,10 +46,19 @@ class UuidAuthnCookieService(
 			secure = cookieSecure
 			isHttpOnly = true
 			maxAge = 1.0.days.toInt(DurationUnit.SECONDS)
+			path = "/"
 		}
 
 	fun readCookie(request: HttpServletRequest) =
 		request.cookies?.find { it.name == COOKIE_UUID_NAME }
 			?.runCatching { this to Uuid.fromByteArray(encryptor.decrypt(Base64.decode(value))) }
 			?.getOrNull()
+
+	fun deleteCookie(uuid: Uuid) =
+		Cookie(COOKIE_UUID_NAME, Base64.encode(encryptor.encrypt(uuid.toByteArray()))).apply {
+			secure = cookieSecure
+			isHttpOnly = true
+			maxAge = 0
+			path = "/"
+		}
 }
