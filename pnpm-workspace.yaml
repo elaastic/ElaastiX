@@ -3,6 +3,7 @@ packages:
 
 allowBuilds:
   "@parcel/watcher": true
+  cbor-extract: false
   esbuild: true
   sharp: false
   unrs-resolver: false

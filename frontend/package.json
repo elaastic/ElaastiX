@@ -29,6 +29,7 @@
 		"@shikijs/markdown-exit": "^4.3.0",
 		"@shikijs/themes": "^4.3.0",
 		"@shikijs/transformers": "^4.3.0",
+		"cbor-x": "^1.6.4",
 		"markdown-exit": "1.1.0-beta.2",
 		"markdown-it-abbr": "^2.0.0",
 		"markdown-it-anchor": "^9.2.0",

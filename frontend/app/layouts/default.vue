@@ -43,6 +43,11 @@ const links = [
 			icon: 'i-lucide-users',
 			to: '/cohorts',
 		},
+		{
+			label: 'Sequence',
+			icon: 'i-lucide-flag-triangle-right',
+			to: '/sequences',
+		},
 	],
 ] satisfies NavigationMenuItem[][]
 </script>

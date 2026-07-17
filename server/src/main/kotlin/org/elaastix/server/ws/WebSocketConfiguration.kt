@@ -49,7 +49,7 @@ class WebSocketConfiguration(
 	}
 
 	override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-		registry.addHandler(wsHandler(), "/player/org.elaastix.platform.rt")
+		registry.addHandler(wsHandler(), "/player/org.elaastix.platform.rt").setAllowedOrigins("http://localhost:3000")
 	}
 
 	@Bean
