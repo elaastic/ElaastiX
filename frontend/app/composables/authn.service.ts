@@ -19,13 +19,13 @@
 export const STATE_AUTHN_KEY = 'authn'
 
 export function useAuthn() {
-	const { t } = useI18n()
+	const { $i18n } = useNuxtApp()
 	const { refresh, status } = useContextApi()
 	const currentUser = useState<UserAccountDto | null>(STATE_AUTHN_KEY)
 	const isAuthenticated = computed(() => !!currentUser.value)
 
 	const displayUser = computed(() => ({
-		name: currentUser.value?.firstname ?? t('login.guest'),
+		name: currentUser.value?.firstname ?? $i18n.t('login.guest'),
 		roles: currentUser.value?.roles.join(', ') ?? '',
 	}))
 
