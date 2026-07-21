@@ -17,37 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec.dto
+package org.elaastix.server.users.dtos
 
 import kotlinx.serialization.Serializable
-import org.elaastix.commons.data.Uuid
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase
-import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
-import org.elaastix.server.sequences.dto.SequenceDto
+import org.elaastix.server.users.entities.UserEntity
 
 @Serializable
-data class SciconumScenarioPhaseDto
-@OptIn(SciconumTechDebt::class)
-constructor(
+data class UserDto(val firstName: String, val lastName: String, val email: String?) {
 
-	val uuid: Uuid,
-
-	val phase: SciconumScenarioExecutionPhase,
-
-	val sequence: SequenceDto,
-
-	val currentRound: UInt,
-
-) {
 	companion object {
-		@OptIn(SciconumTechDebt::class)
-		fun fromEntity(e: SciconumScenarioSessionEntity): SciconumScenarioPhaseDto =
-			SciconumScenarioPhaseDto(
-				uuid = e.id,
-				phase = e.phase,
-				sequence = SequenceDto.fromEntity(e.sequence),
-				currentRound = e.currentRound,
-			)
+
+		fun fromEntity(e: UserEntity): UserDto = UserDto(firstName = e.firstName, lastName = e.lastName, email = e.email)
 	}
 }

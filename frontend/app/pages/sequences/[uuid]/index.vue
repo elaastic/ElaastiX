@@ -19,23 +19,42 @@
 <script lang="ts" setup>
 const uuid = useRoute().params.uuid
 
-const { data, status: requestStatus } = useApi(`/v1/sequences/{id}`, {
-	path: {
-		id: uuid as string,
+// const statusIcon = new Map([
+// 	['RUNNING', 'i-lucide-pause'],
+// 	['PENDING', 'i-lucide-circle-play'],
+// 	['PAUSED', 'i-lucide-play'],
+// ])
+
+const { data, status: requestStatus } = useApi(
+	`/v1/player/org.elaastix.engine.getSciconumSequenceSession`,
+	{
+		method: 'POST',
+		query: {
+			scenarioSessionId: uuid as string,
+		},
 	},
-})
+)
 
 const skeleton = computed(
 	() => requestStatus.value !== 'success' && requestStatus.value !== 'error',
 )
-const name = computed(() => data.value?.name ?? 'This sequence doesnt exists')
+const name = computed(
+	() => data.value?.sequence.name ?? 'This sequence doesnt exists',
+)
+const status = computed(() => data.value?.phase ?? '')
+const question = computed(
+	() =>
+		data.value?.sequence.sciconumQuestions[data.value?.currentRound]
+			?.statement.content,
+)
 
 useWebSocket({
 	onOpen: () => {
 		console.log('The websocket opened')
 	},
-	onMessage: () => {
+	onMessage: (event) => {
 		console.log('The websocket received a message')
+		console.log(`data received: ${event.data}`)
 	},
 	onClose: () => {
 		console.log('The websocket closed')
@@ -44,6 +63,15 @@ useWebSocket({
 		console.log('The websocket encountered an error')
 	},
 })
+
+function clickHandle() {
+	useApi('/v1/player/org.elaastix.engine.startSciconumScenarioSession', {
+		method: 'POST',
+		query: {
+			scenarioSessionId: uuid as string,
+		},
+	})
+}
 </script>
 
 <template>
@@ -53,9 +81,24 @@ useWebSocket({
 				v-if="skeleton"
 				class="w-full h-full"
 			/>
-			<div class="w-full h-full">
-				{{ name }}
-			</div>
+			<UPageCard class="w-full h-full">
+				<div class="flex justify-between">
+					<div class="flex flex-col gap-2">
+						<div class="text-xl">
+							{{ name }}
+						</div>
+						<div>{{ question }}</div>
+					</div>
+					<div class="flex flex-col items-center gap-1">
+						<div>{{ status }}</div>
+						<UButton
+							icon="i-lucide-circle-play"
+							size="lg"
+							@click="clickHandle"
+						/>
+					</div>
+				</div>
+			</UPageCard>
 		</template>
 	</UCard>
 </template>
