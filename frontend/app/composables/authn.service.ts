@@ -20,7 +20,7 @@ export const STATE_AUTHN_KEY = 'authn'
 
 export function useAuthn() {
 	const { $i18n } = useNuxtApp()
-	const currentUser = useState<UserAccountDto | null>(STATE_AUTHN_KEY)
+	const currentUser = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
 	const isAuthenticated = computed(() => !!currentUser.value)
 
 	const displayUser = computed(() => ({
