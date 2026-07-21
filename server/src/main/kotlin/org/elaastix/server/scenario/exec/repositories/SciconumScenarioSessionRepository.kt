@@ -24,6 +24,8 @@ import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.assignments.AssignmentEntity
 import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.elaastix.server.sequences.SciconumSequenceEntity
+import org.elaastix.server.users.entities.UserEntity
+import org.springframework.data.jpa.repository.Query
 import org.springframework.stereotype.Repository
 
 @Repository
@@ -32,6 +34,9 @@ interface SciconumScenarioSessionRepository : ElaastixRepository<SciconumScenari
 	fun findAllByAssignment(assignment: AssignmentEntity): List<SciconumScenarioSessionEntity>
 
 	fun findAllByNextPhaseAtNotNullAndPausedAtNull(): List<SciconumScenarioSessionEntity>
+
+	@Query("FROM SciconumScenarioSessionEntity WHERE sequence.owner = :owner AND phase != 'END'")
+	fun findAllBySequenceOwnerAndPhaseNotEnded(owner: UserEntity): List<SciconumScenarioSessionEntity>
 
 	fun findOneByAssignmentAndSequence(
 		assignment: AssignmentEntity,
