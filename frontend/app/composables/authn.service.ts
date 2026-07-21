@@ -17,7 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import type { AsyncDataExecuteOptions, AsyncDataRequestStatus } from '#app/composables/asyncData'
+
 export const STATE_AUTHN_KEY = 'authn'
+
+export type UserAuthenticated = {
+	user: Ref<UserAccountDto | null | undefined>
+	displayUser: ComputedRef<{
+		name: string
+		roles: string
+	}>
+	isAuthenticated: ComputedRef<boolean>
+	refresh: (opts?: AsyncDataExecuteOptions) => Promise<void>
+	status: Ref<AsyncDataRequestStatus>
+}
 
 const useContextController = () => useApi('/v0/internal/nuxt/context-v1')
 
@@ -30,9 +43,9 @@ export function initAuthnContext() {
 	}, { immediate: true })
 }
 
-export function useAuthnContext() {
+export function useAuthnContext(): UserAuthenticated {
 	const { t } = useI18n()
-	const { refresh } = useContextController()
+	const { refresh, status } = useContextController()
 	const currentUser = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
 	const isAuthenticated = computed(() => !!currentUser.value)
 
@@ -46,5 +59,24 @@ export function useAuthnContext() {
 		displayUser,
 		isAuthenticated,
 		refresh,
+		status,
 	}
+}
+
+export async function useAwaitAuthnContext(): Promise<UserAuthenticated> {
+	const { refresh, status, data } = await useContextController()
+	const user = ref(data.value?.currentUser)
+	const isAuthenticated = computed(() => (user.value !== null && user.value !== undefined))
+	const displayUser = computed(() => ({
+		name: user.value?.firstname ?? '',
+		roles: user.value?.roles.join(', ') ?? '',
+	}))
+
+	return Promise.resolve({
+		user,
+		displayUser,
+		isAuthenticated,
+		refresh,
+		status,
+	})
 }

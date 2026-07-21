@@ -17,11 +17,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-export default defineNuxtRouteMiddleware((to) => {
+export default defineNuxtRouteMiddleware(async (to) => {
 	const publicRoute = ['/', '/login']
 	if (publicRoute.includes(to.path)) return
 
-	const { isAuthenticated } = useAuthnContext()
+	const { isAuthenticated } = await useAwaitAuthnContext()
 	if (isAuthenticated.value) return
 
 	return navigateTo({
