@@ -16,17 +16,24 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-export default defineNuxtRouteMiddleware(async (to) => {
-	const publicRoute = ['/', '/login']
-	if (publicRoute.includes(to.path)) return
+// TODO Use TanStack Query would be more appropriate to synchronize a distant state than useState + a watcher
+export default defineNuxtPlugin(async () => {
+	const { data, refresh } = useContextApi()
 
-	const { isAuthenticated } = useAuthn()
-	if (isAuthenticated.value) return
+	const user = useState<UserAccountDto | null | undefined>(
+		STATE_AUTHN_KEY,
+		() => undefined,
+	)
 
-	return navigateTo({
-		path: '/login',
-		query: {
-			pageAsked: to.fullPath,
+	watch(
+		data,
+		(context) => {
+			user.value = context?.currentUser
 		},
-	})
+		{
+			immediate: true,
+		},
+	)
+
+	await refresh()
 })

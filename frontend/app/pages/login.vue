@@ -20,10 +20,10 @@
 <script setup lang="ts">
 import * as v from 'valibot'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { useAuthnContext } from '~/composables/authn.service'
+import { useAuthn } from '~/composables/authn.service'
 
 const { $api } = useNuxtApp()
-const { refresh } = useAuthnContext()
+const { refresh } = useAuthn()
 const { query } = useRoute()
 
 definePageMeta({

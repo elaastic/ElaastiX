@@ -16,17 +16,4 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-export default defineNuxtRouteMiddleware(async (to) => {
-	const publicRoute = ['/', '/login']
-	if (publicRoute.includes(to.path)) return
-
-	const { isAuthenticated } = useAuthn()
-	if (isAuthenticated.value) return
-
-	return navigateTo({
-		path: '/login',
-		query: {
-			pageAsked: to.fullPath,
-		},
-	})
-})
+export const useContextApi = () => useApi('/v0/internal/nuxt/context-v1')
