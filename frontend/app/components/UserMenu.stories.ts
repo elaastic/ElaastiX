@@ -21,7 +21,7 @@ import type { Meta, StoryObj } from '@nuxtjs/storybook'
 import { useState } from '#app'
 
 import UserMenu from './UserMenu.vue'
-import { AuthnContextKey } from '~/composables/authenticationProvider'
+import { STATE_AUTHN_KEY } from '~/composables/authn.service'
 
 const meta = {
 	title: 'Sidebar/UserMenu',
@@ -37,7 +37,7 @@ export const Logout: Story = {
 	decorators: [
 		() => ({
 			setup() {
-				const user = useState<UserAccountDto | null | undefined>(AuthnContextKey)
+				const user = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
 				user.value = undefined
 			},
 			template: '<story />',
@@ -50,7 +50,7 @@ export const Login: Story = {
 	decorators: [
 		() => ({
 			setup() {
-				const user = useState<UserAccountDto | null | undefined>(AuthnContextKey)
+				const user = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
 				user.value = {
 					id: 'ee',
 					firstname: 'Franck',
