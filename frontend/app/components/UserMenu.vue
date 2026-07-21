@@ -30,13 +30,14 @@ defineProps<{
 const { locale, locales, setLocale, t } = useI18n()
 const colorMode = useColorMode()
 
-const { isAuthenticated, displayUser, refresh } = useAuthn()
+const { isAuthenticated, displayUser } = useAuthn()
+const { $refreshAuthn } = useNuxtApp()
 
 async function logoutAction() {
 	await $api('/v1/authn/tmp/logout', {
 		method: 'DELETE',
 	})
-	await refresh()
+	await $refreshAuthn()
 }
 
 function loginAction() {

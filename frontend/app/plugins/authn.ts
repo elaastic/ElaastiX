@@ -18,7 +18,8 @@
  */
 // TODO Use TanStack Query would be more appropriate to synchronize a distant state than useState + a watcher
 export default defineNuxtPlugin(async () => {
-	const { data, refresh } = useContextApi()
+	const useContextApi = () => useApi('/v0/internal/nuxt/context-v1')
+	const { data, refresh } = await useContextApi()
 
 	const user = useState<UserAccountDto | null | undefined>(
 		STATE_AUTHN_KEY,
@@ -35,5 +36,9 @@ export default defineNuxtPlugin(async () => {
 		},
 	)
 
-	await refresh()
+	return {
+		provide: {
+			refreshAuthn: refresh,
+		},
+	}
 })

@@ -20,10 +20,8 @@
 <script setup lang="ts">
 import * as v from 'valibot'
 import type { FormSubmitEvent } from '@nuxt/ui'
-import { useAuthn } from '~/composables/authn.service'
 
-const { $api } = useNuxtApp()
-const { refresh } = useAuthn()
+const { $api, $refreshAuthn } = useNuxtApp()
 const { query } = useRoute()
 
 definePageMeta({
@@ -65,7 +63,7 @@ async function onSubmit(submission: FormSubmitEvent<Schema>) {
 		},
 	})
 
-	await refresh()
+	await $refreshAuthn()
 	redirectToTheCorrectPage()
 }
 </script>
