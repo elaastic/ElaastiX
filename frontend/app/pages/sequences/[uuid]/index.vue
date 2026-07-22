@@ -17,55 +17,76 @@
   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <script lang="ts" setup>
-const uuid = useRoute().params.uuid
+const { $api } = useNuxtApp()
+const uuid = useRoute().params.uuid as string
 
-// const statusIcon = new Map([
-// 	['RUNNING', 'i-lucide-pause'],
-// 	['PENDING', 'i-lucide-circle-play'],
-// 	['PAUSED', 'i-lucide-play'],
-// ])
+const sequenceData = ref<SciconumScenarioPhaseDto | null | undefined>(null)
+const pending = ref(true)
 
-const { data, status: requestStatus } = useApi(
-	`/v1/player/org.elaastix.engine.getSciconumSequenceSession`,
-	{
-		method: 'POST',
-		query: {
-			scenarioSessionId: uuid as string,
-		},
-	},
-)
+const phase = ref('')
+const state = ref('PENDING')
+const duration = ref('')
 
-const skeleton = computed(
-	() => requestStatus.value !== 'success' && requestStatus.value !== 'error',
-)
+const skeleton = computed(() => pending.value || !sequenceData.value)
+
 const name = computed(
-	() => data.value?.sequence.name ?? 'This sequence doesnt exists',
+	() => sequenceData.value?.sequence.name ?? 'This sequence does not exists',
 )
-const status = computed(() => data.value?.phase ?? '')
+const currentRound = computed(() => sequenceData.value?.currentRound ?? 0)
 const question = computed(
 	() =>
-		data.value?.sequence.sciconumQuestions[data.value?.currentRound]
-			?.statement.content,
+		sequenceData.value?.sequence.sciconumQuestions[currentRound.value]
+			?.statement.content ?? '',
 )
 
-useWebSocket({
-	onOpen: () => {
-		console.log('The websocket opened')
-	},
-	onMessage: (event) => {
-		console.log('The websocket received a message')
-		console.log(`data received: ${event.data}`)
-	},
-	onClose: () => {
-		console.log('The websocket closed')
-	},
-	onError: () => {
-		console.log('The websocket encountered an error')
-	},
+async function fetchSequenceState() {
+	try {
+		const response = await $api(
+			'/v1/player/org.elaastix.engine.getSciconumSequenceSession',
+			{
+				method: 'POST',
+				query: {
+					scenarioSessionId: uuid,
+				},
+			},
+		)
+
+		if (response) {
+			sequenceData.value = response
+			phase.value = response.phase
+		}
+	} catch (error) {
+		console.error('Failed to fetch sequence state:', error)
+	} finally {
+		pending.value = false
+	}
+}
+
+onMounted(async () => {
+	fetchSequenceState()
+	useWebSocket({
+		onOpen: () => {
+			console.log('The websocket opened')
+		},
+		onMessage: (dataReceived) => {
+			console.log(
+				`data received: ${JSON.stringify(dataReceived, null, 2)}`,
+			)
+			phase.value = dataReceived.sciconumPhase
+			state.value = dataReceived.state
+			duration.value = dataReceived.duration ?? ''
+		},
+		onClose: () => {
+			console.log('The websocket closed')
+		},
+		onError: () => {
+			console.log('The websocket encountered an error')
+		},
+	})
 })
 
 function clickHandle() {
-	useApi('/v1/player/org.elaastix.engine.startSciconumScenarioSession', {
+	$api('/v1/player/org.elaastix.engine.startSciconumScenarioSession', {
 		method: 'POST',
 		query: {
 			scenarioSessionId: uuid as string,
@@ -90,7 +111,7 @@ function clickHandle() {
 						<div>{{ question }}</div>
 					</div>
 					<div class="flex flex-col items-center gap-1">
-						<div>{{ status }}</div>
+						<div>{{ phase }}</div>
 						<UButton
 							icon="i-lucide-circle-play"
 							size="lg"

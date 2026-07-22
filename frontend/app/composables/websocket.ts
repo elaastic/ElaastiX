@@ -17,10 +17,38 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import * as v from 'valibot'
+import { decode } from 'cbor-x'
+
+enum State {
+	PENDING = 'PENDING',
+	RUNNING = 'RUNNING',
+	PAUSED = 'PAUSED',
+	END = 'END',
+}
+
+enum SciconumScenarioExecutionPhase {
+	PENDING = 'PENDING',
+	QUESTION = 'QUESTION',
+	PEER = 'PEER',
+	REVISE = 'REVISE',
+	FEEDBACK = 'FEEDBACK',
+	END = 'END',
+}
+
+export const scenarioTransitionMessageSchema = v.object({
+	sciconumPhase: v.pipe(v.enum(SciconumScenarioExecutionPhase)),
+	state: v.pipe(v.enum(State)),
+	duration: v.pipe(v.nullable(v.string())),
+})
+
+export type ScenarioTransitionMessage = v.InferOutput<typeof scenarioTransitionMessageSchema>
+
 export type WebSocketEvent = (this: WebSocket, event: Event) => void
+export type WebSocketEventOnMessage = (data: ScenarioTransitionMessage, event: Event) => void
 export type WebSocketAction = {
 	onOpen: WebSocketEvent
-	onMessage: WebSocketEvent
+	onMessage: WebSocketEventOnMessage
 	onClose: WebSocketEvent
 	onError: WebSocketEvent
 }
@@ -30,9 +58,14 @@ export type WebSocketInteraction = {
 
 export function useWebSocket(actions: WebSocketAction): WebSocketInteraction {
 	const socket = new WebSocket('ws://localhost:8080/player/org.elaastix.platform.rt')
+	socket.binaryType = 'arraybuffer'
 
 	socket.onopen = actions.onOpen
-	socket.onmessage = actions.onMessage
+	socket.onmessage = (event: Event) => {
+		const decoded = decode(new Uint8Array(event.data))
+		const typedValue = v.parse(scenarioTransitionMessageSchema, decoded[1])
+		actions.onMessage(typedValue, event)
+	}
 	socket.onclose = actions.onClose
 	socket.onerror = actions.onError
 

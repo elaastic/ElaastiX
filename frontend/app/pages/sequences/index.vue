@@ -19,7 +19,7 @@
 
 <script lang="ts" setup>
 const items = [
-	'00000000-0000-0000-0000-000000000001',
+	'0000000000000000000000001',
 ]
 
 function selected(id: string) {
@@ -32,11 +32,11 @@ function selected(id: string) {
 		<div class="grid grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-4">
 			<UPageCard
 				v-for="item in items"
+				:key="item"
 				title="Sequence"
 				:description="item"
 				class="w-max"
 				@click="selected(item)"
-				:key="item"
 			/>
 		</div>
 	</div>

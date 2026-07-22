@@ -36,8 +36,8 @@ import org.springframework.web.bind.annotation.ResponseStatus
 class ExecutionController(private val scenarioExecutionService: ScenarioExecutionService) {
 
 	@PlayerAction("org.elaastix.engine.getSciconumSequenceSession")
-	fun getSciconumSequenceSession(@RequestParam scenarioSessionId: String): SciconumScenarioPhaseDto =
-		scenarioExecutionService.getSciconumScenarioStateById(Uuid.parse(scenarioSessionId))
+	fun getSciconumSequenceSession(@RequestParam scenarioSessionId: Uuid): SciconumScenarioPhaseDto =
+		scenarioExecutionService.getSciconumScenarioStateById(scenarioSessionId)
 
 	/**
 	 * Start a SCICONUM sequence session.
@@ -46,8 +46,8 @@ class ExecutionController(private val scenarioExecutionService: ScenarioExecutio
 	 */
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PlayerAction("org.elaastix.engine.startSciconumScenarioSession")
-	fun startSciconumSequenceSession(@RequestParam scenarioSessionId: String) {
-		scenarioExecutionService.startSequenceScenarioSessionById(Uuid.parse(scenarioSessionId))
+	fun startSciconumSequenceSession(@RequestParam scenarioSessionId: Uuid) {
+		scenarioExecutionService.startSequenceScenarioSessionById(scenarioSessionId)
 	}
 
 	/**
@@ -57,8 +57,8 @@ class ExecutionController(private val scenarioExecutionService: ScenarioExecutio
 	 */
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PlayerAction("org.elaastix.engine.pauseSciconumScenarioSession")
-	fun pauseSciconumSequenceSession(@RequestParam scenarioSessionId: String) {
-		scenarioExecutionService.pauseSequenceScenarioSessionById(Uuid.parse(scenarioSessionId))
+	fun pauseSciconumSequenceSession(@RequestParam scenarioSessionId: Uuid) {
+		scenarioExecutionService.pauseSequenceScenarioSessionById(scenarioSessionId)
 	}
 
 	/**
@@ -68,8 +68,8 @@ class ExecutionController(private val scenarioExecutionService: ScenarioExecutio
 	 */
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PlayerAction("org.elaastix.engine.resumeSciconumScenarioSession")
-	fun resumeSciconumSequenceSession(@RequestParam scenarioSessionId: String) {
-		scenarioExecutionService.resumeSequenceScenarioSessionById(Uuid.parse(scenarioSessionId))
+	fun resumeSciconumSequenceSession(@RequestParam scenarioSessionId: Uuid) {
+		scenarioExecutionService.resumeSequenceScenarioSessionById(scenarioSessionId)
 	}
 
 	/**
@@ -79,7 +79,7 @@ class ExecutionController(private val scenarioExecutionService: ScenarioExecutio
 	 */
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PlayerAction("org.elaastix.engine.resetSciconumScenarioSession")
-	fun resetSciconumSequenceSession(@RequestParam scenarioSessionId: String) {
-		scenarioExecutionService.resetSequenceScenarioSessionById(Uuid.parse(scenarioSessionId))
+	fun resetSciconumSequenceSession(@RequestParam scenarioSessionId: Uuid) {
+		scenarioExecutionService.resetSequenceScenarioSessionById(scenarioSessionId)
 	}
 }

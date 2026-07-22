@@ -47,5 +47,7 @@ data class ScenarioTransitionMessage(
 
 		/** The phase has been paused. */
 		PAUSED,
+
+		END,
 	}
 }

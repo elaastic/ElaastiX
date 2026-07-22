@@ -231,6 +231,7 @@ class ScenarioExecutionService(
 		val message = ScenarioTransitionMessage(
 			phase,
 			when {
+				phase == Phase.END -> ScenarioTransitionMessage.State.END
 				pausedAt != null -> ScenarioTransitionMessage.State.PAUSED
 				else -> ScenarioTransitionMessage.State.RUNNING
 			},
