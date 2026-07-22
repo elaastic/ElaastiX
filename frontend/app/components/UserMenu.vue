@@ -37,6 +37,7 @@ async function logoutAction() {
 	await $api('/v1/authn/tmp/logout', {
 		method: 'DELETE',
 	})
+	await navigateTo('/')
 	await $refreshAuthn()
 }
 
