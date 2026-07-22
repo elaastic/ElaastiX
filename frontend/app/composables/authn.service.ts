@@ -21,7 +21,7 @@ import type { RouteLocationRaw } from 'vue-router'
 export const STATE_AUTHN_KEY = 'authn'
 
 export function useAuthn() {
-	const { $i18n, $api, $refreshAuthn } = useNuxtApp()
+	const { $i18n, $api } = useNuxtApp()
 	const currentUser = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
 	const isAuthenticated = computed(() => !!currentUser.value)
 
@@ -29,6 +29,18 @@ export function useAuthn() {
 		name: currentUser.value?.firstname ?? $i18n.t('login.guest'),
 		roles: currentUser.value?.roles.join(', ') ?? '',
 	}))
+
+	const contextApi = useApi(
+		'/v0/internal/nuxt/context-v1',
+		{
+			immediate: false,
+		},
+	)
+
+	async function refresh() {
+		await contextApi.execute()
+		currentUser.value = contextApi.data.value?.currentUser
+	}
 
 	async function login(userId: string, redirectTo: string = '/') {
 		await $api(`/v1/authn/tmp/login`, {
@@ -38,7 +50,7 @@ export function useAuthn() {
 			},
 		})
 
-		await $refreshAuthn()
+		await refresh()
 		navigateTo(redirectTo)
 	}
 
@@ -56,5 +68,6 @@ export function useAuthn() {
 		isAuthenticated,
 		logout,
 		login,
+		refresh,
 	}
 }

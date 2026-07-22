@@ -16,29 +16,6 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-// TODO Use TanStack Query would be more appropriate to synchronize a distant state than useState + a watcher
 export default defineNuxtPlugin(async () => {
-	const useContextApi = () => useApi('/v0/internal/nuxt/context-v1')
-	const { data, refresh } = await useContextApi()
-
-	const user = useState<UserAccountDto | null | undefined>(
-		STATE_AUTHN_KEY,
-		() => undefined,
-	)
-
-	watch(
-		data,
-		(context) => {
-			user.value = context?.currentUser
-		},
-		{
-			immediate: true,
-		},
-	)
-
-	return {
-		provide: {
-			refreshAuthn: refresh,
-		},
-	}
+	await useAuthn().refresh()
 })
