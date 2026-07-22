@@ -18,10 +18,20 @@
  */
 import type { RouteLocationRaw } from 'vue-router'
 
+// useStore key for authn
 export const STATE_AUTHN_KEY = 'authn'
 
+/**
+ * Authn service
+ */
 export function useAuthn() {
 	const { $i18n, $api } = useNuxtApp()
+
+	/**
+	 * The current user authenticated user if any
+	 * `null` if not authenticated
+	 * `undefined` if not initialized
+	 */
 	const currentUser = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
 	const isAuthenticated = computed(() => !!currentUser.value)
 
@@ -37,11 +47,20 @@ export function useAuthn() {
 		},
 	)
 
+	/**
+	 * Get the current user from the API
+	 */
 	async function refresh() {
 		await contextApi.execute()
 		currentUser.value = contextApi.data.value?.currentUser
 	}
 
+	/**
+	 * Log in the user
+	 * This is a temporary implementation for DEV ONLY allowing to log with the user id
+	 * @param userId
+	 * @param redirectTo The page to redirect to after login
+	 */
 	async function login(userId: string, redirectTo: string = '/') {
 		await $api(`/v1/authn/tmp/login`, {
 			method: 'POST',
@@ -54,6 +73,10 @@ export function useAuthn() {
 		navigateTo(redirectTo)
 	}
 
+	/**
+	 * Log out the user
+	 * @param to The page to redirect to after logout
+	 */
 	async function logout(to: RouteLocationRaw = '/') {
 		await $api('/v1/authn/tmp/logout', {
 			method: 'DELETE',
