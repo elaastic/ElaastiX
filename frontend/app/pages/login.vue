@@ -21,7 +21,7 @@
 import * as v from 'valibot'
 import type { FormSubmitEvent } from '@nuxt/ui'
 
-const { $api, $refreshAuthn } = useNuxtApp()
+const { login } = useAuthn()
 const { query } = useRoute()
 
 definePageMeta({
@@ -44,27 +44,17 @@ const state = reactive({
 	user: items.value[0]!,
 })
 
-function redirectToTheCorrectPage() {
-	if (typeof query.pageAsked === 'string') {
-		navigateTo(query.pageAsked)
-		return
+async function onSubmit(submission: FormSubmitEvent<Schema>) {
+	const userName = submission.data.user
+	const userId = users.get(userName)
+
+	if (!userId) {
+		throw new Error('User not found')
 	}
 
-	navigateTo('/')
-}
+	const pageAsked = typeof query.pageAsked === 'string' ? query.pageAsked : undefined
 
-async function onSubmit(submission: FormSubmitEvent<Schema>) {
-	const user = submission.data.user
-	const id = users.get(user)
-	await $api(`/v1/authn/tmp/login`, {
-		method: 'POST',
-		headers: {
-			Authorization: `Develop ${id}`,
-		},
-	})
-
-	await $refreshAuthn()
-	redirectToTheCorrectPage()
+	await login(userId, pageAsked)
 }
 </script>
 
