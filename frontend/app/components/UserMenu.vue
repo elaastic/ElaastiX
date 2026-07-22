@@ -21,7 +21,7 @@
 import type { DropdownMenuItem } from '@nuxt/ui'
 import { useAuthn } from '~/composables/authn.service'
 
-const { $api } = useNuxtApp()
+const { logout } = useAuthn()
 
 defineProps<{
 	collapsed?: boolean
@@ -31,14 +31,9 @@ const { locale, locales, setLocale, t } = useI18n()
 const colorMode = useColorMode()
 
 const { isAuthenticated, displayUser } = useAuthn()
-const { $refreshAuthn } = useNuxtApp()
 
 async function logoutAction() {
-	await $api('/v1/authn/tmp/logout', {
-		method: 'DELETE',
-	})
-	await navigateTo('/')
-	await $refreshAuthn()
+	await logout('/')
 }
 
 function loginAction() {

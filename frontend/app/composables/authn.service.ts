@@ -16,10 +16,12 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+import type { RouteLocationRaw } from 'vue-router'
+
 export const STATE_AUTHN_KEY = 'authn'
 
 export function useAuthn() {
-	const { $i18n } = useNuxtApp()
+	const { $i18n, $api } = useNuxtApp()
 	const currentUser = useState<UserAccountDto | null | undefined>(STATE_AUTHN_KEY)
 	const isAuthenticated = computed(() => !!currentUser.value)
 
@@ -28,9 +30,18 @@ export function useAuthn() {
 		roles: currentUser.value?.roles.join(', ') ?? '',
 	}))
 
+	async function logout(to: RouteLocationRaw = '/') {
+		await $api('/v1/authn/tmp/logout', {
+			method: 'DELETE',
+		})
+		currentUser.value = null
+		navigateTo(to)
+	}
+
 	return {
 		user: currentUser,
 		displayUser,
 		isAuthenticated,
+		logout,
 	}
 }
