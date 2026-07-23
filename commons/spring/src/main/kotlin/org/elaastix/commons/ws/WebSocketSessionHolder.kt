@@ -45,7 +45,7 @@ class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
 	private val userSessions = mutableMapOf<UserId, MutableSet<String>>()
 	private val broadcastScopes = mutableMapOf<BroadcastScope, MutableSet<String>>()
 
-	/**>>().withD
+	/**
 	 * Registers a WebSocket session. Mandatory in order to assign the session to broadcast scopes.
 	 * Must be unregistered via [unregisterSession] when disconnecting!
 	 */

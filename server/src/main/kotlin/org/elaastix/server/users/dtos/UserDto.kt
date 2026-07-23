@@ -23,10 +23,10 @@ import kotlinx.serialization.Serializable
 import org.elaastix.server.users.entities.UserEntity
 
 @Serializable
-data class UserDto(val firstName: String, val lastName: String, val email: String?) {
+data class UserDto(val firstName: String, val lastName: String) {
 
 	companion object {
 
-		fun fromEntity(e: UserEntity): UserDto = UserDto(firstName = e.firstName, lastName = e.lastName, email = e.email)
+		fun fromEntity(e: UserEntity): UserDto = UserDto(firstName = e.firstName, lastName = e.lastName)
 	}
 }

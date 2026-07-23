@@ -21,10 +21,6 @@
 const items = [
 	'0000000000000000000000001',
 ]
-
-function selected(id: string) {
-	navigateTo(`/sequences/${id}`)
-}
 </script>
 
 <template>
@@ -36,7 +32,7 @@ function selected(id: string) {
 				title="Sequence"
 				:description="item"
 				class="w-max"
-				@click="selected(item)"
+				:to="`/sequences/${item}`"
 			/>
 		</div>
 	</div>
