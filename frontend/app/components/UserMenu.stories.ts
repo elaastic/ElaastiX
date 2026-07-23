@@ -57,7 +57,7 @@ export const Login: Story = {
 					lastname: 'Silvestre',
 					email: 'franck.silvestre.com',
 					roles: ['ADMIN', 'WRITER'],
-				} as UserAccountDto
+				} satisfies UserAccountDto
 			},
 			template: '<story />',
 		}),
