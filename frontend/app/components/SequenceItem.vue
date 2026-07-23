@@ -57,9 +57,6 @@ async function fetchSequenceState() {
 				},
 			},
 		)
-		console.log(
-			`data fetched: ${JSON.stringify(response, null, 2)}`,
-		)
 		sequenceData.value = response
 		phase.value = response.phase
 	} catch (e) {
@@ -141,7 +138,9 @@ function startSequence() {
 							icon="i-lucide-circle-play"
 							size="lg"
 							@click="startSequence"
-						/>
+						>
+							{{ state }}
+						</UButton>
 					</div>
 				</div>
 			</UPageCard>
