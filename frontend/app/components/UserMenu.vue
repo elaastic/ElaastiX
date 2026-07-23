@@ -19,9 +19,9 @@
 
 <script setup lang="ts">
 import type { DropdownMenuItem } from '@nuxt/ui'
-import { useAuthnContext } from '~/composables/authn.service'
+import { useAuthn } from '~/composables/authn.service'
 
-const { $api } = useNuxtApp()
+const { logout } = useAuthn()
 
 defineProps<{
 	collapsed?: boolean
@@ -30,13 +30,10 @@ defineProps<{
 const { locale, locales, setLocale, t } = useI18n()
 const colorMode = useColorMode()
 
-const { isAuthenticated, displayUser, refresh } = useAuthnContext()
+const { isAuthenticated, displayUser } = useAuthn()
 
 async function logoutAction() {
-	await $api('/v1/authn/tmp/logout', {
-		method: 'DELETE',
-	})
-	await refresh()
+	await logout('/')
 }
 
 function loginAction() {
