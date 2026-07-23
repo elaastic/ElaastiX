@@ -17,9 +17,11 @@
   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <script lang="ts" setup>
+import SequenceItem from '~/components/SequenceItem.vue'
+
 const uuid = useRoute().params.uuid as string
 </script>
 
 <template>
-	<Sequence :uuid="uuid" />
+	<SequenceItem :uuid="uuid" />
 </template>

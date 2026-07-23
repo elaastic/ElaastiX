@@ -9,15 +9,4 @@ export default withNuxt([
 			'import/first': 'off', // https://github.com/vuejs/eslint-plugin-vue/issues/1577
 		},
 	},
-	{
-		files: ['**/components/**/*.vue'],
-		rules: {
-			'vue/multi-word-component-names': [
-				'error',
-				{
-					ignores: ['Sequence'],
-				},
-			],
-		},
-	},
 ])

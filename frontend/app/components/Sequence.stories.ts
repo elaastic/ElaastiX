@@ -18,12 +18,12 @@
  */
 
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
-import Sequence from './Sequence.vue'
+import SequenceItem from './SequenceItem.vue'
 import { FetchError } from 'ofetch'
 
 const meta = {
 	title: 'Sequence',
-	component: Sequence,
+	component: SequenceItem,
 	tags: ['autodocs'],
 	decorators: [
 		(story, context) => {
@@ -49,18 +49,18 @@ const meta = {
 			return story()
 		},
 	],
-} satisfies Meta<typeof Sequence>
+} satisfies Meta<typeof SequenceItem>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
 export const Success: Story = {
 	render: args => ({
-		components: { Sequence },
+		components: { Sequence: SequenceItem },
 		setup() {
 			return { args }
 		},
-		template: '<Sequence v-bind="args" />',
+		template: '<SequenceItem v-bind="args" />',
 	}),
 	args: {
 		uuid: 'success-scenario-123',
@@ -89,11 +89,11 @@ export const Success: Story = {
 
 export const ServerError: Story = {
 	render: args => ({
-		components: { Sequence },
+		components: { Sequence: SequenceItem },
 		setup() {
 			return { args }
 		},
-		template: '<Sequence v-bind="args" />',
+		template: '<SequenceItem v-bind="args" />',
 	}),
 	args: {
 		uuid: 'broken-scenario-456',
