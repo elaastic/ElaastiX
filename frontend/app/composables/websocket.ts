@@ -53,8 +53,8 @@ export function useWebSocket(config: WebSocketConfig): WebSocketInteraction {
 	socket.onclose = config.onClose
 	socket.onerror = config.onError
 
-	const close = () => {
-		socket.close()
+	const close = (code?: number | undefined, reason?: string | undefined) => {
+		socket.close(code, reason)
 	}
 
 	return {
