@@ -135,7 +135,12 @@ function startSequence() {
 					<div class="flex flex-col items-center gap-1">
 						<div>{{ phase }}</div>
 						<UButton
-							:icon="state !== 'PENDING' ? 'i-lucide-circle-play' : ''"
+							:icon="
+								state === 'PENDING' || state === undefined
+									? 'i-lucide-circle-play'
+									: ''
+							"
+							:disabled="!(state === 'PENDING' || state === undefined)"
 							size="lg"
 							@click="startSequence"
 						>
