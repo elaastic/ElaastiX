@@ -51,7 +51,7 @@ export class ScenarioTransitionMessage {
 		duration: v.pipe(v.nullable(v.string())),
 	})
 
-	public static create(data: object): ScenarioTransitionMessage {
+	public static create(data: object) {
 		const typedValue = v.parse(ScenarioTransitionMessage.schema, data)
 		return new ScenarioTransitionMessage(typedValue)
 	}
