@@ -82,6 +82,8 @@ export default defineNuxtConfig({
 				'@shikijs/transformers',
 				'@shikijs/themes/github-dark',
 				'@shikijs/themes/github-light',
+				// Cbor
+				'cbor-x',
 			],
 		},
 	},

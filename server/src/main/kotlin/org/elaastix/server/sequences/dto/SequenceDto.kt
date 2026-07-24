@@ -23,8 +23,11 @@ import kotlinx.serialization.Serializable
 import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
+import org.elaastix.server.activities.response.ResponseActivityService.Companion.toDto
 import org.elaastix.server.activities.response.dtos.QuestionStatementDto
+import org.elaastix.server.activities.response.entities.projections.QuestionStatementProjection
 import org.elaastix.server.scenario.SciconumScenario
+import org.elaastix.server.sequences.SciconumSequenceEntity
 
 @Serializable
 data class SequenceDto @SciconumTechDebt constructor(
@@ -45,4 +48,17 @@ data class SequenceDto @SciconumTechDebt constructor(
 	/** Identifier of the scenario owner. */
 	@property:UnclearAuthorshipOwnership
 	val ownerId: Uuid,
-)
+) {
+
+	companion object {
+		@OptIn(SciconumTechDebt::class, UnclearAuthorshipOwnership::class)
+		fun fromEntity(e: SciconumSequenceEntity): SequenceDto =
+			SequenceDto(
+				id = e.id,
+				name = e.name,
+				sciconumScenario = e.sciconumScenario,
+				sciconumQuestions = e.sciconumQuestions.map { QuestionStatementProjection.from(it).toDto() }.toSet(),
+				ownerId = e.owner.id,
+			)
+	}
+}

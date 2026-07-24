@@ -38,6 +38,15 @@ class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
 	lateinit var cynthia: UserEntity
 		protected set
 
+	lateinit var student1: UserEntity
+		protected set
+
+	lateinit var student2: UserEntity
+		protected set
+
+	lateinit var student3: UserEntity
+		protected set
+
 	override fun run(args: ApplicationArguments) {
 		franck = upsert(
 			id = 1UL,
@@ -65,6 +74,36 @@ class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
 				firstName = "Cynthia",
 				lastName = "Rey",
 				email = "cynthia.rey@elaastix.example",
+				roles = setOf(Role.USER),
+			),
+		)
+
+		student1 = upsert(
+			id = 4UL,
+			entity = UserEntity(
+				firstName = "Student",
+				lastName = "Numero 1",
+				email = "student.numero1@elaastix.example",
+				roles = setOf(Role.USER),
+			),
+		)
+
+		student2 = upsert(
+			id = 5UL,
+			entity = UserEntity(
+				firstName = "Student",
+				lastName = "Numero 2",
+				email = "student.numero2@elaastix.example",
+				roles = setOf(Role.USER),
+			),
+		)
+
+		student3 = upsert(
+			id = 6UL,
+			entity = UserEntity(
+				firstName = "Student",
+				lastName = "Numero 3",
+				email = "student.numero3@elaastix.example",
 				roles = setOf(Role.USER),
 			),
 		)

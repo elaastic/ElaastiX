@@ -23,6 +23,7 @@ import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.core.player.PlayerAction
 import org.elaastix.server.core.player.PlayerSystemController
+import org.elaastix.server.scenario.exec.dto.SciconumScenarioPhaseDto
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.ResponseStatus
@@ -33,6 +34,11 @@ import org.springframework.web.bind.annotation.ResponseStatus
 @PlayerSystemController
 @SciconumTechDebt
 class ExecutionController(private val scenarioExecutionService: ScenarioExecutionService) {
+
+	@PlayerAction("org.elaastix.engine.getSciconumSequenceSession")
+	fun getSciconumSequenceSession(@RequestParam scenarioSessionId: Uuid): SciconumScenarioPhaseDto =
+		scenarioExecutionService.getSciconumScenarioStateById(scenarioSessionId)
+
 	/**
 	 * Start a SCICONUM sequence session.
 	 *

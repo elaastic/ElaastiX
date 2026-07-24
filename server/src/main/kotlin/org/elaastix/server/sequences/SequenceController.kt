@@ -62,7 +62,7 @@ class SequenceController(private val sequenceService: SequenceService) {
 	 * @see [SequenceService.getSequence]
 	 */
 	@GetMapping("{id}")
-	fun getSequence(@PathVariable id: Uuid): SequenceDto = sequenceService.getSequence(id)
+	fun getSequence(@PathVariable id: String): SequenceDto = sequenceService.getSequence(Uuid.parse(id))
 
 	/**
 	 * Update a sequence.

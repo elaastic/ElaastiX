@@ -17,37 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec
+package org.elaastix.server.users.dtos
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
-import org.elaastix.commons.platform.debt.SciconumTechDebt
-import kotlin.time.Duration
+import org.elaastix.server.users.entities.UserEntity
 
-@SciconumTechDebt
 @Serializable
-@SerialName("org.elaastix.engine.scenario.transition")
-data class ScenarioTransitionMessage(
-	val sciconumPhase: SciconumScenarioExecutionPhase,
-	val state: State,
-	val duration: Duration?,
-) {
-	/**
-	 * The state of the current phase.
-	 */
-	enum class State {
-		// TODO: define a mechanism for "grace period submission" before actually assigning?
-		//       the client may not be able to send the response RIGHT at the end (clock drift and all)
-		//       so there needs to be a 2-5s window where learners have a waiting screen and final responses can arrive
-		/** The phase is not started and/or busy preparing. */
-		PENDING,
+data class UserDto(val firstName: String, val lastName: String) {
 
-		/** The phase is currently running. */
-		RUNNING,
+	companion object {
 
-		/** The phase has been paused. */
-		PAUSED,
-
-		END,
+		fun fromEntity(e: UserEntity): UserDto = UserDto(firstName = e.firstName, lastName = e.lastName)
 	}
 }

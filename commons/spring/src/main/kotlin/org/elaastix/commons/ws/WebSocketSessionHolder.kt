@@ -42,15 +42,15 @@ class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
 	}
 
 	private val sessions = mutableMapOf<String, WebSocketSession>()
-	private val userSessions = mutableMapOf<UserId, MutableSet<String>>().withDefault { mutableSetOf() }
-	private val broadcastScopes = mutableMapOf<BroadcastScope, MutableSet<String>>().withDefault { mutableSetOf() }
+	private val userSessions = mutableMapOf<UserId, MutableSet<String>>()
+	private val broadcastScopes = mutableMapOf<BroadcastScope, MutableSet<String>>()
 
 	/**
 	 * Registers a WebSocket session. Mandatory in order to assign the session to broadcast scopes.
 	 * Must be unregistered via [unregisterSession] when disconnecting!
 	 */
 	fun registerSession(session: WebSocketSession, owner: UserId) {
-		userSessions.getValue(owner).add(session.id)
+		userSessions.getOrPut(owner) { mutableSetOf() }.add(session.id)
 		sessions[session.id] = session
 	}
 
@@ -68,7 +68,7 @@ class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
 	 * Once assigned to a broadcast scope, the session will receive events broadcast to the scope.
 	 */
 	fun assignToBroadcastScope(session: WebSocketSession, scope: BroadcastScope) {
-		broadcastScopes.getValue(scope).add(session.id)
+		broadcastScopes.getOrPut(scope) { mutableSetOf() }.add(session.id)
 	}
 
 	/**
@@ -77,7 +77,7 @@ class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
 	 * Note: it is not necessarily to explicitly unassign sessions prior to unregistering them.
 	 */
 	fun unassignToBroadcastScope(session: WebSocketSession, scope: BroadcastScope) {
-		broadcastScopes.getValue(scope).remove(session.id)
+		broadcastScopes[scope]?.remove(session.id)
 	}
 
 	/**
@@ -92,7 +92,7 @@ class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
 	 *
 	 * A user may have multiple tabs open, so there is a possibility that the number of sessions is greater than 1.
 	 */
-	fun getSessionsOfUser(userId: UserId) = userSessions.getValue(userId).mapNotNull { sessions[it] }
+	fun getSessionsOfUser(userId: UserId) = userSessions.getOrPut(userId) { mutableSetOf() }.mapNotNull { sessions[it] }
 
 	/**
 	 * Retrieves all sessions that are part of the given broadcast scope.
@@ -100,7 +100,8 @@ class WebSocketSessionHolder(private val clock: Clock) : GarbageCollector {
 	 * Sessions should all be opened, but consumers should guard against stale sessions being returned in case of
 	 * bugs or clients disconnecting in between the retrieval of the set and the actual use of the session object.
 	 */
-	fun getSessionsInBroadcastScope(scope: BroadcastScope) = broadcastScopes.getValue(scope).mapNotNull { sessions[it] }
+	fun getSessionsInBroadcastScope(scope: BroadcastScope) =
+		broadcastScopes.getOrPut(scope) { mutableSetOf() }.mapNotNull { sessions[it] }
 
 	override fun gc() {
 		LOGGER.debug("Starting garbage collection.")
