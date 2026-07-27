@@ -23,5 +23,7 @@ const uuid = useRoute().params.uuid as string
 </script>
 
 <template>
-	<SequenceItem :uuid="uuid" />
+	<SequenceItem
+		:uuid="uuid"
+	/>
 </template>

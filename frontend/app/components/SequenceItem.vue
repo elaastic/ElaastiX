@@ -18,23 +18,20 @@
   -->
 
 <script lang="ts" setup>
-import { FetchError } from 'ofetch'
+const { uuid } = defineProps<{ uuid: string }>()
 
-const { $api } = useNuxtApp()
-const { uuid } = defineProps<{
-	uuid: string
-}>()
+const {
+	startSequence,
+	data: sequenceData,
+	isPending,
+	isError,
+	error,
+	state,
+} = useSequence(uuid)
+
 const lastPage = window.history.state.back as string
 
-const sequenceData = ref<SciconumScenarioPhaseDto | null | undefined>(null)
-const pending = ref(true)
-const error = ref<undefined | object>(undefined)
-
-const phase = ref<string | undefined>(undefined)
-const state = ref<string | undefined>(undefined)
-const duration = ref('')
-
-const skeleton = computed(() => pending.value)
+const skeleton = computed(() => isPending.value)
 
 const name = computed(
 	() => sequenceData.value?.sequence.name ?? 'This sequence does not exists',
@@ -45,66 +42,7 @@ const question = computed(
 		sequenceData.value?.sequence.sciconumQuestions[currentRound.value]
 			?.statement.content ?? '',
 )
-
-async function fetchSequenceState() {
-	try {
-		const response = await $api(
-			'/v1/player/org.elaastix.engine.getSciconumSequenceSession',
-			{
-				method: 'POST',
-				query: {
-					scenarioSessionId: uuid,
-				},
-			},
-		)
-		sequenceData.value = response
-		phase.value = response.phase
-	} catch (e) {
-		if (e instanceof FetchError) {
-			error.value = {
-				statusCode: e.statusCode,
-				statusMessage: e.statusMessage,
-				message: e.message,
-			}
-		} else {
-			console.error('Failed to fetch sequence state:', e)
-		}
-	} finally {
-		pending.value = false
-	}
-}
-
-onMounted(async () => {
-	fetchSequenceState()
-	useWebSocket({
-		onOpen: () => {
-			console.log('The websocket opened')
-		},
-		onMessage: (dataReceived) => {
-			console.log(
-				`data received: ${JSON.stringify(dataReceived, null, 2)}`,
-			)
-			phase.value = dataReceived.sciconumPhase
-			state.value = dataReceived.state
-			duration.value = dataReceived.duration ?? ''
-		},
-		onClose: () => {
-			console.log('The websocket closed')
-		},
-		onError: () => {
-			console.log('The websocket encountered an error')
-		},
-	})
-})
-
-function startSequence() {
-	$api('/v1/player/org.elaastix.engine.startSciconumScenarioSession', {
-		method: 'POST',
-		query: {
-			scenarioSessionId: uuid as string,
-		},
-	})
-}
+const phase = computed(() => sequenceData.value?.phase)
 </script>
 
 <template>
@@ -115,7 +53,7 @@ function startSequence() {
 				class="w-full h-1/4"
 			/>
 			<UError
-				v-else-if="error"
+				v-else-if="isError"
 				:redirect="lastPage"
 				class="w-full h-full"
 				icon="i-lucide-circle-x"
@@ -140,7 +78,9 @@ function startSequence() {
 									? 'i-lucide-circle-play'
 									: ''
 							"
-							:disabled="!(state === 'PENDING' || state === undefined)"
+							:disabled="
+								!(state === 'PENDING' || state === undefined)
+							"
 							size="lg"
 							@click="startSequence"
 						>
