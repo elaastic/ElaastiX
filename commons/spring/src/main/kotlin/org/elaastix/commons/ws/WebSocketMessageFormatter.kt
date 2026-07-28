@@ -23,6 +23,7 @@ import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.cbor.Cbor
 import kotlinx.serialization.serializer
+import org.springframework.web.socket.BinaryMessage
 import org.springframework.web.socket.WebSocketMessage
 
 /**
@@ -36,7 +37,7 @@ class WebSocketMessageFormatter(private val cbor: Cbor) {
 	inline fun <reified T : Any> format(payload: T) = formatWithSerializer(payload, serializer())
 
 	@PublishedApi
-	internal fun <T> formatWithSerializer(payload: T, serializer: KSerializer<T>): WebSocketMessage<ByteArray> {
+	internal fun <T> formatWithSerializer(payload: T, serializer: KSerializer<T>): BinaryMessage {
 		val bytes = cbor.encodeToByteArray(serializer, payload)
 		val serialName = serializer.descriptor.serialName
 
@@ -49,12 +50,6 @@ class WebSocketMessageFormatter(private val cbor: Cbor) {
 		}
 
 		val serialNameBytes = serialName.toByteArray()
-		return CborWebSocketMessage(preamble + serialNameBytes + bytes)
-	}
-
-	private class CborWebSocketMessage(private val payload: ByteArray) : WebSocketMessage<ByteArray> {
-		override fun getPayload() = payload
-		override fun getPayloadLength() = payload.size
-		override fun isLast() = false
+		return BinaryMessage(preamble + serialNameBytes + bytes)
 	}
 }

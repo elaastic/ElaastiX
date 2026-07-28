@@ -29,6 +29,7 @@ import org.elaastix.commons.security.Role
 import org.elaastix.commons.validate
 import org.elaastix.commons.ws.WebSocketEventPublisher
 import org.elaastix.server.scenario.SciconumScenario
+import org.elaastix.server.scenario.exec.dto.SciconumScenarioPhaseDto
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
 import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository
 import org.springframework.scheduling.TaskScheduler
@@ -230,6 +231,7 @@ class ScenarioExecutionService(
 		val message = ScenarioTransitionMessage(
 			phase,
 			when {
+				phase == Phase.END -> ScenarioTransitionMessage.State.END
 				pausedAt != null -> ScenarioTransitionMessage.State.PAUSED
 				else -> ScenarioTransitionMessage.State.RUNNING
 			},
@@ -290,6 +292,11 @@ class ScenarioExecutionService(
 			}
 		}
 	}
+
+	fun getSciconumScenarioStateById(scenarioSessionId: Uuid): SciconumScenarioPhaseDto =
+		SciconumScenarioPhaseDto.fromEntity(
+			sciconumScenarioSessionRepository.findById(scenarioSessionId).orElseNotFound(),
+		)
 
 	private inner class SessionTickTask(val scenarioSessionId: Uuid) : Runnable {
 		override fun run() {

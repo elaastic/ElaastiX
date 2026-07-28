@@ -21,14 +21,13 @@
 
 package org.elaastix.commons.security.ext
 
-import org.elaastix.commons.security.Authority
 import org.elaastix.commons.security.Role
 import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl
 
 @Suppress("UndocumentedPublicClass", "UndocumentedPublicFunction", "SpreadOperator")
 class RoleHierarchyDsl(private var builder: RoleHierarchyImpl.Builder) {
-	fun Role.implies(vararg authorities: Authority) {
-		builder = builder.role(authority).implies(*authorities.map { it.authority }.toTypedArray())
+	fun Role.implies(vararg roles: Role) {
+		builder = builder.role(name).implies(*roles.map { it.name }.toTypedArray())
 	}
 }
 

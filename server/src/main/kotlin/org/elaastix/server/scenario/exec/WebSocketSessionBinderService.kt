@@ -26,6 +26,7 @@ import org.elaastix.server.scenario.exec.entities.SciconumLearnerSessionEntity
 import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.elaastix.server.scenario.exec.repositories.SciconumChatPeeringRepository
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
+import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository
 import org.elaastix.server.ws.events.WebSocketConnectEvent
 import org.springframework.context.event.EventListener
 import org.springframework.scheduling.annotation.Async
@@ -41,6 +42,7 @@ import org.springframework.web.socket.WebSocketSession
 @SciconumTechDebt
 class WebSocketSessionBinderService(
 	private val learnerSessionRepository: SciconumLearnerSessionRepository,
+	private val scenarioSessionRepository: SciconumScenarioSessionRepository,
 	private val chatPeeringRepository: SciconumChatPeeringRepository,
 	private val webSocketSessionHolder: WebSocketSessionHolder,
 ) {
@@ -49,9 +51,16 @@ class WebSocketSessionBinderService(
 	 */
 	@EventListener
 	@Transactional
-	fun handleLearnerJoin(event: WebSocketConnectEvent) {
-		val sessions = learnerSessionRepository.findAllByLearnerAndNotEnded(event.user)
-		for (session in sessions) event.session.bindToSession(session)
+	fun handleUserJoin(event: WebSocketConnectEvent) {
+		val learnerSessions = learnerSessionRepository.findAllByLearnerAndNotEnded(event.user)
+		for (session in learnerSessions) {
+			event.session.bindToSession(session)
+		}
+
+		val managedScenarioSessions = scenarioSessionRepository.findAllBySequenceOwnerAndPhaseNotEnded(event.user)
+		for (session in managedScenarioSessions) {
+			webSocketSessionHolder.assignToBroadcastScope(event.session, session.id)
+		}
 	}
 
 	/**

@@ -40,7 +40,6 @@ class RoleHierarchyConfiguration {
 		@Bean
 		fun roleHierarchy() =
 			RoleHierarchy {
-				// TODO: add permissions there (convention: vararg, roles first)
 				Role.ADMIN.implies(Role.WRITER)
 				Role.WRITER.implies(Role.USER)
 			}

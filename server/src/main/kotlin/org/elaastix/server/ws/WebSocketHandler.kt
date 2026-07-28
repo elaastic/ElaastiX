@@ -21,7 +21,8 @@ package org.elaastix.server.ws
 
 import org.apache.commons.logging.LogFactory
 import org.elaastix.commons.ws.WebSocketSessionHolder
-import org.elaastix.server.authn.getAuthenticatedUser
+import org.elaastix.server.authn.ElaastixAuthentication
+import org.elaastix.server.users.entities.UserEntity
 import org.elaastix.server.ws.events.WebSocketConnectEvent
 import org.elaastix.server.ws.events.WebSocketDisconnectEvent
 import org.springframework.context.ApplicationEventPublisher
@@ -47,8 +48,13 @@ class WebSocketHandler(
 		private val SESSION_STALL_LIMIT = 1.minutes.toInt(DurationUnit.MILLISECONDS)
 	}
 
+	val WebSocketSession.user: UserEntity
+		get() = (principal as? ElaastixAuthentication)?.principal ?: throw IllegalStateException(
+			"Missing or invalid authentication",
+		)
+
 	override fun afterConnectionEstablished(session: WebSocketSession) {
-		val user = getAuthenticatedUser()
+		val user = session.user
 		LOGGER.debug("Connection ${session.id} opened (User: ${user.id})")
 		val safeSession = ConcurrentWebSocketSessionDecorator(session, SESSION_STALL_LIMIT, SESSION_BUFFER_LIMIT)
 		sessionHolder.registerSession(session, user.id)

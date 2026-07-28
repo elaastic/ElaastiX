@@ -27,9 +27,11 @@ import org.elaastix.server.activities.response.ClosedAnswer
 import org.elaastix.server.activities.response.entities.ClosedQuestionEntity
 import org.elaastix.server.activities.response.entities.QuestionEntity
 import org.springframework.boot.ApplicationArguments
+import org.springframework.core.annotation.Order
 
 @Seeder
 @Suppress("MagicNumber")
+@Order(1)
 @OptIn(UnclearAuthorshipOwnership::class)
 class QuestionSeeder(entityManager: EntityManager, private val userSeeder: UserSeeder) :
 	AbstractSeeder(entityManager) {

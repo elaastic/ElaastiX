@@ -2,7 +2,7 @@ import storybook from 'eslint-plugin-storybook'
 import withNuxt from './.nuxt/eslint.config.mjs'
 
 export default withNuxt([
-	...storybook.configs['flat/recommended'] as never, // as never needed, TypeScript mad otherwise :/
+	...(storybook.configs['flat/recommended'] as never), // as never needed, TypeScript mad otherwise :/
 	{
 		rules: {
 			'vue/no-multiple-template-root': 'off',

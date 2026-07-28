@@ -17,37 +17,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.scenario.exec
+package org.elaastix.server.scenario.exec.dto
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.platform.debt.SciconumTechDebt
-import kotlin.time.Duration
+import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase
+import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
+import org.elaastix.server.sequences.dto.SequenceDto
 
-@SciconumTechDebt
 @Serializable
-@SerialName("org.elaastix.engine.scenario.transition")
-data class ScenarioTransitionMessage(
-	val sciconumPhase: SciconumScenarioExecutionPhase,
-	val state: State,
-	val duration: Duration?,
+data class SciconumScenarioPhaseDto
+@OptIn(SciconumTechDebt::class)
+constructor(
+
+	val uuid: Uuid,
+
+	val phase: SciconumScenarioExecutionPhase,
+
+	val sequence: SequenceDto,
+
+	val currentRound: UInt,
+
 ) {
-	/**
-	 * The state of the current phase.
-	 */
-	enum class State {
-		// TODO: define a mechanism for "grace period submission" before actually assigning?
-		//       the client may not be able to send the response RIGHT at the end (clock drift and all)
-		//       so there needs to be a 2-5s window where learners have a waiting screen and final responses can arrive
-		/** The phase is not started and/or busy preparing. */
-		PENDING,
-
-		/** The phase is currently running. */
-		RUNNING,
-
-		/** The phase has been paused. */
-		PAUSED,
-
-		END,
+	companion object {
+		@OptIn(SciconumTechDebt::class)
+		fun fromEntity(e: SciconumScenarioSessionEntity): SciconumScenarioPhaseDto =
+			SciconumScenarioPhaseDto(
+				uuid = e.id,
+				phase = e.phase,
+				sequence = SequenceDto.fromEntity(e.sequence),
+				currentRound = e.currentRound,
+			)
 	}
 }
