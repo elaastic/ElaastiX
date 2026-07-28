@@ -18,22 +18,18 @@
   -->
 
 <script lang="ts" setup>
-const items = [
-	'0000000000000000000000001',
-	'0000000000000000000000002',
-
-]
+const items = ['0000000000000000000000001', '0000000000000000000000002']
 </script>
 
 <template>
 	<div class="w-full h-full p-4">
-		<div class="grid grid-cols-[repeat(auto-fill,minmax(400px,1fr))] gap-4">
+		<div class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
 			<UPageCard
 				v-for="item in items"
 				:key="item"
 				title="Sequence"
 				:description="item"
-				class="w-max"
+				class="w-full"
 				:to="`/sequences/${item}`"
 			/>
 		</div>
