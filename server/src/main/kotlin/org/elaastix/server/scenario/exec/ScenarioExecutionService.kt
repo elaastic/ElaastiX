@@ -174,6 +174,9 @@ class ScenarioExecutionService(
 			SciconumScenario.CONTROL -> Control
 			SciconumScenario.PEER_ASSESSMENT -> Assessment
 			SciconumScenario.PEER_DEBATE -> Debate
+			SciconumScenario.TEST_CONTROL -> TestControl
+			SciconumScenario.TEST_PEER_ASSESSMENT -> TestAssessment
+			SciconumScenario.TEST_PEER_DEBATE -> TestDebate
 		}
 
 		when (phase) {
@@ -181,15 +184,15 @@ class ScenarioExecutionService(
 
 			Phase.QUESTION ->
 				when (scenario) {
-					SciconumScenario.CONTROL ->
+					SciconumScenario.CONTROL, SciconumScenario.TEST_CONTROL ->
 						transition(Phase.FEEDBACK, constants.FEEDBACK_PHASE_DURATION)
 
-					SciconumScenario.PEER_ASSESSMENT -> {
+					SciconumScenario.PEER_ASSESSMENT, SciconumScenario.TEST_PEER_ASSESSMENT -> {
 						preparePeerAssessmentPhase(this)
 						transition(Phase.PEER, Assessment.PEER_PHASE_DURATION)
 					}
 
-					SciconumScenario.PEER_DEBATE -> {
+					SciconumScenario.PEER_DEBATE, SciconumScenario.TEST_PEER_DEBATE -> {
 						preparePeerDebatePhase(this)
 						transition(Phase.PEER, Debate.PEER_PHASE_DURATION)
 					}

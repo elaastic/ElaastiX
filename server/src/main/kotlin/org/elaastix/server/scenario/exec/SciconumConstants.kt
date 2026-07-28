@@ -56,3 +56,27 @@ object Debate : ScenarioConstants {
 	override val REVISE_PHASE_DURATION = 0.5.minutes
 	override val FEEDBACK_PHASE_DURATION = 0.5.minutes
 }
+
+@SciconumTechDebt
+object TestControl : ScenarioConstants {
+	override val ANSWER_PHASE_DURATION = 0.10.minutes
+	override val PEER_PHASE_DURATION = 0.10.minutes
+	override val REVISE_PHASE_DURATION = 0.10.minutes
+	override val FEEDBACK_PHASE_DURATION = 0.10.minutes
+}
+
+@SciconumTechDebt
+object TestAssessment : ScenarioConstants {
+	override val ANSWER_PHASE_DURATION = 0.10.minutes
+	override val PEER_PHASE_DURATION = 0.10.minutes
+	override val REVISE_PHASE_DURATION = 0.10.minutes
+	override val FEEDBACK_PHASE_DURATION = 0.10.minutes
+}
+
+@SciconumTechDebt
+object TestDebate : ScenarioConstants {
+	override val ANSWER_PHASE_DURATION = 0.10.minutes
+	override val PEER_PHASE_DURATION = 0.10.minutes
+	override val REVISE_PHASE_DURATION = 0.10.minutes
+	override val FEEDBACK_PHASE_DURATION = 0.10.minutes
+}

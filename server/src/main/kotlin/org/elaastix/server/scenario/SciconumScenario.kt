@@ -34,4 +34,10 @@ enum class SciconumScenario {
 
 	/** Peer discussion scenario. Answer a question, discuss via instant chat, and wait for results. */
 	PEER_DEBATE,
+
+	TEST_CONTROL,
+
+	TEST_PEER_ASSESSMENT,
+
+	TEST_PEER_DEBATE,
 }
