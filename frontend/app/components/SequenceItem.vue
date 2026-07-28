@@ -46,49 +46,43 @@ const phase = computed(() => sequenceData.value?.phase)
 </script>
 
 <template>
-	<UCard class="w-full h-full">
-		<template #header>
-			<USkeleton
-				v-if="skeleton"
-				class="w-full h-1/4"
-			/>
-			<UError
-				v-else-if="isError"
-				:redirect="lastPage"
-				class="w-full h-full"
-				icon="i-lucide-circle-x"
-				:error="error"
-			/>
-			<UPageCard
-				v-else
-				class="w-full h-full"
-			>
-				<div class="flex justify-between">
-					<div class="flex flex-col gap-2">
-						<div class="text-xl">
-							{{ name }}
-						</div>
-						<div>{{ question }}</div>
-					</div>
-					<div class="flex flex-col items-center gap-1">
-						<div>{{ phase }}</div>
-						<UButton
-							:icon="
-								state === 'PENDING' || state === undefined
-									? 'i-lucide-circle-play'
-									: ''
-							"
-							:disabled="
-								!(state === 'PENDING' || state === undefined)
-							"
-							size="lg"
-							@click="startSequence"
-						>
-							{{ state }}
-						</UButton>
-					</div>
+	<USkeleton
+		v-if="skeleton"
+		class="w-full h-1/4"
+	/>
+	<UError
+		v-else-if="isError"
+		:redirect="lastPage"
+		class="w-full h-full"
+		icon="i-lucide-circle-x"
+		:error="error"
+	/>
+	<UPageCard
+		v-else
+		class="w-full h-min"
+	>
+		<div class="flex justify-between">
+			<div class="flex flex-col gap-2">
+				<div class="text-xl">
+					{{ name }}
 				</div>
-			</UPageCard>
-		</template>
-	</UCard>
+				<div>{{ question }}</div>
+			</div>
+			<div class="flex flex-col items-center gap-1">
+				<div>{{ phase }}</div>
+				<UButton
+					:icon="
+						state === 'PENDING' || state === undefined
+							? 'i-lucide-circle-play'
+							: ''
+					"
+					:disabled="!(state === 'PENDING' || state === undefined)"
+					size="lg"
+					@click="startSequence"
+				>
+					{{ state }}
+				</UButton>
+			</div>
+		</div>
+	</UPageCard>
 </template>
