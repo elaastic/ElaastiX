@@ -39,6 +39,7 @@ export type WebSocketInteraction = {
 }
 
 export function useWebSocket(config: WebSocketConfig): WebSocketInteraction {
+	// https://github.com/nitrojs/nitro/pull/4480
 	const socket = new WebSocket(
 		'ws://localhost:8080/player/org.elaastix.platform.rt',
 	)
