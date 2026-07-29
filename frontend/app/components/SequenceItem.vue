@@ -22,6 +22,8 @@ const { uuid } = defineProps<{ uuid: string }>()
 
 const {
 	startSequence,
+	pauseSequence,
+	resumeSequence,
 	data: sequenceData,
 	isPending,
 	isError,
@@ -30,6 +32,26 @@ const {
 } = useSequence(uuid)
 
 const lastPage = window.history.state.back as string
+
+const actions = new Map([
+	[
+		undefined,
+		{ icon: 'i-lucide-play', disabled: false, onClick: startSequence },
+	],
+	[
+		'PENDING',
+		{ icon: 'i-lucide-play', disabled: false, onClick: startSequence },
+	],
+	[
+		'RUNNING',
+		{ icon: 'i-lucide-pause', disabled: false, onClick: pauseSequence },
+	],
+	[
+		'PAUSED',
+		{ icon: 'i-lucide-play', disabled: false, onClick: resumeSequence },
+	],
+	['END', { icon: '', disabled: true, onClick: startSequence }],
+])
 
 const skeleton = computed(() => isPending.value)
 
@@ -71,14 +93,10 @@ const phase = computed(() => sequenceData.value?.phase)
 			<div class="flex flex-col items-center gap-1">
 				<div>{{ phase }}</div>
 				<UButton
-					:icon="
-						state === 'PENDING' || state === undefined
-							? 'i-lucide-circle-play'
-							: ''
-					"
-					:disabled="!(state === 'PENDING' || state === undefined)"
+					:icon="actions.get(state)?.icon"
+					:disabled="actions.get(state)?.disabled"
 					size="lg"
-					@click="startSequence"
+					@click="actions.get(state)?.onClick"
 				>
 					{{ state }}
 				</UButton>
