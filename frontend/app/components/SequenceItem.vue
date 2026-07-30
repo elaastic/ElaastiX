@@ -50,7 +50,7 @@ const actions = new Map([
 		'PAUSED',
 		{ icon: 'i-lucide-play', disabled: false, onClick: resumeSequence },
 	],
-	['END', { icon: '', disabled: true, onClick: startSequence }],
+	['END', { icon: '', disabled: true, onClick: () => {} }],
 ])
 
 const skeleton = computed(() => isPending.value)
