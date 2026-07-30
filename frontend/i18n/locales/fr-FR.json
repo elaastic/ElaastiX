@@ -85,5 +85,10 @@
 	},
 	"sequences": {
 		"title": "Séquences"
+	},
+	"sequence": {
+		"error": {
+			"forbiden": "Vous n'êtes pas autorisé à accéder à cette page."
+		}
 	}
 }
