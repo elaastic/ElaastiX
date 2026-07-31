@@ -30,6 +30,7 @@ import org.elaastix.server.scenario.SciconumScenario
 import org.elaastix.server.scenario.exec.dto.SciconumScenarioPhaseDto
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
 import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.Async
 import org.springframework.security.access.prepost.PreAuthorize
@@ -294,10 +295,23 @@ class ScenarioExecutionService(
 		}
 	}
 
+	@Transactional(readOnly = true)
 	fun getSciconumScenarioStateById(scenarioSessionId: Uuid): SciconumScenarioPhaseDto =
 		SciconumScenarioPhaseDto.fromEntity(
 			sciconumScenarioSessionRepository.findById(scenarioSessionId).orElseNotFound(),
 		)
+
+	@Transactional(readOnly = true)
+	fun getAllSciconumSequenceSession(user: UserEntity): List<SciconumScenarioPhaseDto> {
+		println(
+			"data: ${
+				sciconumScenarioSessionRepository.findAllBySequenceOwnerAndAssignmentParticipant(user)
+					.map(SciconumScenarioPhaseDto::fromEntity)
+			}",
+		)
+		return sciconumScenarioSessionRepository.findAllBySequenceOwnerAndAssignmentParticipant(user)
+			.map(SciconumScenarioPhaseDto::fromEntity)
+	}
 
 	private inner class SessionTickTask(val scenarioSessionId: Uuid) : Runnable {
 		override fun run() {

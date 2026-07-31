@@ -55,7 +55,7 @@
 	},
 	"login": {
 		"login": "Login",
-		"logout" : "Log out",
+		"logout": "Log out",
 		"user": "User",
 		"description": "Choose the user you want to authenticate as",
 		"guest": "Guest"
@@ -88,7 +88,8 @@
 	},
 	"sequence": {
 		"error": {
-			"forbidden": "You aren't allowed to access this sequence"
+			"forbidden": "You aren't allowed to access this sequence",
+			"noSequenceAssociated": "You don't have any sequence associated."
 		}
 	},
 	"error": "Error"
