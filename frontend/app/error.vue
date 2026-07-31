@@ -6,9 +6,9 @@ const { error } = defineProps<{ error: NuxtError }>()
 
 <template>
 	<NuxtLayout name="default">
-		<UDashboardPanel id="Error">
+		<UDashboardPanel :id="$t('error')">
 			<template #header>
-				<UDashboardNavbar title="Error">
+				<UDashboardNavbar :title="$t('error').charAt(0).toUpperCase() + $t('error').slice(1)">
 					<template #leading>
 						<UDashboardSidebarCollapse />
 					</template>
