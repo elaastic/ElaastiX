@@ -67,6 +67,7 @@ export function useSequence(uuid: string) {
 				data.value.phase = dataReceived.sciconumPhase
 				state.value = dataReceived.state
 				duration.value = dataReceived.duration
+				data.value.currentRound = dataReceived.currentRound
 			}
 		},
 	})

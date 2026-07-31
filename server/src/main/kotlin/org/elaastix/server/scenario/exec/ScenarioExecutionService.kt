@@ -229,13 +229,14 @@ class ScenarioExecutionService(
 	private final fun ScenarioSessionEntity.dispatchTransition() {
 		val duration = nextPhaseAt?.let { it - clock.now() }
 		val message = ScenarioTransitionMessage(
-			phase,
-			when {
+			sciconumPhase = phase,
+			state = when {
 				phase == Phase.END -> ScenarioTransitionMessage.State.END
 				pausedAt != null -> ScenarioTransitionMessage.State.PAUSED
 				else -> ScenarioTransitionMessage.State.RUNNING
 			},
-			duration,
+			duration = duration,
+			currentRound = currentRound,
 		)
 
 		webSocketEventPublisher.publishPayload(id, message)

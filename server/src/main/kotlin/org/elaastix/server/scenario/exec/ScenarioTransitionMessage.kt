@@ -31,6 +31,7 @@ data class ScenarioTransitionMessage(
 	val sciconumPhase: SciconumScenarioExecutionPhase,
 	val state: State,
 	val duration: Duration?,
+	val currentRound: UInt,
 ) {
 	/**
 	 * The state of the current phase.
