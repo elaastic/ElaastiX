@@ -42,4 +42,14 @@ interface SciconumScenarioSessionRepository : ElaastixRepository<SciconumScenari
 		assignment: AssignmentEntity,
 		sequenceEntity: SciconumSequenceEntity,
 	): SciconumScenarioSessionEntity?
+
+	@Query(
+		"""
+    SELECT s FROM SciconumScenarioSessionEntity s
+    JOIN FETCH s.sequence
+    JOIN FETCH s.assignment
+    WHERE s.sequence.owner = :user
+      OR :user MEMBER OF s.assignment.participants""",
+	)
+	fun findAllBySequenceOwnerAndAssignmentParticipant(user: UserEntity): List<SciconumScenarioSessionEntity>
 }

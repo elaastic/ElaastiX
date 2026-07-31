@@ -18,19 +18,41 @@
   -->
 
 <script lang="ts" setup>
-const items = ['0000000000000000000000001', '0000000000000000000000002']
+const { data, isPending } = useSequences()
 </script>
 
 <template>
 	<div class="w-full h-full p-4">
-		<div class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
+		<div
+			v-if="!isPending && data?.length === 0"
+			class="w-full h-full flex items-center justify-center"
+		>
+			<p class="text-2xl">
+				{{ $t("sequence.noSequenceAssociated") }}
+			</p>
+		</div>
+		<div
+			v-else
+			class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4"
+		>
+			<div
+				v-if="isPending"
+				class="w-full h-full"
+			>
+				<USkeleton
+					v-for="value in Array.from({ length: 5 }, (_, i) => i + 1)"
+					:key="value"
+					class="w-full h-12"
+				/>
+			</div>
 			<UPageCard
-				v-for="item in items"
-				:key="item"
+				v-for="item in data"
+				v-else
+				:key="item.uuid"
 				title="Sequence"
-				:description="item"
+				:description="item.uuid"
 				class="w-full"
-				:to="`/sequences/${item}`"
+				:to="`/sequences/${item.uuid}`"
 			/>
 		</div>
 	</div>
