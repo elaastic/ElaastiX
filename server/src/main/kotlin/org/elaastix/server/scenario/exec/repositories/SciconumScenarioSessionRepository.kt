@@ -60,7 +60,7 @@ interface SciconumScenarioSessionRepository : ElaastixRepository<SciconumScenari
     LEFT JOIN s.sequence seq
     LEFT JOIN s.assignment ass
     WHERE (seq.owner = :user OR :user MEMBER OF ass.participants)
-      AND seq.id = :sequenceUuid
+      AND s.id = :sequenceUuid
     """,
 	)
 	fun numberOfSequenceAssociated(user: UserEntity, sequenceUuid: Uuid): Long
