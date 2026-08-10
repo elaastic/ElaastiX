@@ -59,11 +59,23 @@ interface SciconumLearnerSessionRepository : ElaastixRepository<SciconumLearnerS
 	@Modifying
 	@Query(
 		"UPDATE SciconumLearnerSessionEntity sls SET sls.phase = :phase, sls.nextPhaseAt = :nextPhaseAt " +
-			"WHERE sls.scenarioSession = :scenarioSession AND (:phase = 'QUESTION' OR sls.phase != 'PENDING')",
+			"WHERE sls.id IN :sessions",
 	)
-	fun transitionAllLearnerSessionsOfSessionTo(
-		scenarioSession: SciconumScenarioSessionEntity,
+	fun transitionAllLearnerSessionsTo(
+		sessions: List<Uuid>,
 		phase: SciconumScenarioExecutionPhase,
 		nextPhaseAt: Instant?,
 	): Int
+
+	@Query(
+		"SELECT sls.id FROM SciconumLearnerSessionEntity sls " +
+			"WHERE sls.scenarioSession = :scenarioSession",
+	)
+	fun findAllLearnerSessionsToTransitionIncludingPending(scenarioSession: SciconumScenarioSessionEntity): List<Any>
+
+	@Query(
+		"SELECT sls.id FROM SciconumLearnerSessionEntity sls " +
+			"WHERE sls.scenarioSession = :scenarioSession AND sls.phase != 'PENDING'",
+	)
+	fun findAllLearnerSessionsToTransitionExcludingPending(scenarioSession: SciconumScenarioSessionEntity): List<Any>
 }

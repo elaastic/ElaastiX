@@ -2,6 +2,7 @@ import type { State } from '~/lib/ScenarioTransitionMessage'
 
 export function useSequence(uuid: string) {
 	const { $api } = useNuxtApp()
+	const { user } = useAuthn()
 
 	const {
 		data: sequenceData,
@@ -16,6 +17,9 @@ export function useSequence(uuid: string) {
 
 	const data = ref<undefined | SciconumScenarioPhaseDto>(undefined)
 	const isError = computed(() => error.value !== undefined)
+	const isOwner = computed(
+		() => data.value?.sequence.ownerId === user.value?.id,
+	)
 	const state = ref<State | undefined>(undefined)
 	const duration = ref<string | undefined | null>(undefined)
 
@@ -79,6 +83,7 @@ export function useSequence(uuid: string) {
 		data,
 		isPending,
 		isError,
+		isOwner,
 		error,
 		state,
 		duration,

@@ -109,7 +109,8 @@ class ScenarioExecutionService(
 		validate(session.pausedAt == null) { "The session has already been paused." }
 
 		session.pausedAt = clock.now()
-		session.dispatchTransition()
+		val toTransition = getToTransition(session, session.phase)
+		session.dispatchTransition(toTransition)
 		session.deschedule()
 	}
 
@@ -130,7 +131,8 @@ class ScenarioExecutionService(
 			session.nextPhaseAt = nextTick
 		} ?: LOGGER.warn("Unpaused session ${session.id}, but it didn't have a next scheduled tick.")
 
-		session.dispatchTransition()
+		val toTransition = getToTransition(session, session.phase)
+		session.dispatchTransition(toTransition)
 		session.scheduleTick()
 	}
 
@@ -150,7 +152,8 @@ class ScenarioExecutionService(
 		}
 
 		webSocketSessionBinderService.freeBroadcastScopesOfSession(session)
-		session.dispatchTransition()
+		val toTransition = getToTransition(session, session.phase)
+		session.dispatchTransition(toTransition)
 		session.scheduleTick()
 	}
 
@@ -223,11 +226,12 @@ class ScenarioExecutionService(
 
 		phase = nextPhase
 		nextPhaseAt = nextTick
-		sciconumLearnerSessionRepository.transitionAllLearnerSessionsOfSessionTo(this, phase, nextTick)
-		dispatchTransition()
+		val toTransition = getToTransition(this, phase)
+		sciconumLearnerSessionRepository.transitionAllLearnerSessionsTo(toTransition, phase, nextTick)
+		dispatchTransition(toTransition)
 	}
 
-	private final fun ScenarioSessionEntity.dispatchTransition() {
+	private final fun ScenarioSessionEntity.dispatchTransition(sessions: List<Uuid>) {
 		val duration = nextPhaseAt?.let { it - clock.now() }
 		val message = ScenarioTransitionMessage(
 			sciconumPhase = phase,
@@ -241,6 +245,7 @@ class ScenarioExecutionService(
 		)
 
 		webSocketEventPublisher.publishPayload(id, message)
+		sessions.forEach { webSocketEventPublisher.publishPayload(it, message) }
 	}
 
 	private final fun ScenarioSessionEntity.scheduleTick() {
@@ -318,4 +323,13 @@ class ScenarioExecutionService(
 			}
 		}
 	}
+
+	fun getToTransition(session: ScenarioSessionEntity, phase: Phase) =
+		if (phase == Phase.QUESTION) {
+			sciconumLearnerSessionRepository.findAllLearnerSessionsToTransitionIncludingPending(session)
+				.map { it as Uuid }
+		} else {
+			sciconumLearnerSessionRepository.findAllLearnerSessionsToTransitionExcludingPending(session)
+				.map { it as Uuid }
+		}
 }
