@@ -53,8 +53,6 @@ const actions = new Map([
 	['END', { icon: '', disabled: true, onClick: () => {} }],
 ])
 
-const skeleton = computed(() => isPending.value)
-
 const name = computed(
 	() => sequenceData.value?.sequence.name ?? 'This sequence does not exists',
 )
@@ -69,7 +67,7 @@ const phase = computed(() => sequenceData.value?.phase)
 
 <template>
 	<USkeleton
-		v-if="skeleton"
+		v-if="isPending"
 		class="w-full h-1/4"
 	/>
 	<UError
