@@ -3,18 +3,16 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
 	const { $api, $i18n } = useNuxtApp()
 	const data = await $api(
-		`/v1/player/org.elaastix.engine.getSciconumSequenceSession`,
+		`/v1/player/org.elaastix.engine.isSequenceAssociated`,
 		{
 			method: 'POST',
 			query: {
-				scenarioSessionId: uuid,
+				sequenceUuid: uuid,
 			},
 		},
 	)
 
-	const { user: owner } = useAuthn()
-
-	if (data?.sequence.ownerId !== owner.value?.id) {
+	if (!data) {
 		return showError({
 			status: 403,
 			statusText: $i18n.t('sequence.error.forbidden'),

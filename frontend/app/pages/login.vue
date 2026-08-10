@@ -78,7 +78,7 @@ async function onSubmit(submission: FormSubmitEvent<Schema>) {
 					:label="$t('login.user')"
 					name="uuid"
 				>
-					<USelect
+					<USelectMenu
 						v-model="state.user"
 						:items="items"
 					/>

@@ -19,6 +19,7 @@
 
 package org.elaastix.server.scenario.exec.repositories
 
+import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.jpa.repository.ElaastixRepository
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.assignments.AssignmentEntity
@@ -46,10 +47,21 @@ interface SciconumScenarioSessionRepository : ElaastixRepository<SciconumScenari
 	@Query(
 		"""
     SELECT s FROM SciconumScenarioSessionEntity s
-    JOIN FETCH s.sequence
-    JOIN FETCH s.assignment
+    LEFT JOIN FETCH s.sequence
+    LEFT JOIN FETCH s.assignment
     WHERE s.sequence.owner = :user
       OR :user MEMBER OF s.assignment.participants""",
 	)
 	fun findAllBySequenceOwnerAndAssignmentParticipant(user: UserEntity): List<SciconumScenarioSessionEntity>
+
+	@Query(
+		"""
+    SELECT COUNT(s) FROM SciconumScenarioSessionEntity s
+    LEFT JOIN s.sequence seq
+    LEFT JOIN s.assignment ass
+    WHERE (seq.owner = :user OR :user MEMBER OF ass.participants)
+      AND seq.id = :sequenceUuid
+    """,
+	)
+	fun numberOfSequenceAssociated(user: UserEntity, sequenceUuid: Uuid): Long
 }
