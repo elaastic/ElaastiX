@@ -302,16 +302,13 @@ class ScenarioExecutionService(
 		)
 
 	@Transactional(readOnly = true)
-	fun getAllSciconumSequenceSession(user: UserEntity): List<SciconumScenarioPhaseDto> {
-		println(
-			"data: ${
-				sciconumScenarioSessionRepository.findAllBySequenceOwnerAndAssignmentParticipant(user)
-					.map(SciconumScenarioPhaseDto::fromEntity)
-			}",
-		)
-		return sciconumScenarioSessionRepository.findAllBySequenceOwnerAndAssignmentParticipant(user)
+	fun getAllSciconumSequenceSessionAssociated(user: UserEntity): List<SciconumScenarioPhaseDto> =
+		sciconumScenarioSessionRepository.findAllBySequenceOwnerAndAssignmentParticipant(user)
 			.map(SciconumScenarioPhaseDto::fromEntity)
-	}
+
+	@Transactional(readOnly = true)
+	fun isSequenceAssociated(user: UserEntity, sequenceUuid: Uuid): Boolean =
+		sciconumScenarioSessionRepository.numberOfSequenceAssociated(user, sequenceUuid) != 0L
 
 	private inner class SessionTickTask(val scenarioSessionId: Uuid) : Runnable {
 		override fun run() {

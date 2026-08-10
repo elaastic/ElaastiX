@@ -41,10 +41,14 @@ class ExecutionController(private val scenarioExecutionService: ScenarioExecutio
 		scenarioExecutionService.getSciconumScenarioStateById(scenarioSessionId)
 
 	@PlayerAction("org.elaastix.engine.getAllSciconumSequenceSession")
-	fun getAllSciconumSequenceSession(): List<SciconumScenarioPhaseDto> =
-		scenarioExecutionService.getAllSciconumSequenceSession(
+	fun getAllSciconumSequenceSessionAssociated(): List<SciconumScenarioPhaseDto> =
+		scenarioExecutionService.getAllSciconumSequenceSessionAssociated(
 			getAuthenticatedUser(),
 		)
+
+	@PlayerAction("org.elaastix.engine.isSequenceAssociated")
+	fun isSequenceAssociated(@RequestParam sequenceUuid: Uuid): Boolean =
+		scenarioExecutionService.isSequenceAssociated(getAuthenticatedUser(), sequenceUuid)
 
 	/**
 	 * Start a SCICONUM sequence session.
