@@ -48,6 +48,9 @@ class SequenceSeeder(
 	lateinit var sequence3: SciconumSequenceEntity
 
 	@OptIn(SciconumTechDebt::class)
+	lateinit var sequenceTest: SciconumSequenceEntity
+
+	@OptIn(SciconumTechDebt::class)
 	override fun run(args: ApplicationArguments) {
 		val questions = mutableListOf<QuestionEntity>(questionSeeder.tmpQuestion1, questionSeeder.tmpQuestion2)
 		sequence1 = upsert(
@@ -77,6 +80,17 @@ class SequenceSeeder(
 			entity = SciconumSequenceEntity(
 				name = "Sequence 3",
 				sciconumScenario = SciconumScenario.PEER_DEBATE,
+				sciconumQuestions = questions,
+			).apply {
+				this.owner = userSeeder.franck
+			},
+		)
+
+		sequenceTest = upsert(
+			id = 4UL,
+			entity = SciconumSequenceEntity(
+				name = "Sequence test",
+				sciconumScenario = SciconumScenario.TEST,
 				sciconumQuestions = questions,
 			).apply {
 				this.owner = userSeeder.franck

@@ -40,12 +40,26 @@ class SciconumScenarioSessionSeeder(
 		protected set
 
 	@OptIn(SciconumTechDebt::class)
+	lateinit var scenarioSessionTest: SciconumScenarioSessionEntity
+		protected set
+
+	@OptIn(SciconumTechDebt::class)
 	override fun run(args: ApplicationArguments) {
 		scenarioSession1 = upsert(
 			id = 1UL,
 			entity = SciconumScenarioSessionEntity(
 				assignment = assignmentSeeder.assignment1,
 				sequence = sequenceSeeder.sequence1,
+				currentRound = 0U,
+				phase = SciconumScenarioExecutionPhase.PENDING,
+			),
+		)
+
+		scenarioSessionTest = upsert(
+			id = 2UL,
+			entity = SciconumScenarioSessionEntity(
+				assignment = assignmentSeeder.assignment1,
+				sequence = sequenceSeeder.sequenceTest,
 				currentRound = 0U,
 				phase = SciconumScenarioExecutionPhase.PENDING,
 			),

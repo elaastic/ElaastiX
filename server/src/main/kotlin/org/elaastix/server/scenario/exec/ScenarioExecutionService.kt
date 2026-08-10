@@ -174,6 +174,7 @@ class ScenarioExecutionService(
 			SciconumScenario.CONTROL -> Control
 			SciconumScenario.PEER_ASSESSMENT -> Assessment
 			SciconumScenario.PEER_DEBATE -> Debate
+			SciconumScenario.TEST -> Test
 		}
 
 		when (phase) {
@@ -181,7 +182,7 @@ class ScenarioExecutionService(
 
 			Phase.QUESTION ->
 				when (scenario) {
-					SciconumScenario.CONTROL ->
+					SciconumScenario.CONTROL, SciconumScenario.TEST ->
 						transition(Phase.FEEDBACK, constants.FEEDBACK_PHASE_DURATION)
 
 					SciconumScenario.PEER_ASSESSMENT -> {
