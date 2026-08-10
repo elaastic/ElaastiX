@@ -1,5 +1,13 @@
 <template>
 	<UDashboardPanel id="home">
+		<template #header>
+			<UDashboardNavbar>
+				<template #leading>
+					<UDashboardSidebarCollapse />
+				</template>
+			</UDashboardNavbar>
+		</template>
+
 		<template #body>
 			<UPageHero
 				title="Nuxt Starter Template"
