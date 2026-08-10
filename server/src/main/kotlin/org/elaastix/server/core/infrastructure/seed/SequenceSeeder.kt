@@ -90,7 +90,7 @@ class SequenceSeeder(
 			id = 4UL,
 			entity = SciconumSequenceEntity(
 				name = "Sequence test",
-				sciconumScenario = SciconumScenario.TEST_CONTROL,
+				sciconumScenario = SciconumScenario.TEST,
 				sciconumQuestions = questions,
 			).apply {
 				this.owner = userSeeder.franck
