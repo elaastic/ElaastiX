@@ -59,5 +59,20 @@
 		"user": "Utilisateur",
 		"description": "Choisir l'utilisateur avec lequel vous voulez vous authentifier",
 		"guest": "Invité"
+	},
+	"home": {
+		"title": "Accueil"
+	},
+	"assignments": {
+		"title": "Devoirs"
+	},
+	"resources": {
+		"title": "Ressources"
+	},
+	"cohorts": {
+		"title": "Cohortes"
+	},
+	"sequences": {
+		"title": "Séquences"
 	}
 }

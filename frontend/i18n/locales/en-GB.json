@@ -59,5 +59,20 @@
 		"user": "User",
 		"description": "Choose the user you want to authenticate as",
 		"guest": "Guest"
+	},
+	"home": {
+		"title": "Home"
+	},
+	"assignments": {
+		"title": "Assignments"
+	},
+	"resources": {
+		"title": "Resources"
+	},
+	"cohorts": {
+		"title": "Cohorts"
+	},
+	"sequences": {
+		"title": "Sequences"
 	}
 }

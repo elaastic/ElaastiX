@@ -4,7 +4,7 @@
 <template>
 	<NuxtLayout
 		page-id="sequences"
-		page-title="Sequences"
+		:page-title="$t('sequences.title')"
 	>
 		<NuxtPage />
 	</NuxtLayout>
