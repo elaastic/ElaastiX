@@ -60,6 +60,17 @@
 		"description": "Choose the user you want to authenticate as",
 		"guest": "Guest"
 	},
+	"userMenu": {
+		"settings": "Settings",
+		"appearance": {
+			"title": "Appearance",
+			"system": "System",
+			"light": "Light",
+			"dark": "Dark"
+		},
+		"language": "Language",
+		"administration": "Administration"
+	},
 	"home": {
 		"title": "Home"
 	},

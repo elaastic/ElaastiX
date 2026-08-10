@@ -60,6 +60,17 @@
 		"description": "Choisir l'utilisateur avec lequel vous voulez vous authentifier",
 		"guest": "Invité"
 	},
+	"userMenu": {
+		"settings": "Paramètres",
+		"appearance": {
+			"title": "Apparence",
+			"system": "Système",
+			"light": "Clair",
+			"dark": "Sombre"
+		},
+		"language": "Langue",
+		"administration": "Administration"
+	},
 	"home": {
 		"title": "Accueil"
 	},
