@@ -1,15 +1,11 @@
-<template>
-	<UDashboardPanel id="sequences">
-		<template #header>
-			<UDashboardNavbar title="Sequences">
-				<template #leading>
-					<UDashboardSidebarCollapse />
-				</template>
-			</UDashboardNavbar>
-		</template>
+<script setup lang="ts">
+</script>
 
-		<template #body>
-			<NuxtPage />
-		</template>
-	</UDashboardPanel>
+<template>
+	<NuxtLayout
+		page-id="sequences"
+		page-title="Sequences"
+	>
+		<NuxtPage />
+	</NuxtLayout>
 </template>
