@@ -23,6 +23,7 @@ import jakarta.persistence.EntityManager
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.assignments.AssignmentEntity
+import org.elaastix.server.assignments.participants.AssignmentParticipantsService
 import org.springframework.boot.ApplicationArguments
 import org.springframework.core.annotation.Order
 
@@ -33,6 +34,7 @@ class AssignmentSeeder(
 	entityManager: EntityManager,
 	private val userSeeder: UserSeeder,
 	private val sequenceSeeder: SequenceSeeder,
+	private val assignmentParticipantsService: AssignmentParticipantsService,
 ) : AbstractSeeder(entityManager) {
 
 	lateinit var assignment1: AssignmentEntity
@@ -45,11 +47,15 @@ class AssignmentSeeder(
 			entity = AssignmentEntity(
 				displayName = "Assignment 1",
 				sequences = mutableListOf(sequenceSeeder.sequence1, sequenceSeeder.sequence2, sequenceSeeder.sequence3),
-				participants = mutableSetOf(userSeeder.student1, userSeeder.student2, userSeeder.student3),
+				participants = mutableSetOf(),
 				owner = userSeeder.franck,
 			).apply {
 				this.creator = userSeeder.franck
 			},
 		)
+
+		assignmentParticipantsService.addParticipantToAssignmentById(assignmentId = assignment1.id, userSeeder.student1.id)
+		assignmentParticipantsService.addParticipantToAssignmentById(assignmentId = assignment1.id, userSeeder.student2.id)
+		assignmentParticipantsService.addParticipantToAssignmentById(assignmentId = assignment1.id, userSeeder.student3.id)
 	}
 }
