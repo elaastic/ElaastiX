@@ -2,7 +2,7 @@
 </script>
 
 <template>
-	<UDashboardPanel :id="sequences">
+	<UDashboardPanel id="sequences">
 		<template #header>
 			<UDashboardNavbar :title="$t('sequences.title')">
 				<template #leading>
