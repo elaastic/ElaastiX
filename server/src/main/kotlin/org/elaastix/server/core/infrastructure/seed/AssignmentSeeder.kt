@@ -49,7 +49,7 @@ class AssignmentSeeder(
 			entity = AssignmentEntity(
 				displayName = "Assignment 1",
 				sequences = mutableListOf(sequenceSeeder.sequence1, sequenceSeeder.sequence2, sequenceSeeder.sequence3),
-				participants = mutableSetOf(userSeeder.student1, userSeeder.student2),
+				participants = mutableSetOf(),
 				owner = userSeeder.franck,
 			).apply {
 				this.creator = userSeeder.franck
@@ -61,7 +61,7 @@ class AssignmentSeeder(
 			entity = AssignmentEntity(
 				displayName = "Assignment 2",
 				sequences = mutableListOf(sequenceSeeder.sequenceTest),
-				participants = mutableSetOf(userSeeder.student2, userSeeder.student3),
+				participants = mutableSetOf(),
 				owner = userSeeder.john,
 			).apply {
 				this.creator = userSeeder.john
