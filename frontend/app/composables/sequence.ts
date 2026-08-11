@@ -19,10 +19,28 @@ export function useSequence(uuid: string) {
 	const state = ref<State | undefined>(undefined)
 	const duration = ref<string | undefined | null>(undefined)
 
-	watch(sequenceData, () => data.value = sequenceData.value)
+	watch(sequenceData, () => (data.value = sequenceData.value))
 
 	const startSequence = () => {
 		$api('/v1/player/org.elaastix.engine.startSciconumScenarioSession', {
+			method: 'POST',
+			query: {
+				scenarioSessionId: uuid,
+			},
+		})
+	}
+
+	const pauseSequence = () => {
+		$api('/v1/player/org.elaastix.engine.pauseSciconumScenarioSession', {
+			method: 'POST',
+			query: {
+				scenarioSessionId: uuid,
+			},
+		})
+	}
+
+	const resumeSequence = () => {
+		$api('/v1/player/org.elaastix.engine.resumeSciconumScenarioSession', {
 			method: 'POST',
 			query: {
 				scenarioSessionId: uuid,
@@ -55,6 +73,8 @@ export function useSequence(uuid: string) {
 
 	return {
 		startSequence,
+		pauseSequence,
+		resumeSequence,
 		data,
 		isPending,
 		isError,

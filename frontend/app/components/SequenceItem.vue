@@ -22,6 +22,8 @@ const { uuid } = defineProps<{ uuid: string }>()
 
 const {
 	startSequence,
+	pauseSequence,
+	resumeSequence,
 	data: sequenceData,
 	isPending,
 	isError,
@@ -30,8 +32,6 @@ const {
 } = useSequence(uuid)
 
 const lastPage = window.history.state.back as string
-
-const skeleton = computed(() => isPending.value)
 
 const name = computed(
 	() => sequenceData.value?.sequence.name ?? 'This sequence does not exists',
@@ -47,7 +47,7 @@ const phase = computed(() => sequenceData.value?.phase)
 
 <template>
 	<USkeleton
-		v-if="skeleton"
+		v-if="isPending"
 		class="w-full h-1/4"
 	/>
 	<UError
@@ -70,16 +70,29 @@ const phase = computed(() => sequenceData.value?.phase)
 			</div>
 			<div class="flex flex-col items-center gap-1">
 				<div>{{ phase }}</div>
+				<!-- TODO: We need to update the server so that the state is never undefined -->
 				<UButton
-					:icon="
-						state === 'PENDING' || state === undefined
-							? 'i-lucide-circle-play'
-							: ''
-					"
-					:disabled="!(state === 'PENDING' || state === undefined)"
-					size="lg"
+					v-if="state === 'PENDING' || state === undefined"
+					icon="i-lucide-play"
 					@click="startSequence"
 				>
+					{{ state }}
+				</UButton>
+				<UButton
+					v-if="state === 'RUNNING'"
+					icon="i-lucide-pause"
+					@click="pauseSequence"
+				>
+					{{ state }}
+				</UButton>
+				<UButton
+					v-if="state === 'PAUSED'"
+					icon="i-lucide-play"
+					@click="resumeSequence"
+				>
+					{{ state }}
+				</UButton>
+				<UButton v-if="state === 'END'">
 					{{ state }}
 				</UButton>
 			</div>
