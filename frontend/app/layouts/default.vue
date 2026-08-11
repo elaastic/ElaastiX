@@ -20,36 +20,38 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-const links = [
+const { t } = useI18n()
+
+const links = computed<NavigationMenuItem[][]>(() => [
 	[
 		{
-			label: 'Home',
+			label: t('home.title'),
 			icon: 'i-lucide-house',
 			to: '/',
 		},
 		{
-			label: 'Assignments',
+			label: t('assignments.title'),
 			icon: 'i-lucide-briefcase-business',
 			to: '/assignments',
 			badge: '4',
 		},
 		{
-			label: 'Resources',
+			label: t('resources.title'),
 			icon: 'i-lucide-folder',
 			to: '/resources',
 		},
 		{
-			label: 'Cohorts',
+			label: t('cohorts.title'),
 			icon: 'i-lucide-users',
 			to: '/cohorts',
 		},
 		{
-			label: 'Sequence',
+			label: t('sequences.title'),
 			icon: 'i-lucide-flag-triangle-right',
 			to: '/sequences',
 		},
 	],
-] satisfies NavigationMenuItem[][]
+])
 </script>
 
 <template>

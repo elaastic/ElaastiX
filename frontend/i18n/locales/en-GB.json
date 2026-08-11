@@ -59,5 +59,31 @@
 		"user": "User",
 		"description": "Choose the user you want to authenticate as",
 		"guest": "Guest"
+	},
+	"userMenu": {
+		"settings": "Settings",
+		"appearance": {
+			"title": "Appearance",
+			"system": "System",
+			"light": "Light",
+			"dark": "Dark"
+		},
+		"language": "Language",
+		"administration": "Administration"
+	},
+	"home": {
+		"title": "Home"
+	},
+	"assignments": {
+		"title": "Assignments"
+	},
+	"resources": {
+		"title": "Resources"
+	},
+	"cohorts": {
+		"title": "Cohorts"
+	},
+	"sequences": {
+		"title": "Sequences"
 	}
 }

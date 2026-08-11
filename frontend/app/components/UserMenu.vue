@@ -50,16 +50,16 @@ const items = computed<DropdownMenuItem[][]>(() => [
 	],
 	[
 		{
-			label: 'Settings',
+			label: t('userMenu.settings'),
 			icon: 'i-lucide-settings',
 			to: '/settings',
 		},
 		{
-			label: 'Appearance',
+			label: t('userMenu.appearance.title'),
 			icon: 'i-lucide-sun-moon',
 			children: [
 				{
-					label: 'System',
+					label: t('userMenu.appearance.system'),
 					icon: 'i-lucide-monitor',
 					type: 'checkbox',
 					checked: colorMode.preference === 'system',
@@ -69,7 +69,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 					},
 				},
 				{
-					label: 'Light',
+					label: t('userMenu.appearance.light'),
 					icon: 'i-lucide-sun',
 					type: 'checkbox',
 					checked: colorMode.preference === 'light',
@@ -79,7 +79,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 					},
 				},
 				{
-					label: 'Dark',
+					label: t('userMenu.appearance.dark'),
 					icon: 'i-lucide-moon',
 					type: 'checkbox',
 					checked: colorMode.preference === 'dark',
@@ -91,7 +91,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 			],
 		},
 		{
-			label: 'Language',
+			label: t('userMenu.language'),
 			icon: 'i-lucide-languages',
 			children: locales.value.map(l => ({
 				label: l.name,
@@ -106,7 +106,7 @@ const items = computed<DropdownMenuItem[][]>(() => [
 	],
 	[
 		{
-			label: 'Administration',
+			label: t('userMenu.administration'),
 			icon: 'i-lucide-cog',
 			external: true,
 		},

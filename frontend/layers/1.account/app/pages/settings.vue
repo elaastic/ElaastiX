@@ -48,7 +48,7 @@ const links = [
 <template>
 	<UDashboardPanel id="settings">
 		<template #header>
-			<UDashboardNavbar title="Settings">
+			<UDashboardNavbar :title="$t('userMenu.settings')">
 				<template #leading>
 					<UDashboardSidebarCollapse />
 				</template>
