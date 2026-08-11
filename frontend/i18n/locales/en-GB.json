@@ -91,5 +91,5 @@
 			"forbidden": "You aren't allowed to access this sequence"
 		}
 	},
-	"error": "error"
+	"error": "Error"
 }
