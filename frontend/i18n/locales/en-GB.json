@@ -88,7 +88,7 @@
 	},
 	"sequence": {
 		"error": {
-			"forbidden": "You arent allowed to access this sequence"
+			"forbidden": "You aren't allowed to access this sequence"
 		}
 	},
 	"error": "error"
