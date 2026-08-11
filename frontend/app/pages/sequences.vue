@@ -2,10 +2,17 @@
 </script>
 
 <template>
-	<NuxtLayout
-		page-id="sequences"
-		:page-title="$t('sequences.title')"
-	>
-		<NuxtPage />
-	</NuxtLayout>
+	<UDashboardPanel :id="sequences">
+		<template #header>
+			<UDashboardNavbar :title="$t('sequences.title')">
+				<template #leading>
+					<UDashboardSidebarCollapse />
+				</template>
+			</UDashboardNavbar>
+		</template>
+
+		<template #body>
+			<NuxtPage />
+		</template>
+	</UDashboardPanel>
 </template>

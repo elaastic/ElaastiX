@@ -20,12 +20,6 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
-interface Props {
-	pageId: string
-	pageTitle?: string
-}
-
-const { pageId, pageTitle } = defineProps<Props>()
 const { t } = useI18n()
 
 const links = computed<NavigationMenuItem[][]>(() => [
@@ -102,18 +96,6 @@ const links = computed<NavigationMenuItem[][]>(() => [
 			</template>
 		</UDashboardSidebar>
 
-		<UDashboardPanel :id="pageId">
-			<template #header>
-				<UDashboardNavbar :title="pageTitle">
-					<template #leading>
-						<UDashboardSidebarCollapse />
-					</template>
-				</UDashboardNavbar>
-			</template>
-
-			<template #body>
-				<slot />
-			</template>
-		</UDashboardPanel>
+		<slot />
 	</UDashboardGroup>
 </template>
