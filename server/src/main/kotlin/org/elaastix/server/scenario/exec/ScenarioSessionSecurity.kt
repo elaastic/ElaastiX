@@ -34,7 +34,7 @@ constructor(
 ) {
 
 	@OptIn(UnclearAuthorshipOwnership::class, SciconumTechDebt::class)
-	fun isCreator(uuid: Uuid, authentication: ElaastixAuthentication): Boolean? {
+	fun isCreator(uuid: Uuid, authentication: ElaastixAuthentication): Boolean {
 		val entity = sciconumScenarioSessionRepository.findById(uuid)
 		return !entity.isEmpty && entity.get().sequence.owner.id == authentication.principal.id
 	}
