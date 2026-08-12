@@ -22,7 +22,9 @@ package org.elaastix.server.scenario.exec.flow
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.scenario.SciconumScenario
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.access.AccessDeniedException
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
 import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase as Phase
@@ -85,6 +87,20 @@ class SciconumScenarioControlTest : AbstractSciconumFlowTest() {
 
 			checkTransitionToPhaseAfter(phase = Phase.REVISE, after = 1.5.minutes)
 			assertThatAllSessions().areAtNthQuestion(2u)
+		}
+	}
+
+	@Test
+	fun `Ensure a sequence can be managed only by its owner`() {
+		validateScenario(SciconumScenario.PEER_ASSESSMENT, 4u, 2u) {
+			start()
+		}
+
+		val anotherUser = createUser()
+		validateScenario(SciconumScenario.PEER_ASSESSMENT, 4u, 2u, anotherUser) {
+			assertThrows<AccessDeniedException> {
+				start()
+			}
 		}
 	}
 }
