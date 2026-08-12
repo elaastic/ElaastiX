@@ -46,6 +46,7 @@ class AssignmentSeeder(
 				displayName = "Assignment 1",
 				sequences = mutableListOf(sequenceSeeder.sequence1, sequenceSeeder.sequence2, sequenceSeeder.sequence3),
 				participants = mutableSetOf(userSeeder.student1, userSeeder.student2, userSeeder.student3),
+				owner = userSeeder.franck,
 			).apply {
 				this.creator = userSeeder.franck
 			},

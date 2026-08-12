@@ -17,29 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.sequences
+ALTER TABLE sequence_entity
+	ADD creator_id UUID;
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Inheritance
-import jakarta.persistence.InheritanceType
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Size
-import org.elaastix.server.core.AbstractEntityWithOwnership
-import org.elaastix.server.users.entities.UserEntity
+UPDATE sequence_entity
+	SET creator_id = owner_id
+	WHERE creator_id IS NULL;
 
-/**
- * A pedagogical sequence.
- * TODO: Extensive description of the concept.
- */
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-open class SequenceEntity(
-	/**
-	 * Display the name of the sequence.
-	 */
-	@NotNull
-	@Size(min = 2, max = 64)
-	var name: String,
+ALTER TABLE sequence_entity
+	ALTER COLUMN creator_id SET NOT NULL;
 
-	owner: UserEntity? = null,
-) : AbstractEntityWithOwnership(owner)
+ALTER TABLE sequence_entity
+	ADD CONSTRAINT FK_SEQUENCEENTITY_ON_CREATOR FOREIGN KEY (creator_id) REFERENCES users (id);
+
+ALTER TABLE assignment_entity
+	ADD owner_id UUID;
+
+UPDATE assignment_entity
+	SET owner_id = creator_id
+	WHERE owner_id IS NULL;
+
+ALTER TABLE assignment_entity
+	ALTER COLUMN owner_id SET NOT NULL;
+
+ALTER TABLE assignment_entity
+	ADD CONSTRAINT FK_ASSIGNMENTENTITY_ON_OWNER FOREIGN KEY (owner_id) REFERENCES users (id);

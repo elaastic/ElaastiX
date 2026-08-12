@@ -59,8 +59,9 @@ class SequenceSeeder(
 				name = "Sequence 1",
 				sciconumScenario = SciconumScenario.CONTROL,
 				sciconumQuestions = questions,
+				owner = userSeeder.franck,
 			).apply {
-				this.owner = userSeeder.franck
+				this.creator = userSeeder.franck
 			},
 		)
 
@@ -70,8 +71,9 @@ class SequenceSeeder(
 				name = "Sequence 2",
 				sciconumScenario = SciconumScenario.PEER_ASSESSMENT,
 				sciconumQuestions = questions,
+				owner = userSeeder.franck,
 			).apply {
-				this.owner = userSeeder.franck
+				this.creator = userSeeder.franck
 			},
 		)
 
@@ -81,8 +83,9 @@ class SequenceSeeder(
 				name = "Sequence 3",
 				sciconumScenario = SciconumScenario.PEER_DEBATE,
 				sciconumQuestions = questions,
+				owner = userSeeder.franck,
 			).apply {
-				this.owner = userSeeder.franck
+				this.creator = userSeeder.franck
 			},
 		)
 
@@ -92,8 +95,9 @@ class SequenceSeeder(
 				name = "Sequence test",
 				sciconumScenario = SciconumScenario.TEST,
 				sciconumQuestions = questions,
+				owner = userSeeder.franck,
 			).apply {
-				this.owner = userSeeder.franck
+				this.creator = userSeeder.franck
 			},
 		)
 	}

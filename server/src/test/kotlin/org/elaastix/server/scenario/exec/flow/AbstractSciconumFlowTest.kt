@@ -43,14 +43,20 @@ abstract class AbstractSciconumFlowTest : SciconumIntegrationTest() {
 		scenario: SciconumScenario,
 		questionsCount: UInt,
 		initialLearnersCount: UInt,
+		createdBy: UserEntity? = null,
 		block: TimedFlowDsl.() -> Unit,
 	) {
-		TimedFlowDsl(scenario, questionsCount, initialLearnersCount).apply(block)
+		TimedFlowDsl(scenario, questionsCount, initialLearnersCount, createdBy).apply(block)
 	}
 
-	inner class TimedFlowDsl(scenario: SciconumScenario, questionsCount: UInt, initialLearnersCount: UInt) {
+	inner class TimedFlowDsl(
+		scenario: SciconumScenario,
+		questionsCount: UInt,
+		initialLearnersCount: UInt,
+		createdBy: UserEntity? = null,
+	) {
 		/** The assignment created for the test. */
-		val assignment = createAssignment(1u, scenario, questionsCount)
+		val assignment = createAssignment(1u, scenario, questionsCount, createdBy)
 
 		/** The global session created for the test. */
 		val scenarioSession = sciconumScenarioSessionRepository.findAllByAssignment(assignment).single()
