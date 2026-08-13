@@ -72,7 +72,10 @@
 		"administration": "Administration"
 	},
 	"home": {
-		"title": "Home"
+		"title": "Home",
+		"heroTitle": "Welcome to ElaastiX",
+		"heroDescription": "ElaastiX is the new technology foundation currently being developed for Elaastic.",
+		"workInProgress": "Work in progress."
 	},
 	"assignments": {
 		"title": "Assignments"

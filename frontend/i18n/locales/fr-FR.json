@@ -72,7 +72,10 @@
 		"administration": "Administration"
 	},
 	"home": {
-		"title": "Accueil"
+		"title": "Accueil",
+		"heroTitle": "Bienvenue sur ElaastiX",
+		"heroDescription": "ElaastiX est la nouvelle base technologique actuellement en cours de développement pour Elaastic.",
+		"workInProgress": "Work in progress."
 	},
 	"assignments": {
 		"title": "Devoirs"
