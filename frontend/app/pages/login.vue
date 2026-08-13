@@ -75,12 +75,14 @@ async function onSubmit(submission: FormSubmitEvent<Schema>) {
 				@submit="onSubmit"
 			>
 				<UFormField
+					class="w-full"
 					:label="$t('login.user')"
 					name="uuid"
 				>
 					<USelectMenu
 						v-model="state.user"
 						:items="items"
+						class="w-full"
 					/>
 				</UFormField>
 				<UButton
