@@ -93,7 +93,7 @@
 	"sequence": {
 		"error": {
 			"forbidden": "You aren't allowed to access this sequence",
-			"noSequenceAssociated": "You don't have any sequence associated."
+			"noSequenceAssociated": "No sequences available."
 		}
 	},
 	"error": "Error"
