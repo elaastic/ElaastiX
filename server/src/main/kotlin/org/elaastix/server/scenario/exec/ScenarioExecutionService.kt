@@ -109,8 +109,9 @@ class ScenarioExecutionService(
 		validate(session.pausedAt == null) { "The session has already been paused." }
 
 		session.pausedAt = clock.now()
-		val toTransition = getToTransition(session, session.phase)
-		session.dispatchTransition(toTransition)
+		session.dispatchTransition(
+			findActiveLearnerSessions(session),
+		)
 		session.deschedule()
 	}
 
@@ -131,8 +132,9 @@ class ScenarioExecutionService(
 			session.nextPhaseAt = nextTick
 		} ?: LOGGER.warn("Unpaused session ${session.id}, but it didn't have a next scheduled tick.")
 
-		val toTransition = getToTransition(session, session.phase)
-		session.dispatchTransition(toTransition)
+		session.dispatchTransition(
+			findActiveLearnerSessions(session),
+		)
 		session.scheduleTick()
 	}
 
@@ -152,8 +154,9 @@ class ScenarioExecutionService(
 		}
 
 		webSocketSessionBinderService.freeBroadcastScopesOfSession(session)
-		val toTransition = getToTransition(session, session.phase)
-		session.dispatchTransition(toTransition)
+		session.dispatchTransition(
+			findActiveLearnerSessions(session),
+		)
 		session.scheduleTick()
 	}
 
@@ -226,12 +229,16 @@ class ScenarioExecutionService(
 
 		phase = nextPhase
 		nextPhaseAt = nextTick
-		val toTransition = getToTransition(this, phase)
-		sciconumLearnerSessionRepository.transitionAllLearnerSessionsTo(toTransition, phase, nextTick)
-		dispatchTransition(toTransition)
+
+		val transitioningLeanerSessionsIds = findActiveLearnerSessions(this)
+		sciconumLearnerSessionRepository.transitionAllToPhase(transitioningLeanerSessionsIds, phase, nextTick)
+		dispatchTransition(transitioningLeanerSessionsIds)
 	}
 
-	private final fun ScenarioSessionEntity.dispatchTransition(sessions: List<Uuid>) {
+	/**
+	 * Notifies the scenario session and all the learner sessions that the session has transitioned to a new phase.
+	 */
+	private final fun ScenarioSessionEntity.dispatchTransition(learnerSessionsUuids: List<Uuid>) {
 		val duration = nextPhaseAt?.let { it - clock.now() }
 		val message = ScenarioTransitionMessage(
 			sciconumPhase = phase,
@@ -244,8 +251,13 @@ class ScenarioExecutionService(
 			currentRound = currentRound,
 		)
 
+		// Publish the transition on the scenario session scope
 		webSocketEventPublisher.publishPayload(id, message)
-		sessions.forEach { webSocketEventPublisher.publishPayload(it, message) }
+
+		// Publish the transition on all the concerned learner session scopes
+		learnerSessionsUuids.forEach {
+			webSocketEventPublisher.publishPayload(it, message)
+		}
 	}
 
 	private final fun ScenarioSessionEntity.scheduleTick() {
@@ -315,6 +327,20 @@ class ScenarioExecutionService(
 	fun isSequenceAssociated(user: UserEntity, sequenceUuid: Uuid): Boolean =
 		sciconumScenarioSessionRepository.numberOfSequenceAssociated(user, sequenceUuid) != 0L
 
+	/**
+	 * Returns the list of learner sessions that are active for the given scenario session and phase.
+	 * The inactive learner sessions are those that joined after the session has started; in that
+	 * case, they will remain inactive until the next round begins.
+	 */
+	private fun findActiveLearnerSessions(session: ScenarioSessionEntity) =
+		when (session.phase) {
+			// When a new question phase starts (the start of a new round), all the learner sessions are considered active
+			Phase.QUESTION -> sciconumLearnerSessionRepository.findAllIdsByScenarioSession(session)
+
+			// Otherwise, the PENDING learning sessions are considered inactive (until the next question)
+			else -> sciconumLearnerSessionRepository.findAllIdsByScenarioSessionAndPhaseNot(session, Phase.PENDING)
+		}.map { it as Uuid }
+
 	private inner class SessionTickTask(val scenarioSessionId: Uuid) : Runnable {
 		override fun run() {
 			transactionTemplate.execute {
@@ -323,13 +349,4 @@ class ScenarioExecutionService(
 			}
 		}
 	}
-
-	fun getToTransition(session: ScenarioSessionEntity, phase: Phase) =
-		if (phase == Phase.QUESTION) {
-			sciconumLearnerSessionRepository.findAllLearnerSessionsToTransitionIncludingPending(session)
-				.map { it as Uuid }
-		} else {
-			sciconumLearnerSessionRepository.findAllLearnerSessionsToTransitionExcludingPending(session)
-				.map { it as Uuid }
-		}
 }
