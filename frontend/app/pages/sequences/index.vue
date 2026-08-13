@@ -29,7 +29,7 @@ const { sequences, isPending, error } = useSequences()
 		:error="error"
 	>
 		<template #loading>
-			<div class="w-full h-full">
+			<div class="card-grid">
 				<USkeleton
 					v-for="value in Array.from({ length: 5 }, (_, i) => i + 1)"
 					:key="value"
@@ -38,7 +38,7 @@ const { sequences, isPending, error } = useSequences()
 			</div>
 		</template>
 
-		<div class="grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4">
+		<div class="card-grid">
 			<UPageCard
 				v-for="sequence in sequences"
 				:key="sequence.uuid"
@@ -50,3 +50,11 @@ const { sequences, isPending, error } = useSequences()
 		</div>
 	</DataPage>
 </template>
+
+<style scoped>
+@reference "tailwindcss";
+
+.card-grid {
+	@apply grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4;
+}
+</style>
