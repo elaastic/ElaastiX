@@ -24,6 +24,8 @@ import net.datafaker.Faker
 import org.elaastix.commons.jpa.entity.AbstractMinimalEntity
 import org.elaastix.commons.toIsoStringSecondPrecise
 import org.elaastix.commons.truncate
+import org.elaastix.server.users.UserRepository
+import org.elaastix.server.users.entities.UserEntity
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.TestInfo
 import org.springframework.beans.factory.annotation.Autowired
@@ -61,6 +63,9 @@ abstract class IntegrationTest {
 
 	private lateinit var testInfo: TestInfo
 
+	@Autowired
+	lateinit var userRepository: UserRepository
+
 	@BeforeEach
 	fun receiveTestInfo(testInfo: TestInfo) {
 		this.testInfo = testInfo
@@ -86,6 +91,15 @@ abstract class IntegrationTest {
 
 		return "$clazz#`$name` @ $iso"
 	}
+
+	fun createUser(): UserEntity =
+		userRepository.persist(
+			UserEntity(
+				firstName = FAKER.name().firstName(),
+				lastName = FAKER.name().lastName(),
+				email = FAKER.email(),
+			),
+		)
 
 	@TestConfiguration
 	class TestSchedulerConfig {

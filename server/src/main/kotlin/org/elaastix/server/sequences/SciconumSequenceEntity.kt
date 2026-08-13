@@ -28,6 +28,7 @@ import jakarta.persistence.OrderColumn
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.server.activities.response.entities.QuestionEntity
 import org.elaastix.server.scenario.SciconumScenario
+import org.elaastix.server.users.entities.UserEntity
 
 @Entity
 @SciconumTechDebt("This shouldn't be named sequence but subject instead.")
@@ -48,4 +49,6 @@ class SciconumSequenceEntity(
 	@OrderColumn
 	@ManyToMany(fetch = FetchType.EAGER)
 	var sciconumQuestions: MutableList<QuestionEntity>,
-) : SequenceEntity(name)
+
+	owner: UserEntity? = null,
+) : SequenceEntity(name, owner)

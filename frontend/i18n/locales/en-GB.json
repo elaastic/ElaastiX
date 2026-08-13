@@ -85,5 +85,11 @@
 	},
 	"sequences": {
 		"title": "Sequences"
-	}
+	},
+	"sequence": {
+		"error": {
+			"forbidden": "You aren't allowed to access this sequence"
+		}
+	},
+	"error": "Error"
 }

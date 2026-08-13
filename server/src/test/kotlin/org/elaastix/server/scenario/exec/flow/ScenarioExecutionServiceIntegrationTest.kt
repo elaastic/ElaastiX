@@ -17,29 +17,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.elaastix.server.sequences
+package org.elaastix.server.scenario.exec.flow
 
-import jakarta.persistence.Entity
-import jakarta.persistence.Inheritance
-import jakarta.persistence.InheritanceType
-import jakarta.validation.constraints.NotNull
-import jakarta.validation.constraints.Size
-import org.elaastix.server.core.AbstractEntityWithOwnership
-import org.elaastix.server.users.entities.UserEntity
+import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.server.scenario.SciconumScenario
+import org.junit.jupiter.api.Test
+import org.springframework.boot.test.context.SpringBootTest
 
-/**
- * A pedagogical sequence.
- * TODO: Extensive description of the concept.
- */
-@Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-open class SequenceEntity(
-	/**
-	 * Display the name of the sequence.
-	 */
-	@NotNull
-	@Size(min = 2, max = 64)
-	var name: String,
-
-	owner: UserEntity? = null,
-) : AbstractEntityWithOwnership(owner)
+@SpringBootTest
+@OptIn(SciconumTechDebt::class)
+class ScenarioExecutionServiceIntegrationTest : AbstractSciconumFlowTest() {
+	@Test
+	fun `the owner of a pending sequence starts it`() {
+		validateScenario(SciconumScenario.CONTROL, 1u, 1u) {
+		}
+	}
+}

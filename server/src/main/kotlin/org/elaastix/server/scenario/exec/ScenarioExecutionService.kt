@@ -24,8 +24,6 @@ import org.elaastix.commons.data.Uuid
 import org.elaastix.commons.orElseNotFound
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.schedule
-import org.elaastix.commons.security.RequiresRole
-import org.elaastix.commons.security.Role
 import org.elaastix.commons.validate
 import org.elaastix.commons.ws.WebSocketEventPublisher
 import org.elaastix.server.scenario.SciconumScenario
@@ -34,6 +32,7 @@ import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepo
 import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.Async
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionTemplate
@@ -90,7 +89,7 @@ class ScenarioExecutionService(
 	}
 
 	@Transactional
-	@RequiresRole(Role.WRITER)
+	@PreAuthorize("@scenarioSessionSecurity.isCreator(#scenarioSessionId, authentication)")
 	fun startSequenceScenarioSessionById(scenarioSessionId: Uuid) {
 		val session = sciconumScenarioSessionRepository.findById(scenarioSessionId).orElseNotFound()
 		validate(session.phase == Phase.PENDING) { "The session is already in progress." }
@@ -100,7 +99,7 @@ class ScenarioExecutionService(
 	}
 
 	@Transactional
-	@RequiresRole(Role.WRITER)
+	@PreAuthorize("@scenarioSessionSecurity.isCreator(#scenarioSessionId, authentication)")
 	fun pauseSequenceScenarioSessionById(scenarioSessionId: Uuid) {
 		val session = sciconumScenarioSessionRepository.findById(scenarioSessionId).orElseNotFound()
 
@@ -114,7 +113,7 @@ class ScenarioExecutionService(
 	}
 
 	@Transactional
-	@RequiresRole(Role.WRITER)
+	@PreAuthorize("@scenarioSessionSecurity.isCreator(#scenarioSessionId, authentication)")
 	fun resumeSequenceScenarioSessionById(scenarioSessionId: Uuid) {
 		val session = sciconumScenarioSessionRepository.findById(scenarioSessionId).orElseNotFound()
 
@@ -135,7 +134,7 @@ class ScenarioExecutionService(
 	}
 
 	@Transactional
-	@RequiresRole(Role.WRITER)
+	@PreAuthorize("@scenarioSessionSecurity.isCreator(#scenarioSessionId, authentication)")
 	fun resetSequenceScenarioSessionById(scenarioSessionId: Uuid) {
 		val session = sciconumScenarioSessionRepository.findById(scenarioSessionId).orElseNotFound()
 		validate(session.phase != Phase.PENDING) { "The session has not started." }

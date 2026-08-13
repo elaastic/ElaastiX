@@ -21,6 +21,7 @@ package org.elaastix.server.scenario.exec
 
 import org.elaastix.commons.makeList
 import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.commons.security.Role
 import org.elaastix.mm.content.PlainText
 import org.elaastix.server.activities.response.ClosedAnswer
@@ -37,14 +38,12 @@ import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRep
 import org.elaastix.server.sequences.SciconumSequenceEntity
 import org.elaastix.server.sequences.SequenceEntity
 import org.elaastix.server.sequences.SequenceRepository
-import org.elaastix.server.users.UserRepository
 import org.elaastix.server.users.entities.UserEntity
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import testutils.ControllableClock
 import testutils.IntegrationTest
 import testutils.WithMockUser
-import testutils.email
 
 @SpringBootTest
 @WithMockUser(roles = [Role.WRITER])
@@ -52,9 +51,6 @@ import testutils.email
 abstract class SciconumIntegrationTest : IntegrationTest() {
 	@Autowired
 	lateinit var clock: ControllableClock
-
-	@Autowired
-	lateinit var userRepository: UserRepository
 
 	@Autowired
 	lateinit var questionRepository: QuestionRepository
@@ -77,19 +73,26 @@ abstract class SciconumIntegrationTest : IntegrationTest() {
 	@Autowired
 	lateinit var assignmentParticipantsService: AssignmentParticipantsService
 
-	fun createAssignment(sequencesCount: UInt, scenario: SciconumScenario, questionsPerSequence: UInt): AssignmentEntity =
+	fun createAssignment(
+		sequencesCount: UInt,
+		scenario: SciconumScenario,
+		questionsPerSequence: UInt,
+		owner: UserEntity? = null,
+	): AssignmentEntity =
 		assignmentRepository.findById(
 			assignmentService.createAssignment(
 				CreateAssignmentDto(
 					displayName = makeRecognisableName(),
 					sequenceIds = makeList(sequencesCount) {
-						createSequence(scenario, questionsPerSequence).id
+						createSequence(scenario, questionsPerSequence, owner).id
 					},
 				),
+				owner = owner,
 			).id,
 		).orElseThrow()
 
-	fun createSequence(scenario: SciconumScenario, questionsCount: UInt): SequenceEntity =
+	@OptIn(UnclearAuthorshipOwnership::class)
+	fun createSequence(scenario: SciconumScenario, questionsCount: UInt, owner: UserEntity? = null): SequenceEntity =
 		sequenceRepository.persist(
 			SciconumSequenceEntity(
 				name = makeRecognisableName(),
@@ -105,15 +108,7 @@ abstract class SciconumIntegrationTest : IntegrationTest() {
 						),
 					)
 				},
-			),
-		)
-
-	fun createUser(): UserEntity =
-		userRepository.persist(
-			UserEntity(
-				firstName = FAKER.name().firstName(),
-				lastName = FAKER.name().lastName(),
-				email = FAKER.email(),
+				owner = owner,
 			),
 		)
 }

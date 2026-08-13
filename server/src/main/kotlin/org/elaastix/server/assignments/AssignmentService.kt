@@ -37,6 +37,7 @@ import org.elaastix.server.sequences.SciconumSequenceEntity
 import org.elaastix.server.sequences.SequenceEntity
 import org.elaastix.server.sequences.SequenceRepository
 import org.elaastix.server.sequences.SequenceService.Companion.toDto
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.data.domain.Pageable
@@ -89,11 +90,14 @@ class AssignmentService(
 	 * Creates a new assignment.
 	 *
 	 * @param dto The creation payload. Will be validated.
+	 * @param owner The user allowed managing this assignment. When not specified,
+	 *   the resource creator (the current user) will be used.
 	 * @throws ValidationException if the [dto] is invalid.
 	 * @return The created entity.
 	 */
+	@OptIn(UnclearAuthorshipOwnership::class)
 	@Transactional
-	fun createAssignment(@Valid dto: CreateAssignmentDto): AssignmentDto {
+	fun createAssignment(@Valid dto: CreateAssignmentDto, owner: UserEntity? = null): AssignmentDto {
 		@OptIn(SciconumTechDebt::class)
 		val sequences = dto.sequenceIds.toTypedRefList<SciconumSequenceEntity, _>(sequenceRepository)
 
@@ -104,6 +108,7 @@ class AssignmentService(
 				displayName = dto.displayName,
 				sequences = sequences as MutableList<SequenceEntity>,
 				participants = mutableSetOf(),
+				owner = owner,
 			),
 		)
 

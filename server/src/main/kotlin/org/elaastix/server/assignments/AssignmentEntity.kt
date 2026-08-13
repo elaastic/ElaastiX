@@ -21,16 +21,13 @@ package org.elaastix.server.assignments
 
 import jakarta.persistence.Entity
 import jakarta.persistence.ManyToMany
-import jakarta.persistence.ManyToOne
 import jakarta.persistence.OrderColumn
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Size
-import org.elaastix.commons.jpa.entity.AbstractEntity
 import org.elaastix.commons.platform.debt.SciconumTechDebt
-import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
+import org.elaastix.server.core.AbstractEntityWithOwnership
 import org.elaastix.server.sequences.SequenceEntity
 import org.elaastix.server.users.entities.UserEntity
-import org.springframework.data.annotation.CreatedBy
 
 /**
  * An assignment is what learners register/are registered in giving them access to a pedagogical sequence.
@@ -63,13 +60,6 @@ class AssignmentEntity(
 	@ManyToMany
 	@property:SciconumTechDebt(explainer = "We want to make use of UserCohorts instead (maybe?)")
 	var participants: MutableSet<UserEntity> = mutableSetOf(),
-) : AbstractEntity() {
-	/**
-	 * The user who created the assignment.
-	 */
-	@NotNull
-	@CreatedBy
-	@ManyToOne
-	@property:UnclearAuthorshipOwnership // TeacherCohort...
-	lateinit var creator: UserEntity
-}
+
+	owner: UserEntity? = null,
+) : AbstractEntityWithOwnership(owner)

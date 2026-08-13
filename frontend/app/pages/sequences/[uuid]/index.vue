@@ -19,11 +19,13 @@
 <script lang="ts" setup>
 import SequenceItem from '~/components/SequenceItem.vue'
 
+definePageMeta({
+	middleware: 'sequence',
+})
+
 const uuid = useRoute().params.uuid as string
 </script>
 
 <template>
-	<SequenceItem
-		:uuid="uuid"
-	/>
+	<SequenceItem :uuid="uuid" />
 </template>
