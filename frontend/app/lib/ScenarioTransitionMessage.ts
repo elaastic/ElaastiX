@@ -38,6 +38,30 @@ export type ScenarioTransitionMessageData = v.InferOutput<
 	typeof ScenarioTransitionMessage.schema
 >
 
+export const durationSchema = v.pipe(
+	v.string(),
+	v.rawTransform<string, Temporal.Duration>(
+		({ dataset, addIssue, NEVER }) => {
+			if (!dataset.typed) {
+				return NEVER
+			}
+
+			try {
+				return Temporal.Duration.from(dataset.value)
+			} catch (error) {
+				addIssue({
+					received: dataset.value,
+					message:
+						error instanceof Error
+							? error.message
+							: 'Invalid duration format',
+				})
+				return NEVER
+			}
+		},
+	),
+)
+
 export class ScenarioTransitionMessage {
 	public data: ScenarioTransitionMessageData
 
@@ -48,7 +72,7 @@ export class ScenarioTransitionMessage {
 	public static schema = v.object({
 		sciconumPhase: v.pipe(v.enum(SciconumScenarioExecutionPhase)),
 		state: v.pipe(v.enum(State)),
-		duration: v.pipe(v.nullable(v.string())),
+		duration: v.pipe(v.nullable(durationSchema)),
 		currentRound: v.pipe(v.number()),
 	})
 
