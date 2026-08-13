@@ -28,7 +28,7 @@
  */
 interface Props {
 	isLoading: boolean
-	error: Error | null
+	error: Error | undefined
 	isEmpty: boolean
 	isEmptyMessage?: string
 }
