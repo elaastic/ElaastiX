@@ -56,26 +56,41 @@ interface SciconumLearnerSessionRepository : ElaastixRepository<SciconumLearnerS
 
 	fun findAllByScenarioSession(globalSession: SciconumScenarioSessionEntity): List<SciconumLearnerSessionEntity>
 
+	/**
+	 * Transitions a list of learner sessions identified by their id to a given phase.
+	 */
 	@Modifying
 	@Query(
 		"UPDATE SciconumLearnerSessionEntity sls SET sls.phase = :phase, sls.nextPhaseAt = :nextPhaseAt " +
 			"WHERE sls.id IN :sessions",
 	)
-	fun transitionAllLearnerSessionsTo(
-		sessions: List<Uuid>,
-		phase: SciconumScenarioExecutionPhase,
-		nextPhaseAt: Instant?,
-	): Int
+	fun transitionAllToPhase(sessions: List<Uuid>, phase: SciconumScenarioExecutionPhase, nextPhaseAt: Instant?): Int
 
+	/**
+	 * Returns the UUIDs of all learner sessions attached to a given scenario session.
+	 * Implementation note: there id an issue related to Hibernate here that prevents typing List<Uuid>. As a workaround,
+	 * we use the type Any that can be safely cast to Uuid by the caller.
+	 * @param scenarioSession The scenario session.
+	 */
 	@Query(
 		"SELECT sls.id FROM SciconumLearnerSessionEntity sls " +
 			"WHERE sls.scenarioSession = :scenarioSession",
 	)
-	fun findAllLearnerSessionsToTransitionIncludingPending(scenarioSession: SciconumScenarioSessionEntity): List<Any>
+	fun findAllIdsByScenarioSession(scenarioSession: SciconumScenarioSessionEntity): List<Any>
 
+	/**
+	 * Returns the UUIDs of all learner sessions attached to a given scenario session that are not in a given phase.
+	 * Implementation note: there id an issue related to Hibernate here that prevents typing List<Uuid>. As a workaround,
+	 * we use the type Any that can be safely cast to Uuid by the caller.
+	 * @param scenarioSession The scenario session.
+	 * @param phase The phase to exclude.
+	 */
 	@Query(
 		"SELECT sls.id FROM SciconumLearnerSessionEntity sls " +
-			"WHERE sls.scenarioSession = :scenarioSession AND sls.phase != 'PENDING'",
+			"WHERE sls.scenarioSession = :scenarioSession AND sls.phase != :phase",
 	)
-	fun findAllLearnerSessionsToTransitionExcludingPending(scenarioSession: SciconumScenarioSessionEntity): List<Any>
+	fun findAllIdsByScenarioSessionAndPhaseNot(
+		scenarioSession: SciconumScenarioSessionEntity,
+		phase: SciconumScenarioExecutionPhase,
+	): List<Any>
 }
