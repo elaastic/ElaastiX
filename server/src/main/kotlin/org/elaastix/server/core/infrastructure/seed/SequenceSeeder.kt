@@ -95,9 +95,9 @@ class SequenceSeeder(
 				name = "Sequence test",
 				sciconumScenario = SciconumScenario.TEST,
 				sciconumQuestions = questions,
-				owner = userSeeder.franck,
+				owner = userSeeder.john,
 			).apply {
-				this.creator = userSeeder.franck
+				this.creator = userSeeder.john
 			},
 		)
 	}

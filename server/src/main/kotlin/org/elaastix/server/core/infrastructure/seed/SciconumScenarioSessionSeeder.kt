@@ -40,11 +40,20 @@ class SciconumScenarioSessionSeeder(
 		protected set
 
 	@OptIn(SciconumTechDebt::class)
+	lateinit var scenarioSession2: SciconumScenarioSessionEntity
+		protected set
+
+	@OptIn(SciconumTechDebt::class)
+	lateinit var scenarioSession3: SciconumScenarioSessionEntity
+		protected set
+
+	@OptIn(SciconumTechDebt::class)
 	lateinit var scenarioSessionTest: SciconumScenarioSessionEntity
 		protected set
 
 	@OptIn(SciconumTechDebt::class)
 	override fun run(args: ApplicationArguments) {
+		// TODO This should be automatically done by the assignment seeding
 		scenarioSession1 = upsert(
 			id = 1UL,
 			entity = SciconumScenarioSessionEntity(
@@ -55,10 +64,30 @@ class SciconumScenarioSessionSeeder(
 			),
 		)
 
-		scenarioSessionTest = upsert(
+		scenarioSession2 = upsert(
 			id = 2UL,
 			entity = SciconumScenarioSessionEntity(
 				assignment = assignmentSeeder.assignment1,
+				sequence = sequenceSeeder.sequence2,
+				currentRound = 0U,
+				phase = SciconumScenarioExecutionPhase.PENDING,
+			),
+		)
+
+		scenarioSession3 = upsert(
+			id = 3UL,
+			entity = SciconumScenarioSessionEntity(
+				assignment = assignmentSeeder.assignment1,
+				sequence = sequenceSeeder.sequence3,
+				currentRound = 0U,
+				phase = SciconumScenarioExecutionPhase.PENDING,
+			),
+		)
+
+		scenarioSessionTest = upsert(
+			id = 4UL,
+			entity = SciconumScenarioSessionEntity(
+				assignment = assignmentSeeder.assignment2,
 				sequence = sequenceSeeder.sequenceTest,
 				currentRound = 0U,
 				phase = SciconumScenarioExecutionPhase.PENDING,
