@@ -18,13 +18,13 @@
   -->
 
 <script lang="ts" setup>
-const { data, isPending } = useSequences()
+const { sequences, isPending } = useSequences()
 </script>
 
 <template>
 	<div class="w-full h-full p-4">
 		<div
-			v-if="!isPending && data?.length === 0"
+			v-if="!isPending && sequences?.length === 0"
 			class="w-full h-full flex items-center justify-center"
 		>
 			<p class="text-2xl">
@@ -46,13 +46,13 @@ const { data, isPending } = useSequences()
 				/>
 			</div>
 			<UPageCard
-				v-for="item in data"
+				v-for="sequence in sequences"
 				v-else
-				:key="item.uuid"
+				:key="sequence.uuid"
 				title="Sequence"
-				:description="item.uuid"
+				:description="sequence.uuid"
 				class="w-full"
-				:to="`/sequences/${item.uuid}`"
+				:to="`/sequences/${sequence.uuid}`"
 			/>
 		</div>
 	</div>

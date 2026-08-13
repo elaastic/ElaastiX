@@ -9,7 +9,7 @@ export function useSequences() {
 	const isError = computed(() => error !== undefined)
 
 	return {
-		data,
+		sequences: data,
 		isPending: pending,
 		error,
 		isError,
