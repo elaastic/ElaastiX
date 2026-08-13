@@ -42,7 +42,7 @@ const { sequences, isPending, error } = useSequences()
 			<UPageCard
 				v-for="sequence in sequences"
 				:key="sequence.uuid"
-				title="Sequence"
+				:title="sequence.sequenceName"
 				:description="sequence.uuid"
 				class="w-full"
 				:to="`/sequences/${sequence.uuid}`"
