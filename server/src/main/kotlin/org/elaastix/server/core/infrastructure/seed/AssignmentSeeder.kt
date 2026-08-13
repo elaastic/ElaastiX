@@ -23,7 +23,6 @@ import jakarta.persistence.EntityManager
 import org.elaastix.commons.platform.debt.SciconumTechDebt
 import org.elaastix.commons.platform.wip.UnclearAuthorshipOwnership
 import org.elaastix.server.assignments.AssignmentEntity
-import org.elaastix.server.assignments.participants.AssignmentParticipantsService
 import org.springframework.boot.ApplicationArguments
 import org.springframework.core.annotation.Order
 
@@ -34,28 +33,39 @@ class AssignmentSeeder(
 	entityManager: EntityManager,
 	private val userSeeder: UserSeeder,
 	private val sequenceSeeder: SequenceSeeder,
-	private val assignmentParticipantsService: AssignmentParticipantsService,
 ) : AbstractSeeder(entityManager) {
 
 	lateinit var assignment1: AssignmentEntity
 		protected set
 
+	lateinit var assignment2: AssignmentEntity
+		protected set
+
 	@OptIn(SciconumTechDebt::class, UnclearAuthorshipOwnership::class)
 	override fun run(args: ApplicationArguments) {
+		// TODO: Use assignmentService for seeding assignment.
 		assignment1 = upsert(
 			id = 1UL,
 			entity = AssignmentEntity(
 				displayName = "Assignment 1",
 				sequences = mutableListOf(sequenceSeeder.sequence1, sequenceSeeder.sequence2, sequenceSeeder.sequence3),
-				participants = mutableSetOf(),
+				participants = mutableSetOf(userSeeder.student1, userSeeder.student2),
 				owner = userSeeder.franck,
 			).apply {
 				this.creator = userSeeder.franck
 			},
 		)
 
-		assignmentParticipantsService.addParticipantToAssignmentById(assignmentId = assignment1.id, userSeeder.student1.id)
-		assignmentParticipantsService.addParticipantToAssignmentById(assignmentId = assignment1.id, userSeeder.student2.id)
-		assignmentParticipantsService.addParticipantToAssignmentById(assignmentId = assignment1.id, userSeeder.student3.id)
+		assignment2 = upsert(
+			id = 2UL,
+			entity = AssignmentEntity(
+				displayName = "Assignment 2",
+				sequences = mutableListOf(sequenceSeeder.sequenceTest),
+				participants = mutableSetOf(userSeeder.student2, userSeeder.student3),
+				owner = userSeeder.john,
+			).apply {
+				this.creator = userSeeder.john
+			},
+		)
 	}
 }
