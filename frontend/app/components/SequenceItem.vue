@@ -18,7 +18,7 @@
   -->
 
 <script lang="ts" setup>
-const {uuid} = defineProps<{ uuid: string }>()
+const { uuid } = defineProps<{ uuid: string }>()
 
 const {
 	startSequence,
@@ -81,9 +81,9 @@ const phase = computed(() => sequenceData.value?.phase)
 						{{ state }}
 					</UButton>
 					<UButton
-					v-if="state === 'RUNNING'"
-					icon="i-lucide-pause"
-					@click="pauseSequence"
+						v-if="state === 'RUNNING'"
+						icon="i-lucide-pause"
+						@click="pauseSequence"
 					>
 						{{ state }}
 					</UButton>
