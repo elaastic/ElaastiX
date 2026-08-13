@@ -1,6 +1,6 @@
 export function useSequences() {
 	const { data, pending, error } = useApi(
-		'/v1/player/org.elaastix.engine.getAllSciconumSequenceSession',
+		'/v1/player/org.elaastix.engine.getAllSciconumSequenceSessionAssociated',
 		{
 			method: 'POST',
 		},
