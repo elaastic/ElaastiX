@@ -3,6 +3,7 @@
 	"description": "ElaastiX est une plateforme d’orchestration d’activités pédagogiques, permettant aux enseignants de proposer des parcours d’apprentissage personnalisés et collaboratifs aux apprenants.",
 	"documentation": "Documentation",
 	"source-code": "Code source",
+	"get-started": "Commencer",
 	"activity": {
 		"responses": {
 			"answer-field-label": "Votre réponse",
@@ -73,9 +74,9 @@
 	},
 	"home": {
 		"title": "Accueil",
-		"heroTitle": "Bienvenue sur ElaastiX",
-		"heroDescription": "ElaastiX est la nouvelle base technologique actuellement en cours de développement pour Elaastic.",
-		"workInProgress": "Work in progress."
+		"hero-title": "Bienvenue sur ElaastiX",
+		"hero-description": "ElaastiX est la nouvelle base technologique pour Elaastic.",
+		"work-in-progress": "Work in progress"
 	},
 	"assignments": {
 		"title": "Devoirs"

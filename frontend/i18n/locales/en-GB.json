@@ -3,6 +3,7 @@
 	"description": "ElaastiX is a pedagogical activity orchestration platform, empowering teachers with tools to provide personalised and collaborative learning experiences to their learners.",
 	"documentation": "Documentation",
 	"source-code": "Source code",
+	"get-started": "Get started",
 	"activity": {
 		"responses": {
 			"answer-field-label": "Your answer",
@@ -73,9 +74,9 @@
 	},
 	"home": {
 		"title": "Home",
-		"heroTitle": "Welcome to ElaastiX",
-		"heroDescription": "ElaastiX is the new technology foundation currently being developed for Elaastic.",
-		"workInProgress": "Work in progress."
+		"hero-title": "Welcome to ElaastiX",
+		"hero-description": "ElaastiX is the new technology foundation for Elaastic.",
+		"work-in-progress": "Work in progress"
 	},
 	"assignments": {
 		"title": "Assignments"

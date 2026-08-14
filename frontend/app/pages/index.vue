@@ -3,12 +3,12 @@ const { isAuthenticated, logout } = useAuthn()
 const { t } = useI18n()
 
 const authenticatedLinks = computed(() => [{
-	label: 'Get started',
+	label: t('get-started'),
 	to: 'sequences',
 	trailingIcon: 'i-lucide-arrow-right',
 	size: 'xl',
 }, {
-	label: 'Log out',
+	label: t('login.logout'),
 	icon: 'i-lucide-log-out',
 	size: 'xl',
 	color: 'neutral',
@@ -17,7 +17,7 @@ const authenticatedLinks = computed(() => [{
 }])
 
 const guestLinks = computed(() => [{
-	label: 'Login',
+	label: t('login.login'),
 	to: '/login',
 	trailingIcon: 'i-lucide-log-in',
 	size: 'xl',
@@ -36,9 +36,9 @@ const guestLinks = computed(() => [{
 
 		<template #body>
 			<UPageHero
-				:title="t('home.heroTitle')"
-				:description="t('home.heroDescription')"
-				:headline="t('home.workInProgress')"
+				:title="t('home.hero-title')"
+				:description="t('home.hero-description')"
+				:headline="t('home.work-in-progress')"
 				:links="isAuthenticated ? authenticatedLinks : guestLinks"
 			/>
 		</template>
