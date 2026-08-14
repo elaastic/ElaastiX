@@ -1,10 +1,12 @@
 <script setup lang="ts">
+import type { ButtonProps } from '#ui/types'
+
 const { isAuthenticated, logout } = useAuthn()
 const { t } = useI18n()
 
-const authenticatedLinks = computed(() => [{
+const authenticatedLinks = computed<ButtonProps[]>(() => [{
 	label: t('get-started'),
-	to: 'sequences',
+	to: '/sequences',
 	trailingIcon: 'i-lucide-arrow-right',
 	size: 'xl',
 }, {
@@ -13,10 +15,10 @@ const authenticatedLinks = computed(() => [{
 	size: 'xl',
 	color: 'neutral',
 	variant: 'subtle',
-	onClick: logout,
+	onClick: () => logout(),
 }])
 
-const guestLinks = computed(() => [{
+const guestLinks = computed<ButtonProps[]>(() => [{
 	label: t('login.login'),
 	to: '/login',
 	trailingIcon: 'i-lucide-log-in',
