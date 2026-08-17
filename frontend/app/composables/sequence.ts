@@ -1,8 +1,74 @@
 import type { State } from '~/lib/ScenarioTransitionMessage'
 
-export function useSequence(uuid: string) {
+function getRemainingTime(
+	duration: Ref<Temporal.Duration | undefined | null>,
+	state: Ref<State | undefined>,
+) {
+	const lastingTime = ref('')
+	const lessThan10secForCurrentSeq = ref(false)
+
+	const timeZone = Temporal.Now.timeZoneId()
+
+	const now = ref<undefined | Temporal.Instant>()
+	const endingTime = ref<undefined | Temporal.ZonedDateTime>()
+
+	const interval = setInterval(() => {
+		if (duration.value === undefined || duration.value === null) return
+		if (endingTime.value === undefined || endingTime.value === null) return
+
+		const currentTime = Temporal.Now.zonedDateTimeISO(timeZone)
+
+		if (
+			Temporal.ZonedDateTime.compare(currentTime, endingTime.value) >= 0
+		) {
+			return
+		}
+
+		if (state.value === 'PAUSED') {
+			return
+		}
+
+		const remaining = endingTime.value.since(currentTime, {
+			largestUnit: 'day',
+		})
+
+		const parts = []
+		if (remaining.days > 0) parts.push(`${remaining.days}d`)
+		if (remaining.hours > 0) parts.push(`${remaining.hours}h`)
+		if (remaining.minutes > 0) parts.push(`${remaining.minutes}m`)
+		if (remaining.seconds > 0)
+			parts.push(`${Math.floor(remaining.seconds)}s`)
+
+		lastingTime.value = parts.join(' ') || '0s'
+
+		lessThan10secForCurrentSeq.value
+			= remaining.days === 0
+				&& remaining.hours === 0
+				&& remaining.minutes === 0
+				&& remaining.seconds <= 10
+				&& remaining.seconds !== 0
+	}, 500)
+
+	watch(duration, () => {
+		if (state.value === 'END') {
+			clearInterval(interval)
+			lastingTime.value = ''
+			lessThan10secForCurrentSeq.value = false
+			return
+		}
+
+		now.value = Temporal.Now.instant()
+
+		endingTime.value = now.value
+			.add(duration.value!)
+			.toZonedDateTimeISO(timeZone)
+	})
+
+	return { lastingTime, lessThan10secForCurrentSeq }
+}
+
+export function useSequence(uuid: string, owner: boolean) {
 	const { $api } = useNuxtApp()
-	const { user } = useAuthn()
 
 	const {
 		data: sequenceData,
@@ -17,9 +83,6 @@ export function useSequence(uuid: string) {
 
 	const data = ref<undefined | SciconumScenarioPhaseDto>(undefined)
 	const isError = computed(() => error.value !== undefined)
-	const isOwner = computed(
-		() => data.value?.sequence.ownerId === user.value?.id,
-	)
 	const state = ref<State | undefined>(undefined)
 	const duration = ref<Temporal.Duration | undefined | null>(undefined)
 
@@ -76,16 +139,35 @@ export function useSequence(uuid: string) {
 		},
 	})
 
+	const { lastingTime, lessThan10secForCurrentSeq } = getRemainingTime(
+		duration,
+		state,
+	)
+
+	if (owner) {
+		return {
+			startSequence,
+			pauseSequence,
+			resumeSequence,
+			data,
+			isPending,
+			isError,
+			error,
+			state,
+			duration,
+			lastingTime,
+			lessThan10secForCurrentSeq,
+		}
+	}
+
 	return {
-		startSequence,
-		pauseSequence,
-		resumeSequence,
 		data,
 		isPending,
 		isError,
-		isOwner,
 		error,
 		state,
 		duration,
+		lastingTime,
+		lessThan10secForCurrentSeq,
 	}
 }
