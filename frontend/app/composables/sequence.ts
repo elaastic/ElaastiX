@@ -67,34 +67,8 @@ function getRemainingTime(
 	return { lastingTime, lessThan10secForCurrentSeq }
 }
 
-export function useSequence(uuid: string, owner: boolean) {
+function getFunctions() {
 	const { $api } = useNuxtApp()
-
-	const {
-		data: sequenceData,
-		pending: isPending,
-		error,
-	} = useApi('/v1/player/org.elaastix.engine.getSciconumSequenceSession', {
-		method: 'POST',
-		query: {
-			scenarioSessionId: uuid,
-		},
-	})
-
-	const data = ref<undefined | SciconumScenarioPhaseDto>(undefined)
-	const isError = computed(() => error.value !== undefined)
-	const state = ref<State | undefined>(undefined)
-	const duration = ref<Temporal.Duration | undefined | null>(undefined)
-	const name = computed(
-		() => data.value?.sequence.name ?? 'This sequence does not exists',
-	)
-	const currentRound = computed(() => data.value?.currentRound ?? 0)
-	const question = computed(
-		() => data.value?.sequence.sciconumQuestions[currentRound.value],
-	)
-	const phase = computed(() => data.value?.phase)
-
-	watch(sequenceData, () => (data.value = sequenceData.value))
 
 	const startSequence = () => {
 		$api('/v1/player/org.elaastix.engine.startSciconumScenarioSession', {
@@ -123,6 +97,14 @@ export function useSequence(uuid: string, owner: boolean) {
 		})
 	}
 
+	return { startSequence, pauseSequence, resumeSequence }
+}
+
+function enableWebSocket(
+	data: Ref<undefined | SciconumScenarioPhaseDto>,
+	state: Ref<State | undefined>,
+	duration: Ref<Temporal.Duration | undefined | null>,
+) {
 	useWebSocket({
 		onOpen: () => {
 			console.log('The websocket opened')
@@ -146,6 +128,38 @@ export function useSequence(uuid: string, owner: boolean) {
 			}
 		},
 	})
+}
+
+export function useSequence(uuid: string, owner: boolean) {
+	const {
+		data: sequenceData,
+		pending: isPending,
+		error,
+	} = useApi('/v1/player/org.elaastix.engine.getSciconumSequenceSession', {
+		method: 'POST',
+		query: {
+			scenarioSessionId: uuid,
+		},
+	})
+
+	const data = ref<undefined | SciconumScenarioPhaseDto>(undefined)
+	const isError = computed(() => error.value !== undefined)
+	const state = ref<State | undefined>(undefined)
+	const duration = ref<Temporal.Duration | undefined | null>(undefined)
+	const name = computed(
+		() => data.value?.sequence.name ?? 'This sequence does not exists',
+	)
+	const currentRound = computed(() => data.value?.currentRound ?? 0)
+	const question = computed(
+		() => data.value?.sequence.sciconumQuestions[currentRound.value],
+	)
+	const phase = computed(() => data.value?.phase)
+
+	watch(sequenceData, () => (data.value = sequenceData.value))
+
+	const { startSequence, pauseSequence, resumeSequence } = getFunctions()
+
+	enableWebSocket(data, state, duration)
 
 	const { lastingTime, lessThan10secForCurrentSeq } = getRemainingTime(
 		duration,
