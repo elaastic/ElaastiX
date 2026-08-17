@@ -341,6 +341,14 @@ class ScenarioExecutionService(
 			else -> sciconumLearnerSessionRepository.findAllIdsByScenarioSessionAndPhaseNot(session, Phase.PENDING)
 		}.map { it as Uuid }
 
+	fun isSequenceOwner(authenticatedUser: UserEntity, sequenceUuid: Uuid): Boolean =
+		sciconumScenarioSessionRepository.numberOfSequenceOwner(sequenceUuid, authenticatedUser)
+			.toInt() == 1
+
+	fun isSequenceLearner(authenticatedUser: UserEntity, sequenceUuid: Uuid): Boolean =
+		sciconumScenarioSessionRepository.numberOfSequenceLearner(sequenceUuid, authenticatedUser)
+			.toInt() == 1
+
 	private inner class SessionTickTask(val scenarioSessionId: Uuid) : Runnable {
 		override fun run() {
 			transactionTemplate.execute {

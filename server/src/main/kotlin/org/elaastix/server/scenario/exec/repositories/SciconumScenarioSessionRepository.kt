@@ -64,4 +64,24 @@ interface SciconumScenarioSessionRepository : ElaastixRepository<SciconumScenari
     """,
 	)
 	fun numberOfSequenceAssociated(user: UserEntity, sequenceUuid: Uuid): Long
+
+	@Query(
+		"""
+			SELECT COUNT(s) FROM SciconumScenarioSessionEntity s
+			LEFT JOIN s.sequence seq
+    		LEFT JOIN s.assignment ass
+			WHERE s.id = :sequenceUuid AND seq.owner = :user AND :user NOT MEMBER OF ass.participants
+		""",
+	)
+	fun numberOfSequenceOwner(sequenceUuid: Uuid, user: UserEntity): Long
+
+	@Query(
+		"""
+			SELECT COUNT(s) FROM SciconumScenarioSessionEntity s
+			LEFT JOIN s.sequence seq
+    		LEFT JOIN s.assignment ass
+			WHERE s.id = :sequenceUuid AND seq.owner != :user AND :user MEMBER OF ass.participants
+		""",
+	)
+	fun numberOfSequenceLearner(sequenceUuid: Uuid, user: UserEntity): Long
 }
