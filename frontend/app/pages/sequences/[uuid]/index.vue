@@ -55,8 +55,8 @@ const {
 			:less-than10sec-for-current-seq="lessThan10secForCurrentSeq"
 			:state="state"
 			:name="name"
-			:question="question!"
-			:phase="phase!"
+			:question="question"
+			:phase="phase"
 		/>
 	</DataPage>
 </template>
