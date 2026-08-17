@@ -21,7 +21,7 @@ import SequenceLearnerView from '~/components/SequenceLearnerView.vue'
 import SequenceOwnerView from '~/components/SequenceOwnerView.vue'
 
 definePageMeta({
-	middleware: 'sequence',
+	middleware: 'sequence-learner',
 })
 
 const lastPage = window.history.state.back as string

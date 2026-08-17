@@ -50,6 +50,14 @@ class ExecutionController(private val scenarioExecutionService: ScenarioExecutio
 	fun isSequenceAssociated(@RequestParam sequenceUuid: Uuid): Boolean =
 		scenarioExecutionService.isSequenceAssociated(getAuthenticatedUser(), sequenceUuid)
 
+	@PlayerAction("org.elaastix.engine.isSequenceOwner")
+	fun isSequenceOwner(@RequestParam sequenceUuid: Uuid): Boolean =
+		scenarioExecutionService.isSequenceOwner(getAuthenticatedUser(), sequenceUuid)
+
+	@PlayerAction("org.elaastix.engine.isSequenceLearner")
+	fun isSequenceLearner(@RequestParam sequenceUuid: Uuid): Boolean =
+		scenarioExecutionService.isSequenceLearner(getAuthenticatedUser(), sequenceUuid)
+
 	/**
 	 * Start a SCICONUM sequence session.
 	 *
