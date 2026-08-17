@@ -16,39 +16,27 @@
   - You should have received a copy of the GNU Affero General Public License
   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<script lang="ts" setup>
-import SequenceLearnerView from '~/components/SequenceLearnerView.vue'
-import SequenceOwnerView from '~/components/SequenceOwnerView.vue'
 
-definePageMeta({
-	middleware: 'sequence',
-})
+<script setup lang="ts">
+const { uuid } = defineProps<{
+	uuid: string
+}>()
 
-const lastPage = window.history.state.back as string
+const { data } = useSequence(uuid)
 
-const uuid = useRoute().params.uuid as string
-
-const { isOwner, isPending, isError, error } = useSequence(uuid)
+const currentRound = computed(() => data.value?.currentRound ?? 0)
+const question = computed(
+	() => data.value?.sequence.sciconumQuestions[currentRound.value],
+)
+const closedQuestion = computed(() =>
+	question.value?.$type === 'ClosedQuestion' ? question.value : null,
+)
 </script>
 
 <template>
-	<USkeleton
-		v-if="isPending"
-		class="w-full h-1/4"
+	<ClosedQuestion
+		v-if="closedQuestion"
+		:question="closedQuestion"
 	/>
-	<UError
-		v-else-if="isError"
-		:redirect="lastPage"
-		class="w-full h-full"
-		icon="i-lucide-circle-x"
-		:error="error"
-	/>
-	<SequenceOwnerView
-		v-if="!isPending && !isError && isOwner"
-		:uuid="uuid"
-	/>
-	<SequenceLearnerView
-		v-else-if="!isPending && !isError"
-		:uuid="uuid"
-	/>
+	<!-- TODO: support open questions -->
 </template>
