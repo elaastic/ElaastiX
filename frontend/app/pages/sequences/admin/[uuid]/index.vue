@@ -30,6 +30,9 @@ const {
 	state,
 	lastingTime,
 	lessThan10secForCurrentSeq,
+	question,
+	phase,
+	name,
 	startSequence,
 	pauseSequence,
 	resumeSequence,
@@ -54,6 +57,9 @@ const {
 			:state="state"
 			:lasting-time="lastingTime"
 			:less-than10sec-for-current-seq="lessThan10secForCurrentSeq"
+			:question="question!"
+			:phase="phase!"
+			:name="name"
 			@start-sequence="startSequence"
 			@pause-sequence="pauseSequence"
 			@resume-sequence="resumeSequence"

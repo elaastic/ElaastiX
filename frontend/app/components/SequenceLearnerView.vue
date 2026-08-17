@@ -19,19 +19,23 @@
 
 <script setup lang="ts">
 import type { components } from '#open-fetch-schemas/api'
+import type { State } from '~/lib/ScenarioTransitionMessage'
 
 interface Props {
 	data: components['schemas']['SciconumScenarioPhaseDto']
+	state: State | undefined
+	lastingTime: string
+	lessThan10secForCurrentSeq: boolean
+	name: string
+	question:
+		| components['schemas']['ClosedQuestionStatementDto']
+		| components['schemas']['OpenQuestionStatementDto']
+	phase: string
 }
 
-const { data } = defineProps<Props>()
-
-const currentRound = computed(() => data?.currentRound ?? 0)
-const question = computed(
-	() => data?.sequence.sciconumQuestions[currentRound.value],
-)
+const { question } = defineProps<Props>()
 const closedQuestion = computed(() =>
-	question.value?.$type === 'ClosedQuestion' ? question.value : null,
+	question?.$type === 'ClosedQuestion' ? question : null,
 )
 </script>
 

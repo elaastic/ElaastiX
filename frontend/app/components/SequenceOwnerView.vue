@@ -19,32 +19,28 @@
 
 <script setup lang="ts">
 import type { components } from '#open-fetch-schemas/api'
-import type { State } from '~/lib/ScenarioTransitionMessage'
+import type {
+	State,
+} from '~/lib/ScenarioTransitionMessage'
 
 interface Props {
 	data: components['schemas']['SciconumScenarioPhaseDto']
 	state: State | undefined
 	lastingTime: string
 	lessThan10secForCurrentSeq: boolean
+	name: string
+	question:
+		| components['schemas']['ClosedQuestionStatementDto']
+		| components['schemas']['OpenQuestionStatementDto']
+	phase: string
 }
 
 interface Emits {
 	(e: 'resumeSequence' | 'startSequence' | 'pauseSequence'): void
 }
 
-const { data, state } = defineProps<Props>()
+defineProps<Props>()
 const emits = defineEmits<Emits>()
-
-const name = computed(
-	() => data?.sequence.name ?? 'This sequence does not exists',
-)
-const currentRound = computed(() => data?.currentRound ?? 0)
-const question = computed(
-	() =>
-		data?.sequence.sciconumQuestions[currentRound.value]?.statement
-			.content ?? '',
-)
-const phase = computed(() => data?.phase)
 </script>
 
 <template>
@@ -65,7 +61,7 @@ const phase = computed(() => data?.phase)
 					{{ $t("sequence.remaining") }}
 					{{ lastingTime }}
 				</div>
-				<div>{{ question }}</div>
+				<div>{{ question?.statement.content ?? "" }}</div>
 			</div>
 			<div class="flex flex-col items-center gap-1">
 				<div>{{ phase }}</div>

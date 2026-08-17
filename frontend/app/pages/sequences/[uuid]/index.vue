@@ -23,7 +23,17 @@ definePageMeta({
 
 const uuid = useRoute().params.uuid as string
 
-const { isPending, error, data } = useSequence(uuid, false)
+const {
+	isPending,
+	error,
+	data,
+	lastingTime,
+	lessThan10secForCurrentSeq,
+	state,
+	phase,
+	question,
+	name,
+} = useSequence(uuid, false)
 </script>
 
 <template>
@@ -39,6 +49,14 @@ const { isPending, error, data } = useSequence(uuid, false)
 				class="w-full h-1/4"
 			/>
 		</template>
-		<SequenceLearnerView :data="data!" />
+		<SequenceLearnerView
+			:data="data!"
+			:lasting-time="lastingTime"
+			:less-than10sec-for-current-seq="lessThan10secForCurrentSeq"
+			:state="state"
+			:name="name"
+			:question="question!"
+			:phase="phase!"
+		/>
 	</DataPage>
 </template>

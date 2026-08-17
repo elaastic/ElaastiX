@@ -85,6 +85,14 @@ export function useSequence(uuid: string, owner: boolean) {
 	const isError = computed(() => error.value !== undefined)
 	const state = ref<State | undefined>(undefined)
 	const duration = ref<Temporal.Duration | undefined | null>(undefined)
+	const name = computed(
+		() => data.value?.sequence.name ?? 'This sequence does not exists',
+	)
+	const currentRound = computed(() => data.value?.currentRound ?? 0)
+	const question = computed(
+		() => data.value?.sequence.sciconumQuestions[currentRound.value],
+	)
+	const phase = computed(() => data.value?.phase)
 
 	watch(sequenceData, () => (data.value = sequenceData.value))
 
@@ -154,6 +162,9 @@ export function useSequence(uuid: string, owner: boolean) {
 			isError,
 			error,
 			state,
+			name,
+			question,
+			phase,
 			duration,
 			lastingTime,
 			lessThan10secForCurrentSeq,
@@ -166,6 +177,9 @@ export function useSequence(uuid: string, owner: boolean) {
 		isError,
 		error,
 		state,
+		name,
+		question,
+		phase,
 		duration,
 		lastingTime,
 		lessThan10secForCurrentSeq,
