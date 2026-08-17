@@ -67,7 +67,7 @@ function getRemainingTime(
 	return { lastingTime, lessThan10secForCurrentSeq }
 }
 
-function getFunctions() {
+function getFunctions(uuid: string) {
 	const { $api } = useNuxtApp()
 
 	const startSequence = () => {
@@ -157,7 +157,7 @@ export function useSequence(uuid: string, owner: boolean) {
 
 	watch(sequenceData, () => (data.value = sequenceData.value))
 
-	const { startSequence, pauseSequence, resumeSequence } = getFunctions()
+	const { startSequence, pauseSequence, resumeSequence } = getFunctions(uuid)
 
 	enableWebSocket(data, state, duration)
 

@@ -29,8 +29,8 @@ interface Props {
 	name: string
 	question:
 		| components['schemas']['ClosedQuestionStatementDto']
-		| components['schemas']['OpenQuestionStatementDto']
-	phase: string
+		| components['schemas']['OpenQuestionStatementDto'] | undefined
+	phase: string | undefined
 }
 
 const { question } = defineProps<Props>()

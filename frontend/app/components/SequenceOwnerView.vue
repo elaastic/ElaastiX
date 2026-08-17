@@ -64,7 +64,7 @@ const emits = defineEmits<Emits>()
 				<div>{{ question?.statement.content ?? "" }}</div>
 			</div>
 			<div class="flex flex-col items-center gap-1">
-				<div>{{ phase }}</div>
+				<div>{{ phase ?? "" }}</div>
 
 				<!-- TODO: We need to update the server so that the state is never undefined -->
 				<UButton
