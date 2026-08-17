@@ -17,38 +17,28 @@
   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 <script lang="ts" setup>
-import SequenceLearnerView from '~/components/SequenceLearnerView.vue'
-import SequenceOwnerView from '~/components/SequenceOwnerView.vue'
-
 definePageMeta({
 	middleware: 'sequence-learner',
 })
 
-const lastPage = window.history.state.back as string
-
 const uuid = useRoute().params.uuid as string
 
-const { isOwner, isPending, isError, error } = useSequence(uuid)
+const { isPending, error, data } = useSequence(uuid, false)
 </script>
 
 <template>
-	<USkeleton
-		v-if="isPending"
-		class="w-full h-1/4"
-	/>
-	<UError
-		v-else-if="isError"
-		:redirect="lastPage"
-		class="w-full h-full"
-		icon="i-lucide-circle-x"
+	<DataPage
 		:error="error"
-	/>
-	<SequenceOwnerView
-		v-if="!isPending && !isError && isOwner"
-		:uuid="uuid"
-	/>
-	<SequenceLearnerView
-		v-else-if="!isPending && !isError"
-		:uuid="uuid"
-	/>
+		:is-loading="isPending"
+		:is-empty="false"
+		is-empty-message=""
+	>
+		<template #loading>
+			<USkeleton
+				v-if="isPending"
+				class="w-full h-1/4"
+			/>
+		</template>
+		<SequenceLearnerView :data="data!" />
+	</DataPage>
 </template>

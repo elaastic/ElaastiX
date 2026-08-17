@@ -18,15 +18,17 @@
   -->
 
 <script setup lang="ts">
-const { uuid } = defineProps<{
-	uuid: string
-}>()
+import type { components } from '#open-fetch-schemas/api'
 
-const { data } = useSequence(uuid)
+interface Props {
+	data: components['schemas']['SciconumScenarioPhaseDto']
+}
 
-const currentRound = computed(() => data.value?.currentRound ?? 0)
+const { data } = defineProps<Props>()
+
+const currentRound = computed(() => data?.currentRound ?? 0)
 const question = computed(
-	() => data.value?.sequence.sciconumQuestions[currentRound.value],
+	() => data?.sequence.sciconumQuestions[currentRound.value],
 )
 const closedQuestion = computed(() =>
 	question.value?.$type === 'ClosedQuestion' ? question.value : null,

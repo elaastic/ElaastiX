@@ -18,84 +18,33 @@
   -->
 
 <script setup lang="ts">
-const { uuid } = defineProps<{ uuid: string }>();
+import type { components } from '#open-fetch-schemas/api'
+import type { State } from '~/lib/ScenarioTransitionMessage'
 
-const {
-	startSequence,
-	pauseSequence,
-	resumeSequence,
-	data,
-	duration,
-	state,
-} = useSequence(uuid);
+interface Props {
+	data: components['schemas']['SciconumScenarioPhaseDto']
+	state: State | undefined
+	lastingTime: string
+	lessThan10secForCurrentSeq: boolean
+}
+
+interface Emits {
+	(e: 'resumeSequence' | 'startSequence' | 'pauseSequence'): void
+}
+
+const { data, state } = defineProps<Props>()
+const emits = defineEmits<Emits>()
 
 const name = computed(
-	() => data.value?.sequence.name ?? "This sequence does not exists",
-);
-const currentRound = computed(() => data.value?.currentRound ?? 0);
+	() => data?.sequence.name ?? 'This sequence does not exists',
+)
+const currentRound = computed(() => data?.currentRound ?? 0)
 const question = computed(
 	() =>
-		data.value?.sequence.sciconumQuestions[currentRound.value]
-			?.statement.content ?? "",
-);
-const phase = computed(() => data.value?.phase);
-
-const lastingTime = ref("");
-const lessThan10secForCurrentSeq = ref(false);
-
-const timeZone = Temporal.Now.timeZoneId();
-
-const now = ref<undefined | Temporal.Instant>();
-const endingTime = ref<undefined | Temporal.ZonedDateTime>();
-
-const interval = setInterval(() => {
-	if (duration.value === undefined || duration.value === null) return;
-	if (endingTime.value === undefined || endingTime.value === null) return;
-
-	const currentTime = Temporal.Now.zonedDateTimeISO(timeZone);
-
-	if (Temporal.ZonedDateTime.compare(currentTime, endingTime.value) >= 0) {
-		return;
-	}
-
-	if (state.value === "PAUSED") {
-		return;
-	}
-
-	const remaining = endingTime.value.since(currentTime, {
-		largestUnit: "day",
-	});
-
-	const parts = [];
-	if (remaining.days > 0) parts.push(`${remaining.days}d`);
-	if (remaining.hours > 0) parts.push(`${remaining.hours}h`);
-	if (remaining.minutes > 0) parts.push(`${remaining.minutes}m`);
-	if (remaining.seconds > 0) parts.push(`${Math.floor(remaining.seconds)}s`);
-
-	lastingTime.value = parts.join(" ") || "0s";
-
-	lessThan10secForCurrentSeq.value =
-		remaining.days === 0 &&
-		remaining.hours === 0 &&
-		remaining.minutes === 0 &&
-		remaining.seconds <= 10 &&
-		remaining.seconds !== 0;
-}, 500);
-
-watch(duration, () => {
-	if (state.value === "END") {
-		clearInterval(interval);
-		lastingTime.value = "";
-		lessThan10secForCurrentSeq.value = false;
-		return;
-	}
-
-	now.value = Temporal.Now.instant();
-
-	endingTime.value = now.value
-		.add(duration.value!)
-		.toZonedDateTimeISO(timeZone);
-});
+		data?.sequence.sciconumQuestions[currentRound.value]?.statement
+			.content ?? '',
+)
+const phase = computed(() => data?.phase)
 </script>
 
 <template>
@@ -109,7 +58,10 @@ watch(duration, () => {
 				<div class="text-xl">
 					{{ name }}
 				</div>
-				<div v-if="lastingTime !== ''" class="text-sm text-muted -mt-2">
+				<div
+					v-if="lastingTime !== ''"
+					class="text-sm text-muted -mt-2"
+				>
 					{{ $t("sequence.remaining") }}
 					{{ lastingTime }}
 				</div>
@@ -122,21 +74,21 @@ watch(duration, () => {
 				<UButton
 					v-if="state === 'PENDING' || state === undefined"
 					icon="i-lucide-play"
-					@click="startSequence"
+					@click="emits('startSequence')"
 				>
 					{{ state }}
 				</UButton>
 				<UButton
 					v-if="state === 'RUNNING'"
 					icon="i-lucide-pause"
-					@click="pauseSequence"
+					@click="emits('pauseSequence')"
 				>
 					{{ state }}
 				</UButton>
 				<UButton
 					v-if="state === 'PAUSED'"
 					icon="i-lucide-play"
-					@click="resumeSequence"
+					@click="emits('resumeSequence')"
 				>
 					{{ state }}
 				</UButton>
