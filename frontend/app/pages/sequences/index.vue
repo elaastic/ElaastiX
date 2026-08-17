@@ -39,14 +39,34 @@ const { sequences, isPending, error } = useSequences()
 		</template>
 
 		<div class="card-grid">
-			<UPageCard
+			<template
 				v-for="sequence in sequences"
 				:key="sequence.uuid"
-				:title="sequence.sequenceName"
-				:description="sequence.uuid"
-				class="w-full"
-				:to="`/sequences/${sequence.uuid}`"
-			/>
+			>
+				<UPageCard
+					:title="sequence.sequenceName"
+					:description="sequence.uuid"
+					class="w-full relative"
+					:to="`/sequences/${sequence.isOwner ? 'admin/' : ''}${sequence.uuid}`"
+				>
+					<UTooltip
+						v-if="sequence.isOwner"
+						text="You are the owner of this sequence"
+						:delay-duration="0"
+						class="z-1 cursor-context-menu"
+					>
+						<UBadge
+							class="absolute top-2 right-2"
+							icon="i-lucide-chess-queen"
+							size="md"
+							color="info"
+							variant="outline"
+						>
+							{{ $t("sequence.owner") }}
+						</UBadge>
+					</UTooltip>
+				</UPageCard>
+			</template>
 		</div>
 	</DataPage>
 </template>
