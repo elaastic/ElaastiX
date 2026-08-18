@@ -5,16 +5,24 @@ interface Props {
 	name: string
 	state: State | undefined
 	phase: string | undefined
-	lastingTime: string
+	totalTime: number
+	timeSpend: number
+	lastingTimeString: string
 	lessThan10secForCurrentSeq: boolean
 }
 
 const { state, lessThan10secForCurrentSeq } = defineProps<Props>()
 
-const color = computed(() => {
+const badgeColor = computed(() => {
 	if (state === State.PAUSED) return 'secondary'
 	if (lessThan10secForCurrentSeq) return 'error'
 	return 'neutral'
+})
+
+const progressColor = computed(() => {
+	if (state === State.PAUSED) return 'secondary'
+	if (lessThan10secForCurrentSeq) return 'error'
+	return 'primary'
 })
 </script>
 
@@ -23,17 +31,23 @@ const color = computed(() => {
 		<h2 class="text-2xl">
 			{{ name }}
 		</h2>
-		<div class="flex items-center gap-2 w-1/6 justify-between">
+		<div class="flex items-center gap-2 justify-between">
 			<UBadge
 				v-if="state !== undefined && state !== State.END"
 				size="md"
-				:color="color"
+				:color="badgeColor"
 				variant="subtle"
 			>
-				{{ lastingTime }}
+				{{ lastingTimeString }}
 			</UBadge>
 			<div v-else />
 			<p>{{ phase }}</p>
 		</div>
 	</div>
+	<UProgress
+		:model-value="timeSpend"
+		:max="totalTime"
+		:color="progressColor"
+		class="mt-2 mb-2"
+	/>
 </template>

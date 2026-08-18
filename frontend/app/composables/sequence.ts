@@ -4,7 +4,9 @@ function getRemainingTime(
 	duration: Ref<Temporal.Duration | undefined | null>,
 	state: Ref<State | undefined>,
 ) {
-	const lastingTime = ref('')
+	const timeSpend = ref(0)
+	const totalTime = ref(0)
+	const lastingTimeString = ref('')
 	const lessThan10secForCurrentSeq = ref(false)
 
 	const timeZone = Temporal.Now.timeZoneId()
@@ -15,6 +17,7 @@ function getRemainingTime(
 	const interval = setInterval(() => {
 		if (duration.value === undefined || duration.value === null) return
 		if (endingTime.value === undefined || endingTime.value === null) return
+		if (now.value === undefined || now.value === null) return
 
 		const currentTime = Temporal.Now.zonedDateTimeISO(timeZone)
 
@@ -32,6 +35,12 @@ function getRemainingTime(
 			largestUnit: 'day',
 		})
 
+		totalTime.value = duration.value.total('milliseconds')
+
+		timeSpend.value = Temporal.Now.instant().since(now.value, {
+			largestUnit: 'millisecond',
+		}).milliseconds
+
 		const parts = []
 		if (remaining.days > 0) parts.push(`${remaining.days}d`)
 		if (remaining.hours > 0) parts.push(`${remaining.hours}h`)
@@ -39,20 +48,22 @@ function getRemainingTime(
 		if (remaining.seconds > 0)
 			parts.push(`${Math.floor(remaining.seconds)}s`)
 
-		lastingTime.value = parts.join(' ') || '0s'
+		lastingTimeString.value = parts.join(' ') || '0s'
 
 		lessThan10secForCurrentSeq.value
 			= remaining.days === 0
 				&& remaining.hours === 0
 				&& remaining.minutes === 0
 				&& remaining.seconds <= 10
-				&& remaining.seconds !== 0
-	}, 500)
+				&& remaining.microseconds !== 0
+	}, 100)
 
 	watch(duration, () => {
 		if (state.value === 'END') {
 			clearInterval(interval)
-			lastingTime.value = ''
+			timeSpend.value = 1
+			totalTime.value = 1
+			lastingTimeString.value = ''
 			lessThan10secForCurrentSeq.value = false
 			return
 		}
@@ -64,7 +75,12 @@ function getRemainingTime(
 			.toZonedDateTimeISO(timeZone)
 	})
 
-	return { lastingTime, lessThan10secForCurrentSeq }
+	return {
+		timeSpend,
+		totalTime,
+		lastingTimeString,
+		lessThan10secForCurrentSeq,
+	}
 }
 
 function getFunctions(uuid: string) {
@@ -161,10 +177,12 @@ export function useSequence(uuid: string, owner: boolean) {
 
 	enableWebSocket(data, state, duration)
 
-	const { lastingTime, lessThan10secForCurrentSeq } = getRemainingTime(
-		duration,
-		state,
-	)
+	const {
+		timeSpend,
+		totalTime,
+		lastingTimeString,
+		lessThan10secForCurrentSeq,
+	} = getRemainingTime(duration, state)
 
 	if (owner) {
 		return {
@@ -180,7 +198,9 @@ export function useSequence(uuid: string, owner: boolean) {
 			question,
 			phase,
 			duration,
-			lastingTime,
+			totalTime,
+			timeSpend,
+			lastingTimeString,
 			lessThan10secForCurrentSeq,
 		}
 	}
@@ -195,7 +215,9 @@ export function useSequence(uuid: string, owner: boolean) {
 		question,
 		phase,
 		duration,
-		lastingTime,
+		totalTime,
+		timeSpend,
+		lastingTimeString,
 		lessThan10secForCurrentSeq,
 	}
 }

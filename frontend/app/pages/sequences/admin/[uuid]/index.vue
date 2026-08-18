@@ -26,9 +26,10 @@ const uuid = useRoute().params.uuid as string
 const {
 	isPending,
 	error,
-	data,
 	state,
-	lastingTime,
+	totalTime,
+	timeSpend,
+	lastingTimeString,
 	lessThan10secForCurrentSeq,
 	question,
 	phase,
@@ -53,20 +54,17 @@ const {
 			/>
 		</template>
 		<SequenceHeaderView
-			:lasting-time="lastingTime"
+			:lasting-time-string="lastingTimeString"
 			:less-than10sec-for-current-seq="lessThan10secForCurrentSeq"
 			:name="name"
 			:phase="phase"
 			:state="state"
+			:time-spend="timeSpend"
+			:total-time="totalTime"
 		/>
 		<SequenceOwnerView
-			:data="data!"
 			:state="state"
-			:lasting-time="lastingTime"
-			:less-than10sec-for-current-seq="lessThan10secForCurrentSeq"
 			:question="question"
-			:phase="phase"
-			:name="name"
 			@start-sequence="startSequence"
 			@pause-sequence="pauseSequence"
 			@resume-sequence="resumeSequence"

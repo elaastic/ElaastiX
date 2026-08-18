@@ -21,7 +21,6 @@
 import type { components } from '#open-fetch-schemas/api'
 
 interface Props {
-	data: components['schemas']['SciconumScenarioPhaseDto']
 	question:
 		| components['schemas']['ClosedQuestionStatementDto']
 		| components['schemas']['OpenQuestionStatementDto']

@@ -22,16 +22,11 @@ import type { components } from '#open-fetch-schemas/api'
 import type { State } from '~/lib/ScenarioTransitionMessage'
 
 interface Props {
-	data: components['schemas']['SciconumScenarioPhaseDto']
 	state: State | undefined
-	lastingTime: string
-	lessThan10secForCurrentSeq: boolean
-	name: string
 	question:
 		| components['schemas']['ClosedQuestionStatementDto']
 		| components['schemas']['OpenQuestionStatementDto']
 		| undefined
-	phase: string | undefined
 }
 
 interface Emits {
@@ -46,38 +41,30 @@ const emits = defineEmits<Emits>()
 	<div class="flex justify-between items-center gap-1">
 		<div>{{ question?.statement.content ?? "" }}</div>
 
-		<div class="w-1/6">
-			<!-- TODO: We need to update the server so that the state is never undefined -->
-			<UButton
-				v-if="state === 'PENDING' || state === undefined"
-				icon="i-lucide-play"
-				class="w-full justify-center"
-				@click="emits('startSequence')"
-			>
-				{{ state }}
-			</UButton>
-			<UButton
-				v-if="state === 'RUNNING'"
-				icon="i-lucide-pause"
-				class="w-full justify-center"
-				@click="emits('pauseSequence')"
-			>
-				{{ state }}
-			</UButton>
-			<UButton
-				v-if="state === 'PAUSED'"
-				icon="i-lucide-play"
-				class="w-full justify-center"
-				@click="emits('resumeSequence')"
-			>
-				{{ state }}
-			</UButton>
-			<UButton
-				v-if="state === 'END'"
-				class="w-full justify-center"
-			>
-				{{ state }}
-			</UButton>
-		</div>
+		<!-- TODO: We need to update the server so that the state is never undefined -->
+		<UButton
+			v-if="state === 'PENDING' || state === undefined"
+			icon="i-lucide-play"
+			@click="emits('startSequence')"
+		>
+			{{ state }}
+		</UButton>
+		<UButton
+			v-if="state === 'RUNNING'"
+			icon="i-lucide-pause"
+			@click="emits('pauseSequence')"
+		>
+			{{ state }}
+		</UButton>
+		<UButton
+			v-if="state === 'PAUSED'"
+			icon="i-lucide-play"
+			@click="emits('resumeSequence')"
+		>
+			{{ state }}
+		</UButton>
+		<UButton v-if="state === 'END'">
+			{{ state }}
+		</UButton>
 	</div>
 </template>
