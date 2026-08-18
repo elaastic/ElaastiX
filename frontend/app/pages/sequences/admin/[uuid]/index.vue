@@ -52,6 +52,13 @@ const {
 				class="w-full h-1/4"
 			/>
 		</template>
+		<SequenceHeaderView
+			:lasting-time="lastingTime"
+			:less-than10sec-for-current-seq="lessThan10secForCurrentSeq"
+			:name="name"
+			:phase="phase"
+			:state="state"
+		/>
 		<SequenceOwnerView
 			:data="data!"
 			:state="state"

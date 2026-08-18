@@ -19,18 +19,13 @@
 
 <script setup lang="ts">
 import type { components } from '#open-fetch-schemas/api'
-import type { State } from '~/lib/ScenarioTransitionMessage'
 
 interface Props {
 	data: components['schemas']['SciconumScenarioPhaseDto']
-	state: State | undefined
-	lastingTime: string
-	lessThan10secForCurrentSeq: boolean
-	name: string
 	question:
 		| components['schemas']['ClosedQuestionStatementDto']
-		| components['schemas']['OpenQuestionStatementDto'] | undefined
-	phase: string | undefined
+		| components['schemas']['OpenQuestionStatementDto']
+		| undefined
 }
 
 const { question } = defineProps<Props>()
