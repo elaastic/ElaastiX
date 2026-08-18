@@ -49,14 +49,17 @@ const {
 				class="w-full h-1/4"
 			/>
 		</template>
-		<SequenceLearnerView
-			:data="data!"
+
+		<SequenceHeaderView
 			:lasting-time="lastingTime"
 			:less-than10sec-for-current-seq="lessThan10secForCurrentSeq"
-			:state="state"
 			:name="name"
-			:question="question"
 			:phase="phase"
+			:state="state"
+		/>
+		<SequenceLearnerView
+			:data="data!"
+			:question="question"
 		/>
 	</DataPage>
 </template>

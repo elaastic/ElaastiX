@@ -19,9 +19,7 @@
 
 <script setup lang="ts">
 import type { components } from '#open-fetch-schemas/api'
-import type {
-	State,
-} from '~/lib/ScenarioTransitionMessage'
+import type { State } from '~/lib/ScenarioTransitionMessage'
 
 interface Props {
 	data: components['schemas']['SciconumScenarioPhaseDto']
@@ -32,7 +30,8 @@ interface Props {
 	question:
 		| components['schemas']['ClosedQuestionStatementDto']
 		| components['schemas']['OpenQuestionStatementDto']
-	phase: string
+		| undefined
+	phase: string | undefined
 }
 
 interface Emits {
@@ -44,54 +43,41 @@ const emits = defineEmits<Emits>()
 </script>
 
 <template>
-	<UPageCard
-		class="w-full h-min"
-		:highlight="lessThan10secForCurrentSeq"
-		highlight-color="error"
-	>
-		<div class="flex justify-between">
-			<div class="flex flex-col gap-2">
-				<div class="text-xl">
-					{{ name }}
-				</div>
-				<div
-					v-if="lastingTime !== ''"
-					class="text-sm text-muted -mt-2"
-				>
-					{{ $t("sequence.remaining") }}
-					{{ lastingTime }}
-				</div>
-				<div>{{ question?.statement.content ?? "" }}</div>
-			</div>
-			<div class="flex flex-col items-center gap-1">
-				<div>{{ phase ?? "" }}</div>
+	<div class="flex justify-between items-center gap-1">
+		<div>{{ question?.statement.content ?? "" }}</div>
 
-				<!-- TODO: We need to update the server so that the state is never undefined -->
-				<UButton
-					v-if="state === 'PENDING' || state === undefined"
-					icon="i-lucide-play"
-					@click="emits('startSequence')"
-				>
-					{{ state }}
-				</UButton>
-				<UButton
-					v-if="state === 'RUNNING'"
-					icon="i-lucide-pause"
-					@click="emits('pauseSequence')"
-				>
-					{{ state }}
-				</UButton>
-				<UButton
-					v-if="state === 'PAUSED'"
-					icon="i-lucide-play"
-					@click="emits('resumeSequence')"
-				>
-					{{ state }}
-				</UButton>
-				<UButton v-if="state === 'END'">
-					{{ state }}
-				</UButton>
-			</div>
+		<div class="w-1/6">
+			<!-- TODO: We need to update the server so that the state is never undefined -->
+			<UButton
+				v-if="state === 'PENDING' || state === undefined"
+				icon="i-lucide-play"
+				class="w-full justify-center"
+				@click="emits('startSequence')"
+			>
+				{{ state }}
+			</UButton>
+			<UButton
+				v-if="state === 'RUNNING'"
+				icon="i-lucide-pause"
+				class="w-full justify-center"
+				@click="emits('pauseSequence')"
+			>
+				{{ state }}
+			</UButton>
+			<UButton
+				v-if="state === 'PAUSED'"
+				icon="i-lucide-play"
+				class="w-full justify-center"
+				@click="emits('resumeSequence')"
+			>
+				{{ state }}
+			</UButton>
+			<UButton
+				v-if="state === 'END'"
+				class="w-full justify-center"
+			>
+				{{ state }}
+			</UButton>
 		</div>
-	</UPageCard>
+	</div>
 </template>
