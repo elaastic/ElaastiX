@@ -33,6 +33,8 @@ constructor(
 
 	val uuid: Uuid,
 
+	val sequenceName: String,
+
 	val phase: SciconumScenarioExecutionPhase,
 
 	val sequence: SequenceDto,
@@ -45,6 +47,7 @@ constructor(
 		fun fromEntity(e: SciconumScenarioSessionEntity): SciconumScenarioPhaseDto =
 			SciconumScenarioPhaseDto(
 				uuid = e.id,
+				sequenceName = e.sequence.name,
 				phase = e.phase,
 				sequence = SequenceDto.fromEntity(e.sequence),
 				currentRound = e.currentRound,

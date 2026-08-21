@@ -27,6 +27,7 @@ const {
 	data: sequenceData,
 	isPending,
 	isError,
+	isOwner,
 	error,
 	state,
 } = useSequence(uuid)
@@ -70,31 +71,36 @@ const phase = computed(() => sequenceData.value?.phase)
 			</div>
 			<div class="flex flex-col items-center gap-1">
 				<div>{{ phase }}</div>
-				<!-- TODO: We need to update the server so that the state is never undefined -->
-				<UButton
-					v-if="state === 'PENDING' || state === undefined"
-					icon="i-lucide-play"
-					@click="startSequence"
-				>
+				<template v-if="isOwner">
+					<!-- TODO: We need to update the server so that the state is never undefined -->
+					<UButton
+						v-if="state === 'PENDING' || state === undefined"
+						icon="i-lucide-play"
+						@click="startSequence"
+					>
+						{{ state }}
+					</UButton>
+					<UButton
+						v-if="state === 'RUNNING'"
+						icon="i-lucide-pause"
+						@click="pauseSequence"
+					>
+						{{ state }}
+					</UButton>
+					<UButton
+						v-if="state === 'PAUSED'"
+						icon="i-lucide-play"
+						@click="resumeSequence"
+					>
+						{{ state }}
+					</UButton>
+					<UButton v-if="state === 'END'">
+						{{ state }}
+					</UButton>
+				</template>
+				<div v-else>
 					{{ state }}
-				</UButton>
-				<UButton
-					v-if="state === 'RUNNING'"
-					icon="i-lucide-pause"
-					@click="pauseSequence"
-				>
-					{{ state }}
-				</UButton>
-				<UButton
-					v-if="state === 'PAUSED'"
-					icon="i-lucide-play"
-					@click="resumeSequence"
-				>
-					{{ state }}
-				</UButton>
-				<UButton v-if="state === 'END'">
-					{{ state }}
-				</UButton>
+				</div>
 			</div>
 		</div>
 	</UPageCard>

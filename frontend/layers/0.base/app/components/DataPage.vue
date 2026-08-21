@@ -17,44 +17,56 @@
   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<script lang="ts" setup>
-const { sequences, isPending, error } = useSequences()
+<script setup lang="ts">
+/**
+ * Generic page component that can be used to display data fetched asynchronously.
+ * It handles:
+ * - the shared page style
+ * - the loading state
+ * - the error state
+ * - the empty state
+ */
+interface Props {
+	isLoading: boolean
+	error: Error | undefined
+	isEmpty: boolean
+	isEmptyMessage?: string
+}
+
+const { isLoading, error, isEmpty, isEmptyMessage } = defineProps<Props>()
 </script>
 
 <template>
-	<DataPage
-		:is-loading="isPending"
-		:is-empty="sequences?.length === 0"
-		:is-empty-message="$t('sequence.noSequenceAssociated')"
-		:error="error"
-	>
-		<template #loading>
-			<div class="card-grid">
-				<USkeleton
-					v-for="value in Array.from({ length: 5 }, (_, i) => i + 1)"
-					:key="value"
-					class="w-full h-12"
-				/>
-			</div>
-		</template>
-
-		<div class="card-grid">
-			<UPageCard
-				v-for="sequence in sequences"
-				:key="sequence.uuid"
-				:title="sequence.sequenceName"
-				:description="sequence.uuid"
-				class="w-full"
-				:to="`/sequences/${sequence.uuid}`"
+	<div class="w-full h-full p-4">
+		<slot
+			v-if="isLoading"
+			name="loading"
+		/>
+		<slot
+			v-else-if="error"
+			name="error"
+		>
+			<UError
+				class="w-full h-full"
+				icon="i-lucide-circle-x"
+				:error="error"
 			/>
-		</div>
-	</DataPage>
+		</slot>
+
+		<slot
+			v-else-if="isEmpty"
+			name="empty"
+		>
+			<div
+				v-if="isEmptyMessage"
+				class="w-full h-full flex items-center justify-center"
+			>
+				<p class="text-2xl">
+					{{ isEmptyMessage }}
+				</p>
+			</div>
+		</slot>
+
+		<slot v-else />
+	</div>
 </template>
-
-<style scoped>
-@reference "tailwindcss";
-
-.card-grid {
-	@apply grid grid-cols-[repeat(auto-fill,minmax(300px,1fr))] gap-4;
-}
-</style>

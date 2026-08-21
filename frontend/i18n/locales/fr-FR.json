@@ -93,7 +93,8 @@
 	"sequence": {
 		"error": {
 			"forbidden": "Vous n'êtes pas autorisé à accéder à cette page."
-		}
+		},
+		"noSequenceAssociated": "Vous n'avez accès à aucune séquence."
 	},
 	"error" : "Erreur"
 }

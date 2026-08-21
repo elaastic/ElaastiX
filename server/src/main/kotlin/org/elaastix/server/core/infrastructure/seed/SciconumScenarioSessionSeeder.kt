@@ -21,6 +21,7 @@ package org.elaastix.server.core.infrastructure.seed
 
 import jakarta.persistence.EntityManager
 import org.elaastix.commons.platform.debt.SciconumTechDebt
+import org.elaastix.server.assignments.participants.AssignmentParticipantsService
 import org.elaastix.server.scenario.exec.SciconumScenarioExecutionPhase
 import org.elaastix.server.scenario.exec.entities.SciconumScenarioSessionEntity
 import org.springframework.boot.ApplicationArguments
@@ -33,10 +34,20 @@ class SciconumScenarioSessionSeeder(
 	entityManager: EntityManager,
 	private val assignmentSeeder: AssignmentSeeder,
 	private val sequenceSeeder: SequenceSeeder,
+	private val userSeeder: UserSeeder,
+	private val assignmentParticipantsService: AssignmentParticipantsService,
 ) : AbstractSeeder(entityManager) {
 
 	@OptIn(SciconumTechDebt::class)
 	lateinit var scenarioSession1: SciconumScenarioSessionEntity
+		protected set
+
+	@OptIn(SciconumTechDebt::class)
+	lateinit var scenarioSession2: SciconumScenarioSessionEntity
+		protected set
+
+	@OptIn(SciconumTechDebt::class)
+	lateinit var scenarioSession3: SciconumScenarioSessionEntity
 		protected set
 
 	@OptIn(SciconumTechDebt::class)
@@ -45,6 +56,7 @@ class SciconumScenarioSessionSeeder(
 
 	@OptIn(SciconumTechDebt::class)
 	override fun run(args: ApplicationArguments) {
+		// TODO This should be automatically done by the assignment seeding
 		scenarioSession1 = upsert(
 			id = 1UL,
 			entity = SciconumScenarioSessionEntity(
@@ -55,14 +67,50 @@ class SciconumScenarioSessionSeeder(
 			),
 		)
 
-		scenarioSessionTest = upsert(
+		scenarioSession2 = upsert(
 			id = 2UL,
 			entity = SciconumScenarioSessionEntity(
 				assignment = assignmentSeeder.assignment1,
+				sequence = sequenceSeeder.sequence2,
+				currentRound = 0U,
+				phase = SciconumScenarioExecutionPhase.PENDING,
+			),
+		)
+
+		scenarioSession3 = upsert(
+			id = 3UL,
+			entity = SciconumScenarioSessionEntity(
+				assignment = assignmentSeeder.assignment1,
+				sequence = sequenceSeeder.sequence3,
+				currentRound = 0U,
+				phase = SciconumScenarioExecutionPhase.PENDING,
+			),
+		)
+
+		scenarioSessionTest = upsert(
+			id = 4UL,
+			entity = SciconumScenarioSessionEntity(
+				assignment = assignmentSeeder.assignment2,
 				sequence = sequenceSeeder.sequenceTest,
 				currentRound = 0U,
 				phase = SciconumScenarioExecutionPhase.PENDING,
 			),
 		)
+
+		// Join the seeded learners once the scenario sessions exist. handleLearnerJoin requires
+		// scenario sessions to be present for the assignment, otherwise it fails with an
+		// IllegalStateException, so this must run after the sessions above are created
+		// and not in AssignmentSeeder.
+		with(assignmentParticipantsService) {
+			assignmentSeeder.assignment1.id.let {
+				addParticipantToAssignmentById(assignmentId = it, userSeeder.student1.id)
+				addParticipantToAssignmentById(assignmentId = it, userSeeder.student2.id)
+			}
+
+			assignmentSeeder.assignment2.id.let {
+				addParticipantToAssignmentById(assignmentId = it, userSeeder.student2.id)
+				addParticipantToAssignmentById(assignmentId = it, userSeeder.student3.id)
+			}
+		}
 	}
 }
