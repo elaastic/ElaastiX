@@ -21,7 +21,7 @@ export function useSequence(uuid: string) {
 		() => data.value?.sequence.ownerId === user.value?.id,
 	)
 	const state = ref<State | undefined>(undefined)
-	const duration = ref<string | undefined | null>(undefined)
+	const duration = ref<Temporal.Duration | undefined | null>(undefined)
 
 	watch(sequenceData, () => (data.value = sequenceData.value))
 
