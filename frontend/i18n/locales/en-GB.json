@@ -95,7 +95,8 @@
 			"forbidden": "You aren't allowed to access this sequence",
 			"noSequenceAssociated": "No sequences available."
 		},
-		"remaining": "Remaining"
+		"remaining": "Remaining",
+		"owner": "Owner"
 	},
 	"error": "Error"
 }

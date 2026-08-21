@@ -1,29 +1,90 @@
 import type { State } from '~/lib/ScenarioTransitionMessage'
 
-export function useSequence(uuid: string) {
-	const { $api } = useNuxtApp()
-	const { user } = useAuthn()
+function getRemainingTime(
+	duration: Ref<Temporal.Duration | undefined | null>,
+	state: Ref<State | undefined>,
+) {
+	const timeSpend = ref(0)
+	const totalTime = ref(0)
+	const lastingTimeString = ref('')
+	const lessThan10secForCurrentSeq = ref(false)
 
-	const {
-		data: sequenceData,
-		pending: isPending,
-		error,
-	} = useApi('/v1/player/org.elaastix.engine.getSciconumSequenceSession', {
-		method: 'POST',
-		query: {
-			scenarioSessionId: uuid,
-		},
+	const timeZone = Temporal.Now.timeZoneId()
+
+	const now = ref<undefined | Temporal.Instant>()
+	const endingTime = ref<undefined | Temporal.ZonedDateTime>()
+
+	const interval = setInterval(() => {
+		if (duration.value === undefined || duration.value === null) return
+		if (endingTime.value === undefined || endingTime.value === null) return
+		if (now.value === undefined || now.value === null) return
+
+		const currentTime = Temporal.Now.zonedDateTimeISO(timeZone)
+
+		if (
+			Temporal.ZonedDateTime.compare(currentTime, endingTime.value) >= 0
+		) {
+			return
+		}
+
+		if (state.value === 'PAUSED') {
+			return
+		}
+
+		const remaining = endingTime.value.since(currentTime, {
+			largestUnit: 'day',
+		})
+
+		totalTime.value = duration.value.total('milliseconds')
+
+		timeSpend.value = Temporal.Now.instant().since(now.value, {
+			largestUnit: 'millisecond',
+		}).milliseconds
+
+		const parts = []
+		if (remaining.days > 0) parts.push(`${remaining.days}d`)
+		if (remaining.hours > 0) parts.push(`${remaining.hours}h`)
+		if (remaining.minutes > 0) parts.push(`${remaining.minutes}m`)
+		if (remaining.seconds > 0)
+			parts.push(`${Math.floor(remaining.seconds)}s`)
+
+		lastingTimeString.value = parts.join(' ') || '0s'
+
+		lessThan10secForCurrentSeq.value
+			= remaining.days === 0
+				&& remaining.hours === 0
+				&& remaining.minutes === 0
+				&& remaining.seconds <= 10
+				&& remaining.microseconds !== 0
+	}, 100)
+
+	watch(duration, () => {
+		if (state.value === 'END') {
+			clearInterval(interval)
+			timeSpend.value = 1
+			totalTime.value = 1
+			lastingTimeString.value = ''
+			lessThan10secForCurrentSeq.value = false
+			return
+		}
+
+		now.value = Temporal.Now.instant()
+
+		endingTime.value = now.value
+			.add(duration.value!)
+			.toZonedDateTimeISO(timeZone)
 	})
 
-	const data = ref<undefined | SciconumScenarioPhaseDto>(undefined)
-	const isError = computed(() => error.value !== undefined)
-	const isOwner = computed(
-		() => data.value?.sequence.ownerId === user.value?.id,
-	)
-	const state = ref<State | undefined>(undefined)
-	const duration = ref<Temporal.Duration | undefined | null>(undefined)
+	return {
+		timeSpend,
+		totalTime,
+		lastingTimeString,
+		lessThan10secForCurrentSeq,
+	}
+}
 
-	watch(sequenceData, () => (data.value = sequenceData.value))
+function getFunctions(uuid: string) {
+	const { $api } = useNuxtApp()
 
 	const startSequence = () => {
 		$api('/v1/player/org.elaastix.engine.startSciconumScenarioSession', {
@@ -52,6 +113,14 @@ export function useSequence(uuid: string) {
 		})
 	}
 
+	return { startSequence, pauseSequence, resumeSequence }
+}
+
+function enableWebSocket(
+	data: Ref<undefined | SciconumScenarioPhaseDto>,
+	state: Ref<State | undefined>,
+	duration: Ref<Temporal.Duration | undefined | null>,
+) {
 	useWebSocket({
 		onOpen: () => {
 			console.log('The websocket opened')
@@ -75,17 +144,80 @@ export function useSequence(uuid: string) {
 			}
 		},
 	})
+}
+
+export function useSequence(uuid: string, owner: boolean) {
+	const {
+		data: sequenceData,
+		pending: isPending,
+		error,
+	} = useApi('/v1/player/org.elaastix.engine.getSciconumSequenceSession', {
+		method: 'POST',
+		query: {
+			scenarioSessionId: uuid,
+		},
+	})
+
+	const data = ref<undefined | SciconumScenarioPhaseDto>(undefined)
+	const isError = computed(() => error.value !== undefined)
+	const state = ref<State | undefined>(undefined)
+	const duration = ref<Temporal.Duration | undefined | null>(undefined)
+	const name = computed(
+		() => data.value?.sequence.name ?? 'This sequence does not exists',
+	)
+	const currentRound = computed(() => data.value?.currentRound ?? 0)
+	const question = computed(
+		() => data.value?.sequence.sciconumQuestions[currentRound.value],
+	)
+	const phase = computed(() => data.value?.phase)
+
+	watch(sequenceData, () => (data.value = sequenceData.value))
+
+	const { startSequence, pauseSequence, resumeSequence } = getFunctions(uuid)
+
+	enableWebSocket(data, state, duration)
+
+	const {
+		timeSpend,
+		totalTime,
+		lastingTimeString,
+		lessThan10secForCurrentSeq,
+	} = getRemainingTime(duration, state)
+
+	if (owner) {
+		return {
+			startSequence,
+			pauseSequence,
+			resumeSequence,
+			data,
+			isPending,
+			isError,
+			error,
+			state,
+			name,
+			question,
+			phase,
+			duration,
+			totalTime,
+			timeSpend,
+			lastingTimeString,
+			lessThan10secForCurrentSeq,
+		}
+	}
 
 	return {
-		startSequence,
-		pauseSequence,
-		resumeSequence,
 		data,
 		isPending,
 		isError,
-		isOwner,
 		error,
 		state,
+		name,
+		question,
+		phase,
 		duration,
+		totalTime,
+		timeSpend,
+		lastingTimeString,
+		lessThan10secForCurrentSeq,
 	}
 }
