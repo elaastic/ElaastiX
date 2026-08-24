@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import type { components } from '#open-fetch-schemas/api'
+import { singleChoiceQuestion } from '~/lib/storiesProvider'
 import SequenceLearnerView from './SequenceLearnerView.vue'
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
 
@@ -30,27 +30,8 @@ const meta = {
 export default meta
 type Story = StoryObj<typeof meta>
 
-const question = {
-	id: '0000000000000000000000000',
-	$type: 'ClosedQuestion',
-	statement: {
-		$type: 'Markdown',
-		content: 'What is the best multipurpose operating system?',
-	},
-	multiple: false,
-	choices: [
-		{ $type: 'PlainText', content: 'Linux' },
-		{ $type: 'PlainText', content: 'Windows' },
-		{ $type: 'PlainText', content: 'Darwin (macOS)' },
-		{ $type: 'PlainText', content: 'OpenBSD' },
-	],
-} satisfies
-| components['schemas']['ClosedQuestionStatementDto']
-| components['schemas']['OpenQuestionStatementDto']
-| undefined
-
 export const Question: Story = {
 	args: {
-		question: question,
+		question: singleChoiceQuestion,
 	},
 }

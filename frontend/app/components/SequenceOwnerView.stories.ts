@@ -20,7 +20,7 @@
 import { State } from '~/lib/ScenarioTransitionMessage'
 import SequenceOwnerView from './SequenceOwnerView.vue'
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
-import type { components } from '#open-fetch-schemas/api'
+import { singleChoiceQuestion } from '~/lib/storiesProvider'
 
 const meta = {
 	title: 'Sequence Owner View',
@@ -32,49 +32,30 @@ export default meta
 
 type Story = StoryObj<typeof meta>
 
-const question = {
-	id: '0000000000000000000000000',
-	$type: 'ClosedQuestion',
-	statement: {
-		$type: 'Markdown',
-		content: 'What is the best multipurpose operating system?',
-	},
-	multiple: false,
-	choices: [
-		{ $type: 'PlainText', content: 'Linux' },
-		{ $type: 'PlainText', content: 'Windows' },
-		{ $type: 'PlainText', content: 'Darwin (macOS)' },
-		{ $type: 'PlainText', content: 'OpenBSD' },
-	],
-} satisfies
-| components['schemas']['ClosedQuestionStatementDto']
-| components['schemas']['OpenQuestionStatementDto']
-| undefined
-
 export const Pending: Story = {
 	args: {
 		state: State.PENDING,
-		question: question,
+		question: singleChoiceQuestion,
 	},
 }
 
 export const Running: Story = {
 	args: {
 		state: State.RUNNING,
-		question: question,
+		question: singleChoiceQuestion,
 	},
 }
 
 export const Paused: Story = {
 	args: {
 		state: State.PAUSED,
-		question: question,
+		question: singleChoiceQuestion,
 	},
 }
 
 export const End: Story = {
 	args: {
 		state: State.END,
-		question: question,
+		question: singleChoiceQuestion,
 	},
 }
