@@ -16,50 +16,27 @@
   - You should have received a copy of the GNU Affero General Public License
   - along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
-<script lang="ts" setup>
-definePageMeta({
-	middleware: 'sequence-learner',
-})
 
-const uuid = useRoute().params.uuid as string
+<script setup lang="ts">
+import type { components } from '#open-fetch-schemas/api'
 
-const {
-	isPending,
-	error,
-	lastingTimeString,
-	lessThan10secForCurrentSeq,
-	state,
-	phase,
-	totalTime,
-	timeSpend,
-	question,
-	name,
-} = useSequence(uuid, false)
+interface Props {
+	question:
+		| components['schemas']['ClosedQuestionStatementDto']
+		| components['schemas']['OpenQuestionStatementDto']
+		| undefined
+}
+
+const { question } = defineProps<Props>()
+const closedQuestion = computed(() =>
+	question?.$type === 'ClosedQuestion' ? question : null,
+)
 </script>
 
 <template>
-	<DataPage
-		:error="error"
-		:is-loading="isPending"
-		:is-empty="false"
-		is-empty-message=""
-	>
-		<template #loading>
-			<USkeleton
-				v-if="isPending"
-				class="w-full h-1/4"
-			/>
-		</template>
-
-		<SequenceHeaderView
-			:lasting-time-string="lastingTimeString"
-			:less-than10sec-for-current-seq="lessThan10secForCurrentSeq"
-			:name="name"
-			:phase="phase"
-			:state="state"
-			:time-spend="timeSpend"
-			:total-time="totalTime"
-		/>
-		<SequenceLearnerView :question="question" />
-	</DataPage>
+	<ClosedQuestion
+		v-if="closedQuestion"
+		:question="closedQuestion"
+	/>
+	<!-- TODO: support open questions -->
 </template>

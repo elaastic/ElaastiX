@@ -18,7 +18,7 @@
   -->
 <script lang="ts" setup>
 definePageMeta({
-	middleware: 'sequence-learner',
+	middleware: 'sequence-owner',
 })
 
 const uuid = useRoute().params.uuid as string
@@ -26,15 +26,18 @@ const uuid = useRoute().params.uuid as string
 const {
 	isPending,
 	error,
-	lastingTimeString,
-	lessThan10secForCurrentSeq,
 	state,
-	phase,
 	totalTime,
 	timeSpend,
+	lastingTimeString,
+	lessThan10secForCurrentSeq,
 	question,
+	phase,
 	name,
-} = useSequence(uuid, false)
+	startSequence,
+	pauseSequence,
+	resumeSequence,
+} = useSequence(uuid, true)
 </script>
 
 <template>
@@ -50,7 +53,6 @@ const {
 				class="w-full h-1/4"
 			/>
 		</template>
-
 		<SequenceHeaderView
 			:lasting-time-string="lastingTimeString"
 			:less-than10sec-for-current-seq="lessThan10secForCurrentSeq"
@@ -60,6 +62,12 @@ const {
 			:time-spend="timeSpend"
 			:total-time="totalTime"
 		/>
-		<SequenceLearnerView :question="question" />
+		<SequenceOwnerView
+			:state="state"
+			:question="question"
+			@start-sequence="startSequence"
+			@pause-sequence="pauseSequence"
+			@resume-sequence="resumeSequence"
+		/>
 	</DataPage>
 </template>

@@ -1,3 +1,5 @@
+const { user } = useAuthn()
+
 export function useSequences() {
 	const { data, pending, error } = useApi(
 		'/v1/player/org.elaastix.engine.getAllSciconumSequenceSessionAssociated',
@@ -6,10 +8,20 @@ export function useSequences() {
 		},
 	)
 
-	const isError = computed(() => error !== undefined)
+	const isError = computed(() => error.value !== undefined)
+	const sequences = computed(() => {
+		if (!data.value) return undefined
+
+		const rawData = data.value
+
+		return rawData.map(e => ({
+			...e,
+			isOwner: user.value?.id === e.sequence.ownerId,
+		}))
+	})
 
 	return {
-		sequences: data,
+		sequences,
 		isPending: pending,
 		error,
 		isError,

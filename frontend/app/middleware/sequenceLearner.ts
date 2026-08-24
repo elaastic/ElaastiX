@@ -2,8 +2,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
 	const uuid = to.params.uuid as string
 
 	const { $api, $i18n } = useNuxtApp()
-	const isSequenceAssociated = await $api(
-		`/v1/player/org.elaastix.engine.isSequenceAssociated`,
+	const isSequenceLearner = await $api(
+		`/v1/player/org.elaastix.engine.isSequenceLearner`,
 		{
 			method: 'POST',
 			query: {
@@ -12,7 +12,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
 		},
 	)
 
-	if (isSequenceAssociated === false) {
+	if (isSequenceLearner === false) {
 		return showError({
 			status: 403,
 			statusText: $i18n.t('sequence.error.forbidden'),
