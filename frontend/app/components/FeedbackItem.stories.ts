@@ -47,6 +47,69 @@ const question = {
 	],
 } satisfies components['schemas']['ClosedQuestionStatementDto'] | undefined
 
+const learnerExplanation = {
+	content: 'Is it even a question',
+	notBlank: true,
+	notEmpty: true,
+	$type: 'PlainText',
+} satisfies components['schemas']['PlainText']
+
+const explanation = {
+	content: 'Because it is. signed the professor.',
+	notBlank: true,
+	notEmpty: true,
+	$type: 'PlainText',
+} satisfies components['schemas']['PlainText']
+
+const learnerExplanationMarkdown = {
+	content: '*Its obvious.*',
+	notBlank: true,
+	notEmpty: true,
+	$type: 'MarkdownInline',
+} satisfies components['schemas']['MarkdownText']
+
+const explanationMarkdown = {
+	content: 'See chapter 3 : `man kernel`.',
+	notBlank: true,
+	notEmpty: true,
+	$type: 'MarkdownInline',
+} satisfies components['schemas']['MarkdownText']
+
+const questionMarkdown = {
+	id: '0000000000000000000000000',
+	$type: 'ClosedQuestion',
+	statement: {
+		$type: 'Markdown',
+		content: `### Choix d'un système d'exploitation
+
+Considérez les critères suivants :
+- **Stabilité** du noyau (*kernel*)
+- Support des environments de contenders (\`Docker\`, \`Podman\`)
+- Flexibilité et gestion des droits (POSIX)
+
+Quel est le **meilleur** système d'exploitation polyvalent ?`,
+	},
+	multiple: false,
+	choices: [
+		{ $type: 'MarkdownInline', content: '**Linux** (`GNU/Linux`)' },
+		{ $type: 'MarkdownInline', content: '**Windows** (`NT Kernel`)' },
+		{ $type: 'MarkdownInline', content: '**Darwin** (*macOS*)' },
+		{ $type: 'MarkdownInline', content: '**OpenBSD** (*Focus sécurité*)' },
+	],
+} satisfies components['schemas']['ClosedQuestionStatementDto'] | undefined
+
+export const Markdown: Story = {
+	args: {
+		isLoading: false,
+		error: undefined,
+		question: questionMarkdown,
+		learnerChoice: 0,
+		correctionChoice: 0,
+		learnerExplanation: learnerExplanationMarkdown,
+		explanatoryFeedback: explanationMarkdown,
+	},
+}
+
 export const RightAnswer: Story = {
 	args: {
 		isLoading: false,
@@ -54,8 +117,8 @@ export const RightAnswer: Story = {
 		question: question,
 		learnerChoice: 0,
 		correctionChoice: 0,
-		learnerExplanation: 'Is it even a question',
-		explanatoryFeedback: 'Because it is. signed the professor.',
+		learnerExplanation: learnerExplanation,
+		explanatoryFeedback: explanation,
 	},
 }
 
@@ -65,13 +128,17 @@ export const WrongAnswer: Story = {
 		error: undefined,
 		question: (() => {
 			const questionCopy = structuredClone(question)
-			questionCopy.choices[3]!.content = 'a'.repeat(500)
+			questionCopy.choices[3]!.content += ' ' + 'a'.repeat(500)
 			return questionCopy
 		})(),
 		learnerChoice: 2,
 		correctionChoice: 0,
-		learnerExplanation: 'Is it even a question ' + 'a'.repeat(1500),
-		explanatoryFeedback: 'Because it is. signed the professor.',
+		learnerExplanation: (() => {
+			const explanationCopy = structuredClone(learnerExplanation)
+			explanationCopy.content += ' ' + 'a'.repeat(1000)
+			return explanationCopy
+		})(),
+		explanatoryFeedback: explanation,
 	},
 }
 
@@ -82,8 +149,8 @@ export const Loading: Story = {
 		question: undefined,
 		learnerChoice: 2,
 		correctionChoice: 0,
-		learnerExplanation: 'Is it even a question',
-		explanatoryFeedback: 'Because it is. signed the professor.',
+		learnerExplanation: learnerExplanation,
+		explanatoryFeedback: explanation,
 	},
 }
 
@@ -97,8 +164,8 @@ export const Error: Story = {
 		question: question,
 		learnerChoice: 2,
 		correctionChoice: 0,
-		learnerExplanation: 'Is it even a question',
-		explanatoryFeedback: 'Because it is. signed the professor.',
+		learnerExplanation: learnerExplanation,
+		explanatoryFeedback: explanation,
 	},
 }
 
@@ -110,6 +177,6 @@ export const WithoutAnswer: Story = {
 		learnerChoice: undefined,
 		correctionChoice: 0,
 		learnerExplanation: undefined,
-		explanatoryFeedback: 'Because it is. signed the professor.',
+		explanatoryFeedback: explanation,
 	},
 }

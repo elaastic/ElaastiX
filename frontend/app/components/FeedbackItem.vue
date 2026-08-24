@@ -6,9 +6,14 @@ interface Props {
 	error: Error | undefined
 	question: components['schemas']['ClosedQuestionStatementDto'] | undefined
 	learnerChoice: number | undefined
-	learnerExplanation: components['schemas']['FormattedContent'] | undefined
+	learnerExplanation:
+		| components['schemas']['MarkdownText']
+		| components['schemas']['PlainText']
+		| undefined
 	correctionChoice: number
-	explanatoryFeedback: components['schemas']['FormattedContent']
+	explanatoryFeedback:
+		| components['schemas']['MarkdownText']
+		| components['schemas']['PlainText']
 }
 
 const { learnerChoice, correctionChoice } = defineProps<Props>()
@@ -34,8 +39,8 @@ function getIcon(index: number) {
 			/>
 		</template>
 
-		<div class="flex flex-col gap-4">
-			<div>{{ question?.statement.content ?? "" }}</div>
+		<div class="flex flex-col gap-4 wrap-anywhere">
+			<ContentRenderer :content="question!.statement" />
 			<div
 				class="gap-4 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]"
 			>
@@ -47,34 +52,35 @@ function getIcon(index: number) {
 					:color="index === correctionChoice ? 'primary' : 'error'"
 					:icon="getIcon(index)"
 				>
-					<span class="wrap-anywhere">{{ choice.content }}</span>
+					<ContentRenderer :content="choice" />
 				</UBadge>
 			</div>
-			<p>{{ $t("feedback.yourExplanation") }} :</p>
-			<UTextarea
-				v-if="learnerExplanation !== undefined"
-				:model-value="learnerExplanation"
-				:readonly="true"
-				:disabled="true"
-				autoresize
-			/>
+			<p class="text-xl">
+				{{ $t("feedback.yourExplanation") }} :
+			</p>
+			<div
+				v-if="
+					learnerExplanation?.notBlank && learnerExplanation.notEmpty
+				"
+				class="p-4 border border-neutral rounded-lg inset-shadow-sm"
+			>
+				<ContentRenderer :content="learnerExplanation" />
+			</div>
 			<p v-else>
 				{{ $t("feedback.noAnswer") }}
 			</p>
-			<p>
+			<p class="text-xl">
 				{{ $t("feedback.why") }}
 				<span class="text-primary">
-					{{ question?.choices[correctionChoice]?.content }}
+					<ContentRenderer
+						:content="question!.choices[correctionChoice]!"
+					/>
 				</span>
 				?
 			</p>
-			<UTextarea
-				:model-value="explanatoryFeedback"
-				color="primary"
-				highlight
-				:readonly="true"
-				autoresize
-			/>
+			<div class="p-4 border border-primary rounded-lg inset-shadow-sm">
+				<ContentRenderer :content="explanatoryFeedback" />
+			</div>
 		</div>
 	</DataPage>
 </template>
