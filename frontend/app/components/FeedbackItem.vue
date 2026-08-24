@@ -6,7 +6,7 @@ interface Props {
 	error: Error | undefined
 	question: components['schemas']['ClosedQuestionStatementDto'] | undefined
 	learnerChoice: number | undefined
-	learnerExplanation: components['schemas']['FormattedContent']
+	learnerExplanation: components['schemas']['FormattedContent'] | undefined
 	correctionChoice: number
 	explanatoryFeedback: components['schemas']['FormattedContent']
 }
@@ -52,11 +52,15 @@ function getIcon(index: number) {
 			</div>
 			<p>{{ $t("feedback.yourExplanation") }} :</p>
 			<UTextarea
+				v-if="learnerExplanation !== undefined"
 				:model-value="learnerExplanation"
 				:readonly="true"
 				:disabled="true"
 				autoresize
 			/>
+			<p v-else>
+				{{ $t("feedback.noAnswer") }}
+			</p>
 			<p>
 				{{ $t("feedback.why") }}
 				<span class="text-primary">

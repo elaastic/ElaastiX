@@ -101,6 +101,7 @@
 	"error": "Erreur",
 	"feedback": {
 		"yourExplanation": "Votre explication",
-		"why": "Pourquoi"
+		"why": "Pourquoi",
+		"noAnswer": "Vous n'avez pas fourni d'explication."
 	}
 }

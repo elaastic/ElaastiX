@@ -101,3 +101,15 @@ export const Error: Story = {
 		explanatoryFeedback: 'Because it is. signed the professor.',
 	},
 }
+
+export const WithoutAnswer: Story = {
+	args: {
+		isLoading: false,
+		error: undefined,
+		question: question,
+		learnerChoice: undefined,
+		correctionChoice: 0,
+		learnerExplanation: undefined,
+		explanatoryFeedback: 'Because it is. signed the professor.',
+	},
+}

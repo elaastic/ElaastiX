@@ -101,6 +101,7 @@
 	"error": "Error",
 	"feedback": {
 		"yourExplanation": "Your explanation",
-		"why": "Why"
+		"why": "Why",
+		"noAnswer": "You did not provide an explanation."
 	}
 }
