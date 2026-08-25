@@ -38,37 +38,50 @@ const emits = defineEmits<Emits>()
 </script>
 
 <template>
-	<div class="flex justify-between items-center gap-1">
-		<ContentRenderer
-			v-if="question !== undefined"
-			:content="question?.statement"
-		/>
-		<div v-else />
+	<div class="flex flex-col gap-4">
+		<div class="flex justify-between items-center gap-1">
+			<ContentRenderer
+				v-if="question !== undefined"
+				:content="question?.statement"
+			/>
+			<div v-else />
 
-		<!-- TODO: We need to update the server so that the state is never undefined -->
-		<UButton
-			v-if="state === 'PENDING' || state === undefined"
-			icon="i-lucide-play"
-			@click="emits('startSequence')"
-		>
-			{{ state }}
-		</UButton>
-		<UButton
-			v-if="state === 'RUNNING'"
-			icon="i-lucide-pause"
-			@click="emits('pauseSequence')"
-		>
-			{{ state }}
-		</UButton>
-		<UButton
-			v-if="state === 'PAUSED'"
-			icon="i-lucide-play"
-			@click="emits('resumeSequence')"
-		>
-			{{ state }}
-		</UButton>
-		<UButton v-if="state === 'END'">
-			{{ state }}
-		</UButton>
+			<!-- TODO: We need to update the server so that the state is never undefined -->
+			<UButton
+				v-if="state === 'PENDING' || state === undefined"
+				icon="i-lucide-play"
+				@click="emits('startSequence')"
+			>
+				{{ state }}
+			</UButton>
+			<UButton
+				v-if="state === 'RUNNING'"
+				icon="i-lucide-pause"
+				@click="emits('pauseSequence')"
+			>
+				{{ state }}
+			</UButton>
+			<UButton
+				v-if="state === 'PAUSED'"
+				icon="i-lucide-play"
+				@click="emits('resumeSequence')"
+			>
+				{{ state }}
+			</UButton>
+			<UButton v-if="state === 'END'">
+				{{ state }}
+			</UButton>
+		</div>
+		<div class="wrap-anywhere gap-4 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+			<UBadge
+				v-for="choice in question?.choices"
+				:key="choice.content"
+				variant="outline"
+				size="lg"
+				color="neutral"
+			>
+				<ContentRenderer :content="choice" />
+			</UBadge>
+		</div>
 	</div>
 </template>
