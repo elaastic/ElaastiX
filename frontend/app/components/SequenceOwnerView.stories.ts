@@ -20,7 +20,11 @@
 import { State } from '~/lib/ScenarioTransitionMessage'
 import SequenceOwnerView from './SequenceOwnerView.vue'
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
-import { questionMarkdown, singleChoiceQuestion } from '~/lib/storiesProvider'
+import {
+	openQuestionMarkdown,
+	questionMarkdown,
+	singleChoiceQuestion,
+} from '~/lib/storiesProvider'
 
 const meta = {
 	title: 'Sequence Owner View',
@@ -36,6 +40,13 @@ export const PendingMarkdown: Story = {
 	args: {
 		state: State.PENDING,
 		question: questionMarkdown,
+	},
+}
+
+export const PendingOpenQuestion: Story = {
+	args: {
+		state: State.PENDING,
+		question: openQuestionMarkdown,
 	},
 }
 

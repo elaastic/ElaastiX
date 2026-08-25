@@ -72,9 +72,12 @@ const emits = defineEmits<Emits>()
 				{{ state }}
 			</UButton>
 		</div>
-		<div class="wrap-anywhere gap-4 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]">
+		<div
+			v-if="question?.$type === 'ClosedQuestion'"
+			class="wrap-anywhere gap-4 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]"
+		>
 			<UBadge
-				v-for="choice in question?.choices"
+				v-for="choice in question.choices"
 				:key="choice.content"
 				variant="outline"
 				size="lg"

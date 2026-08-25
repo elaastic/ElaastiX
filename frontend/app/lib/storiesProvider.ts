@@ -8,6 +8,22 @@ export const error = {
 	message: 'this is an error message',
 }
 
+export const openQuestionMarkdown = {
+	id: '00000000-0000-0000-0000-000000000000',
+	$type: 'OpenQuestion',
+	statement: {
+		$type: 'Markdown',
+		content: `### Analyse et conception système
+
+Expliquez la différence fondamentale entre la gestion de la mémoire sous **Linux** (modèle paginé avec \`mmap\`) et sous un système temps-réel comme **FreeRTOS**.
+
+Dans votre réponse, vous devez aborder :
+1. La notion d'**escape d'adressage virtuel** vs escape plat (*flat memory*)
+2. Le coût et le rôle des *page faults*
+3. L'impact sure le **déterminisme temporel** (latence maximale)`,
+	},
+} satisfies components['schemas']['OpenQuestionStatementDto']
+
 export const singleChoiceQuestion = {
 	id: '0000000000000000000000000',
 	$type: 'ClosedQuestion',
