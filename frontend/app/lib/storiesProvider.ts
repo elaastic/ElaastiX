@@ -101,9 +101,29 @@ Quel est le **meilleur** système d'exploitation polyvalent ?`,
 	},
 	multiple: false,
 	choices: [
-		{ $type: 'MarkdownInline', content: '**Linux** (`GNU/Linux`)' },
-		{ $type: 'MarkdownInline', content: '**Windows** (`NT Kernel`)' },
-		{ $type: 'MarkdownInline', content: '**Darwin** (*macOS*)' },
-		{ $type: 'MarkdownInline', content: '**OpenBSD** (*Focus sécurité*)' },
+		{
+			$type: 'MarkdownInline',
+			notBlank: true,
+			notEmpty: true,
+			content: '**Linux** (`GNU/Linux`)',
+		},
+		{
+			$type: 'MarkdownInline',
+			notBlank: true,
+			notEmpty: true,
+			content: '**Windows** (`NT Kernel`)',
+		},
+		{
+			$type: 'MarkdownInline',
+			notBlank: true,
+			notEmpty: true,
+			content: '**Darwin** (*macOS*)',
+		},
+		{
+			$type: 'MarkdownInline',
+			notBlank: true,
+			notEmpty: true,
+			content: '**OpenBSD** (*Focus sécurité*)',
+		},
 	],
 } satisfies components['schemas']['ClosedQuestionStatementDto']

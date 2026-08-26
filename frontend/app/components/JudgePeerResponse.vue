@@ -2,36 +2,48 @@
 import * as v from 'valibot'
 import type { components } from '#open-fetch-schemas/api'
 import Likert, { LikertScaleType } from './form/Likert.vue'
+import { ChoiceHasText } from '~/lib/utils'
+import SubmitButton from './SubmitButton.vue'
 
 interface Props {
 	isLoading: boolean
 	error: Error | undefined
-	question: components['schemas']['ClosedQuestionStatementDto']
+	question: components['schemas']['ClosedQuestionStatementDto'] | undefined
 	peerChoice: number
 	peerExplanation:
 		| components['schemas']['MarkdownText']
 		| components['schemas']['PlainText']
+		| undefined
+	submitting?: boolean
+	errorSubmitting?: string
 }
 
 const schema = v.object({
-	confidence: v.number(),
+	judgement: v.optional(v.number()),
 })
 
-type Output = v.InferOutput<typeof schema>
+type Judgement = v.InferOutput<typeof schema>
 
 interface Emits {
-	submit: [Output]
+	submit: [Judgement]
 }
 
 const state = reactive({
-	confidence: 2,
+	judgement: undefined,
 })
 
 defineProps<Props>()
 const emit = defineEmits<Emits>()
 
+const confirmRequest = ref(false)
+watch(state, () => (confirmRequest.value = false))
+
 function onSubmit() {
-	emit('submit', state)
+	if (!confirmRequest.value && !state.judgement) {
+		confirmRequest.value = true
+	} else {
+		emit('submit', state)
+	}
 }
 </script>
 
@@ -40,7 +52,6 @@ function onSubmit() {
 		:is-loading="isLoading"
 		:error="error"
 		:is-empty="false"
-		is-empty-message=""
 	>
 		<template #loading>
 			<USkeleton
@@ -49,6 +60,11 @@ function onSubmit() {
 				class="w-full h-1/8"
 			/>
 		</template>
+
+		<UError
+			v-if="question === undefined"
+			:error="{ message: 'oops', name: 'unexpected' }"
+		/>
 
 		<div class="flex flex-col gap-4 wrap-anywhere">
 			<ContentRenderer :content="question!.statement" />
@@ -66,7 +82,10 @@ function onSubmit() {
 					<ContentRenderer :content="choice" />
 				</UBadge>
 			</div>
-			<p class="text-xl">
+			<p
+				v-if="ChoiceHasText(question!.choices[peerChoice])"
+				class="text-xl"
+			>
 				{{ $t("feedback.why") }}
 				<span class="text-secondary">
 					<ContentRenderer
@@ -75,8 +94,11 @@ function onSubmit() {
 				</span>
 				?
 			</p>
-			<div class="p-4 border border-secondary rounded-lg inset-shadow-sm">
-				<ContentRenderer :content="peerExplanation" />
+			<div
+				v-if="ChoiceHasText(peerExplanation)"
+				class="p-4 border border-neutral rounded-lg inset-shadow-sm"
+			>
+				<ContentRenderer :content="peerExplanation!" />
 			</div>
 			<UForm
 				:schema="schema"
@@ -90,23 +112,18 @@ function onSubmit() {
 					name="confidence"
 				>
 					<Likert
-						v-model="state.confidence"
+						v-model="state.judgement"
 						:type="LikertScaleType.AGREEMENT"
 						:points="5"
 					/>
 				</UFormField>
-				<div class="flex justify-end items-right">
-					<UButton
-						variant="link"
-						size="lg"
-						:ui="{ trailingIcon: 'size-3' }"
-						class="inline-flex items-center p-0 cursor-pointer gap-1"
-						trailing-icon="i-lucide-arrow-right"
-						@click="onSubmit"
-					>
-						{{ $t("activity.responses.submit") }}
-					</UButton>
-				</div>
+				<SubmitButton
+					:confirm-request="confirmRequest"
+					:error="errorSubmitting"
+					:submitting="submitting"
+					:value-presence="state.judgement!!"
+					@on-submit="onSubmit"
+				/>
 			</UForm>
 		</div>
 	</DataPage>

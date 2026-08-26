@@ -45,7 +45,11 @@ interface Props {
 	error?: string
 }
 
-type Output = { answer: number | number[] | null, selfExplanation: string | null, confidenceDegree: number | null }
+type Output = {
+	answer: number | number[] | null
+	selfExplanation: string | null
+	confidenceDegree: number | null
+}
 
 interface Emits {
 	/** The response submitted by the learner. */
@@ -58,23 +62,40 @@ import * as v from 'valibot'
 import { LikertScaleType } from '~/components/form/Likert.vue'
 import { URadioGroup, UCheckboxGroup } from '#components'
 import ContentRenderer from './ContentRenderer.vue'
+import SubmitButton from './SubmitButton.vue'
 
-const { question, requestSelfExplanation = true, confidenceDegreeOptions = 4 } = defineProps<Props>()
+const {
+	question,
+	requestSelfExplanation = true,
+	confidenceDegreeOptions = 4,
+} = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 const schema = computed(() => {
-	const answerItem = v.pipe(v.number(), v.integer(), v.minValue(0), v.maxValue(question.choices.length - 1))
+	const answerItem = v.pipe(
+		v.number(),
+		v.integer(),
+		v.minValue(0),
+		v.maxValue(question.choices.length - 1),
+	)
 
 	return v.object({
-		answer: v.nullable(question.multiple ? v.array(answerItem) : answerItem),
-		selfExplanation:
-			requestSelfExplanation
-				? v.nullable(v.pipe(v.string(), v.maxBytes(4000)))
-				: v.null(),
-		confidenceDegree:
-			confidenceDegreeOptions
-				? v.nullable(v.pipe(v.number(), v.minValue(0), v.maxValue(confidenceDegreeOptions - 1)), 0) // If null then assume 0
-				: v.null(),
+		answer: v.nullable(
+			question.multiple ? v.array(answerItem) : answerItem,
+		),
+		selfExplanation: requestSelfExplanation
+			? v.nullable(v.pipe(v.string(), v.maxBytes(4000)))
+			: v.null(),
+		confidenceDegree: confidenceDegreeOptions
+			? v.nullable(
+					v.pipe(
+						v.number(),
+						v.minValue(0),
+						v.maxValue(confidenceDegreeOptions - 1),
+					),
+					0,
+				) // If null then assume 0
+			: v.null(),
 	})
 })
 
@@ -84,17 +105,28 @@ const response = reactive<Output>({
 	confidenceDegree: null,
 })
 
-const options = computed(() => question.choices.map((c, i) => ({ label: c, value: i })))
+const options = computed(() =>
+	question.choices.map((c, i) => ({ label: c, value: i })),
+)
 const state = computed(() => ({
-	answer: (Array.isArray(response.answer) && response.answer.length > 0) || (!Array.isArray(response.answer) && response.answer !== null),
-	selfExplanation: !requestSelfExplanation || response.selfExplanation !== null,
-	confidenceDegree: !confidenceDegreeOptions || response.confidenceDegree !== null,
+	answer:
+		(Array.isArray(response.answer) && response.answer.length > 0)
+		|| (!Array.isArray(response.answer) && response.answer !== null),
+	selfExplanation:
+		!requestSelfExplanation || response.selfExplanation !== null,
+	confidenceDegree:
+		!confidenceDegreeOptions || response.confidenceDegree !== null,
 }))
 
 const confirmRequest = ref(false)
 watch(response, () => (confirmRequest.value = false))
 function handleSubmit() {
-	if (!confirmRequest.value && (!state.value.answer || !state.value.selfExplanation || !state.value.confidenceDegree)) {
+	if (
+		!confirmRequest.value
+		&& (!state.value.answer
+			|| !state.value.selfExplanation
+			|| !state.value.confidenceDegree)
+	) {
 		confirmRequest.value = true
 	} else {
 		emit('submit', response)
@@ -121,7 +153,8 @@ function handleSubmit() {
 				orientation="horizontal"
 				variant="card"
 				:ui="{
-					fieldset: 'grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]',
+					fieldset:
+						'grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]',
 				}"
 			>
 				<template #label="{ item }">
@@ -165,50 +198,12 @@ function handleSubmit() {
 			:const="null"
 		/>
 
-		<div class="flex justify-end items-right">
-			<div class="flex flex-col items-end gap-1">
-				<div
-					v-if="error"
-					class="text-error"
-				>
-					{{ error }}
-				</div>
-				<div class="flex justify-end">
-					<UButton
-						:loading="submitting"
-						class="cursor-pointer disabled:cursor-not-allowed disabled:opacity-65"
-						:disabled="confirmRequest || submitting"
-						@click="handleSubmit"
-					>
-						{{ $t(!state.answer ? 'activity.responses.skip' : 'activity.responses.submit') }}
-					</UButton>
-				</div>
-				<div
-					v-if="confirmRequest && !submitting"
-					class="text-xs text-end"
-				>
-					<span>
-						{{
-							$t(
-								!state.answer
-									? 'activity.responses.confirm-skip'
-									: !state.answer
-										? 'activity.responses.confirm-no-explanation'
-										: 'activity.responses.confirm-no-confidence',
-							) + ' '
-						}}
-					</span>
-					<UButton
-						variant="link"
-						:ui="{ trailingIcon: 'size-3' }"
-						class="inline-flex items-center p-0 text-xs cursor-pointer gap-1"
-						trailing-icon="i-lucide-arrow-right"
-						@click="handleSubmit"
-					>
-						{{ $t(!state.answer ? 'activity.responses.skip' : 'activity.responses.submit') }}
-					</UButton>
-				</div>
-			</div>
-		</div>
+		<SubmitButton
+			:confirm-request="confirmRequest"
+			:submitting="submitting"
+			:value-presence="state.answer"
+			:error="error"
+			@on-submit="handleSubmit"
+		/>
 	</UForm>
 </template>

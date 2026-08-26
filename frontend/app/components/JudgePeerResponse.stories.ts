@@ -40,7 +40,7 @@ export const Error: Story = {
 		isLoading: false,
 		error: error,
 		peerChoice: 2,
-		question: questionMarkdown,
-		peerExplanation: learnerExplanation,
+		question: undefined,
+		peerExplanation: undefined,
 	},
 }
