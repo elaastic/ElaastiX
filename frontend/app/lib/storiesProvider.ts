@@ -1,5 +1,8 @@
 import type { components } from '#open-fetch-schemas/api'
 
+export const lorem1000
+	= 'Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus duis convallis tempus leo eu aenean sed diam urna tempor pulvinar vivamus fringilla lacus nec metus bibendum egestas iaculis massa nisl malesuada lacinia integer nunc posuere ut hendrerit semper vel class aptent taciti sociosqu ad litora torquent per conubia nostra inceptos himenaeos orci various natoque penatibus et magnis dis parturient montes nascetur ridiculous mus donec rhoncus eros lobortis nulla molestie mattis scelerisque maximus eget fermentum odio phasellus non purus est efficitur laoreet mauris pharetra vestibulum fusce dictum risus.'
+
 export const error = {
 	name: 'this is an error name',
 	message: 'this is an error message',

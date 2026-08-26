@@ -16,11 +16,30 @@ interface Props {
 		| components['schemas']['PlainText']
 }
 
-const { learnerChoice, correctionChoice } = defineProps<Props>()
+const { learnerChoice, correctionChoice, question } = defineProps<Props>()
 
 function getIcon(index: number) {
 	if (index !== learnerChoice) return ''
 	return index === correctionChoice ? 'i-lucide-check' : 'i-lucide-x'
+}
+
+const feedbackChoices = computed(() =>
+	question?.choices.map((choice, index) => ({
+		value: choice,
+		color: (index === correctionChoice ? 'primary' : 'error') as
+			'primary' | 'error',
+		icon: getIcon(index),
+	})),
+)
+
+function hasText(
+	content:
+		| components['schemas']['MarkdownText']
+		| components['schemas']['PlainText']
+		| undefined,
+) {
+	if (content === undefined) return false
+	return content.notBlank && content.notEmpty
 }
 </script>
 
@@ -29,7 +48,6 @@ function getIcon(index: number) {
 		:is-loading="isLoading"
 		:error="error"
 		:is-empty="false"
-		:is-empty-message="''"
 	>
 		<template #loading>
 			<USkeleton
@@ -45,26 +63,24 @@ function getIcon(index: number) {
 				class="gap-4 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]"
 			>
 				<UBadge
-					v-for="(choice, index) in question?.choices"
-					:key="choice.content"
+					v-for="choice in feedbackChoices"
+					:key="choice.value.content"
 					variant="outline"
 					size="lg"
-					:color="index === correctionChoice ? 'primary' : 'error'"
-					:icon="getIcon(index)"
+					:color="choice.color"
+					:icon="choice.icon"
 				>
-					<ContentRenderer :content="choice" />
+					<ContentRenderer :content="choice.value" />
 				</UBadge>
 			</div>
 			<p class="text-xl">
 				{{ $t("feedback.yourExplanation") }} :
 			</p>
 			<div
-				v-if="
-					learnerExplanation?.notBlank && learnerExplanation.notEmpty
-				"
+				v-if="hasText(learnerExplanation)"
 				class="p-4 border border-neutral rounded-lg inset-shadow-sm"
 			>
-				<ContentRenderer :content="learnerExplanation" />
+				<ContentRenderer :content="learnerExplanation!" />
 			</div>
 			<p v-else>
 				{{ $t("feedback.noAnswer") }}

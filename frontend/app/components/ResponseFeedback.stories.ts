@@ -19,7 +19,7 @@
 
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
 
-import FeedbackItem from './FeedbackItem.vue'
+import ResponseFeedback from './ResponseFeedback.vue'
 import {
 	error,
 	explanation,
@@ -28,13 +28,14 @@ import {
 	learnerExplanationMarkdown,
 	singleChoiceQuestion,
 	questionMarkdown,
+	lorem1000,
 } from '~/lib/storiesProvider'
 
 const meta = {
-	title: 'FeedbackItem',
-	component: FeedbackItem,
+	title: 'ResponseFeedback',
+	component: ResponseFeedback,
 	tags: ['autodocs'],
-} satisfies Meta<typeof FeedbackItem>
+} satisfies Meta<typeof ResponseFeedback>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -67,16 +68,28 @@ export const WrongAnswer: Story = {
 	args: {
 		isLoading: false,
 		error: undefined,
+		question: singleChoiceQuestion,
+		learnerChoice: 2,
+		correctionChoice: 0,
+		learnerExplanation: learnerExplanation,
+		explanatoryFeedback: explanation,
+	},
+}
+
+export const LongContent: Story = {
+	args: {
+		isLoading: false,
+		error: undefined,
 		question: (() => {
 			const questionCopy = structuredClone(singleChoiceQuestion)
-			questionCopy.choices[3]!.content += ' ' + 'a'.repeat(500)
+			questionCopy.choices[3]!.content = lorem1000
 			return questionCopy
 		})(),
 		learnerChoice: 2,
 		correctionChoice: 0,
 		learnerExplanation: (() => {
 			const explanationCopy = structuredClone(learnerExplanation)
-			explanationCopy.content += ' ' + 'a'.repeat(1000)
+			explanationCopy.content = lorem1000
 			return explanationCopy
 		})(),
 		explanatoryFeedback: explanation,
