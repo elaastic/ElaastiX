@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import type {Meta, StoryObj} from '@nuxtjs/storybook'
+import type { Meta, StoryObj } from '@nuxtjs/storybook'
 
 import ResponseFeedback from './ResponseFeedback.vue'
 import {
@@ -28,7 +28,7 @@ import {
 	learnerExplanationMarkdown,
 	singleChoiceQuestion,
 	questionMarkdown,
-	lorem1000
+	lorem1000,
 } from '~/lib/storiesProvider'
 
 const meta = {
