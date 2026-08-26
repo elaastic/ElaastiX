@@ -14,7 +14,7 @@ defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 function submit() {
-	emit('onSubmit', null)
+	emit('onSubmit', () => {})
 }
 </script>
 
