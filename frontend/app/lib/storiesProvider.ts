@@ -1,5 +1,52 @@
 import type { components } from '#open-fetch-schemas/api'
 
+function choiceFactory(
+	content: string,
+	$type: 'PlainText' | 'MarkdownInline',
+): components['schemas']['MarkdownText'] | components['schemas']['PlainText'] {
+	return {
+		$type,
+		content,
+		notEmpty: true,
+		notBlank: true,
+	}
+}
+
+function statementFactory(
+	content: string,
+	$type: 'PlainText' | 'Markdown' | 'MarkdownInline',
+):
+	| components['schemas']['MarkdownContent']
+	| components['schemas']['MarkdownText']
+	| components['schemas']['PlainText'] {
+	return {
+		$type,
+		content,
+		notEmpty: true,
+		notBlank: true,
+	}
+}
+
+function plainTextFactory(content: string): components['schemas']['PlainText'] {
+	return {
+		content,
+		notBlank: true,
+		notEmpty: true,
+		$type: 'PlainText',
+	}
+}
+
+function markdownInlineFactory(
+	content: string,
+): components['schemas']['MarkdownText'] {
+	return {
+		content,
+		notBlank: true,
+		notEmpty: true,
+		$type: 'MarkdownInline',
+	}
+}
+
 export const lorem1000
 	= 'Lorem ipsum dolor sit amet consectetur adipiscing elit quisque faucibus ex sapien vitae pellentesque sem placerat in id cursus mi pretium tellus duis convallis tempus leo eu aenean sed diam urna tempor pulvinar vivamus fringilla lacus nec metus bibendum egestas iaculis massa nisl malesuada lacinia integer nunc posuere ut hendrerit semper vel class aptent taciti sociosqu ad litora torquent per conubia nostra inceptos himenaeos orci various natoque penatibus et magnis dis parturient montes nascetur ridiculous mus donec rhoncus eros lobortis nulla molestie mattis scelerisque maximus eget fermentum odio phasellus non purus est efficitur laoreet mauris pharetra vestibulum fusce dictum risus.'
 
@@ -11,86 +58,65 @@ export const error = {
 export const singleChoiceQuestion = {
 	id: '0000000000000000000000000',
 	$type: 'ClosedQuestion',
-	statement: {
-		$type: 'Markdown',
-		content: 'What is the best multipurpose operating system?',
-	},
+	statement: statementFactory(
+		'What is the best multipurpose operating system?',
+		'Markdown',
+	),
 	multiple: false,
 	choices: [
-		{ $type: 'PlainText', content: 'Linux' },
-		{ $type: 'PlainText', content: 'Windows' },
-		{ $type: 'PlainText', content: 'Darwin (macOS)' },
-		{ $type: 'PlainText', content: 'OpenBSD' },
+		choiceFactory('Linux', 'PlainText'),
+		choiceFactory('Windows', 'PlainText'),
+		choiceFactory('Darwin (macOS)', 'PlainText'),
+		choiceFactory('OpenBSD', 'PlainText'),
 	],
 } satisfies components['schemas']['ClosedQuestionStatementDto']
 
 export const multipleChoiceQuestionMarkdown = {
 	id: '0000000000000000000000000',
 	$type: 'ClosedQuestion',
-	statement: {
-		$type: 'Markdown',
-		content:
-			'**TRUE OR FALSE**. Software written in Haskell is guaranteed to have no side-effects.',
-	},
+	statement: statementFactory(
+		'**TRUE OR FALSE**. Software written in Haskell is guaranteed to have no side-effects.',
+		'Markdown',
+	),
 	multiple: true,
 	choices: [
-		{
-			$type: 'MarkdownInline',
-			content:
-				'**TRUE**. Haskell is a functional programming language, and therefore pure',
-		},
-		{
-			$type: 'MarkdownInline',
-			content:
-				'**FALSE**. It is impossible to write side-effect-free code',
-		},
-		{
-			$type: 'MarkdownInline',
-			content:
-				'**TRUE**. No one run Haskell software, and therefore no side-effect ever occurs',
-		},
-		{
-			$type: 'MarkdownInline',
-			content:
-				'**FALSE**. Haskell wraps "impure" logic using monadic structures',
-		},
+		choiceFactory(
+			'**TRUE**. Haskell is a functional programming language, and therefore pure',
+			'MarkdownInline',
+		),
+		choiceFactory(
+			'**FALSE**. It is impossible to write side-effect-free code',
+			'MarkdownInline',
+		),
+		choiceFactory(
+			'**TRUE**. No one run Haskell software, and therefore no side-effect ever occurs',
+			'MarkdownInline',
+		),
+		choiceFactory(
+			'**FALSE**. Haskell wraps "impure" logic using monadic structures',
+			'MarkdownInline',
+		),
 	],
 } satisfies components['schemas']['ClosedQuestionStatementDto']
 
-export const learnerExplanation = {
-	content: 'Is it even a question',
-	notBlank: true,
-	notEmpty: true,
-	$type: 'PlainText',
-} satisfies components['schemas']['PlainText']
+export const learnerExplanation = plainTextFactory('Is it even a question')
 
-export const explanation = {
-	content: 'Because it is. signed the professor.',
-	notBlank: true,
-	notEmpty: true,
-	$type: 'PlainText',
-} satisfies components['schemas']['PlainText']
+export const explanation = plainTextFactory(
+	'Because it is. signed the professor.',
+)
 
-export const learnerExplanationMarkdown = {
-	content: '*Its obvious.*',
-	notBlank: true,
-	notEmpty: true,
-	$type: 'MarkdownInline',
-} satisfies components['schemas']['MarkdownText']
+export const learnerExplanationMarkdown
+	= markdownInlineFactory('*Its obvious.*')
 
-export const explanationMarkdown = {
-	content: 'See chapter 3 : `man kernel`.',
-	notBlank: true,
-	notEmpty: true,
-	$type: 'MarkdownInline',
-} satisfies components['schemas']['MarkdownText']
+export const explanationMarkdown = markdownInlineFactory(
+	'See chapter 3 : `man kernel`.',
+)
 
 export const questionMarkdown = {
 	id: '0000000000000000000000000',
 	$type: 'ClosedQuestion',
-	statement: {
-		$type: 'Markdown',
-		content: `### Choix d'un système d'exploitation
+	statement: statementFactory(
+		`### Choix d'un système d'exploitation
 
 Considérez les critères suivants :
 - **Stabilité** du noyau (*kernel*)
@@ -98,12 +124,13 @@ Considérez les critères suivants :
 - Flexibilité et gestion des droits (POSIX)
 
 Quel est le **meilleur** système d'exploitation polyvalent ?`,
-	},
+		'Markdown',
+	),
 	multiple: false,
 	choices: [
-		{ $type: 'MarkdownInline', content: '**Linux** (`GNU/Linux`)' },
-		{ $type: 'MarkdownInline', content: '**Windows** (`NT Kernel`)' },
-		{ $type: 'MarkdownInline', content: '**Darwin** (*macOS*)' },
-		{ $type: 'MarkdownInline', content: '**OpenBSD** (*Focus sécurité*)' },
+		choiceFactory('**Linux** (`GNU/Linux`)', 'MarkdownInline'),
+		choiceFactory('**Windows** (`NT Kernel`)', 'MarkdownInline'),
+		choiceFactory('**Darwin** (*macOS*)', 'MarkdownInline'),
+		choiceFactory('**OpenBSD** (*Focus sécurité*)', 'MarkdownInline'),
 	],
 } satisfies components['schemas']['ClosedQuestionStatementDto']
