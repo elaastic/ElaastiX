@@ -56,7 +56,7 @@
 	},
 	"login": {
 		"login": "Connexion",
-		"logout" : "Déconnexion",
+		"logout": "Déconnexion",
 		"user": "Utilisateur",
 		"description": "Choisir l'utilisateur avec lequel vous voulez vous authentifier",
 		"guest": "Invité"
@@ -98,5 +98,11 @@
 		"remaining": "Il reste",
 		"owner": "Propriétaire"
 	},
-	"error" : "Erreur"
+	"error": "Erreur",
+	"feedback": {
+		"yourChoice": "Votre réponse",
+		"yourExplanation": "Votre explication",
+		"expected": "Réponse attendue",
+		"noAnswer": "Vous n'avez pas fourni d'explication."
+	}
 }

@@ -98,5 +98,11 @@
 		"remaining": "Remaining",
 		"owner": "Owner"
 	},
-	"error": "Error"
+	"error": "Error",
+	"feedback": {
+		"yourChoice": "Your answer",
+		"yourExplanation": "Your explanation",
+		"expected": "Expected answer",
+		"noAnswer": "You did not provide an explanation."
+	}
 }

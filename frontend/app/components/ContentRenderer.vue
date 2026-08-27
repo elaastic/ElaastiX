@@ -24,9 +24,9 @@ const never = (a: never): string => (a as { $type: string }).$type ?? JSON.strin
 		:markdown="content.content"
 		inline
 	/>
-	<div v-else-if="content.$type === 'PlainText'">
+	<span v-else-if="content.$type === 'PlainText'">
 		{{ content.content }}
-	</div>
+	</span>
 	<div
 		v-else
 		class="border border-error"
