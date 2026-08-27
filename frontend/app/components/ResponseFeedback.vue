@@ -98,13 +98,7 @@ function hasText(
 				{{ $t("feedback.noAnswer") }}
 			</p>
 			<p class="text-xl">
-				{{ $t("feedback.why") }}
-				<span class="text-primary">
-					<ContentRenderer
-						:content="question!.choices[correctionChoice]!"
-					/>
-				</span>
-				?
+				{{ $t("feedback.expected") }}
 			</p>
 			<div class="p-4 border border-primary rounded-lg inset-shadow-sm">
 				<ContentRenderer :content="explanatoryFeedback" />

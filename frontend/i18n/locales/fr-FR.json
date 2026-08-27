@@ -101,7 +101,7 @@
 	"error": "Erreur",
 	"feedback": {
 		"yourExplanation": "Votre explication",
-		"why": "Pourquoi",
+		"expected": "Réponse attendue",
 		"noAnswer": "Vous n'avez pas fourni d'explication."
 	}
 }
