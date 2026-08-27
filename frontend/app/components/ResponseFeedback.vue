@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { components } from '#open-fetch-schemas/api'
+import { ChoiceHasText } from '~/lib/utils'
 
 interface Props {
 	isLoading: boolean
@@ -31,16 +32,6 @@ const feedbackChoices = computed(() =>
 		icon: getIcon(index),
 	})),
 )
-
-function hasText(
-	content:
-		| components['schemas']['MarkdownText']
-		| components['schemas']['PlainText']
-		| undefined,
-) {
-	if (content === undefined) return false
-	return content.notBlank && content.notEmpty
-}
 </script>
 
 <template>
@@ -89,7 +80,7 @@ function hasText(
 				{{ $t("feedback.yourExplanation") }} :
 			</p>
 			<div
-				v-if="hasText(learnerExplanation)"
+				v-if="ChoiceHasText(learnerExplanation)"
 				class="p-4 border border-neutral rounded-lg inset-shadow-sm"
 			>
 				<ContentRenderer :content="learnerExplanation!" />

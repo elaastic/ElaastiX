@@ -14,6 +14,9 @@
 			"confirm-skip": "Vous ne pourrez pas répondre après avoir passé.",
 			"confirm-no-explanation": "Êtes-vous sûr∙e de ne pas vouloir fournir d’explication\u00a0?",
 			"confirm-no-confidence": "Êtes-vous sûr∙e de ne pas vouloir renseigner le degré de confiance\u00a0?"
+		},
+		"peer" : {
+		  "agreement-label": "Etes vous d'accord avec cette réponse ?"
 		}
 	},
 	"likert": {
