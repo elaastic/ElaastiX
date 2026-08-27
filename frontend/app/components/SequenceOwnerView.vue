@@ -39,7 +39,11 @@ const emits = defineEmits<Emits>()
 
 <template>
 	<div class="flex justify-between items-center gap-1">
-		<div>{{ question?.statement.content ?? "" }}</div>
+		<ContentRenderer
+			v-if="question !== undefined"
+			:content="question?.statement"
+		/>
+		<div v-else />
 
 		<!-- TODO: We need to update the server so that the state is never undefined -->
 		<UButton
