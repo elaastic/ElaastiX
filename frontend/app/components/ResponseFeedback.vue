@@ -50,11 +50,23 @@ function hasText(
 		:is-empty="false"
 	>
 		<template #loading>
-			<USkeleton
-				v-for="i in Array.from({ length: 4 }, (_, i) => i + 1)"
-				:key="i"
-				class="w-full h-1/8"
-			/>
+			<div class="w-full h-full flex flex-col gap-4">
+				<USkeleton class="w-full h-40" />
+				<div
+					class="gap-4 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))]"
+				>
+					<USkeleton
+						v-for="i in Array.from({ length: 4 }, (_, i) => i + 1)"
+						:key="i"
+						class="w-full h-20"
+					/>
+				</div>
+				<USkeleton
+					v-for="i in Array.from({ length: 2 }, (_, i) => i + 1)"
+					:key="i"
+					class="w-full h-25"
+				/>
+			</div>
 		</template>
 
 		<div class="flex flex-col gap-4 wrap-anywhere">
