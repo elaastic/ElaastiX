@@ -100,6 +100,7 @@
 	},
 	"error": "Erreur",
 	"feedback": {
+		"yourChoice": "Votre réponse",
 		"yourExplanation": "Votre explication",
 		"expected": "Réponse attendue",
 		"noAnswer": "Vous n'avez pas fourni d'explication."

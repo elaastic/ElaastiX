@@ -16,19 +16,14 @@ interface Props {
 		| components['schemas']['PlainText']
 }
 
-const { learnerChoice, correctionChoice, question } = defineProps<Props>()
-
-function getIcon(index: number) {
-	if (index !== learnerChoice) return ''
-	return index === correctionChoice ? 'i-lucide-check' : 'i-lucide-x'
-}
+const { correctionChoice, question } = defineProps<Props>()
 
 const feedbackChoices = computed(() =>
 	question?.choices.map((choice, index) => ({
 		value: choice,
 		color: (index === correctionChoice ? 'primary' : 'error') as
 			'primary' | 'error',
-		icon: getIcon(index),
+		icon: index === correctionChoice ? 'i-lucide-check' : 'i-lucide-x',
 	})),
 )
 
@@ -85,6 +80,22 @@ function hasText(
 					<ContentRenderer :content="choice.value" />
 				</UBadge>
 			</div>
+			<p class="text-xl">
+				{{ $t("feedback.yourChoice") }} :
+			</p>
+			<UBadge
+				:key="feedbackChoices![learnerChoice!]!.value.content"
+				variant="outline"
+				size="lg"
+				:color="feedbackChoices![learnerChoice!]!.color"
+				:icon="feedbackChoices![learnerChoice!]!.icon"
+				class=""
+			>
+				<ContentRenderer
+					:content="feedbackChoices![learnerChoice!]!.value"
+				/>
+			</UBadge>
+
 			<p class="text-xl">
 				{{ $t("feedback.yourExplanation") }} :
 			</p>
