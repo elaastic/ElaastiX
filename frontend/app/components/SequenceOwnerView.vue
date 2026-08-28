@@ -47,24 +47,24 @@ const emits = defineEmits<Emits>()
 			icon="i-lucide-play"
 			@click="emits('startSequence')"
 		>
-			{{ state }}
+			START
 		</UButton>
 		<UButton
 			v-if="state === 'RUNNING'"
 			icon="i-lucide-pause"
 			@click="emits('pauseSequence')"
 		>
-			{{ state }}
+			PAUSE
 		</UButton>
 		<UButton
 			v-if="state === 'PAUSED'"
 			icon="i-lucide-play"
 			@click="emits('resumeSequence')"
 		>
-			{{ state }}
+			RESUME
 		</UButton>
 		<UButton v-if="state === 'END'">
-			{{ state }}
+			END
 		</UButton>
 	</div>
 </template>
