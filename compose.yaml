@@ -2,8 +2,8 @@ services:
   postgres:
     image: docker.io/postgres:18-alpine
     environment:
-      POSTGRES_USER: elaastix
-      POSTGRES_PASSWORD: elaastix
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DATABASE: elaastix
     healthcheck:
       # noinspection SpellCheckingInspection
