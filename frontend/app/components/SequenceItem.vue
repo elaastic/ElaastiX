@@ -18,6 +18,8 @@
   -->
 
 <script lang="ts" setup>
+import { useTimer } from '~/composables/timer'
+
 const { uuid } = defineProps<{ uuid: string }>()
 
 const {
@@ -43,61 +45,26 @@ const question = computed(
 )
 const phase = computed(() => sequenceData.value?.phase)
 
-const lastingTime = ref('')
-const lessThan10secForCurrentSeq = ref(false)
+/* Time at which the current phase will end */
+const endTime = computed(() => duration.value ? Temporal.Now.instant().add(duration.value) : undefined)
 
-const timeZone = Temporal.Now.timeZoneId()
+const {
+	remainingTime,
+	runningOutOfTime,
+} = useTimer({ state, endTime })
 
-const now = ref<undefined | Temporal.Instant>()
-const endingTime = ref<undefined | Temporal.ZonedDateTime>()
+const remainingTimeMessage = computed(() => {
+	const time = remainingTime.value
+	if (!time) return undefined
 
-const interval = setInterval(() => {
-	if (duration.value === undefined || duration.value === null) return
-	if (endingTime.value === undefined || endingTime.value === null) return
-
-	const currentTime = Temporal.Now.zonedDateTimeISO(timeZone)
-
-	if (Temporal.ZonedDateTime.compare(currentTime, endingTime.value) >= 0) {
-		return
-	}
-
-	if (state.value === 'PAUSED') {
-		return
-	}
-
-	const remaining = endingTime.value.since(currentTime, {
-		largestUnit: 'day',
-	})
-
-	const parts = []
-	if (remaining.days > 0) parts.push(`${remaining.days}d`)
-	if (remaining.hours > 0) parts.push(`${remaining.hours}h`)
-	if (remaining.minutes > 0) parts.push(`${remaining.minutes}m`)
-	if (remaining.seconds > 0) parts.push(`${Math.floor(remaining.seconds)}s`)
-
-	lastingTime.value = parts.join(' ') || '0s'
-
-	lessThan10secForCurrentSeq.value
-		= remaining.days === 0
-			&& remaining.hours === 0
-			&& remaining.minutes === 0
-			&& remaining.seconds <= 10
-			&& remaining.seconds !== 0
-}, 500)
-
-watch(duration, () => {
-	if (state.value === 'END') {
-		clearInterval(interval)
-		lastingTime.value = ''
-		lessThan10secForCurrentSeq.value = false
-		return
-	}
-
-	now.value = Temporal.Now.instant()
-
-	endingTime.value = now.value
-		.add(duration.value!)
-		.toZonedDateTimeISO(timeZone)
+	return [
+		{ value: time.days, unit: 'd' },
+		{ value: time.hours, unit: 'h' },
+		{ value: time.minutes, unit: 'm' },
+		{ value: Math.floor(time.seconds), unit: 's' },
+	].filter(({ value }) => value > 0)
+		.map(({ value, unit }) => `${value}${unit}`)
+		.join(' ') || '0s'
 })
 </script>
 
@@ -116,20 +83,20 @@ watch(duration, () => {
 	<UPageCard
 		v-else
 		class="w-full h-min"
-		:highlight="lessThan10secForCurrentSeq"
+		:highlight="runningOutOfTime"
 		highlight-color="error"
 	>
-		<div class="flex justify-between" v-if="sequenceData.value">
+		<div class="flex justify-between">
 			<div class="flex flex-col gap-2">
 				<div class="text-xl">
-					{{ sequenceData.value.sequence.name }}
+					{{ sequenceData?.sequence?.name }}
 				</div>
 				<div
-					v-if="lastingTime !== ''"
+					v-if="remainingTimeMessage"
 					class="text-sm text-muted -mt-2"
 				>
 					{{ $t("sequence.remaining") }}
-					{{ lastingTime }}
+					{{ remainingTimeMessage }}
 				</div>
 				<div>{{ question }}</div>
 			</div>
