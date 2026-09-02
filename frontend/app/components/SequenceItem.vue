@@ -24,7 +24,7 @@ const {
 	startSequence,
 	pauseSequence,
 	resumeSequence,
-	data: sequenceData,
+	data: sequenceData, // TODO: Clarify name & type
 	isPending,
 	isError,
 	isOwner,
@@ -35,9 +35,6 @@ const {
 
 const lastPage = window.history.state.back as string
 
-const name = computed(
-	() => sequenceData.value?.sequence.name ?? 'This sequence does not exists',
-)
 const currentRound = computed(() => sequenceData.value?.currentRound ?? 0)
 const question = computed(
 	() =>
@@ -122,10 +119,10 @@ watch(duration, () => {
 		:highlight="lessThan10secForCurrentSeq"
 		highlight-color="error"
 	>
-		<div class="flex justify-between">
+		<div class="flex justify-between" v-if="sequenceData.value">
 			<div class="flex flex-col gap-2">
 				<div class="text-xl">
-					{{ name }}
+					{{ sequenceData.value.sequence.name }}
 				</div>
 				<div
 					v-if="lastingTime !== ''"
