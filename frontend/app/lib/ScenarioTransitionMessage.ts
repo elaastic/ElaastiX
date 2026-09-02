@@ -49,6 +49,7 @@ export class ScenarioTransitionMessage {
 		sciconumPhase: v.pipe(v.enum(SciconumScenarioExecutionPhase)),
 		state: v.pipe(v.enum(State)),
 		duration: v.pipe(v.nullable(v.string())),
+		currentRound: v.pipe(v.number()),
 	})
 
 	public static create(data: object) {

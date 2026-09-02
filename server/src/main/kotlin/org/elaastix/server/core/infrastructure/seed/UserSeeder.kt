@@ -47,6 +47,10 @@ class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
 	lateinit var student3: UserEntity
 		protected set
 
+	lateinit var student4: UserEntity
+		protected set
+
+	@Suppress("LongMethod")
 	override fun run(args: ApplicationArguments) {
 		franck = upsert(
 			id = 1UL,
@@ -81,9 +85,9 @@ class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
 		student1 = upsert(
 			id = 4UL,
 			entity = UserEntity(
-				firstName = "Student",
-				lastName = "Numero 1",
-				email = "student.numero1@elaastix.example",
+				firstName = "Student 1",
+				lastName = "Test",
+				email = "student.number1@elaastix.example",
 				roles = setOf(Role.USER),
 			),
 		)
@@ -91,9 +95,9 @@ class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
 		student2 = upsert(
 			id = 5UL,
 			entity = UserEntity(
-				firstName = "Student",
-				lastName = "Numero 2",
-				email = "student.numero2@elaastix.example",
+				firstName = "Student 2",
+				lastName = "Test",
+				email = "student2.test@elaastix.example",
 				roles = setOf(Role.USER),
 			),
 		)
@@ -101,9 +105,19 @@ class UserSeeder(entityManager: EntityManager) : AbstractSeeder(entityManager) {
 		student3 = upsert(
 			id = 6UL,
 			entity = UserEntity(
-				firstName = "Student",
-				lastName = "Numero 3",
-				email = "student.numero3@elaastix.example",
+				firstName = "Student 3",
+				lastName = "Test",
+				email = "student3.test@elaastix.example",
+				roles = setOf(Role.USER),
+			),
+		)
+
+		student4 = upsert(
+			id = 7UL,
+			entity = UserEntity(
+				firstName = "Student 4",
+				lastName = "Test",
+				email = "student4.test@elaastix.example",
 				roles = setOf(Role.USER),
 			),
 		)

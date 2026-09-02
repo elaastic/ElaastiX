@@ -86,6 +86,7 @@ class WebSocketSessionBinderService(
 		val sessions = learnerSessionRepository.findAllByScenarioSession(session)
 		val chatPeeringList = chatPeeringRepository.findAllByScenarioSession(session)
 
+		webSocketSessionHolder.disbandBroadcastScope(session.id)
 		for (session in sessions) webSocketSessionHolder.disbandBroadcastScope(session.id)
 		for (peering in chatPeeringList) webSocketSessionHolder.disbandBroadcastScope(peering.id)
 	}

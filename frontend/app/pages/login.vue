@@ -38,6 +38,10 @@ const users = new Map([
 	['Franck', '00000000-0000-0000-0000-000000000001'],
 	['John', '00000000-0000-0000-0000-000000000002'],
 	['Cynthia', '00000000-0000-0000-0000-000000000003'],
+	['Student 1', '00000000-0000-0000-0000-000000000004'],
+	['Student 2', '00000000-0000-0000-0000-000000000005'],
+	['Student 3', '00000000-0000-0000-0000-000000000006'],
+	['Student 4', '00000000-0000-0000-0000-000000000007'],
 ])
 const items = ref(users.keys().toArray())
 const state = reactive({
@@ -71,12 +75,14 @@ async function onSubmit(submission: FormSubmitEvent<Schema>) {
 				@submit="onSubmit"
 			>
 				<UFormField
+					class="w-full"
 					:label="$t('login.user')"
 					name="uuid"
 				>
-					<USelect
+					<USelectMenu
 						v-model="state.user"
 						:items="items"
+						class="w-full"
 					/>
 				</UFormField>
 				<UButton

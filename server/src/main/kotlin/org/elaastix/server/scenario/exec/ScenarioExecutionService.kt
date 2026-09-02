@@ -30,6 +30,7 @@ import org.elaastix.server.scenario.SciconumScenario
 import org.elaastix.server.scenario.exec.dto.SciconumScenarioPhaseDto
 import org.elaastix.server.scenario.exec.repositories.SciconumLearnerSessionRepository
 import org.elaastix.server.scenario.exec.repositories.SciconumScenarioSessionRepository
+import org.elaastix.server.users.entities.UserEntity
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.annotation.Async
 import org.springframework.security.access.prepost.PreAuthorize
@@ -108,7 +109,9 @@ class ScenarioExecutionService(
 		validate(session.pausedAt == null) { "The session has already been paused." }
 
 		session.pausedAt = clock.now()
-		session.dispatchTransition()
+		session.dispatchTransition(
+			findActiveLearnerSessions(session),
+		)
 		session.deschedule()
 	}
 
@@ -129,7 +132,9 @@ class ScenarioExecutionService(
 			session.nextPhaseAt = nextTick
 		} ?: LOGGER.warn("Unpaused session ${session.id}, but it didn't have a next scheduled tick.")
 
-		session.dispatchTransition()
+		session.dispatchTransition(
+			findActiveLearnerSessions(session),
+		)
 		session.scheduleTick()
 	}
 
@@ -149,7 +154,9 @@ class ScenarioExecutionService(
 		}
 
 		webSocketSessionBinderService.freeBroadcastScopesOfSession(session)
-		session.dispatchTransition()
+		session.dispatchTransition(
+			findActiveLearnerSessions(session),
+		)
 		session.scheduleTick()
 	}
 
@@ -222,23 +229,35 @@ class ScenarioExecutionService(
 
 		phase = nextPhase
 		nextPhaseAt = nextTick
-		sciconumLearnerSessionRepository.transitionAllLearnerSessionsOfSessionTo(this, phase, nextTick)
-		dispatchTransition()
+
+		val transitioningLeanerSessionsIds = findActiveLearnerSessions(this)
+		sciconumLearnerSessionRepository.transitionAllToPhase(transitioningLeanerSessionsIds, phase, nextTick)
+		dispatchTransition(transitioningLeanerSessionsIds)
 	}
 
-	private final fun ScenarioSessionEntity.dispatchTransition() {
+	/**
+	 * Notifies the scenario session and all the learner sessions that the session has transitioned to a new phase.
+	 */
+	private final fun ScenarioSessionEntity.dispatchTransition(learnerSessionsUuids: List<Uuid>) {
 		val duration = nextPhaseAt?.let { it - clock.now() }
 		val message = ScenarioTransitionMessage(
-			phase,
-			when {
+			sciconumPhase = phase,
+			state = when {
 				phase == Phase.END -> ScenarioTransitionMessage.State.END
 				pausedAt != null -> ScenarioTransitionMessage.State.PAUSED
 				else -> ScenarioTransitionMessage.State.RUNNING
 			},
-			duration,
+			duration = duration,
+			currentRound = currentRound,
 		)
 
+		// Publish the transition on the scenario session scope
 		webSocketEventPublisher.publishPayload(id, message)
+
+		// Publish the transition on all the concerned learner session scopes
+		learnerSessionsUuids.forEach {
+			webSocketEventPublisher.publishPayload(it, message)
+		}
 	}
 
 	private final fun ScenarioSessionEntity.scheduleTick() {
@@ -293,10 +312,34 @@ class ScenarioExecutionService(
 		}
 	}
 
+	@Transactional(readOnly = true)
 	fun getSciconumScenarioStateById(scenarioSessionId: Uuid): SciconumScenarioPhaseDto =
 		SciconumScenarioPhaseDto.fromEntity(
 			sciconumScenarioSessionRepository.findById(scenarioSessionId).orElseNotFound(),
 		)
+
+	@Transactional(readOnly = true)
+	fun getAllSciconumSequenceSessionAssociated(user: UserEntity): List<SciconumScenarioPhaseDto> =
+		sciconumScenarioSessionRepository.findAllBySequenceOwnerAndAssignmentParticipant(user)
+			.map(SciconumScenarioPhaseDto::fromEntity)
+
+	@Transactional(readOnly = true)
+	fun isSequenceAssociated(user: UserEntity, sequenceUuid: Uuid): Boolean =
+		sciconumScenarioSessionRepository.numberOfSequenceAssociated(user, sequenceUuid) != 0L
+
+	/**
+	 * Returns the list of learner sessions that are active for the given scenario session and phase.
+	 * The inactive learner sessions are those that joined after the session has started; in that
+	 * case, they will remain inactive until the next round begins.
+	 */
+	private fun findActiveLearnerSessions(session: ScenarioSessionEntity) =
+		when (session.phase) {
+			// When a new question phase starts (the start of a new round), all the learner sessions are considered active
+			Phase.QUESTION -> sciconumLearnerSessionRepository.findAllIdsByScenarioSession(session)
+
+			// Otherwise, the PENDING learning sessions are considered inactive (until the next question)
+			else -> sciconumLearnerSessionRepository.findAllIdsByScenarioSessionAndPhaseNot(session, Phase.PENDING)
+		}.map { it as Uuid }
 
 	private inner class SessionTickTask(val scenarioSessionId: Uuid) : Runnable {
 		override fun run() {
