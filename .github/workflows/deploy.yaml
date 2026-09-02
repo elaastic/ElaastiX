@@ -1,0 +1,63 @@
+name: Deployment trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      pr-id:
+        type: number
+        description: Pull request ID to deploy, if deploying a PR. Leave blank to deploy the workflow target branch
+        default: 0
+      pr-merge-result:
+        type: boolean
+        description: Deploy the result of the merge rather than the PR head. Will fail if there are unsolved conflicts
+        default: true
+      environment:
+        type: choice
+        required: true
+        description: The environment to deploy on
+        default: staging
+        options:
+          - production
+          - staging
+
+permissions:
+  contents: read
+
+jobs:
+  trigger-deployment:
+    name: Start GitLab CI/CD pipeline
+    runs-on: ubuntu-slim
+    steps:
+      - id: ref
+        name: Prepare docker tag name
+        env:
+          PR_ID: ${{ inputs.pr-id }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          if [[ $PR_ID == 0 ]]; then
+            echo "docker-tag=pr-$PR_ID" >> $GITHUB_OUTPUT
+          else
+            echo "docker-tag=$REF_NAME" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger ops GitLab CI/CD pipeline
+        env:
+          GITLAB_TRIGGER_TOKEN: ${{ secrets.GITLAB_CI_TRIGGER_TOKEN }}
+          GITLAB_HOST: ${{ vars.GITLAB_HOST }}
+          GITLAB_PROJECT_ID: ${{ vars.GITLAB_PROJECT_ID }}
+          DEPLOY_TARGET: ${{ inputs.environment }}
+          DEPLOY_FRONTEND_CONTAINER_IMAGE: elaastic/elaastic-questions-server
+          DEPLOY_FRONTEND_CONTAINER_TAG: frontend-${{ steps.ref.outputs.docker-tag }}
+          DEPLOY_SERVER_CONTAINER_IMAGE: elaastic/elaastic-questions-server
+          DEPLOY_SERVER_CONTAINER_TAG: server-${{ steps.ref.outputs.docker-tag }}
+        run: |
+          curl -fsS --request POST \
+            --form "ref=main" \
+            --form "token=$GITLAB_TRIGGER_TOKEN" \
+            --form "variables[TRIGGER_TARGET]=deploy-elaastix" \
+            --form "variables[DEPLOY_TARGET]=$DEPLOY_TARGET" \
+            --form "variables[DEPLOY_FRONTEND_CONTAINER_IMAGE]=$DEPLOY_FRONTEND_CONTAINER_IMAGE" \
+            --form "variables[DEPLOY_FRONTEND_CONTAINER_TAG]=$DEPLOY_FRONTEND_CONTAINER_TAG" \
+            --form "variables[DEPLOY_SERVER_CONTAINER_IMAGE]=$DEPLOY_SERVER_CONTAINER_IMAGE" \
+            --form "variables[DEPLOY_SERVER_CONTAINER_TAG]=$DEPLOY_SERVER_CONTAINER_TAG" \
+            "https://${GITLAB_HOST}/api/v4/projects/${GITLAB_PROJECT_ID}/trigger/pipeline"

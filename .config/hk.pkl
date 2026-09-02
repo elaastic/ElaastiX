@@ -77,11 +77,7 @@ hooks {
 	}
 	["commit-msg"] {
 		steps {
-			["conventional-commits"] = (Builtins.check_conventional_commit) {
-				// Workaround for https://github.com/jdx/hk/discussions/902
-				// Allows `fixup!`, `amend!`, and `squash!` commits for git autosquashing.
-				check = "./.config/conventional-check.sh {{commit_msg_file}}"
-			}
+			["conventional-commits"] = (Builtins.check_conventional_commit)
 		}
 	}
 	["check"] {
