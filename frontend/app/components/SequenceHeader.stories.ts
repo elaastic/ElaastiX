@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import SequenceHeaderView from './SequenceHeaderView.vue'
+import SequenceHeader from './SequenceHeader.vue'
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
 import {
 	SciconumScenarioExecutionPhase,
@@ -26,9 +26,9 @@ import {
 
 const meta = {
 	title: 'Sequence Header View',
-	component: SequenceHeaderView,
+	component: SequenceHeader,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SequenceHeaderView>
+} satisfies Meta<typeof SequenceHeader>
 
 export default meta
 type Story = StoryObj<typeof meta>
