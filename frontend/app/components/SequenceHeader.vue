@@ -12,7 +12,7 @@ interface Props {
 
 const { state, isRunningOutOfTime, timeTotal, timeElapsed } = defineProps<Props>()
 
-const badgeColor = computed(() => {
+const remainingTimeColor = computed(() => {
 	if (state === State.PAUSED) return 'secondary'
 	if (isRunningOutOfTime) return 'error'
 	return 'neutral'
@@ -37,7 +37,7 @@ const progressColor = computed(() => {
 			<UBadge
 				v-if="state !== undefined && state !== State.END"
 				size="md"
-				:color="badgeColor"
+				:color="remainingTimeColor"
 				variant="subtle"
 			>
 				{{ remainingMessage }}

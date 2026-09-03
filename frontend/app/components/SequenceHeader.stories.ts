@@ -25,7 +25,7 @@ import {
 } from '~/lib/ScenarioTransitionMessage'
 
 const meta = {
-	title: 'Sequence Header View',
+	title: 'Sequence Header',
 	component: SequenceHeader,
 	tags: ['autodocs'],
 } satisfies Meta<typeof SequenceHeader>
@@ -66,13 +66,13 @@ export const Paused: Story = {
 	},
 }
 
-export const LessThan10Sec: Story = {
+export const IsRunningOutOfTime: Story = {
 	args: {
 		name: 'Name of the sequence',
 		state: State.RUNNING,
 		phase: SciconumScenarioExecutionPhase.QUESTION,
 		timeTotal: 30,
-		timeElapsedtimeElapsed: 21,
+		imeElapsed: 21,
 		isRunningOutOfTime: true,
 	},
 }
