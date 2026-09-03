@@ -18,14 +18,14 @@
  */
 
 import type { components } from '#open-fetch-schemas/api'
-import SequenceLearnerView from './SequenceLearnerView.vue'
+import QuestionPlayerLearner from './QuestionPlayerLearner.vue'
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
 
 const meta = {
-	title: 'Sequence Learner View',
-	component: SequenceLearnerView,
+	title: 'Learner player / Question phase',
+	component: QuestionPlayerLearner,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SequenceLearnerView>
+} satisfies Meta<typeof QuestionPlayerLearner>
 
 export default meta
 type Story = StoryObj<typeof meta>
