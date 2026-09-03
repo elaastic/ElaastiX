@@ -19,24 +19,29 @@
 
 <script setup lang="ts">
 import type { components } from '#open-fetch-schemas/api'
+import ClosedQuestion from '~/components/question/ClosedQuestion.vue'
+import OpenQuestion from '~/components/question/OpenQuestion.vue'
 
+/**
+ * Render any type of question (open or closed)=.
+ */
 interface Props {
 	question:
 		| components['schemas']['ClosedQuestionStatementDto']
 		| components['schemas']['OpenQuestionStatementDto']
-		| undefined
 }
 
 const { question } = defineProps<Props>()
-const closedQuestion = computed(() =>
-	question?.$type === 'ClosedQuestion' ? question : null,
-)
+
+const questionComponents = {
+	ClosedQuestion,
+	OpenQuestion,
+} as const
 </script>
 
 <template>
-	<ClosedQuestion
-		v-if="closedQuestion"
-		:question="closedQuestion"
+	<component
+		:is="questionComponents[question.$type]"
+		:question="question"
 	/>
-	<!-- TODO: support open questions -->
 </template>

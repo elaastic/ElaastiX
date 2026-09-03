@@ -18,19 +18,19 @@
  */
 
 import type { components } from '#open-fetch-schemas/api'
-import SequenceLearnerView from './SequenceLearnerView.vue'
+import AnyQuestion from './AnyQuestion.vue'
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
 
 const meta = {
-	title: 'Sequence Learner View',
-	component: SequenceLearnerView,
+	title: 'Response Activity / Any Question',
+	component: AnyQuestion,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SequenceLearnerView>
+} satisfies Meta<typeof AnyQuestion>
 
 export default meta
 type Story = StoryObj<typeof meta>
 
-const question = {
+const closedQuestion = {
 	id: '0000000000000000000000000',
 	$type: 'ClosedQuestion',
 	statement: {
@@ -44,13 +44,25 @@ const question = {
 		{ $type: 'PlainText', content: 'Darwin (macOS)' },
 		{ $type: 'PlainText', content: 'OpenBSD' },
 	],
-} satisfies
-| components['schemas']['ClosedQuestionStatementDto']
-| components['schemas']['OpenQuestionStatementDto']
-| undefined
+} satisfies components['schemas']['ClosedQuestionStatementDto']
 
-export const Question: Story = {
+const openQuestion = {
+	id: '0000000000000000000000001',
+	$type: 'OpenQuestion',
+	statement: {
+		$type: 'Markdown',
+		content: 'Quel est le sens de la vie?',
+	},
+} satisfies components['schemas']['OpenQuestionStatementDto']
+
+export const ClosedQuestion: Story = {
 	args: {
-		question: question,
+		question: closedQuestion,
+	},
+}
+
+export const OpenQuestion: Story = {
+	args: {
+		question: openQuestion,
 	},
 }
