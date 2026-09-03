@@ -38,10 +38,10 @@ export const Waiting: Story = {
 		name: 'Name of the sequence',
 		state: undefined,
 		phase: SciconumScenarioExecutionPhase.PENDING,
-		totalTime: 0,
+		timeTotal: 0,
 		timeSpend: 0,
 		lastingTimeString: '',
-		lessThan10secForCurrentSeq: false,
+		isRunningOutOfTime: false,
 	},
 }
 
@@ -50,10 +50,10 @@ export const Running: Story = {
 		name: 'Name of the sequence',
 		state: State.RUNNING,
 		phase: SciconumScenarioExecutionPhase.QUESTION,
-		totalTime: 30,
-		timeSpend: 15,
+		timeTotal: 30,
+		timeElapsed: 15,
 		lastingTimeString: '45s',
-		lessThan10secForCurrentSeq: false,
+		isRunningOutOfTime: false,
 	},
 }
 
@@ -62,10 +62,10 @@ export const Paused: Story = {
 		name: 'Name of the sequence',
 		state: State.PAUSED,
 		phase: SciconumScenarioExecutionPhase.QUESTION,
-		totalTime: 30,
-		timeSpend: 15,
+		timeTotal: 30,
+		timeElapsed: 15,
 		lastingTimeString: '45s',
-		lessThan10secForCurrentSeq: false,
+		isRunningOutOfTime: false,
 	},
 }
 
@@ -74,9 +74,9 @@ export const LessThan10Sec: Story = {
 		name: 'Name of the sequence',
 		state: State.RUNNING,
 		phase: SciconumScenarioExecutionPhase.QUESTION,
-		totalTime: 30,
-		timeSpend: 21,
+		timeTotal: 30,
+		timeElapsedtimeElapsed: 21,
 		lastingTimeString: '9s',
-		lessThan10secForCurrentSeq: true,
+		isRunningOutOfTime: true,
 	},
 }

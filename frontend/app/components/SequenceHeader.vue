@@ -5,23 +5,23 @@ interface Props {
 	name: string
 	state: State | undefined
 	phase: string | undefined
-	totalTime: number
-	timeSpend: number
+	timeTotal: number // in seconds
+	timeElapsed: number // in seconds
 	lastingTimeString: string
-	lessThan10secForCurrentSeq: boolean
+	isRunningOutOfTime: boolean
 }
 
-const { state, lessThan10secForCurrentSeq } = defineProps<Props>()
+const { state, isRunningOutOfTime } = defineProps<Props>()
 
 const badgeColor = computed(() => {
 	if (state === State.PAUSED) return 'secondary'
-	if (lessThan10secForCurrentSeq) return 'error'
+	if (isRunningOutOfTime) return 'error'
 	return 'neutral'
 })
 
 const progressColor = computed(() => {
 	if (state === State.PAUSED) return 'secondary'
-	if (lessThan10secForCurrentSeq) return 'error'
+	if (isRunningOutOfTime) return 'error'
 	return 'primary'
 })
 </script>
@@ -45,8 +45,8 @@ const progressColor = computed(() => {
 		</div>
 	</div>
 	<UProgress
-		:model-value="timeSpend"
-		:max="totalTime"
+		:model-value="timeElapsed"
+		:max="timeTotal"
 		:color="progressColor"
 		class="mt-2 mb-2"
 	/>
