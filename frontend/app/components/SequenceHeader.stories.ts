@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import SequenceHeaderView from './SequenceHeaderView.vue'
+import SequenceHeader from './SequenceHeader.vue'
 import type { Meta, StoryObj } from '@nuxtjs/storybook'
 import {
 	SciconumScenarioExecutionPhase,
@@ -25,10 +25,10 @@ import {
 } from '~/lib/ScenarioTransitionMessage'
 
 const meta = {
-	title: 'Sequence Header View',
-	component: SequenceHeaderView,
+	title: 'Sequence Header',
+	component: SequenceHeader,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SequenceHeaderView>
+} satisfies Meta<typeof SequenceHeader>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -38,10 +38,9 @@ export const Waiting: Story = {
 		name: 'Name of the sequence',
 		state: undefined,
 		phase: SciconumScenarioExecutionPhase.PENDING,
-		totalTime: 0,
+		timeTotal: 0,
 		timeSpend: 0,
-		lastingTimeString: '',
-		lessThan10secForCurrentSeq: false,
+		isRunningOutOfTime: false,
 	},
 }
 
@@ -50,10 +49,9 @@ export const Running: Story = {
 		name: 'Name of the sequence',
 		state: State.RUNNING,
 		phase: SciconumScenarioExecutionPhase.QUESTION,
-		totalTime: 30,
-		timeSpend: 15,
-		lastingTimeString: '45s',
-		lessThan10secForCurrentSeq: false,
+		timeTotal: 30,
+		timeElapsed: 15,
+		isRunningOutOfTime: false,
 	},
 }
 
@@ -62,21 +60,19 @@ export const Paused: Story = {
 		name: 'Name of the sequence',
 		state: State.PAUSED,
 		phase: SciconumScenarioExecutionPhase.QUESTION,
-		totalTime: 30,
-		timeSpend: 15,
-		lastingTimeString: '45s',
-		lessThan10secForCurrentSeq: false,
+		timeTotal: 30,
+		timeElapsed: 15,
+		isRunningOutOfTime: false,
 	},
 }
 
-export const LessThan10Sec: Story = {
+export const IsRunningOutOfTime: Story = {
 	args: {
 		name: 'Name of the sequence',
 		state: State.RUNNING,
 		phase: SciconumScenarioExecutionPhase.QUESTION,
-		totalTime: 30,
-		timeSpend: 21,
-		lastingTimeString: '9s',
-		lessThan10secForCurrentSeq: true,
+		timeTotal: 30,
+		imeElapsed: 21,
+		isRunningOutOfTime: true,
 	},
 }

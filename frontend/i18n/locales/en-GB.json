@@ -95,7 +95,9 @@
 			"forbidden": "You aren't allowed to access this sequence",
 			"noSequenceAssociated": "No sequences available."
 		},
-		"remaining": "Remaining"
-	},
-	"error": "Error"
+		"remaining": "Remaining",
+		"timeElapsed": "The allotted time has elapsed.",
+		"remainingTime": "Remaining {duration}."
+		},
+		"error": "Error"
 }
