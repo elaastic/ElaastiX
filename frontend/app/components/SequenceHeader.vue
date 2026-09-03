@@ -1,46 +1,29 @@
 <script setup lang="ts">
 import { State } from '~/lib/ScenarioTransitionMessage'
+import type { SequenceExecution } from '~/types/sequence'
 
 /**
  * This component displays the general state of a sequence.
  * For now, it is shared between Learners and Teachers.
  */
 interface Props {
-	/* The name of the sequence. */
-	name: string
-
-	/* The sequence state */
-	state: State | undefined
-
-	/* A string representing the current phase of the sequence. This is temporary. */
-	phase: string | undefined
-
-	/**
-	 *  The total time in seconds allocated to the sequence
-	 *  TODO: To be generalized to handle non-timeboxed sequences
-	 */
-	timeTotal: number
-
-	/* Number of seconds elapsed for the sequence */
-	timeElapsed: number
-
-	/* Whether the sequence is considered running out of time */
-	isRunningOutOfTime: boolean
+	sequenceExecution: SequenceExecution
 }
 
-const { state, isRunningOutOfTime, timeTotal, timeElapsed } = defineProps<Props>()
+const { sequenceExecution } = defineProps<Props>()
 const { t, locale } = useI18n()
 
 const remainingTimeColor = computed(() => {
-	if (state === State.PAUSED) return 'secondary'
-	if (isRunningOutOfTime) return 'error'
+	if (sequenceExecution.state === State.PAUSED) return 'secondary'
+	if (sequenceExecution.timebox?.isRunningOutOfTime) return 'error'
 	return 'neutral'
 })
 
-const secondsRemaining = computed(() => Math.max(0, Math.ceil(timeTotal - timeElapsed)))
+const secondsRemaining = computed(() => sequenceExecution.timebox ? Math.max(0, Math.ceil(sequenceExecution.timebox.timeTotal - sequenceExecution.timebox.timeElapsed)) : undefined)
 const durationFormatter = computed(() => new Intl.DurationFormat(locale.value.replace('_', '-'), { style: 'short' }))
 const remainingMessage = computed(() => {
 	const seconds = secondsRemaining.value
+	if (seconds === undefined) return undefined
 	if (seconds === 0) return t('sequence.timeElapsed')
 
 	const duration = durationFormatter.value.format({
@@ -56,23 +39,24 @@ const remainingMessage = computed(() => {
 <template>
 	<div class="flex justify-between">
 		<h2 class="text-2xl">
-			{{ name }}
+			{{ sequenceExecution.name }}
 		</h2>
 		<div class="flex items-center gap-2 justify-between">
 			<UBadge
-				v-if="state !== undefined && state !== State.END"
+				v-if="sequenceExecution.timebox && sequenceExecution.state !== undefined && sequenceExecution.state !== State.END"
 				size="md"
 				:color="remainingTimeColor"
 				variant="subtle"
 			>
 				{{ remainingMessage }}
 			</UBadge>
-			<p>{{ phase }}</p>
+			<p>{{ sequenceExecution.phase }}</p>
 		</div>
 	</div>
 	<UProgress
-		:model-value="timeElapsed"
-		:max="timeTotal"
+		v-if="sequenceExecution.timebox"
+		:model-value="sequenceExecution.timebox.timeElapsed"
+		:max="sequenceExecution.timebox.timeTotal"
 		:color="remainingTimeColor"
 		class="mt-2 mb-2"
 	/>
