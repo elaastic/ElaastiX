@@ -40,7 +40,6 @@ export const Waiting: Story = {
 		phase: SciconumScenarioExecutionPhase.PENDING,
 		timeTotal: 0,
 		timeSpend: 0,
-		lastingTimeString: '',
 		isRunningOutOfTime: false,
 	},
 }
@@ -52,7 +51,6 @@ export const Running: Story = {
 		phase: SciconumScenarioExecutionPhase.QUESTION,
 		timeTotal: 30,
 		timeElapsed: 15,
-		lastingTimeString: '45s',
 		isRunningOutOfTime: false,
 	},
 }
@@ -64,7 +62,6 @@ export const Paused: Story = {
 		phase: SciconumScenarioExecutionPhase.QUESTION,
 		timeTotal: 30,
 		timeElapsed: 15,
-		lastingTimeString: '45s',
 		isRunningOutOfTime: false,
 	},
 }
@@ -76,7 +73,6 @@ export const LessThan10Sec: Story = {
 		phase: SciconumScenarioExecutionPhase.QUESTION,
 		timeTotal: 30,
 		timeElapsedtimeElapsed: 21,
-		lastingTimeString: '9s',
 		isRunningOutOfTime: true,
 	},
 }
