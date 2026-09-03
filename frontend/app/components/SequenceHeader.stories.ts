@@ -23,12 +23,87 @@ import {
 	SciconumScenarioExecutionPhase,
 	State,
 } from '~/lib/ScenarioTransitionMessage'
+import type { SequenceExecution } from '~/types/sequence'
+
+type StoryArgs = {
+	name: SequenceExecution['name']
+	state: SequenceExecution['state']
+	phase: SequenceExecution['phase']
+}
+& ({
+	timeboxed: false
+} | {
+	timeboxed: true
+	timeTotal: number
+	timeElapsed: number
+	isRunningOutOfTime: boolean
+})
 
 const meta = {
 	title: 'Sequence Header',
 	component: SequenceHeader,
 	tags: ['autodocs'],
-} satisfies Meta<typeof SequenceHeader>
+	argTypes: {
+		state: {
+			control: 'select',
+			options: [State.PENDING, State.RUNNING, State.PAUSED, State.END],
+		},
+		phase: {
+			control: 'select',
+			options: [
+				SciconumScenarioExecutionPhase.PENDING,
+				SciconumScenarioExecutionPhase.QUESTION,
+				SciconumScenarioExecutionPhase.PEER,
+				SciconumScenarioExecutionPhase.FEEDBACK,
+				SciconumScenarioExecutionPhase.REVISE,
+				SciconumScenarioExecutionPhase.END,
+			],
+		},
+		timeTotal: {
+			control: 'number',
+			if: {
+				arg: 'timeboxed',
+				truthy: true,
+			},
+		},
+
+		timeElapsed: {
+			control: 'number',
+			if: {
+				arg: 'timeboxed',
+				truthy: true,
+			},
+		},
+
+		isRunningOutOfTime: {
+			control: 'boolean',
+			if: {
+				arg: 'timeboxed',
+				truthy: true,
+			},
+		},
+	},
+	render: args => ({
+		components: { SequenceHeader },
+		setup() {
+			const sequenceExecution = computed(() => ({
+				name: args.name,
+				state: args.state,
+				phase: args.phase,
+				timebox: args.timeboxed
+					? {
+							timeTotal: args.timeTotal,
+							timeElapsed: args.timeElapsed,
+							isRunningOutOfTime: args.isRunningOutOfTime,
+						}
+					: undefined,
+			}))
+
+			return { sequenceExecution }
+		},
+		template: '<SequenceHeader :sequenceExecution="sequenceExecution" />',
+	}),
+} satisfies Meta<StoryArgs>
 
 export default meta
 type Story = StoryObj<typeof meta>
@@ -38,10 +113,8 @@ export const Waiting: Story = {
 		name: 'Name of the sequence',
 		state: undefined,
 		phase: SciconumScenarioExecutionPhase.PENDING,
-		timeTotal: 0,
-		timeSpend: 0,
-		isRunningOutOfTime: false,
-	},
+		timeboxed: false,
+	} satisfies StoryArgs,
 }
 
 export const Running: Story = {
@@ -49,10 +122,11 @@ export const Running: Story = {
 		name: 'Name of the sequence',
 		state: State.RUNNING,
 		phase: SciconumScenarioExecutionPhase.QUESTION,
+		timeboxed: true,
 		timeTotal: 30,
 		timeElapsed: 15,
 		isRunningOutOfTime: false,
-	},
+	} satisfies StoryArgs,
 }
 
 export const Paused: Story = {
@@ -60,10 +134,11 @@ export const Paused: Story = {
 		name: 'Name of the sequence',
 		state: State.PAUSED,
 		phase: SciconumScenarioExecutionPhase.QUESTION,
+		timeboxed: true,
 		timeTotal: 30,
 		timeElapsed: 15,
 		isRunningOutOfTime: false,
-	},
+	} satisfies StoryArgs,
 }
 
 export const IsRunningOutOfTime: Story = {
@@ -71,8 +146,9 @@ export const IsRunningOutOfTime: Story = {
 		name: 'Name of the sequence',
 		state: State.RUNNING,
 		phase: SciconumScenarioExecutionPhase.QUESTION,
+		timeboxed: true,
 		timeTotal: 30,
-		imeElapsed: 21,
+		timeElapsed: 21,
 		isRunningOutOfTime: true,
-	},
+	} satisfies StoryArgs,
 }
