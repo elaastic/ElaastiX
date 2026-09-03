@@ -18,25 +18,25 @@
   -->
 
 <script lang="ts" setup>
+import { useTimer } from '~/composables/timer'
+
 const { uuid } = defineProps<{ uuid: string }>()
 
 const {
 	startSequence,
 	pauseSequence,
 	resumeSequence,
-	data: sequenceData,
+	data: sequenceData, // TODO: Clarify name & type
 	isPending,
 	isError,
 	isOwner,
+	duration,
 	error,
 	state,
 } = useSequence(uuid)
 
 const lastPage = window.history.state.back as string
 
-const name = computed(
-	() => sequenceData.value?.sequence.name ?? 'This sequence does not exists',
-)
 const currentRound = computed(() => sequenceData.value?.currentRound ?? 0)
 const question = computed(
 	() =>
@@ -44,6 +44,28 @@ const question = computed(
 			?.statement.content ?? '',
 )
 const phase = computed(() => sequenceData.value?.phase)
+
+/* Time at which the current phase will end */
+const endTime = computed(() => duration.value ? Temporal.Now.instant().add(duration.value) : undefined)
+
+const {
+	remainingTime,
+	runningOutOfTime,
+} = useTimer({ state, endTime })
+
+const remainingTimeMessage = computed(() => {
+	const time = remainingTime.value
+	if (!time) return undefined
+
+	return [
+		{ value: time.days, unit: 'd' },
+		{ value: time.hours, unit: 'h' },
+		{ value: time.minutes, unit: 'm' },
+		{ value: Math.floor(time.seconds), unit: 's' },
+	].filter(({ value }) => value > 0)
+		.map(({ value, unit }) => `${value}${unit}`)
+		.join(' ') || '0s'
+})
 </script>
 
 <template>
@@ -61,11 +83,20 @@ const phase = computed(() => sequenceData.value?.phase)
 	<UPageCard
 		v-else
 		class="w-full h-min"
+		:highlight="runningOutOfTime"
+		highlight-color="error"
 	>
 		<div class="flex justify-between">
 			<div class="flex flex-col gap-2">
 				<div class="text-xl">
-					{{ name }}
+					{{ sequenceData?.sequence?.name }}
+				</div>
+				<div
+					v-if="remainingTimeMessage"
+					class="text-sm text-muted -mt-2"
+				>
+					{{ $t("sequence.remaining") }}
+					{{ remainingTimeMessage }}
 				</div>
 				<div>{{ question }}</div>
 			</div>
