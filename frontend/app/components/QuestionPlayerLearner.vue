@@ -19,24 +19,36 @@
 
 <script setup lang="ts">
 import type { components } from '#open-fetch-schemas/api'
+import { ClosedQuestion } from '#components'
 
 interface Props {
 	question:
 		| components['schemas']['ClosedQuestionStatementDto']
 		| components['schemas']['OpenQuestionStatementDto']
-		| undefined
 }
 
 const { question } = defineProps<Props>()
-const closedQuestion = computed(() =>
-	question?.$type === 'ClosedQuestion' ? question : null,
+
+// TODO Provide support for open questions
+const questionComponents = {
+	ClosedQuestion,
+} as const
+
+const isSupportedQuestionType = computed(
+	() => question.$type in questionComponents,
 )
 </script>
 
 <template>
-	<ClosedQuestion
-		v-if="closedQuestion"
-		:question="closedQuestion"
+	<UAlert
+		v-if="!isSupportedQuestionType"
+		class="mb-4"
+	>
+		Question type not supported
+	</UAlert>
+	<component
+		:is="questionComponents[question.$type]"
+		v-else
+		:question="question"
 	/>
-	<!-- TODO: support open questions -->
 </template>

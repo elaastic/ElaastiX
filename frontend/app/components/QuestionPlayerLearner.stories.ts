@@ -47,7 +47,6 @@ const question = {
 } satisfies
 | components['schemas']['ClosedQuestionStatementDto']
 | components['schemas']['OpenQuestionStatementDto']
-| undefined
 
 export const Question: Story = {
 	args: {
