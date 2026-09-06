@@ -7,8 +7,8 @@ logging.level:
 spring:
   datasource:
     url: jdbc:postgresql://127.0.0.1:5432/elaastix
-    username: elaastix
-    password: elaastix
+    username: postgres
+    password: postgres
 
 springdoc.paths-to-exclude: []
 springdoc.cache.disabled: true
