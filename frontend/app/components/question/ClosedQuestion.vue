@@ -24,14 +24,13 @@ interface Props {
 	 */
 	question: ClosedQuestionStatementDto
 	/**
-	 * Whether to request a self explanation or not. If false, then the `selfExplanation` field of the response will
-	 * always be `null`.
+	 * Whether to request a self-explanation or not.
 	 */
 	requestSelfExplanation?: boolean
 	/**
 	 * The number of options on the confidence degree Likert scale, of `false` to disable it. If false, then the
 	 * `confidenceDegree` field of the response will always be `null`. Otherwise, the confidence degree will always
-	 * be defined, with a value of `0` if the respondant did not provide it.
+	 * be defined with a value of `0` if the respondent did not provide it.
 	 */
 	confidenceDegreeOptions?: false | 3 | 4 | 5 | 6 | 7
 
