@@ -22,7 +22,7 @@ import type { Meta, StoryObj } from '@nuxtjs/storybook'
 import ClosedQuestion from './ClosedQuestion.vue'
 
 const meta = {
-	title: 'Response Activity/Closed Question',
+	title: 'Response Activity / Closed Question',
 	component: ClosedQuestion,
 	tags: ['autodocs'],
 } satisfies Meta<typeof ClosedQuestion>

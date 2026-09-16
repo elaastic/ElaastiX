@@ -95,7 +95,9 @@
 			"forbidden": "Vous n'êtes pas autorisé à accéder à cette page."
 		},
 		"noSequenceAssociated": "Vous n'avez accès à aucune séquence.",
-		"remaining": "Il reste"
+		"remaining": "Il reste",
+		"timeElapsed": "Temps écoulé.",
+		"remainingTime": "Il reste {duration}."
 	},
 	"error" : "Erreur"
 }
