@@ -2,8 +2,8 @@ services:
   postgres:
     image: docker.io/postgres:18-alpine
     environment:
-      POSTGRES_USER: elaastix
-      POSTGRES_PASSWORD: elaastix
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
       POSTGRES_DATABASE: elaastix
     healthcheck:
       # noinspection SpellCheckingInspection
@@ -22,11 +22,21 @@ services:
 
   storage:
     image: docker.io/dxflrs/garage:v2.3.0
+    env_file:
+      - .config/garage/credentials.env
+    environment:
+      GARAGE_DEFAULT_BUCKET: elaastix-attachments
+    command: [ "/garage", "server", "--single-node", "--default-bucket" ]
+    healthcheck:
+      test: [ "CMD", "/garage", "stats", "-a" ]
+      interval: 1s
+      timeout: 5s
+      retries: 5
+      start_period: 1s
     read_only: true
     volumes:
       - .config/garage/config.toml:/etc/garage.toml
-      - garage-meta:/var/lib/garage/meta
-      - garage-data:/var/lib/garage/data
+      - garage-data:/var/lib/garage
     tmpfs:
       - /tmp
 
@@ -37,7 +47,7 @@ services:
       context: .
       dockerfile: server/Containerfile
       target: develop
-    env_file:
+    env_file:  # TODO: use GARAGE_DEFAULT_* in application.yaml for s3 creds config
       - .config/garage/credentials.env
     environment:
       SPRING_PROFILES_ACTIVE: develop,container
@@ -79,9 +89,10 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      storage:
+        condition: service_healthy
 
 volumes:
   pg-data:
-  garage-meta:
   garage-data:
   gradle-cache:
